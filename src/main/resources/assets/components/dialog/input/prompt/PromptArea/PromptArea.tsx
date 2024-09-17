@@ -14,7 +14,7 @@ import {getStoredPathByDataAttrString, storedMentions} from '../../../../../stor
 import {Mention} from '../../../../../stores/data/Mention';
 import {$visible} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
-import focused, {setFocusedElementPath} from '../../../../../stores/focus';
+import {$focus, setFocusedElementPath} from '../../../../../stores/focus';
 import {isChatRequestRunning} from '../../../../../stores/requests';
 import {setScope} from '../../../../../stores/scope';
 import SendButton from '../../SendButton/SendButton';
@@ -77,7 +77,7 @@ export default function PromptArea({className}: Props): JSX.Element {
     const allMentions = useStore(storedMentions);
     const mentionsToDisplay = findLooseMatch(allMentions, search);
     const hasMentions = mentionsToDisplay.length > 0;
-    const focusedElementPath = useStore(focused);
+    const focusedElementPath = useStore($focus);
 
     useEffect(() => {
         if (focusedElementPath) {

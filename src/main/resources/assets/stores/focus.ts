@@ -3,15 +3,11 @@ import {atom} from 'nanostores';
 import {MENTION_TOPIC} from '../common/mentions';
 import {$visible} from './dialog';
 
-const store = atom<Optional<string>>(undefined);
-
-export default store;
+export const $focus = atom<Optional<string>>(undefined);
 
 init();
 
-export const setFocusedElementPath = (path: Optional<string>): void => store.set(path);
-
-export const getFocusedElementPath = (): Optional<string> => store.get();
+export const setFocusedElementPath = (path: Optional<string>): void => $focus.set(path);
 
 export function saveActiveFocus(): void {
     const focusedElement: Element | null = document.activeElement;
