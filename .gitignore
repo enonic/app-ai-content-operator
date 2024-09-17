@@ -1,0 +1,24 @@
+# IDEA
+*.iml
+*.ipr
+*.iws
+.idea/
+.idea_modules/
+
+# Build
+build/
+dist/
+out/
+coverage/
+bin/
+
+# Node
+node_modules/
+
+# Configs
+.eslintcache
+tsconfig.tsbuildinfo
+package-lock.json
+.gradle/
+
+tmp.*

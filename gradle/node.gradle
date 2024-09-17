@@ -1,0 +1,15 @@
+apply plugin: 'com.github.node-gradle.node'
+
+node {
+    version = '20.10.0'
+    download = true
+}
+
+task pnpmInstallForce( type: PnpmTask ) {
+    description = 'Update all project node dependencies'
+    args = ['install', '--force']
+}
+
+task cleanNode( type: Delete ) {
+    delete 'node_modules'
+}

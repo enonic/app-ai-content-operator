@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.tsx",
+        "../types/shared/*.ts",
+        "../types/types.d.ts",
+        "./types/*.ts",
+        "../lib/shared/*.ts",
+    ],
+}

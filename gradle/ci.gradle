@@ -1,0 +1,8 @@
+def isCI()
+{
+    return hasProperty( 'ci' )
+}
+
+ext {
+    isCI = this.&isCI
+}

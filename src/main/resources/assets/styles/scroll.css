@@ -1,0 +1,39 @@
+@layer utilities {
+    @supports selector(::-webkit-scrollbar) {
+        .enonic-ai-compact-scroll::-webkit-scrollbar {
+            width: 12px;
+            box-sizing: content-box;
+        }
+
+        .enonic-ai-compact-scroll::-webkit-scrollbar-thumb {
+            background-color: theme('colors.neutral.200');
+            border-radius: 6px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+        }
+
+        .enonic-ai-compact-scroll:-webkit-scrollbar-track {
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        .enonic-ai-scroll::-webkit-scrollbar {
+            width: 14px;
+            box-sizing: content-box;
+        }
+
+        .enonic-ai-scroll::-webkit-scrollbar-thumb {
+            background-color: theme('colors.enonic-gray.light');
+            border-radius: 7px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+        }
+
+        .enonic-ai-scroll::-webkit-scrollbar-track {
+            background-color: theme('colors.neutral.50');
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            box-sizing: content-box;
+            background-clip: content-box;
+        }
+    }
+}
