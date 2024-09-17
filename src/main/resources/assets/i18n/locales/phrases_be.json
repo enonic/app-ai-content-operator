@@ -1,0 +1,18 @@
+{
+    "action.close": "Закрыць AI Асістэнта",
+    "action.copy": "Скапіраваць",
+    "action.insert": "Уставіць",
+    "action.insertAll": "Уставіць усё",
+    "action.newChat": "Новы чат",
+    "action.open": "Адкрыць AI Асістэнта",
+    "action.retry": "Паўтарыць",
+    "action.send": "Адправіць паведамленне",
+    "action.settings": "Налады",
+    "action.showNext": "Паказаць наступны варыянт",
+    "action.showPrevious": "Паказаць папярэдні варыянт",
+    "field.chat": "Чат",
+    "field.settings": "Налады",
+    "text.greeting": "Чым магу дапамагчы сёння?",
+    "text.input.placeholder": "Паведамленне AI Асістэнту...",
+    "text.input.tip": "Выкарыстоўвайце @ для пералічэння і згадкі элементаў на старонцы."
+}

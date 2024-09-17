@@ -1,0 +1,11 @@
+.LaunchButton {
+    @apply w-full h-full max-w-12 max-h-12 p-2 box-border hover:text-violet-400;
+}
+
+.LaunchButton--visible {
+    @apply text-violet-500 active:text-enonic-gray;
+}
+
+.LaunchButton--hidden {
+    @apply text-enonic-gray active:text-violet-500;
+}

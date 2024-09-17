@@ -1,0 +1,32 @@
+.AssistantDialog {
+    max-width: 100svw;
+    max-height: 100svh;
+}
+
+@media (min-width: 720px) {
+    .AssistantDialog {
+        width: 40rem;
+        left: calc(50% - 20rem);
+    }
+}
+
+@media (max-width: 720px) {
+    .AssistantDialog {
+        width: 32rem;
+        left: calc(50% - 16rem);
+    }
+}
+
+@media (min-height: 896px) {
+    .AssistantDialog {
+        height: 40rem;
+        top: calc(50% - 20rem);
+    }
+}
+
+@media (max-height: 896px) {
+    .AssistantDialog {
+        height: 32rem;
+        top: calc(50% - 16rem);
+    }
+}

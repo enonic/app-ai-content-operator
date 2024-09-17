@@ -1,0 +1,150 @@
+plugins {
+    id 'java'
+    id 'com.enonic.xp.app' version '3.5.0'
+    id 'com.github.node-gradle.node' version '7.0.2'
+}
+
+app {
+    name = "${appName}"
+    displayName = "${appDisplayName}"
+    vendorName = "${vendorName}"
+    vendorUrl = "${vendorUrl}"
+    systemVersion = "${xpVersion}"
+}
+
+apply from: "$rootDir/gradle/ci.gradle"
+apply from: "$rootDir/gradle/env.gradle"
+apply from: "$rootDir/gradle/node.gradle"
+
+dependencies {
+    include 'com.google.auth:google-auth-library-oauth2-http:1.25.0'
+    implementation "com.enonic.xp:core-api:${xpVersion}"
+    implementation "com.enonic.xp:portal-api:${xpVersion}"
+    include "com.enonic.xp:lib-admin:${xpVersion}"
+    include "com.enonic.xp:lib-auth:${xpVersion}"
+    include "com.enonic.xp:lib-common:${xpVersion}"
+    include "com.enonic.xp:lib-context:${xpVersion}"
+    include "com.enonic.xp:lib-event:${xpVersion}"
+    include "com.enonic.xp:lib-i18n:${xpVersion}"
+    include "com.enonic.xp:lib-node:${xpVersion}"
+    include "com.enonic.xp:lib-repo:${xpVersion}"
+    include "com.enonic.xp:lib-scheduler:${xpVersion}"
+    include 'com.enonic.lib:lib-http-client:3.2.2'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    xp.enonicRepo()
+}
+
+tasks.register('pnpmTest', PnpmTask ) {
+    group 'tests'
+    dependsOn 'pnpmInstall'
+    args = ['run', 'test']
+    environment = ['FORCE_COLOR': 'true']
+}
+
+tasks.register('pnpmTestSilent', PnpmTask ) {
+    group 'tests'
+    dependsOn 'pnpmInstall'
+    args = ['run', 'test:silent']
+    environment = ['FORCE_COLOR': 'true']
+}
+
+tasks.register('lint', PnpmTask ) {
+    group 'verification'
+    dependsOn 'pnpmInstall'
+    args = ['run', 'check:lint']
+    environment = ['FORCE_COLOR': 'true']
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('types', PnpmTask ) {
+    group 'verification'
+    dependsOn 'pnpmInstall'
+    args = ['run', 'check:types']
+    environment = ['FORCE_COLOR': 'true']
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('lintFix', PnpmTask ) {
+    group 'verification'
+    dependsOn 'pnpmInstall'
+    args = ['run', 'fix']
+    environment = ['FORCE_COLOR': 'true']
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('format', PnpmTask ) {
+    group 'verification'
+    dependsOn 'pnpmInstall'
+    args = ['run', 'format']
+    environment = ['FORCE_COLOR': 'true']
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('formatCheck', PnpmTask ) {
+    group 'verification'
+    dependsOn 'pnpmInstall'
+    args = ['run', 'format:check']
+    environment = ['FORCE_COLOR': 'true']
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('pnpmBuild', PnpmTask ) {
+    group 'build'
+    dependsOn 'pnpmInstall'
+    environment = ['NODE_ENV': nodeEnvironment()]
+    description = 'Build UI resources (ts, css, etc).'
+    args = ['run', 'build']
+    inputs.dir 'src/main/resources'
+    inputs.file 'tsup.config.ts'
+    inputs.file 'package.json'
+    inputs.file 'tsconfig.json'
+    inputs.file 'vite.config.js'
+    outputs.dir "${buildDir}/resources/main"
+}
+
+processResources {
+    include '**/*'
+    exclude '**/tsconfig*.json'
+    exclude '**/.eslintrc.cjs'
+    exclude '**/*.ts'
+    exclude '**/*.tsx'
+    exclude '**/assets/styles/**/*'
+    exclude '**/assets/components/**/*'
+    exclude '**/assets/index.css'
+    includeEmptyDirs false
+    mustRunAfter 'pnpmBuild'
+}
+
+build.configure {
+    dependsOn 'pnpmBuild'
+}
+
+test.configure {
+    if (isCI()) {
+        dependsOn pnpmTest
+    } else {
+        dependsOn pnpmTestSilent
+    }
+}
+
+check.configure {
+    if (isCI()) {
+        dependsOn lint
+        dependsOn formatCheck
+    } else {
+        dependsOn lintFix
+        dependsOn format
+    }
+    dependsOn types
+}
+
+jar {
+    dependsOn( 'pnpmBuild' )
+    // inputs.dir "src/test"
+    outputs.dir "${buildDir}/resources/main"
+    exclude 'build/resources/main/types/**/*'
+}

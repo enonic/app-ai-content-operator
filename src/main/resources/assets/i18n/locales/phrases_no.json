@@ -1,0 +1,18 @@
+{
+    "action.close": "Lukk AI-assistent",
+    "action.copy": "Kopier",
+    "action.insert": "Sett inn",
+    "action.insertAll": "Sett inn alle",
+    "action.newChat": "Ny chat",
+    "action.open": "Åpne AI-assistent",
+    "action.retry": "Prøv igjen",
+    "action.send": "Send melding",
+    "action.settings": "Innstillinger",
+    "action.showNext": "Vis neste alternativ",
+    "action.showPrevious": "Vis forrige alternativ",
+    "field.chat": "Chat",
+    "field.settings": "Innstillinger",
+    "text.greeting": "Hvordan kan jeg hjelpe deg i dag?",
+    "text.input.placeholder": "Melding til AI-assistent...",
+    "text.input.tip": "Bruk @ for å liste og nevne elementer på siden."
+}
