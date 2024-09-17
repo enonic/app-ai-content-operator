@@ -18,17 +18,7 @@ apply from: "$rootDir/gradle/node.gradle"
 
 dependencies {
     include 'com.google.auth:google-auth-library-oauth2-http:1.25.0'
-    implementation "com.enonic.xp:core-api:${xpVersion}"
-    implementation "com.enonic.xp:portal-api:${xpVersion}"
-    include "com.enonic.xp:lib-admin:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
-    include "com.enonic.xp:lib-common:${xpVersion}"
-    include "com.enonic.xp:lib-context:${xpVersion}"
-    include "com.enonic.xp:lib-event:${xpVersion}"
-    include "com.enonic.xp:lib-i18n:${xpVersion}"
-    include "com.enonic.xp:lib-node:${xpVersion}"
-    include "com.enonic.xp:lib-repo:${xpVersion}"
-    include "com.enonic.xp:lib-scheduler:${xpVersion}"
     include 'com.enonic.lib:lib-http-client:3.2.2'
 }
 

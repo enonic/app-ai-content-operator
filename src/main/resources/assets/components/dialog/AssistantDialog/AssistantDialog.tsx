@@ -45,7 +45,6 @@ export default function AssistantDialog({className = ''}: Props): JSX.Element {
 
     useEffect(() => {
         const handleResize: () => void = debounce((): void => {
-            console.log('Resize AssistantDialog');
             ['transform', 'width', 'height'].forEach(prop => {
                 ref.current?.style.removeProperty(prop);
             });

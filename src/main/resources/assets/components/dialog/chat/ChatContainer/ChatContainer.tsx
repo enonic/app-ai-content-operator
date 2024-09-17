@@ -1,7 +1,7 @@
 import {useStore} from '@nanostores/react';
 import clsx from 'clsx';
 
-import $scope from '../../../../stores/scope';
+import {$scope} from '../../../../stores/scope';
 import AssistantInput from '../../input/AssistantInput/AssistantInput';
 import ChatThread from '../ChatThread/ChatThread';
 import ScopeControl from '../ScopeControl/ScopeControl';

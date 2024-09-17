@@ -32,7 +32,7 @@ import {
     isInputWithPath,
     isOrContainsEditableInput,
 } from './schemaUtil';
-import scope, {isScopeSet} from './scope';
+import {$scope, isScopeSet} from './scope';
 
 export type Data = {
     persisted: Optional<ContentData>;
@@ -40,7 +40,7 @@ export type Data = {
     customPrompt: Optional<string>;
 };
 
-const store = map<Data>({
+export const $data = map<Data>({
     persisted: null,
     schema: null,
     customPrompt: null,
@@ -56,25 +56,21 @@ export interface DataEntry {
 
 addGlobalDataSentHandler((event: CustomEvent<EventData>) => {
     putEventDataToStore(event.detail);
-    console.log('Store:', store.get());
 });
 
-export default store;
+export const getPersistedData = (): Optional<Readonly<ContentData>> => $data.get().persisted;
 
-export const getPersistedData = (): Optional<Readonly<ContentData>> => store.get().persisted;
+export const setPersistedData = (data: ContentData): void => $data.setKey('persisted', data);
 
-export const setPersistedData = (data: ContentData): void => store.setKey('persisted', data);
+export const getSchema = (): Optional<Readonly<Schema>> => $data.get().schema;
 
-export const getSchema = (): Optional<Readonly<Schema>> => store.get().schema;
+export const setSchema = (schema: Schema): void => $data.setKey('schema', schema);
 
-export const setSchema = (schema: Schema): void => store.setKey('schema', schema);
+export const setCustomPrompt = (customPrompt: string): void => $data.setKey('customPrompt', customPrompt);
 
-export const setCustomPrompt = (customPrompt: string): void => store.setKey('customPrompt', customPrompt);
-
-export const getCustomPrompt = (): Optional<string> => store.get().customPrompt;
+export const getCustomPrompt = (): Optional<string> => $data.get().customPrompt;
 
 function putEventDataToStore(eventData: EventData): void {
-    console.log('Event data:', eventData);
     if (!eventData['payload']) {
         return;
     }
@@ -94,7 +90,7 @@ function putEventDataToStore(eventData: EventData): void {
     }
 }
 
-export const allFormItemsWithPaths = computed(store, store => {
+export const allFormItemsWithPaths = computed($data, store => {
     void store.persisted;
     const schemaPaths: FormItemWithPath[] = makePathsToFormItems();
 
@@ -102,7 +98,7 @@ export const allFormItemsWithPaths = computed(store, store => {
     return data ? getDataPathsToEditableItems(schemaPaths, data) : [];
 });
 
-export const scopedPaths = computed([allFormItemsWithPaths, scope], (allFormItems, scope) => {
+export const scopedPaths = computed([allFormItemsWithPaths, $scope], (allFormItems, scope) => {
     const scopePath = scope ? pathFromString(scope) : null;
     const items: FormItemWithPath[] = scopePath
         ? allFormItems.filter(path => isChildPath(path, scopePath))

@@ -26,6 +26,5 @@ export const setUser = (user: Config['user']): void => $config.setKey('user', us
 export const setLocales = (locales: string[]): void => $config.setKey('locales', locales.slice());
 
 addGlobalConfigHandler((event: CustomEvent<ConfigData>) => {
-    console.log('Config:', event.detail.payload);
     setUser(event.detail.payload.user);
 });

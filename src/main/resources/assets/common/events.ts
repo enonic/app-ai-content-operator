@@ -1,5 +1,5 @@
 import {SPECIAL_NAMES} from '../../lib/shared/prompts';
-import data, {getPersistedData, getStoredPathByDataAttrString, setPersistedData, setValueByPath} from '../stores/data';
+import {$data, getPersistedData, getStoredPathByDataAttrString, setPersistedData, setValueByPath} from '../stores/data';
 import {ApplyMessage} from '../stores/data/ApplyMessage';
 import {ContentData} from '../stores/data/ContentData';
 
@@ -35,7 +35,7 @@ function createEventHandler(handler: CustomEventHandler): EventHandler {
 function createCustomEvent(type: DispatchableEnonicAiEvents): CustomEvent {
     switch (type) {
         case EnonicAiEvents.APPLY:
-            return new CustomEvent(type, {detail: {result: data.get().persisted}});
+            return new CustomEvent(type, {detail: {result: $data.get().persisted}});
         case EnonicAiEvents.RENDER:
         case EnonicAiEvents.SHOW:
         case EnonicAiEvents.HIDE:
@@ -83,7 +83,7 @@ export function dispatchApplyContent(entries: ApplyMessage[]): void {
         }
 
         // handle value not updated
-        console.log('No path found for:', name);
+        console.warn('No path found for:', name);
     });
 
     if (isAnyChanged) {
