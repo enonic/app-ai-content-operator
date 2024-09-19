@@ -10,7 +10,7 @@ export function fieldsToSchema(fields: SchemaField[]): Schema {
     fields.reduce((acc, {name, type, description}) => {
         const items = type === 'ARRAY' ? {type: 'STRING'} : undefined;
         acc[name] = {
-            type,
+            type: type as SchemaType,
             properties: {},
             items,
             description,
