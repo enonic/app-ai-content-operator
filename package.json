@@ -51,7 +51,7 @@
         "@enonic/esbuild-plugin-copy-with-hash": "^0.2.0",
         "@enonic/eslint-config": "^1.2.1",
         "@enonic/mock-xp": "^1.0.0",
-        "@swc/core": "^1.7.24",
+        "@swc/core": "^1.7.26",
         "@google/generative-ai": "^0.17.1",
         "@tailwindcss/typography": "^0.5.15",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
