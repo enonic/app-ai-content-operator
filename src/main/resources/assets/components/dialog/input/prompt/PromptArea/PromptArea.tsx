@@ -10,7 +10,7 @@ import {findLooseMatch, findMentionByPath, MENTION_TOPIC} from '../../../../../c
 import {insertOrReplaceLastMention} from '../../../../../common/slate';
 import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugins/withMentions';
 import {sendUserMessage} from '../../../../../stores/chat';
-import {getStoredPathByDataAttrString, storedMentions} from '../../../../../stores/data';
+import {$mentions, getStoredPathByDataAttrString} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
 import {$visible} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
@@ -66,20 +66,17 @@ export default function PromptArea({className}: Props): JSX.Element {
 
     const {t} = useTranslation();
 
-    useEffect(() => {
-        if (visible) {
-            ReactEditor.focus(editor);
-        } else {
-            clearTarget();
-        }
-    }, [visible]);
-
-    const allMentions = useStore(storedMentions);
+    const allMentions = useStore($mentions);
     const mentionsToDisplay = findLooseMatch(allMentions, search);
     const hasMentions = mentionsToDisplay.length > 0;
     const focusedElementPath = useStore($focus);
 
     useEffect(() => {
+        if (!visible) {
+            clearTarget();
+            return;
+        }
+
         if (focusedElementPath) {
             if (focusedElementPath === MENTION_TOPIC.path) {
                 insertOrReplaceLastMention(editor, MENTION_TOPIC);
@@ -95,7 +92,9 @@ export default function PromptArea({className}: Props): JSX.Element {
                 }
             }
         }
-    }, [focusedElementPath, allMentions]);
+
+        ReactEditor.focus(editor);
+    }, [focusedElementPath, allMentions, visible]);
 
     const requestRunning = useStore(isChatRequestRunning);
     const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));

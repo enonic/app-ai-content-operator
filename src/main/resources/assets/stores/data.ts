@@ -90,7 +90,7 @@ function putEventDataToStore(eventData: EventData): void {
     }
 }
 
-export const allFormItemsWithPaths = computed($data, store => {
+export const $allFormItemsWithPaths = computed($data, store => {
     void store.persisted;
     const schemaPaths: FormItemWithPath[] = makePathsToFormItems();
 
@@ -98,7 +98,7 @@ export const allFormItemsWithPaths = computed($data, store => {
     return data ? getDataPathsToEditableItems(schemaPaths, data) : [];
 });
 
-export const scopedPaths = computed([allFormItemsWithPaths, $scope], (allFormItems, scope) => {
+export const $scopedPaths = computed([$allFormItemsWithPaths, $scope], (allFormItems, scope) => {
     const scopePath = scope ? pathFromString(scope) : null;
     const items: FormItemWithPath[] = scopePath
         ? allFormItems.filter(path => isChildPath(path, scopePath))
@@ -107,7 +107,7 @@ export const scopedPaths = computed([allFormItemsWithPaths, $scope], (allFormIte
     return items.filter(isOrContainsEditableInput);
 });
 
-export const storedMentions = computed(scopedPaths, scopedPaths => {
+export const $mentions = computed($scopedPaths, scopedPaths => {
     const mentions = scopedPaths.map(pathToMention);
 
     if (mentions.length > 0) {
@@ -275,7 +275,7 @@ export const generatePathsEntries = (): Record<string, DataEntry> => {
         result[MENTION_TOPIC.path] = generateTopicDataEntry();
     }
 
-    scopedPaths
+    $scopedPaths
         .get()
         .filter(isInputWithPath)
         .forEach((path: InputWithPath) => {
@@ -309,7 +309,7 @@ export function findFields(text: string): SchemaField[] {
 
     const hasDirectAllMentions = mentions.includes(MENTION_ALL.path);
     const hasTopicMentions = hasDirectAllMentions || mentions.includes(MENTION_TOPIC.path);
-    const fieldsFromMentions = hasDirectAllMentions ? storedMentions.get().map(v => v.path) : mentions;
+    const fieldsFromMentions = hasDirectAllMentions ? $mentions.get().map(v => v.path) : mentions;
 
     const customFields = fieldsFromMentions
         .filter(v => v !== MENTION_ALL.path && v !== MENTION_TOPIC.path)
@@ -348,7 +348,7 @@ function createFields(text: string): Optional<string> {
 
     const hasDirectAllMentions = mentions.includes(MENTION_ALL.path);
     const fields = hasDirectAllMentions
-        ? storedMentions
+        ? $mentions
               .get()
               .map(v => v.path)
               .filter(v => v !== MENTION_ALL.path)
@@ -387,24 +387,24 @@ function pathsEntriesToString(pathsEntries: Record<string, DataEntry>): string {
 }
 
 export function getStoredPathByDataAttrString(value: string): InputWithPath | undefined {
-    return allFormItemsWithPaths
+    return $allFormItemsWithPaths
         .get()
         .filter(isInputWithPath)
         .find(path => pathToString(path) === value);
 }
 
 export function getFormItemByStringPath(pathAsString: string): Optional<FormItemWithPath> {
-    return allFormItemsWithPaths.get().find(path => pathToString(path) === pathAsString);
+    return $allFormItemsWithPaths.get().find(path => pathToString(path) === pathAsString);
 }
 
 export function getFormItemByPath(path: Path): Optional<FormItemWithPath> {
-    return allFormItemsWithPaths.get().find(p => pathsEqual(p, path));
+    return $allFormItemsWithPaths.get().find(p => pathsEqual(p, path));
 }
 
 export function generateAllPathsEntries(): Record<string, DataEntry> {
     const entries: Record<string, DataEntry> = {};
 
-    const inputs = allFormItemsWithPaths.get().filter(isInputWithPath);
+    const inputs = $allFormItemsWithPaths.get().filter(isInputWithPath);
     inputs.forEach(path => {
         entries[pathToString(path)] = createDataEntry(path);
     });
