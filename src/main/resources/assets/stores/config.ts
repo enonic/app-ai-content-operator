@@ -10,6 +10,7 @@ export type Config = {
         shortName: string;
     };
     locales: string[];
+    instructions: string;
 };
 
 export const $config = map<Config>({
@@ -19,12 +20,21 @@ export const $config = map<Config>({
         shortName: 'Y',
     },
     locales: ['en'],
+    instructions: '',
 });
 
 export const setServiceUrl = (serviceUrl: string): void => $config.setKey('serviceUrl', serviceUrl);
 export const setUser = (user: Config['user']): void => $config.setKey('user', user);
 export const setLocales = (locales: string[]): void => $config.setKey('locales', locales.slice());
+export const setInstructions = (instructions: string): void => $config.setKey('instructions', instructions);
 
 addGlobalConfigHandler((event: CustomEvent<ConfigData>) => {
-    setUser(event.detail.payload.user);
+    const {user, instructions} = event.detail.payload;
+
+    if (user) {
+        setUser(user);
+    }
+    if (instructions) {
+        setInstructions(instructions);
+    }
 });

@@ -1,8 +1,9 @@
 export type ConfigData = {
     payload: {
-        user: {
+        user?: {
             fullName: string;
             shortName: string;
         };
+        instructions?: string;
     };
 };

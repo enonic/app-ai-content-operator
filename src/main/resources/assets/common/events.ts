@@ -10,8 +10,8 @@ export enum EnonicAiEvents {
     HIDE = 'EnonicAiContentOperatorHideEvent',
     APPLY = 'EnonicAiContentOperatorApplyEvent',
     OPEN_DIALOG = 'EnonicAiContentOperatorOpenDialogEvent',
+    CONFIG = 'EnonicAiContentOperatorConfigEvent',
     // Common
-    CONFIG = 'EnonicAiConfigEvent',
     DATA_SENT = 'EnonicAiDataSentEvent',
 }
 

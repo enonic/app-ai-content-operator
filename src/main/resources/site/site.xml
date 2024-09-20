@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site xmlns="urn:enonic:xp:model:1.0">
     <form>
-        <input name="customPrompt" type="TextArea">
-            <label>Custom instructions</label>
+        <input name="instructions" type="TextArea">
+            <label>General Instructions</label>
+            <help-text i18n="input.instructions.helpText" />
             <occurrences minimum="0" maximum="1"/>
         </input>
     </form>

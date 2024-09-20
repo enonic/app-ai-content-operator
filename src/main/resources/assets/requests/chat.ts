@@ -28,12 +28,14 @@ async function requestGenerate(
     fields?: SchemaField[],
 ): Promise<ModelResponseGenerateData | ErrorResponse> {
     const {mode} = $settings.get();
+    const {instructions} = $config.get();
     const schema: ResponseSchema | undefined = fields && {fields};
     const body = JSON.stringify({
         operation: 'generate',
         mode,
         messages,
         schema,
+        instructions,
     } satisfies ModelRequestGenerateData);
     const response = await fetch($config.get().serviceUrl, {method: 'POST', body});
 
