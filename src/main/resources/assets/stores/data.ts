@@ -37,13 +37,11 @@ import {$scope, isScopeSet} from './scope';
 export type Data = {
     persisted: Optional<ContentData>;
     schema: Optional<Schema>;
-    customPrompt: Optional<string>;
 };
 
 export const $data = map<Data>({
     persisted: null,
     schema: null,
-    customPrompt: null,
 });
 
 export interface DataEntry {
@@ -66,16 +64,12 @@ export const getSchema = (): Optional<Readonly<Schema>> => $data.get().schema;
 
 export const setSchema = (schema: Schema): void => $data.setKey('schema', schema);
 
-export const setCustomPrompt = (customPrompt: string): void => $data.setKey('customPrompt', customPrompt);
-
-export const getCustomPrompt = (): Optional<string> => $data.get().customPrompt;
-
 function putEventDataToStore(eventData: EventData): void {
     if (!eventData['payload']) {
         return;
     }
 
-    const {schema, data, customPrompt} = eventData.payload;
+    const {schema, data} = eventData.payload;
 
     if (schema) {
         setSchema(schema);
@@ -83,10 +77,6 @@ function putEventDataToStore(eventData: EventData): void {
 
     if (data) {
         setPersistedData(data);
-    }
-
-    if (customPrompt) {
-        setCustomPrompt(customPrompt);
     }
 }
 
@@ -295,9 +285,7 @@ function generateTopicDataEntry(): DataEntry {
 }
 
 export function createPrompt(text: string): string {
-    return [text, createContext(), createFields(text), createContent(), createCustom()]
-        .filter(isNonNullable)
-        .join('\n\n');
+    return [text, createContext(), createFields(text), createContent()].filter(isNonNullable).join('\n\n');
 }
 
 function createContext(): string {
@@ -359,14 +347,6 @@ function createFields(text: string): Optional<string> {
 
 function createContent(): string {
     return ['#Content#', '```json', pathsEntriesToString(generatePathsEntries()), '```'].join('\n');
-}
-
-function createCustom(): Optional<string> {
-    const customPrompt = getCustomPrompt();
-    if (!customPrompt) {
-        return null;
-    }
-    return ['#Custom#', customPrompt].join('\n');
 }
 
 export function getPathType(path: InputWithPath | undefined): 'html' | 'text' {
