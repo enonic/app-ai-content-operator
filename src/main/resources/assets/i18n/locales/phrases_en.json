@@ -14,6 +14,8 @@
     "field.settings": "Settings",
     "field.settings.chat.mode": "Chat responses style",
     "field.settings.translation.mode": "Translation style",
+    "field.message.error": "Oops!",
+    "field.label.topic": "Display Name",
     "text.greeting": "How can I help you today?",
     "text.input.placeholder": "Message AI Assistant...",
     "text.input.tip": "Use @ to list and mention elements on the page.",
@@ -25,8 +27,8 @@
     "text.mode.balanced.description": "Natural, engaging, well-rounded answers.",
     "text.mode.creative.name": "Creative",
     "text.mode.creative.description": "Imaginative, diverse, highly varied.",
-    "text.model.gpt-4o-mini.description": "Quick AI for conversations and non-complex tasks.",
-    "text.model.gpt-4o.description": "Most advanced AI, but slow and expensive.",
-    "text.model.gemini-1.5-flash-001.description": "Fastest and cheapest AI, but the least intelligent.",
-    "text.model.gemini-1.5-pro-001.description": "Advanced AI, good for long chats, slow but affordable."
+    "text.error.response.maxTokens": "Token limit exceeded. Your prompt lead to pruned response that cannot be parsed.",
+    "text.error.response.finishReason": "AI service stopped generating response. Reason <{{finishReason}}>",
+    "text.error.response.noResponse": "No response from the AI service.",
+    "text.error.response.safety": "AI service stopped generating response due to safety violation."
 }

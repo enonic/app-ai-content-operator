@@ -1,3 +1,4 @@
+import {t} from 'i18next';
 import {nanoid} from 'nanoid';
 import {map} from 'nanostores';
 import {Descendant} from 'slate';
@@ -119,14 +120,13 @@ function handleResponse([response, error]: Err<ModelResponseGenerateData | Error
             addModelMessage(content);
             break;
         case 'MAX_TOKENS':
-            addCompleteModelMessage(
-                createErrorContent('Token limit exceeded. Your prompt lead to pruned response that cannot be parsed.'),
-            );
+            addCompleteModelMessage(createErrorContent(t('text.error.response.maxTokens')));
+            break;
+        case 'SAFETY':
+            addCompleteModelMessage(createErrorContent(t('text.error.response.safety')));
             break;
         default:
-            addCompleteModelMessage(
-                createErrorContent(`AI service stopped generating response. Reason <${finishReason}>`),
-            );
+            addCompleteModelMessage(createErrorContent(t('text.error.response.finishReason', {finishReason})));
     }
 }
 
@@ -134,7 +134,7 @@ function checkAndHandleInvalidResponse(
     response: Optional<ModelResponseGenerateData | ErrorResponse>,
 ): response is Optional<ErrorResponse> {
     if (response == null) {
-        addCompleteModelMessage(createErrorContent('No response from the AI service.'));
+        addCompleteModelMessage(createErrorContent(t('text.error.response.noResponse')));
         return true;
     }
     if (isErrorResponse(response)) {
