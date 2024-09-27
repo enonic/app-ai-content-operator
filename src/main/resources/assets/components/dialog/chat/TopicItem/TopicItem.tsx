@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../lib/shared/prompts';
@@ -18,6 +19,8 @@ type Props = {
 };
 
 export default function TopicItem({className, messageId, name, value}: Props): JSX.Element {
+    const {t} = useTranslation();
+    const topic = t('field.label.topic');
     const content = pickMessageValue(value);
 
     return (
@@ -28,10 +31,10 @@ export default function TopicItem({className, messageId, name, value}: Props): J
         >
             <button
                 className='-mx-1 px-1 align-baseline cursor-pointer text-sky-600 truncate'
-                title='Display Name'
+                title={topic}
                 onClick={() => animateTopicScroll()}
             >
-                <span className='text-xs'>{'Display Name'}</span>
+                <span className='text-xs'>{topic}</span>
             </button>
             {typeof value !== 'string' && <MessageSwitcher messageId={messageId} name={name} content={value} />}
             <ElementItemControls
