@@ -1,4 +1,4 @@
-export enum MessageType {
+export enum MessageRole {
     USER = 'user',
     MODEL = 'model',
 }

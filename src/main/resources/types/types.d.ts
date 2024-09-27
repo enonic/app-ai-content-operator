@@ -17,6 +17,8 @@ type Try<T> = Either<T, AiError>;
 
 type TryOptional<T> = Try<Optional<T>>;
 
+type Err<T> = Either<T, Error>;
+
 //
 // Utility types
 //

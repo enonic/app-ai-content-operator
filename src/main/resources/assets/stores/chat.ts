@@ -8,7 +8,7 @@ import {isErrorResponse} from '../common/data';
 import {parseNodes, parseText} from '../common/slate';
 import {createPrompt, findFields} from './data';
 import {ChatMessage, ModelChatMessage, ModelChatMessageContent, UserChatMessage} from './data/ChatMessage';
-import {MessageType} from './data/MessageType';
+import {MessageRole} from './data/MessageType';
 import {postMessage} from './requests';
 
 type UserChatMessageContent = UserChatMessage['content'];
@@ -26,7 +26,7 @@ export function clearChat(): void {
 function addOrReplaceChatMessage(message: ChatMessage): void {
     const {history} = $chat.get();
     const lastMessage = history[history.length - 1];
-    if (lastMessage?.type === message.type && message.type === MessageType.USER) {
+    if (lastMessage?.role === message.role && message.role === MessageRole.USER) {
         $chat.setKey('history', [...history.slice(0, -1), message]);
     } else {
         $chat.setKey('history', [...history, message]);
@@ -34,12 +34,12 @@ function addOrReplaceChatMessage(message: ChatMessage): void {
 }
 
 function addUserMessage(content: UserChatMessageContent): void {
-    const newMessage: UserChatMessage = {id: nanoid(), content, type: MessageType.USER};
+    const newMessage: UserChatMessage = {id: nanoid(), content, role: MessageRole.USER};
     addOrReplaceChatMessage(newMessage);
 }
 
 function addCompleteModelMessage(content: ModelChatMessageContent): void {
-    const newMessage: ModelChatMessage = {id: nanoid(), content, type: MessageType.MODEL};
+    const newMessage: ModelChatMessage = {id: nanoid(), content, role: MessageRole.MODEL};
     addOrReplaceChatMessage(newMessage);
 }
 
@@ -53,7 +53,7 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
     const messageIndex = history.findIndex(message => message.id === id);
     const message = structuredClone(history[messageIndex]);
 
-    if (message == null || message.type !== MessageType.MODEL) {
+    if (message == null || message.role !== MessageRole.MODEL) {
         return;
     }
 
@@ -85,7 +85,7 @@ export async function sendUserMessage(nodes: Descendant[]): Promise<void> {
 }
 
 export async function sendRetryMessage(): Promise<void> {
-    const lastUserMessage = $chat.get().history.findLast(message => message.type === MessageType.USER);
+    const lastUserMessage = $chat.get().history.findLast(message => message.role === MessageRole.USER);
 
     const text = lastUserMessage ? lastUserMessage.content.text : 'Create text for all fields.';
     const prompt = lastUserMessage ? lastUserMessage.content.prompt : createPrompt(text);
@@ -97,15 +97,16 @@ export async function sendRetryMessage(): Promise<void> {
 }
 
 async function sendMessages(messages: Message[], fields: SchemaField[]): Promise<void> {
-    try {
-        const response = await postMessage(messages, fields);
-        handleResponse(response);
-    } catch (error) {
-        console.error('Error sending message', error);
-    }
+    const response = await postMessage(messages, fields);
+    handleResponse(response);
 }
 
-function handleResponse(response: Optional<ModelResponseGenerateData | ErrorResponse>): void {
+function handleResponse([response, error]: Err<ModelResponseGenerateData | ErrorResponse>): void {
+    if (error) {
+        addCompleteModelMessage(createErrorContent(String(error)));
+        return;
+    }
+
     if (checkAndHandleInvalidResponse(response)) {
         return;
     }
@@ -150,7 +151,7 @@ function createErrorContent(message: string): ModelChatMessageContent {
 
 function createModelMessage(text: string): ModelChatMessage {
     const content = parseModelMessageText(text);
-    return {id: nanoid(), content, type: MessageType.MODEL};
+    return {id: nanoid(), content, role: MessageRole.MODEL};
 }
 
 function parseModelMessageText(text: string): ModelChatMessageContent {
@@ -193,9 +194,9 @@ function mapToModelMessageContent(content: Record<string, unknown>): ModelChatMe
 }
 
 function historyToMessages(history: ChatMessage[]): Message[] {
-    return history.map(({type, content}) => ({
-        role: type,
-        text: type === MessageType.USER ? content.text : modelChatMessageContentToText(content),
+    return history.map(({role, content}) => ({
+        role,
+        text: role === MessageRole.USER ? content.prompt : modelChatMessageContentToText(content),
     }));
 }
 

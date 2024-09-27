@@ -149,17 +149,17 @@ describe('createPrompt', () => {
         const expected =
             'Generate lorem ipsum for {{__all__}} items\n' +
             '\n' +
-            '#Context#\n' +
+            '# Context\n' +
             '- Topic is "all input types"\n' +
             '- Language is "ak"\n' +
             '\n' +
-            '#Fields#\n' +
+            '# Fields\n' +
             '- /myTextArea\n' +
             '- /myTextArea[1]\n' +
             '- /myTextLine\n' +
             '- __topic__\n' +
             '\n' +
-            '#Content#\n' +
+            '# Content\n' +
             '```json\n' +
             '{\n' +
             '  "__topic__": {\n' +
@@ -200,11 +200,11 @@ describe('createPrompt', () => {
         const expected =
             'Generate lorem ipsum for all items\n' +
             '\n' +
-            '#Context#\n' +
+            '# Context\n' +
             '- Topic is "all input types"\n' +
             '- Language is "ak"\n' +
             '\n' +
-            '#Content#\n' +
+            '# Content\n' +
             '```json\n' +
             '{\n' +
             '  "__topic__": {\n' +

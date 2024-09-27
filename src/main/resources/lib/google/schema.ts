@@ -1,6 +1,7 @@
-import type {FunctionDeclarationSchema, Schema, SchemaType} from '@google/generative-ai';
+import type {FunctionDeclarationSchema, Schema} from '@google/generative-ai';
 
 import type {SchemaField} from '../../types/shared/model';
+import {SchemaType} from '../shared/enums';
 import {emptyToUndefined} from '../utils/objects';
 
 export function fieldsToSchema(fields: SchemaField[]): Schema {
@@ -8,9 +9,9 @@ export function fieldsToSchema(fields: SchemaField[]): Schema {
 
     const properties: Record<string, FunctionDeclarationSchema> = {};
     fields.reduce((acc, {name, type, description}) => {
-        const items = type === 'ARRAY' ? {type: 'STRING'} : undefined;
+        const items = type === SchemaType.ARRAY ? {type: SchemaType.STRING} : undefined;
         acc[name] = {
-            type: type as SchemaType,
+            type: type,
             properties: {},
             items,
             description,
@@ -19,7 +20,7 @@ export function fieldsToSchema(fields: SchemaField[]): Schema {
     }, properties);
 
     return {
-        type: 'OBJECT' as SchemaType,
+        type: SchemaType.OBJECT,
         description: 'Response schema.',
         properties,
         required,

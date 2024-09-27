@@ -16,22 +16,35 @@ type Props = {
     last: boolean;
 };
 
+const ORDER: string[] = Object.values(SPECIAL_NAMES).reverse();
+
 function createFields({id: messageId, content}: ModelChatMessage): JSX.Element[] {
     const classNames = 'p-2 border-dashed last:!border-b';
-    return Object.entries(content).map(([key, value = '']) => {
-        switch (key) {
-            case SPECIAL_NAMES.error:
-                return <ErrorItem key={key} className={classNames} value={value} />;
-            case SPECIAL_NAMES.unclear:
-                return <IssueItem key={key} className={classNames} value={value} />;
-            case SPECIAL_NAMES.common:
-                return <CommonItem key={key} className={classNames} value={value} />;
-            case SPECIAL_NAMES.topic:
-                return <TopicItem key={key} className={classNames} messageId={messageId} name={key} value={value} />;
-            default:
-                return <ElementItem key={key} className={classNames} messageId={messageId} name={key} value={value} />;
-        }
-    });
+    return Object.entries(content)
+        .sort(([keyA], [keyB]) => {
+            const indexA = ORDER.indexOf(keyA);
+            const indexB = ORDER.indexOf(keyB);
+            return indexA - indexB;
+        })
+        .reverse()
+        .map(([key, value = '']) => {
+            switch (key) {
+                case SPECIAL_NAMES.error:
+                    return <ErrorItem key={key} className={classNames} value={value} />;
+                case SPECIAL_NAMES.unclear:
+                    return <IssueItem key={key} className={classNames} value={value} />;
+                case SPECIAL_NAMES.common:
+                    return <CommonItem key={key} className={classNames} value={value} />;
+                case SPECIAL_NAMES.topic:
+                    return (
+                        <TopicItem key={key} className={classNames} messageId={messageId} name={key} value={value} />
+                    );
+                default:
+                    return (
+                        <ElementItem key={key} className={classNames} messageId={messageId} name={key} value={value} />
+                    );
+            }
+        });
 }
 
 export default function AssistantMessage({className, message, last}: Props): JSX.Element {

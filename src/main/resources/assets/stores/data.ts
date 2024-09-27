@@ -1,5 +1,6 @@
 import {computed, map} from 'nanostores';
 
+import {SchemaType} from '../../lib/shared/enums';
 import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {SchemaField} from '../../types/shared/model';
 import {isNonNullable} from '../common/data';
@@ -289,7 +290,7 @@ export function createPrompt(text: string): string {
 }
 
 function createContext(): string {
-    return ['#Context#', `- Topic is "${getTopic()}"`, `- Language is "${getLanguage()}"`].join('\n');
+    return ['# Context', `- Topic is "${getTopic()}"`, `- Language is "${getLanguage()}"`].join('\n');
 }
 
 export function findFields(text: string): SchemaField[] {
@@ -302,24 +303,28 @@ export function findFields(text: string): SchemaField[] {
     const customFields = fieldsFromMentions
         .filter(v => v !== MENTION_ALL.path && v !== MENTION_TOPIC.path)
         .map(name => {
-            return {name, type: 'ARRAY', description: `Content for ${name}.`} satisfies SchemaField;
+            return {name, type: SchemaType.ARRAY, description: `Content for ${name}.`} satisfies SchemaField;
         });
 
     return [
-        {name: SPECIAL_NAMES.unclear, type: 'STRING', description: 'Response, when request data is insufficient.'},
+        {
+            name: SPECIAL_NAMES.unclear,
+            type: SchemaType.STRING,
+            description: 'Response, when request data is insufficient.',
+        },
         {
             name: SPECIAL_NAMES.common,
-            type: 'STRING',
+            type: SchemaType.STRING,
             description: 'Response on common requests, not related to schema.',
         },
         {
             name: SPECIAL_NAMES.error,
-            type: 'STRING',
+            type: SchemaType.STRING,
             description: 'Response, when it is impossible to process request properly.',
         },
         {
             name: SPECIAL_NAMES.topic,
-            type: 'ARRAY',
+            type: SchemaType.ARRAY,
             description: 'Title (also topic or display name) of the content.',
             required: hasTopicMentions,
         },
@@ -342,11 +347,11 @@ function createFields(text: string): Optional<string> {
               .filter(v => v !== MENTION_ALL.path)
         : mentions;
 
-    return ['#Fields#', ...fields.sort().map(v => `- ${v}`)].join('\n');
+    return ['# Fields', ...fields.sort().map(v => `- ${v}`)].join('\n');
 }
 
 function createContent(): string {
-    return ['#Content#', '```json', pathsEntriesToString(generatePathsEntries()), '```'].join('\n');
+    return ['# Content', '```json', pathsEntriesToString(generatePathsEntries()), '```'].join('\n');
 }
 
 export function getPathType(path: InputWithPath | undefined): 'html' | 'text' {
