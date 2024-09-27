@@ -1,5 +1,7 @@
 // ------------------------------------
 // DATA
+import {SchemaType} from '../../lib/shared/enums';
+
 // ------------------------------------
 type Operation = 'generate';
 
@@ -40,7 +42,7 @@ export type ResponseSchema = {
 
 export type SchemaField<T extends string = string> = {
     name: T;
-    type: 'STRING' | 'NUMBER' | 'BOOLEAN' | 'OBJECT' | 'ARRAY';
+    type: SchemaType;
     description?: string;
     required?: boolean;
 };

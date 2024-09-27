@@ -1,19 +1,13 @@
-import {
-    Content,
-    GenerateContentRequest,
-    HarmBlockThreshold,
-    HarmCategory,
-    POSSIBLE_ROLES,
-    ResponseSchema,
-} from '@google/generative-ai';
+import type {Content, GenerateContentRequest, POSSIBLE_ROLES, ResponseSchema} from '@google/generative-ai';
 
 import type {ModelResponseGenerateData} from '../../types/shared/model';
 import {ERRORS} from '../errors';
 import {generate} from '../google/api/generate';
 import {fieldsToSchema} from '../google/schema';
 import {logDebug, LogDebugGroups} from '../logger';
+import {HarmBlockThreshold, HarmCategory} from '../shared/enums';
 import {MODES_DATA} from '../shared/modes';
-import {CHAT_INSTRUCTIONS_WITH_EXAMPLES} from '../shared/prompts';
+import {createSystemInstructions} from '../shared/prompts';
 import {ModelProxy, ModelProxyConfig} from './model';
 
 type Role = (typeof POSSIBLE_ROLES)[number];
@@ -30,7 +24,7 @@ export class GeminiProxy implements ModelProxy {
         const responseMimeType = 'application/json';
         const contents = GeminiProxy.createContents(config);
         const responseSchema = GeminiProxy.createResponseSchema(config);
-        const systemInstruction = GeminiProxy.createTextContent('system', CHAT_INSTRUCTIONS_WITH_EXAMPLES);
+        const systemInstruction = GeminiProxy.createTextContent('system', createSystemInstructions());
 
         return {
             contents,
@@ -74,6 +68,8 @@ export class GeminiProxy implements ModelProxy {
         messages.forEach(({role, text}) => {
             contents.push(this.createTextContent(role, text));
         });
+
+        log.info(JSON.stringify(contents, null, 2));
 
         return contents;
     }

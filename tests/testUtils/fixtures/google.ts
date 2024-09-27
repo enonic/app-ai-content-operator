@@ -1,4 +1,4 @@
-import {FinishReason, type GenerateContentResponse, HarmCategory, HarmProbability} from '@google/generative-ai';
+import type {FinishReason, GenerateContentResponse, HarmCategory, HarmProbability} from '@google/generative-ai';
 
 // ------------------------------------
 // CONTENT
@@ -14,24 +14,24 @@ export const content = Object.freeze({
                 ],
                 role: 'model',
             },
-            finishReason: FinishReason.STOP,
+            finishReason: 'STOP' as FinishReason,
             index: 0,
             safetyRatings: [
                 {
-                    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-                    probability: HarmProbability.NEGLIGIBLE,
+                    category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT' as HarmCategory,
+                    probability: 'NEGLIGIBLE' as HarmProbability,
                 },
                 {
-                    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-                    probability: HarmProbability.NEGLIGIBLE,
+                    category: 'HARM_CATEGORY_HATE_SPEECH' as HarmCategory,
+                    probability: 'NEGLIGIBLE' as HarmProbability,
                 },
                 {
-                    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-                    probability: HarmProbability.NEGLIGIBLE,
+                    category: 'HARM_CATEGORY_HARASSMENT' as HarmCategory,
+                    probability: 'NEGLIGIBLE' as HarmProbability,
                 },
                 {
-                    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                    probability: HarmProbability.NEGLIGIBLE,
+                    category: 'HARM_CATEGORY_DANGEROUS_CONTENT' as HarmCategory,
+                    probability: 'NEGLIGIBLE' as HarmProbability,
                 },
             ],
         },

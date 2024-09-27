@@ -11,7 +11,7 @@ import {generate} from '../requests/chat';
 import {RequestState} from './data/RequestState';
 
 type StoredRunningRequest<T> = {
-    request: Promise<Optional<T>>;
+    request: Promise<Err<T>>;
     state: RequestState.IN_PROGRESS;
 };
 
@@ -31,26 +31,25 @@ export const $requests = map<RequestStore>({
 
 export const isChatRequestRunning = computed($requests, ({chat}) => chat.state === RequestState.IN_PROGRESS);
 
-function attachRequest<T extends ModelPostResponse, K extends keyof RequestStore>(
+async function attachRequest<T extends ModelPostResponse, K extends keyof RequestStore>(
     key: K,
     request: Promise<T>,
-): Promise<Optional<T>> {
-    return request
-        .then(data => {
-            $requests.setKey(key, {state: RequestState.DONE});
-            return data;
-        })
-        .catch(e => {
-            $requests.setKey(key, {state: RequestState.ERROR});
-            console.error(`[Enonic AI] Failed to complete request "${key}". Reason: ${e}`);
-            return undefined;
-        });
+): Promise<Err<T>> {
+    try {
+        const data = await request;
+        $requests.setKey(key, {state: RequestState.DONE});
+        return [data, null];
+    } catch (e) {
+        $requests.setKey(key, {state: RequestState.ERROR});
+        console.error(`[Enonic AI] Failed to complete request "${key}". Reason: ${String(e)}`);
+        return [null, Error(String(e))];
+    }
 }
 
 export async function postMessage(
     messages: Message[],
     fields?: SchemaField[],
-): Promise<Optional<ModelResponseGenerateData | ErrorResponse>> {
+): Promise<Err<ModelResponseGenerateData | ErrorResponse>> {
     const request = attachRequest('chat', generate(messages, fields));
 
     $requests.setKey('chat', {state: RequestState.IN_PROGRESS, request});

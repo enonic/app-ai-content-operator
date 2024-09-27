@@ -1,16 +1,16 @@
-import {MessageType} from './MessageType';
+import {MessageRole} from './MessageType';
 
 export type ChatMessage = UserChatMessage | ModelChatMessage;
 
 export type UserChatMessage = {
     id: string;
-    type: MessageType.USER;
+    role: MessageRole.USER;
     content: UserChatMessageContent;
 };
 
 export type ModelChatMessage = {
     id: string;
-    type: MessageType.MODEL;
+    role: MessageRole.MODEL;
     content: ModelChatMessageContent;
 };
 
