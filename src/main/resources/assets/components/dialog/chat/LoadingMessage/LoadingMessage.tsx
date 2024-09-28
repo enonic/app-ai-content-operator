@@ -9,7 +9,7 @@ type Props = {
 export default function LoadingMessage({className}: Props): JSX.Element {
     return (
         <div className={clsx(['flex gap-2', className])}>
-            <ApplicantIcon className='shrink-0 text-enonic-blue-light' />
+            <ApplicantIcon className='shrink-0 text-enonic-blue-light' animated />
             <article className={clsx(['flex items-center'])}>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
