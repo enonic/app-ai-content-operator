@@ -16,6 +16,9 @@ type MockedClient = Client & {
     sendPostRequest: MockedResponse;
 };
 
+const url =
+    'https://us-central1-aiplatform.googleapis.com/v1/projects/playground-123456/locations/us-central1/publishers/google/models/gemini-1.5-flash-001';
+
 jest.mock('../client', () => {
     const originalModule = jest.requireActual<Client>('../client');
     return {
@@ -43,18 +46,18 @@ describe('generate', () => {
     it('should generate content', () => {
         mocks.sendPostRequest.mockImplementationOnce(() => [createResponse(content), null]);
 
-        const [result, err] = generate(params);
+        const [result, err] = generate(url, params);
 
         expect(result).toEqual(content);
         expect(err).toBeNull();
 
-        expect(mocks.sendPostRequest).toHaveBeenCalledWith(params);
+        expect(mocks.sendPostRequest).toHaveBeenCalledWith(url, params);
     });
 
     it('should return an error if content cannot be generated', () => {
         mocks.sendPostRequest.mockImplementationOnce(() => [null, ERRORS.REST_REQUEST_FAILED]);
 
-        const [result, err] = generate(params);
+        const [result, err] = generate(url, params);
 
         expect(result).toBeNull();
         expect(err).toEqual(ERRORS.REST_REQUEST_FAILED);

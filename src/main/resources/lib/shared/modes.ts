@@ -43,3 +43,7 @@ export type ModelMeta = {
     model: string;
     mode: Mode;
 };
+
+export function isMode(mode: unknown): mode is Mode {
+    return mode != null && typeof mode === 'string' && MODES.indexOf(mode as Mode) >= 0;
+}

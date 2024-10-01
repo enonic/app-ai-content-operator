@@ -104,7 +104,7 @@ async function sendMessages(messages: Message[], fields: SchemaField[]): Promise
 
 function handleResponse([response, error]: Err<ModelResponseGenerateData | ErrorResponse>): void {
     if (error) {
-        addCompleteModelMessage(createErrorContent(String(error)));
+        addCompleteModelMessage(createErrorContent(error.message));
         return;
     }
 
