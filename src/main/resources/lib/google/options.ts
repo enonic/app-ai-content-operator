@@ -1,19 +1,27 @@
-import {GOOGLE_GEMINI_URL, GOOGLE_SAK_PATH} from '../config';
+import {GOOGLE_GEMINI_FLASH_URL, GOOGLE_GEMINI_PRO_URL, GOOGLE_SAK_PATH} from '../config';
 import {APP_NAME} from '../constants';
 import {ERRORS} from '../errors';
 import {logDebug, LogDebugGroups} from '../logger';
+import {Model} from '../shared/models';
+
+export type ModelOptions = {
+    key: Model;
+    name: string;
+    url: string;
+};
 
 type ClientOptions = {
     accessToken: string;
-    model: string;
-    url: string;
-};
+} & Record<Model, ModelOptions>;
 
 export function getOptions(): Try<ClientOptions> {
     logDebug(LogDebugGroups.GOOGLE, 'options.getOptions()');
 
-    if (!GOOGLE_GEMINI_URL) {
-        return [null, ERRORS.GOOGLE_GEMINI_URL_MISSING];
+    if (!GOOGLE_GEMINI_FLASH_URL) {
+        return [null, ERRORS.GOOGLE_GEMINI_URL_MISSING.withMsg('(Flash type)')];
+    }
+    if (!GOOGLE_GEMINI_PRO_URL) {
+        return [null, ERRORS.GOOGLE_GEMINI_URL_MISSING.withMsg('(Pro type)')];
     }
 
     if (!GOOGLE_SAK_PATH) {
@@ -33,18 +41,21 @@ export function getOptions(): Try<ClientOptions> {
             return [null, ERRORS.GOOGLE_PROJECT_ID_MISSING];
         }
 
-        const [model, validationError] = validateUrl(GOOGLE_GEMINI_URL, projectId);
-        if (validationError) {
-            return [null, validationError];
+        const [flash, flashValidationError] = validateUrl(GOOGLE_GEMINI_FLASH_URL, projectId, 'flash');
+        if (flashValidationError) {
+            return [null, flashValidationError];
         }
 
-        const url = `${GOOGLE_GEMINI_URL}:generateContent`;
+        const [pro, proValidationError] = validateUrl(GOOGLE_GEMINI_PRO_URL, projectId, 'pro');
+        if (proValidationError) {
+            return [null, proValidationError];
+        }
 
         return [
             {
                 accessToken,
-                model,
-                url,
+                flash,
+                pro,
             },
             null,
         ];
@@ -53,7 +64,7 @@ export function getOptions(): Try<ClientOptions> {
     }
 }
 
-function validateUrl(url: string, projectId: string): Try<string> {
+function validateUrl(url: string, projectId: string, key: Model): Try<ModelOptions> {
     const urlRegex = /projects\/([^/]+)\/locations\/[^/]+\/publishers\/google\/models\/([^/]+)/;
     const match = url.match(urlRegex);
 
@@ -61,14 +72,21 @@ function validateUrl(url: string, projectId: string): Try<string> {
         return [null, ERRORS.GOOGLE_GEMINI_URL_INVALID.withMsg(url)];
     }
 
-    const [, urlProjectId, model] = match;
+    const [, urlProjectId, name] = match;
     if (projectId !== urlProjectId) {
         return [null, ERRORS.GOOGLE_PROJECT_ID_MISMATCH.withMsg(`${projectId} !== ${urlProjectId}`)];
     }
 
-    if (!model || !model.startsWith('gemini')) {
-        return [null, ERRORS.GOOGLE_MODEL_NOT_SUPPORTED.withMsg(`Model "${model}" must be from Gemini family.`)];
+    if (!name || !name.startsWith('gemini')) {
+        return [null, ERRORS.GOOGLE_MODEL_NOT_SUPPORTED.withMsg(`Model "${name}" must be from Gemini family.`)];
     }
 
-    return [model, null];
+    return [
+        {
+            key,
+            name,
+            url: `${url}:generateContent`,
+        },
+        null,
+    ];
 }

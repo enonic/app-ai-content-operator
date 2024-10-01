@@ -1,6 +1,7 @@
 // ------------------------------------
 // DATA
 import {SchemaType} from '../../lib/shared/enums';
+import {Model} from '../../lib/shared/models';
 
 // ------------------------------------
 type Operation = 'generate';
@@ -30,6 +31,7 @@ export type FinishReason =
 // ------------------------------------
 export type ModelRequestData = ModelRequestGenerateData;
 export type ModelRequestGenerateData = OperationData<'generate'> & {
+    model: Model;
     mode: string;
     instructions?: string;
     messages: Message[];

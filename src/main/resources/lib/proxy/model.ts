@@ -1,4 +1,5 @@
 import type {Message, ModelResponseGenerateData, ResponseSchema} from '../../types/shared/model';
+import {Model, MODELS} from '../shared/models';
 import {Mode, MODES} from '../shared/modes';
 import {find} from '../utils/objects';
 
@@ -7,15 +8,16 @@ export type ModelProxy = {
 };
 
 export type ModelProxyConfig = {
-    model: string;
+    modelName: string;
     mode: Mode;
+    url: string;
     instructions?: string;
     messages: Message[];
     schema?: ResponseSchema;
 };
 
-export function isMode(mode: unknown): mode is Mode {
-    return mode != null && typeof mode === 'string' && MODES.indexOf(mode as Mode) >= 0;
+export function validateModel(model: unknown): Optional<Model> {
+    return find(MODELS, m => m === model);
 }
 
 export function validateMode(mode: unknown): Optional<Mode> {

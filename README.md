@@ -14,7 +14,10 @@ Content Operator, the Enonic's Juke AI plugin, is crafted to optimize and elevat
 ```properties
 # Gemini Model URL on Google APIs
 # `*:generateContent` last part must be dropped, as streaming support handled by the application
-google.api.gemini.url=https://us-central1-aiplatform.googleapis.com/v1/projects/playground-186616/locations/us-central1/publishers/google/models/gemini-1.5-pro-001
+#   Flash model (will be used for fast responses)
+google.api.gemini.flash.url=https://us-central1-aiplatform.googleapis.com/v1/projects/playground-186616/locations/us-central1/publishers/google/models/gemini-1.5-flash-001
+#   Pro model (will be used for accurate responses)
+google.api.gemini.pro.url=https://us-central1-aiplatform.googleapis.com/v1/projects/playground-186616/locations/us-central1/publishers/google/models/gemini-1.5-pro-001
 
 # Path to Google's Service Account Key (a JSON file)
 google.api.sak.path=/Users/enonic/config/playground-186416-e13cb1741f87.json

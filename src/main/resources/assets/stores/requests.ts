@@ -40,9 +40,10 @@ async function attachRequest<T extends ModelPostResponse, K extends keyof Reques
         $requests.setKey(key, {state: RequestState.DONE});
         return [data, null];
     } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
         $requests.setKey(key, {state: RequestState.ERROR});
-        console.error(`[Enonic AI] Failed to complete request "${key}". Reason: ${String(e)}`);
-        return [null, Error(String(e))];
+        console.error(`[Enonic AI] Failed to complete request "${key}". Reason: ${msg}`);
+        return [null, Error(msg)];
     }
 }
 

@@ -9,10 +9,10 @@ export type GenerationMeta = {
     schema?: ResponseSchema;
 };
 
-export function generate(params: GenerateContentRequest): Try<GenerateContentResponse> {
+export function generate(url: string, params: GenerateContentRequest): Try<GenerateContentResponse> {
     logDebug(LogDebugGroups.GOOGLE, `generate.generate(${JSON.stringify(params)})`);
 
-    const [response, err] = sendPostRequest(params);
+    const [response, err] = sendPostRequest(url, params);
     if (err) {
         return [null, err];
     }

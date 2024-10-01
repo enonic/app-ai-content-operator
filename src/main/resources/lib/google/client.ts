@@ -5,7 +5,7 @@ import {logDebug, LogDebugGroups, logError} from '../logger';
 import {request, RequestParams} from '../requests';
 import {getOptions} from './options';
 
-type GoogleRequestOptions = Omit<RequestParams, 'url'> & {
+type GoogleRequestOptions = RequestParams & {
     method: Enonic.HttpMethod;
 };
 
@@ -26,9 +26,9 @@ function sendRequest(params: GoogleRequestOptions): Try<HttpClientResponse> {
     if (err) {
         return [null, err];
     }
-    const {accessToken, url} = options;
+    const {accessToken} = options;
 
-    logDebug(LogDebugGroups.GOOGLE, `client.sendRequest(${params?.method}}) url: ${url}`);
+    logDebug(LogDebugGroups.GOOGLE, `client.sendRequest(${params?.method}}) url: ${params.url}`);
 
     const headers: GoogleHeaders = {
         ...(params.headers ?? {}),
@@ -38,12 +38,11 @@ function sendRequest(params: GoogleRequestOptions): Try<HttpClientResponse> {
     return request({
         ...params,
         headers,
-        url,
     });
 }
 
-export function sendPostRequest(body?: unknown): Try<HttpClientResponse> {
-    return sendRequest({method: 'POST', body});
+export function sendPostRequest(url: string, body?: unknown): Try<HttpClientResponse> {
+    return sendRequest({url, method: 'POST', body});
 }
 
 export function parseResponse<Data, Body = unknown>(

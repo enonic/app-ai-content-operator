@@ -32,6 +32,7 @@ async function requestGenerate(
     const schema: ResponseSchema | undefined = fields && {fields};
     const body = JSON.stringify({
         operation: 'generate',
+        model: 'pro',
         mode,
         messages,
         schema,

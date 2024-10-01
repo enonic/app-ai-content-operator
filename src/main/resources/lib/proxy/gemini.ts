@@ -13,9 +13,11 @@ import {ModelProxy, ModelProxyConfig} from './model';
 type Role = (typeof POSSIBLE_ROLES)[number];
 
 export class GeminiProxy implements ModelProxy {
+    private readonly url: string;
     private readonly params: GenerateContentRequest;
 
     constructor(config: ModelProxyConfig) {
+        this.url = config.url;
         this.params = GeminiProxy.createRequestParams(config);
     }
 
@@ -69,8 +71,6 @@ export class GeminiProxy implements ModelProxy {
             contents.push(this.createTextContent(role, text));
         });
 
-        log.info(JSON.stringify(contents, null, 2));
-
         return contents;
     }
 
@@ -81,8 +81,8 @@ export class GeminiProxy implements ModelProxy {
         };
     }
 
-    private static createResponseSchema({schema, model}: ModelProxyConfig): ResponseSchema | undefined {
-        const isSchemaSupported = model.startsWith('gemini-1.5-pro');
+    private static createResponseSchema({schema, modelName}: ModelProxyConfig): ResponseSchema | undefined {
+        const isSchemaSupported = modelName.startsWith('gemini-1.5-pro');
         const hasSchema = schema != null && schema.fields.length > 0;
 
         return isSchemaSupported && hasSchema ? fieldsToSchema(schema.fields) : undefined;
@@ -95,7 +95,7 @@ export class GeminiProxy implements ModelProxy {
     generate(): Try<ModelResponseGenerateData> {
         logDebug(LogDebugGroups.FUNC, 'gemini.GeminiProxy.generate()');
 
-        const [response, err] = generate(this.params);
+        const [response, err] = generate(this.url, this.params);
         if (err) {
             return [null, err];
         }
