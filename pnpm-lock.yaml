@@ -103,8 +103,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0(@types/node@22.5.0)
       '@google/generative-ai':
-        specifier: ^0.20.0
-        version: 0.20.0
+        specifier: ^0.21.0
+        version: 0.21.0
       '@swc/core':
         specifier: ^1.7.26
         version: 1.7.26
@@ -777,8 +777,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@google/generative-ai@0.20.0':
-    resolution: {integrity: sha512-uJQNDr1sihvBJ9w8B0ESpNdX9aEueAMXgwnTuhTo+LnI7DD0M1KHnOWzxb2l6cM1rRHzvkdgJNNfeybcqg7uVg==}
+  '@google/generative-ai@0.21.0':
+    resolution: {integrity: sha512-7XhUbtnlkSEZK15kN3t+tzIMxsbKm/dSkKBFalj+20NvPKe1kBY7mR2P7vuijEn+f06z5+A8bVGKO0v39cr6Wg==}
     engines: {node: '>=18.0.0'}
 
   '@humanwhocodes/config-array@0.13.0':
@@ -1890,6 +1890,7 @@ packages:
   eslint@8.57.1:
     resolution: {integrity: sha512-ypowyDxpVSYpkXr9WPv2PAZCtNip1Mv5KTW0SCurXv/9iOpcrH9PaqUElksqEB6pChqHGDRCFTyrZlGhnLNGiA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -4248,7 +4249,7 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@google/generative-ai@0.20.0': {}
+  '@google/generative-ai@0.21.0': {}
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
