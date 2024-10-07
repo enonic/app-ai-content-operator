@@ -33,7 +33,7 @@
         "slate": "^0.103.0",
         "slate-history": "^0.109.0",
         "slate-react": "^0.110.1",
-        "tailwind-merge": "^2.5.2",
+        "tailwind-merge": "^2.5.3",
         "tailwindcss-scoped-preflight": "^3.4.5"
     },
     "devDependencies": {
