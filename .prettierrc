@@ -18,6 +18,7 @@
     "importOrderSortSpecifiers": true,
     "importOrderGroupNamespaceSpecifiers": true,
     "importOrderCaseInsensitive": true,
+    "endOfLine": "lf",
     "overrides": [
         {
             "files": ["**/tsconfig.json", "**/tsconfig.*.json"],
