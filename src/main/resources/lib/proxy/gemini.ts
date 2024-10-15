@@ -64,7 +64,7 @@ export class GeminiProxy implements ModelProxy {
         const contents: Content[] = [];
 
         if (instructions) {
-            contents.push(this.createTextContent('model', instructions));
+            contents.push(this.createTextContent('user', instructions));
         }
 
         messages.forEach(({role, text}) => {
