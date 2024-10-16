@@ -8,6 +8,7 @@ import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
 
 import {findLooseMatch, findMentionByPath, MENTION_TOPIC} from '../../../../../common/mentions';
 import {insertOrReplaceLastMention} from '../../../../../common/slate';
+import {useDeepMemo} from '../../../../../hooks/useDeepMemo';
 import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugins/withMentions';
 import {sendUserMessage} from '../../../../../stores/chat';
 import {$mentions, getStoredPathByDataAttrString} from '../../../../../stores/data';
@@ -67,7 +68,7 @@ export default function PromptArea({className}: Props): JSX.Element {
     const {t} = useTranslation();
 
     const allMentions = useStore($mentions);
-    const mentionsToDisplay = findLooseMatch(allMentions, search);
+    const mentionsToDisplay = useDeepMemo(findLooseMatch(allMentions, search));
     const hasMentions = mentionsToDisplay.length > 0;
     const focusedElementPath = useStore($focus);
 
