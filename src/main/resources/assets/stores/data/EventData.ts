@@ -5,6 +5,5 @@ export type EventData = {
     payload: {
         data: ContentData;
         schema?: Schema;
-        customPrompt?: string;
     };
 };

@@ -4,7 +4,7 @@ import {SchemaType} from '../../lib/shared/enums';
 import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {SchemaField} from '../../types/shared/model';
 import {isNonNullable} from '../common/data';
-import {addGlobalDataSentHandler} from '../common/events';
+import {addGlobalUpdateDataHandler} from '../common/events';
 import {findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
 import {ContentData, PropertyArray, PropertyValue} from './data/ContentData';
 import {EventData} from './data/EventData';
@@ -53,7 +53,7 @@ export interface DataEntry {
     schemaHelpText?: string;
 }
 
-addGlobalDataSentHandler((event: CustomEvent<EventData>) => {
+addGlobalUpdateDataHandler((event: CustomEvent<EventData>) => {
     putEventDataToStore(event.detail);
 });
 

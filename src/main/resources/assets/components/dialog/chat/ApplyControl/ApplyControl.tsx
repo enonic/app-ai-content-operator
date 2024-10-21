@@ -3,7 +3,7 @@ import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {animateGlow} from '../../../../common/animations';
-import {dispatchApplyContent} from '../../../../common/events';
+import {dispatchResultApplied} from '../../../../common/events';
 import {delay} from '../../../../common/func';
 import ActionButton from '../../../shared/ActionButton/ActionButton';
 
@@ -19,7 +19,7 @@ export default function ApplyControl({className, name, content}: Props): JSX.Ele
 
     const handleApply = useCallback(() => {
         setApplying(true);
-        dispatchApplyContent([{name, content}]);
+        dispatchResultApplied([{name, content}]);
         animateGlow(name);
         void delay(500).then(() => {
             setApplying(false);

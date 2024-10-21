@@ -1,6 +1,6 @@
 import {computed, map} from 'nanostores';
 
-import {addGlobalOpenDialogHandler, dispatch, EnonicAiEvents} from '../common/events';
+import {addGlobalOpenDialogHandler, AiEvents, dispatch} from '../common/events';
 import {setFocusedElementPath} from './focus';
 import {getParentPath, pathFromString, pathToString} from './pathUtil';
 import {setScope} from './scope';
@@ -28,7 +28,7 @@ export const toggleDialogVisible = (): void => $dialog.setKey('view', $dialog.ge
 export const toggleDialogView = (): void => $dialog.setKey('view', $dialog.get().view === 'chat' ? 'settings' : 'chat');
 
 export const toggleDialog = (): void => {
-    dispatch($visible.get() ? EnonicAiEvents.HIDE : EnonicAiEvents.SHOW);
+    dispatch($visible.get() ? AiEvents.DIALOG_HIDDEN : AiEvents.DIALOG_SHOWN);
     toggleDialogVisible();
 };
 
