@@ -33,7 +33,7 @@
         "react-i18next": "^15.0.3",
         "slate": "^0.103.0",
         "slate-history": "^0.109.0",
-        "slate-react": "^0.110.1",
+        "slate-react": "^0.110.2",
         "tailwind-merge": "^2.5.4",
         "tailwindcss-scoped-preflight": "^3.4.5"
     },
