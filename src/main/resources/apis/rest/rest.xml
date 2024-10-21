@@ -1,0 +1,5 @@
+<api>
+  <allow>
+    <principal>role:system.everyone</principal>
+  </allow>
+</api>
