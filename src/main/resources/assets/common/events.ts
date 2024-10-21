@@ -3,26 +3,29 @@ import {$data, getPersistedData, getStoredPathByDataAttrString, setPersistedData
 import {ApplyMessage} from '../stores/data/ApplyMessage';
 import {ContentData} from '../stores/data/ContentData';
 
-export enum EnonicAiEvents {
+export enum AiEvents {
     // Content Operator
-    RENDER = 'EnonicAiContentOperatorRenderEvent',
-    SHOW = 'EnonicAiContentOperatorShowEvent',
-    HIDE = 'EnonicAiContentOperatorHideEvent',
-    APPLY = 'EnonicAiContentOperatorApplyEvent',
-    OPEN_DIALOG = 'EnonicAiContentOperatorOpenDialogEvent',
-    CONFIG = 'EnonicAiContentOperatorConfigEvent',
+    //   Outgoing
+    RENDERED = 'AiContentOperatorRenderedEvent',
+    DIALOG_SHOWN = 'AiContentOperatorDialogShownEvent',
+    DIALOG_HIDDEN = 'AiContentOperatorDialogHiddenEvent',
+    RESULT_APPLIED = 'AiContentOperatorResultAppliedEvent',
+    //   Incoming
+    OPEN_DIALOG = 'AiContentOperatorOpenDialogEvent',
+    CONFIGURE = 'AiContentOperatorConfigureEvent',
     // Common
-    DATA_SENT = 'EnonicAiDataSentEvent',
+    //   Incoming
+    UPDATE_DATA = 'AiUpdateDataEvent',
 }
 
 export type EventHandler<T extends Event = Event> = (event: T) => void;
 export type CustomEventHandler = EventHandler<CustomEvent>;
 
-export type DispatchableEnonicAiEvents =
-    | EnonicAiEvents.RENDER
-    | EnonicAiEvents.SHOW
-    | EnonicAiEvents.HIDE
-    | EnonicAiEvents.APPLY;
+export type DispatchableAiEvents =
+    | AiEvents.RENDERED
+    | AiEvents.DIALOG_SHOWN
+    | AiEvents.DIALOG_HIDDEN
+    | AiEvents.RESULT_APPLIED;
 
 function createEventHandler(handler: CustomEventHandler): EventHandler {
     return (event: Event): void => {
@@ -32,34 +35,34 @@ function createEventHandler(handler: CustomEventHandler): EventHandler {
     };
 }
 
-function createCustomEvent(type: DispatchableEnonicAiEvents): CustomEvent {
+function createCustomEvent(type: DispatchableAiEvents): CustomEvent {
     switch (type) {
-        case EnonicAiEvents.APPLY:
+        case AiEvents.RESULT_APPLIED:
             return new CustomEvent(type, {detail: {result: $data.get().persisted}});
-        case EnonicAiEvents.RENDER:
-        case EnonicAiEvents.SHOW:
-        case EnonicAiEvents.HIDE:
+        case AiEvents.RENDERED:
+        case AiEvents.DIALOG_SHOWN:
+        case AiEvents.DIALOG_HIDDEN:
             return new CustomEvent(type);
     }
 }
 
-export function dispatch(type: DispatchableEnonicAiEvents): void {
+export function dispatch(type: DispatchableAiEvents): void {
     window.dispatchEvent(createCustomEvent(type));
 }
 
-export function addGlobalDataSentHandler(handler: CustomEventHandler): FnVoid {
-    return addGlobalHandler(EnonicAiEvents.DATA_SENT, handler);
+export function addGlobalUpdateDataHandler(handler: CustomEventHandler): FnVoid {
+    return addGlobalHandler(AiEvents.UPDATE_DATA, handler);
 }
 
-export function addGlobalConfigHandler(handler: CustomEventHandler): FnVoid {
-    return addGlobalHandler(EnonicAiEvents.CONFIG, handler);
+export function addGlobalConfigureHandler(handler: CustomEventHandler): FnVoid {
+    return addGlobalHandler(AiEvents.CONFIGURE, handler);
 }
 
 export function addGlobalOpenDialogHandler(handler: CustomEventHandler): FnVoid {
-    return addGlobalHandler(EnonicAiEvents.OPEN_DIALOG, handler);
+    return addGlobalHandler(AiEvents.OPEN_DIALOG, handler);
 }
 
-export function dispatchApplyContent(entries: ApplyMessage[]): void {
+export function dispatchResultApplied(entries: ApplyMessage[]): void {
     const persistedData = getPersistedData();
     if (!persistedData) {
         return;
@@ -88,11 +91,11 @@ export function dispatchApplyContent(entries: ApplyMessage[]): void {
 
     if (isAnyChanged) {
         setPersistedData(newData);
-        dispatch(EnonicAiEvents.APPLY);
+        dispatch(AiEvents.RESULT_APPLIED);
     }
 }
 
-function addGlobalHandler(eventType: EnonicAiEvents, handler: CustomEventHandler): FnVoid {
+function addGlobalHandler(eventType: AiEvents, handler: CustomEventHandler): FnVoid {
     const eventHandler = createEventHandler(handler);
     window.addEventListener(eventType, eventHandler);
     return () => window.removeEventListener(eventType, eventHandler);

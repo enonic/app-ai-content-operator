@@ -1,7 +1,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 
-import {dispatch, EnonicAiEvents} from './common/events';
+import {AiEvents, dispatch} from './common/events';
 import App from './components/App/App';
 import './i18n/config';
 import './index.css';
@@ -24,7 +24,7 @@ export function render(container: HTMLElement): void {
         </React.StrictMode>,
     );
 
-    dispatch(EnonicAiEvents.RENDER);
+    dispatch(AiEvents.RENDERED);
 }
 
 export function setup({serviceUrl}: SetupConfig): void {

@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
 import {animateGlow} from '../../../../common/animations';
-import {dispatchApplyContent} from '../../../../common/events';
+import {dispatchResultApplied} from '../../../../common/events';
 import {pickMessageValue} from '../../../../common/mentions';
 import {sendRetryMessage} from '../../../../stores/chat';
 import {ApplyMessage} from '../../../../stores/data/ApplyMessage';
@@ -51,7 +51,7 @@ export default function MessageControls({className, content, last}: Props): JSX.
                     mode='compact'
                     handleClick={() => {
                         const items = extractItems(content);
-                        dispatchApplyContent(items);
+                        dispatchResultApplied(items);
                         Object.keys(content).forEach(name => animateGlow(name));
                     }}
                 />
