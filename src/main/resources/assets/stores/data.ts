@@ -9,6 +9,7 @@ import {findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions'
 import {ContentData, PropertyArray, PropertyValue} from './data/ContentData';
 import {EventData} from './data/EventData';
 import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from './data/FormItemWithPath';
+import {Language} from './data/Language';
 import {Mention} from './data/Mention';
 import {Path, PathElement} from './data/Path';
 import {FormItemSet, FormOptionSet, Schema} from './data/Schema';
@@ -36,11 +37,16 @@ import {
 import {$scope, isScopeSet} from './scope';
 
 export type Data = {
+    language: Language;
     persisted: Optional<ContentData>;
     schema: Optional<Schema>;
 };
 
 export const $data = map<Data>({
+    language: {
+        tag: navigator?.language ?? 'en',
+        name: 'English',
+    },
     persisted: null,
     schema: null,
 });
@@ -57,6 +63,10 @@ addGlobalUpdateDataHandler((event: CustomEvent<EventData>) => {
     putEventDataToStore(event.detail);
 });
 
+export const getLanguage = (): Readonly<Language> => $data.get().language;
+
+export const setLanguage = (language: Language): void => $data.setKey('language', language);
+
 export const getPersistedData = (): Optional<Readonly<ContentData>> => $data.get().persisted;
 
 export const setPersistedData = (data: ContentData): void => $data.setKey('persisted', data);
@@ -70,14 +80,18 @@ function putEventDataToStore(eventData: EventData): void {
         return;
     }
 
-    const {schema, data} = eventData.payload;
+    const {language, data, schema} = eventData.payload;
 
-    if (schema) {
-        setSchema(schema);
+    if (language) {
+        setLanguage(language);
     }
 
     if (data) {
         setPersistedData(data);
+    }
+
+    if (schema) {
+        setSchema(schema);
     }
 }
 
@@ -258,7 +272,7 @@ function pathToMention(item: FormItemWithPath): Mention {
 }
 
 const getTopic = (): string => getPersistedData()?.topic ?? '';
-export const getLanguage = (): string => getPersistedData()?.language ?? navigator?.language ?? 'en';
+export const getLanguageTag = (): string => getLanguage()?.tag ?? navigator?.language ?? 'en';
 export const generatePathsEntries = (): Record<string, DataEntry> => {
     const result: Record<string, DataEntry> = {};
 
@@ -290,7 +304,7 @@ export function createPrompt(text: string): string {
 }
 
 function createContext(): string {
-    return ['# Context', `- Topic is "${getTopic()}"`, `- Language is "${getLanguage()}"`].join('\n');
+    return ['# Context', `- Topic is "${getTopic()}"`, `- Language is "${getLanguageTag()}"`].join('\n');
 }
 
 export function findFields(text: string): SchemaField[] {

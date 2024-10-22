@@ -1,8 +1,20 @@
 import {MENTION_ALL} from '../common/mentions';
-import {createPrompt, getValueByPath, getValueByStringPath, setPersistedData, setSchema, setValueByPath} from './data';
+import {
+    createPrompt,
+    getValueByPath,
+    getValueByStringPath,
+    setLanguage,
+    setPersistedData,
+    setSchema,
+    setValueByPath,
+} from './data';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {Path} from './data/Path';
 import {Schema} from './data/Schema';
+
+beforeAll(() => {
+    setLanguage({tag: 'ak', name: 'Akkadian'});
+});
 
 describe('getValueByPath', () => {
     it('should return first item when no index defined', () => {
@@ -253,7 +265,6 @@ function getRootTextItems(): ContentData {
             },
         ],
         topic: 'all input types',
-        language: 'ak',
     };
 }
 
@@ -296,7 +307,6 @@ function getFieldSetData(): ContentData {
             },
         ],
         topic: 'all input types',
-        language: 'ak',
     };
 }
 

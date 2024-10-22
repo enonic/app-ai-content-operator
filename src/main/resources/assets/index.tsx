@@ -1,7 +1,6 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 
-import {AiEvents, dispatch} from './common/events';
 import App from './components/App/App';
 import './i18n/config';
 import './index.css';
@@ -23,8 +22,6 @@ export function render(container: HTMLElement): void {
             <App />
         </React.StrictMode>,
     );
-
-    dispatch(AiEvents.RENDERED);
 }
 
 export function setup({serviceUrl}: SetupConfig): void {

@@ -6,7 +6,6 @@ import {ContentData} from '../stores/data/ContentData';
 export enum AiEvents {
     // Content Operator
     //   Outgoing
-    RENDERED = 'AiContentOperatorRenderedEvent',
     DIALOG_SHOWN = 'AiContentOperatorDialogShownEvent',
     DIALOG_HIDDEN = 'AiContentOperatorDialogHiddenEvent',
     RESULT_APPLIED = 'AiContentOperatorResultAppliedEvent',
@@ -21,11 +20,7 @@ export enum AiEvents {
 export type EventHandler<T extends Event = Event> = (event: T) => void;
 export type CustomEventHandler = EventHandler<CustomEvent>;
 
-export type DispatchableAiEvents =
-    | AiEvents.RENDERED
-    | AiEvents.DIALOG_SHOWN
-    | AiEvents.DIALOG_HIDDEN
-    | AiEvents.RESULT_APPLIED;
+export type DispatchableAiEvents = AiEvents.DIALOG_SHOWN | AiEvents.DIALOG_HIDDEN | AiEvents.RESULT_APPLIED;
 
 function createEventHandler(handler: CustomEventHandler): EventHandler {
     return (event: Event): void => {
@@ -39,7 +34,6 @@ function createCustomEvent(type: DispatchableAiEvents): CustomEvent {
     switch (type) {
         case AiEvents.RESULT_APPLIED:
             return new CustomEvent(type, {detail: {result: $data.get().persisted}});
-        case AiEvents.RENDERED:
         case AiEvents.DIALOG_SHOWN:
         case AiEvents.DIALOG_HIDDEN:
             return new CustomEvent(type);
