@@ -4,7 +4,7 @@ import {twJoin} from 'tailwind-merge';
 
 import {$visible, toggleDialog} from '../../stores/dialog';
 import {saveActiveFocus} from '../../stores/focus';
-import ApplicantIcon from '../shared/AssistantIcon/AssistantIcon';
+import AssistantIcon from '../shared/AssistantIcon/AssistantIcon';
 
 export default function LaunchButton(): JSX.Element {
     const {t} = useTranslation();
@@ -21,7 +21,7 @@ export default function LaunchButton(): JSX.Element {
 
     return (
         <button className={classNames} onClick={toggleDialog} title={title} onMouseDown={saveActiveFocus}>
-            <ApplicantIcon className='shrink-0 w-7 h-7' />
+            <AssistantIcon className='shrink-0 w-7 h-7' />
         </button>
     );
 }

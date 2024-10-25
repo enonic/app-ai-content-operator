@@ -1,6 +1,6 @@
 import {twMerge} from 'tailwind-merge';
 
-import ApplicantIcon from '../../../shared/AssistantIcon/AssistantIcon';
+import AssistantIcon from '../../../shared/AssistantIcon/AssistantIcon';
 
 type Props = {
     className?: string;
@@ -9,7 +9,7 @@ type Props = {
 export default function LoadingMessage({className}: Props): JSX.Element {
     return (
         <div className={twMerge('flex gap-2', className)}>
-            <ApplicantIcon className='shrink-0 text-enonic-blue-light' animated />
+            <AssistantIcon className='shrink-0 text-enonic-blue-light' animated />
             <article className={'flex items-center'}>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'

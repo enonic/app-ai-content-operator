@@ -21,6 +21,7 @@ export default function ScopeControl({className, scope}: Props): JSX.Element {
     }
 
     return (
+        // TODO: Check if empty:hidden can be applied here
         <div className={twMerge('h-5 flex gap-0.5 justify-center items-center', className)}>
             {scopeBreadcrumbItems.map((path, i) => (
                 <Fragment key={pathToString(path)}>

@@ -21,7 +21,7 @@ export default function AssistantHeader({className}: Props): JSX.Element {
                 'AssistantHeader',
                 'grid grid-cols-mid-3 items-center',
                 'h-10',
-                'bg-enonic-gray-400er',
+                'bg-enonic-gray-100',
                 className,
             )}
         >

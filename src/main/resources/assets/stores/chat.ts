@@ -21,7 +21,9 @@ export type Chat = {
 export const $chat = map<Chat>({history: []});
 
 export function clearChat(): void {
-    $chat.setKey('history', []);
+    if ($chat.get().history.length > 0) {
+        $chat.setKey('history', []);
+    }
 }
 
 function addOrReplaceChatMessage(message: ChatMessage): void {

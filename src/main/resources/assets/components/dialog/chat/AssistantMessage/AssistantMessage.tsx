@@ -3,7 +3,7 @@ import {twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../lib/shared/prompts';
 import {ModelChatMessage} from '../../../../stores/data/ChatMessage';
-import ApplicantIcon from '../../../shared/AssistantIcon/AssistantIcon';
+import AssistantIcon from '../../../shared/AssistantIcon/AssistantIcon';
 import CommonItem from '../CommonItem/CommonItem';
 import ElementItem from '../ElementItem/ElementItem';
 import ErrorItem from '../ErrorItem/ErrorItem';
@@ -51,7 +51,7 @@ function createFields({id: messageId, content}: ModelChatMessage): JSX.Element[]
 export default function AssistantMessage({className, message, last}: Props): JSX.Element {
     return (
         <div className={twMerge('flex gap-2', className)}>
-            <ApplicantIcon className='shrink-0 mt-3 text-enonic-blue-light' />
+            <AssistantIcon className='shrink-0 mt-3 text-enonic-blue-light' />
             <article className={clsx('flex flex-col gap-1', 'flex-1')}>
                 <ul className='flex flex-col divide-y'>{createFields(message)}</ul>
                 <MessageControls className='pt-1' content={message.content} last={last} />
