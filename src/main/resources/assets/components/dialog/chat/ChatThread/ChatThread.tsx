@@ -1,6 +1,7 @@
 import {useStore} from '@nanostores/react';
 import clsx from 'clsx';
 import {useEffect, useRef} from 'react';
+import {twMerge} from 'tailwind-merge';
 
 import {$chat} from '../../../../stores/chat';
 import {ChatMessage} from '../../../../stores/data/ChatMessage';
@@ -43,8 +44,8 @@ export default function ChatThread({className = ''}: Props): JSX.Element {
     }, [count]);
 
     return (
-        <div ref={ref} className={clsx(['flex-1', 'overflow-y-auto scroll-smooth', className])}>
-            <div className={clsx(['flex w-full h-full flex-col grow gap-6 px-3 pt-3', {'justify-center': empty}])}>
+        <div ref={ref} className={twMerge('flex-1 overflow-y-auto scroll-smooth', className)}>
+            <div className={clsx('flex w-full h-full flex-col grow gap-6 px-3 pt-3', empty && 'justify-center')}>
                 {empty ? <WelcomeMessage /> : createMessages(history, requestRunning)}
             </div>
         </div>

@@ -22,7 +22,7 @@
         }
 
         .enonic-ai-scroll::-webkit-scrollbar-thumb {
-            background-color: theme('colors.enonic-gray.light');
+            background-color: theme('colors.enonic-gray.400');
             border-radius: 7px;
             border: 3px solid transparent;
             background-clip: content-box;

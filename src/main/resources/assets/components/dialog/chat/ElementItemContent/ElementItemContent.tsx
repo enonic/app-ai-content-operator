@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import {twMerge} from 'tailwind-merge';
 
 type Props = {
@@ -8,17 +7,15 @@ type Props = {
 };
 
 export default function ElementItemContent({className, content, type = 'text'}: Props): JSX.Element {
-    const classNames = twMerge(clsx(['relative', 'col-span-2', className]));
-
     switch (type) {
         case 'html':
             return (
                 <div
                     dangerouslySetInnerHTML={{__html: content}}
-                    className={clsx(['enonic-ai-html-based prose prose-sm', classNames])}
+                    className={twMerge('enonic-ai-html-based prose prose-sm', 'relative', 'col-span-2', className)}
                 />
             );
         case 'text':
-            return <div className={classNames}>{content}</div>;
+            return <div className={twMerge('relative', 'col-span-2', className)}>{content}</div>;
     }
 }

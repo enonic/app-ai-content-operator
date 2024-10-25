@@ -1,5 +1,5 @@
-import clsx from 'clsx';
 import {useFocused, useSelected} from 'slate-react';
+import {twJoin} from 'tailwind-merge';
 
 import {animateScroll, animateTopicScroll} from '../../../../../common/animations';
 import {MENTION_ALL, MENTION_TOPIC} from '../../../../../common/mentions';
@@ -24,16 +24,16 @@ export default function MentionElement({attributes = {}, children, element}: Pro
 
     const isAllMention = element.path === MENTION_ALL.path;
 
-    const classNames = clsx([
+    const classNames = twJoin(
         'inline-flex',
         'px-1 py-0.5',
         'align-baseline',
         'rounded',
         'border border-slate-300',
-        {'text-sky-600': !isAllMention},
-        {'cursor-default': isAllMention},
-        {'outline outline-2': selected && focused},
-    ]);
+        !isAllMention && 'text-sky-600',
+        isAllMention && 'cursor-default',
+        selected && focused && 'outline outline-2',
+    );
 
     return (
         <button
@@ -44,7 +44,7 @@ export default function MentionElement({attributes = {}, children, element}: Pro
             title={element.title}
             onClick={isAllMention ? undefined : () => animateScrollForPath(element.path)}
         >
-            <span className='text-xs mention leading-'>
+            <span className='text-xs mention'>
                 {element.character}
                 {children}
             </span>

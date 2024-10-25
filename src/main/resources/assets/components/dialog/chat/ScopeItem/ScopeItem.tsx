@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import {twJoin, twMerge} from 'tailwind-merge';
 
 import {animateScroll} from '../../../../common/animations';
 import {getFormItemByPath} from '../../../../stores/data';
@@ -20,9 +20,9 @@ export default function ScopeItem({className, path, active}: Props): JSX.Element
     const label = getPathLabel(formItem ?? path);
 
     return (
-        <div className={clsx(['flex bg-sky-50 rounded-md border border-solid border-gray-400', className])}>
+        <div className={twMerge('flex bg-sky-50 rounded-md border border-solid border-gray-400', className)}>
             <button
-                className={clsx(['flex items-center px-1 max-w-32 ', {'opacity-70': !active}])}
+                className={twJoin('flex items-center px-1 max-w-32', !active && 'opacity-70')}
                 title={formItem ? pathToPrettifiedString(formItem) : ''}
                 onClick={() => animateScroll(pathToString(path))}
             >
@@ -33,7 +33,7 @@ export default function ScopeItem({className, path, active}: Props): JSX.Element
                     className='p-0.5'
                     onClick={parentFormItem ? () => setScope(pathToString(parentFormItem)) : () => resetScope()}
                 >
-                    <Icon name={'close'} className={clsx(['shrink-0', 'w-3 h-3'])} />
+                    <Icon name={'close'} className={'shrink-0 w-3 h-3'} />
                 </button>
             ) : null}
         </div>

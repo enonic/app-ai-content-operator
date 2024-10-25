@@ -23,11 +23,11 @@ export default function CopyControl({className, content}: Props): JSX.Element {
 
     return (
         <ActionButton
-            className={clsx([`${copying ? 'text-enonic-green' : ''}`, className])}
+            className={clsx(copying && 'text-enonic-green', className)}
             name={t('action.copy')}
             icon={copying ? 'copySuccess' : 'copy'}
             mode='compact'
-            handleClick={handleCopy}
+            clickHandler={handleCopy}
         />
     );
 }

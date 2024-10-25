@@ -25,11 +25,7 @@ export default function ElementItem({className, messageId, name, value}: Props):
     const content = pickMessageValue(value);
 
     return (
-        <li
-            className={twMerge(
-                clsx(['group/item grid grid-cols-fit-fit-1fr gap-x-1 gap-y-1 hover:bg-slate-50', className]),
-            )}
-        >
+        <li className={twMerge('group/item grid grid-cols-fit-fit-1fr gap-x-1 gap-y-1 hover:bg-slate-50', className)}>
             <button
                 className='-mx-1 px-1 align-baseline cursor-pointer text-sky-600 truncate'
                 title={title}

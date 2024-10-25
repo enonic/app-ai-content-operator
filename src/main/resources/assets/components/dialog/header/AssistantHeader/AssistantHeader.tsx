@@ -1,5 +1,5 @@
 import {useStore} from '@nanostores/react';
-import clsx from 'clsx';
+import {twJoin, twMerge} from 'tailwind-merge';
 
 import {$dialog} from '../../../../stores/dialog';
 import CloseButton from '../CloseButton/CloseButton';
@@ -17,15 +17,15 @@ export default function AssistantHeader({className}: Props): JSX.Element {
 
     return (
         <div
-            className={clsx([
+            className={twMerge(
                 'AssistantHeader',
                 'grid grid-cols-mid-3 items-center',
                 'h-10',
-                'bg-enonic-gray-lighter',
+                'bg-enonic-gray-400er',
                 className,
-            ])}
+            )}
         >
-            <NewChatButton className={isSettings ? 'invisible' : ''} disabled={isSettings} />
+            <NewChatButton className={twJoin(isSettings && 'invisible')} disabled={isSettings} />
             <HeaderTitle className='drag-handle self-stretch' />
             <div className='text-right text-nowrap'>
                 <SettingsButton />

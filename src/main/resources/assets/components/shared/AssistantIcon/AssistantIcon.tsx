@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import {useId} from 'react';
 import {twMerge} from 'tailwind-merge';
 
@@ -12,11 +11,7 @@ export default function ApplicantIcon({className, animated = false}: Props): JSX
     const eyeId = useId();
 
     return (
-        <div
-            className={twMerge(
-                clsx(['flex justify-items-center items-center', 'w-8 h-8', 'rounded-full', 'bg-white', className]),
-            )}
-        >
+        <div className={twMerge('flex justify-items-center items-center w-8 h-8 rounded-full bg-white', className)}>
             <svg
                 xmlnsXlink='http://www.w3.org/1999/xlink'
                 viewBox='0 0 512 512'

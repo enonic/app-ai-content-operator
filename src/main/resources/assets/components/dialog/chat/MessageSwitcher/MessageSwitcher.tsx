@@ -1,6 +1,5 @@
-import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
-import {twMerge} from 'tailwind-merge';
+import {twJoin, twMerge} from 'tailwind-merge';
 
 import {changeModelMessageSelectedIndex} from '../../../../stores/chat';
 import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
@@ -22,24 +21,24 @@ export default function MessageSwitcher({className, messageId, name, content}: P
     const text = `${selectedIndex + 1}/${totalCount}`;
 
     return (
-        <div className={twMerge(clsx(['flex', className]))}>
+        <div className={twMerge('flex', className)}>
             <ActionButton
                 className='w-4 disabled:opacity-25'
                 name={t('showPrevious')}
                 icon='left'
                 mode='icon-only'
-                size='tiny'
+                size='xs'
                 disabled={isFirst}
-                handleClick={() => {
+                clickHandler={() => {
                     changeModelMessageSelectedIndex(messageId, name, selectedIndex - 1);
                 }}
             />
             <span
-                className={clsx([
+                className={twJoin(
                     'flex items-center justify-center',
                     'w-6 h-6 p-',
-                    'text-xs text-enonic-gray cursor-default',
-                ])}
+                    'text-xs text-enonic-gray-600 cursor-default',
+                )}
             >
                 {text}
             </span>
@@ -48,9 +47,9 @@ export default function MessageSwitcher({className, messageId, name, content}: P
                 name={t('action.showNext')}
                 icon='right'
                 mode='icon-only'
-                size='tiny'
+                size='xs'
                 disabled={isLast}
-                handleClick={() => {
+                clickHandler={() => {
                     changeModelMessageSelectedIndex(messageId, name, selectedIndex + 1);
                 }}
             />

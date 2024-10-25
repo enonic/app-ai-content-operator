@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import {twMerge} from 'tailwind-merge';
 
 import {REGULAR_SCREEN} from '../../../../common/device';
 import CopyControl from '../CopyControl/CopyControl';
@@ -10,13 +11,10 @@ type Props = {
 
 export default function CommonItemContent({className, content}: Props): JSX.Element {
     return (
-        <div className={clsx(['group/item relative leading-6', className])}>
+        <div className={twMerge('group/item relative leading-6', className)}>
             <CopyControl
                 key='copy'
-                className={clsx([
-                    'float-right relative shadow',
-                    {'invisible group-hover/item:visible': REGULAR_SCREEN},
-                ])}
+                className={clsx('float-right relative shadow', REGULAR_SCREEN && 'invisible group-hover/item:visible')}
                 content={content}
             />
             <span>{content}</span>

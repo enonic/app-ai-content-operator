@@ -1,5 +1,5 @@
-import clsx from 'clsx';
 import {Fragment} from 'react';
+import {twMerge} from 'tailwind-merge';
 
 import {Path} from '../../../../stores/data/Path';
 import {getParentPath, pathFromString, pathToString} from '../../../../stores/pathUtil';
@@ -21,7 +21,7 @@ export default function ScopeControl({className, scope}: Props): JSX.Element {
     }
 
     return (
-        <div className={clsx(['h-5 flex gap-0.5 justify-center items-center', className])}>
+        <div className={twMerge('h-5 flex gap-0.5 justify-center items-center', className)}>
             {scopeBreadcrumbItems.map((path, i) => (
                 <Fragment key={pathToString(path)}>
                     <span className='text-xs'>/</span>

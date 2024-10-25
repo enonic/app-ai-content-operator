@@ -1,5 +1,4 @@
 import {useStore} from '@nanostores/react';
-import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
@@ -35,13 +34,13 @@ export default function MessageControls({className, content, last}: Props): JSX.
     const lastAndAvailable = last && !requestRunning;
 
     return (
-        <div className={twMerge(clsx(['empty:hidden', className]))}>
+        <div className={twMerge('empty:hidden', className)}>
             {lastAndAvailable && (
                 <ActionButton
                     name={t('action.retry')}
                     icon='retry'
                     mode='compact'
-                    handleClick={() => void sendRetryMessage()}
+                    clickHandler={() => void sendRetryMessage()}
                 />
             )}
             {lastAndAvailable && multiple && (
@@ -49,7 +48,7 @@ export default function MessageControls({className, content, last}: Props): JSX.
                     name={t('action.insertAll')}
                     icon='applyAll'
                     mode='compact'
-                    handleClick={() => {
+                    clickHandler={() => {
                         const items = extractItems(content);
                         dispatchResultApplied(items);
                         Object.keys(content).forEach(name => animateGlow(name));

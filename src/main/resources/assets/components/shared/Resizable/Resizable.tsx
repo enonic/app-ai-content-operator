@@ -54,20 +54,20 @@ export default forwardRef(function Resizable(
     );
 
     return (
-        <div {...props} className={clsx(['group/resize', className])} style={{...style, width, height}} ref={ref}>
+        <div {...props} className={clsx('group/resize', className)} style={{...style, width, height}} ref={ref}>
             <button
-                className={clsx([
+                className={clsx(
                     'absolute',
                     'box-content',
                     'flex justify-end',
                     'bottom-0 right-0',
-                    'w-6 h-6',
-                    'text-3xl/3.5 text-enonic-gray-light',
+                    'w-5 h-6 pr-1',
+                    'text-3xl/3.5 text-enonic-gray-400',
                     'border-0 bg-transparent select-none outline-none focus:outline-none',
                     'opacity-0 cursor-nwse-resize',
                     'group-hover/resize:opacity-100 transition-opacity',
-                    'active:-bottom-4 active:-right-4 active:p-4 active:outline-none',
-                ])}
+                    'active:-bottom-4 active:-right-4 active:pl-4 active:pr-5 active:py-4 active:outline-none',
+                )}
                 onMouseDown={rsMouseDownHandler}
             >
                 ⌟

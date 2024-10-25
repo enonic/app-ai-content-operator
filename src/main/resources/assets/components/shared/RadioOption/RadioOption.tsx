@@ -31,7 +31,7 @@ export default function RadioOption<T extends string>({
     return (
         <label
             className={twMerge(
-                clsx([
+                clsx(
                     'inline-grid grid-cols-mid-3 gap-x-2 items-center',
                     description ? 'gap-y-1' : 'gap-y-0',
                     'px-4 py-2',
@@ -40,7 +40,7 @@ export default function RadioOption<T extends string>({
                     {'opacity-50': disabled},
                     {'outline outline-2 outline-enonic-blue -outline-offset-2': checked},
                     className,
-                ]),
+                ),
             )}
         >
             <input
@@ -62,29 +62,29 @@ export default function RadioOption<T extends string>({
             />
 
             <h4
-                className={clsx([
+                className={clsx(
                     'inline-flex items-center',
                     'col-span-1 col-start-2 row-start-1',
                     description ? 'self-end row-span-1' : 'row-span-2',
-                ])}
+                )}
             >
                 {name}
             </h4>
 
             {description && (
                 <p
-                    className={clsx([
-                        'text-enonic-gray',
+                    className={clsx(
+                        'text-enonic-gray-600',
                         'self-start',
                         'col-span-1 col-start-2 row-span-1 row-start-2',
-                    ])}
+                    )}
                 >
                     {description}
                 </p>
             )}
 
             <Icon
-                className={clsx(['w-4 h-4 text-enonic-blue', 'col-span-1 row-span-2', {invisible: !checked}])}
+                className={clsx('w-4 h-4 text-enonic-blue', 'col-span-1 row-span-2', {invisible: !checked})}
                 name='checkCircle'
                 type={'solid'}
             />

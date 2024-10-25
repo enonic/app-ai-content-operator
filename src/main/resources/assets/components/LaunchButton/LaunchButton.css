@@ -7,5 +7,5 @@
 }
 
 .LaunchButton--hidden {
-    @apply text-enonic-gray active:text-violet-500;
+    @apply text-enonic-gray-600 active:text-violet-500;
 }

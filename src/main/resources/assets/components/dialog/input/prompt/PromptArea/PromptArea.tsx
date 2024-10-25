@@ -182,7 +182,7 @@ export default function PromptArea({className}: Props): JSX.Element {
         'relative',
         'flex flex-col flex-grow items-center',
         'w-full',
-        'bg-enonic-gray-lighter',
+        'bg-enonic-gray-400er',
         'rounded-[1.5rem]',
         'overflow-y-auto',
         className,
@@ -193,9 +193,8 @@ export default function PromptArea({className}: Props): JSX.Element {
             <Slate editor={editor} initialValue={INITIAL_VALUE} onChange={handleChange}>
                 <Editable
                     className={clsx(
-                        'w-[calc(100%_-_3rem)] max-h-[7.75rem]',
-                        'm-0 mr-12',
-                        'py-3',
+                        'w-full max-h-[7.75rem]',
+                        'm-0 py-3 pr-13',
                         'bg-transparent placeholder-black/50',
                         'border-0 rounded-[1.5rem]',
                         'resize-none',
@@ -220,7 +219,7 @@ export default function PromptArea({className}: Props): JSX.Element {
             <SendButton
                 className='absolute bottom-2 right-2'
                 disabled={isSendDisabled}
-                handleClick={() => sendPrompt(editor)}
+                clickHandler={() => sendPrompt(editor)}
             />
         </div>
     );

@@ -1,71 +1,84 @@
 import clsx from 'clsx';
+import {forwardRef} from 'react';
 import {twMerge} from 'tailwind-merge';
 
-import Icon, {IconNameOrOptions} from '../Icon/Icon';
+import Icon, {IconName} from '../Icon/Icon';
 
 type Props = {
     className?: string;
     disabled?: boolean;
     name: string;
-    icon: IconNameOrOptions;
-    mode?: 'icon-only' | 'compact' | 'full';
-    size?: 'tiny' | 'small' | 'medium' | 'large';
-    handleClick?: React.MouseEventHandler;
+    icon?: IconName;
+    mode?: 'icon-only' | 'compact' | 'full' | 'text-only';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    clickHandler?: React.MouseEventHandler;
+    ref?: React.RefObject<HTMLButtonElement>;
 };
 
-export default function ActionButton({
-    className,
-    disabled,
-    name,
-    icon,
-    mode = 'full',
-    size = 'small',
-    handleClick,
-}: Props): JSX.Element {
-    const compact = mode === 'compact';
-    const full = mode === 'full';
+export default forwardRef(function ActionButton(
+    {className, disabled, name, icon, mode = 'full', size = 'sm', clickHandler}: Props,
+    ref: React.Ref<HTMLButtonElement>,
+): JSX.Element {
+    const isFull = mode === 'full';
+    const hasText = isFull || mode === 'text-only';
 
     return (
         <button
-            title={compact ? name : ''}
-            onClick={handleClick}
+            title={mode === 'compact' ? name : ''}
+            onClick={clickHandler}
             className={twMerge(
-                clsx([
+                clsx(
                     'inline-flex justify-center items-center',
                     'max-w-40',
-                    {'h-6 p-1': size === 'small', 'h-8 p-1': size === 'medium', 'h-12 p-2': size === 'large'},
-                    {'pr-2': full},
-                    'rounded',
+                    {
+                        xs: hasText ? 'h-4 px-1' : 'h-4 p-0.5',
+                        sm: hasText ? 'h-6 px-1.5' : 'h-6 p-1',
+                        md: hasText ? 'h-8 px-2' : 'h-8 p-1.5',
+                        lg: hasText ? 'h-10 px-3' : 'h-10 p-2',
+                        xl: hasText ? 'h-12 px-4' : 'h-12 p-2',
+                    }[size],
+                    size === 'xs' ? 'rounded-sm' : 'rounded',
                     'enabled:hover:bg-gray-100',
                     'disabled:opacity-50',
                     className,
-                ]),
+                ),
             )}
-            disabled={!handleClick || disabled}
+            disabled={!clickHandler || disabled}
+            ref={ref}
         >
-            <Icon
-                name={typeof icon === 'string' ? icon : icon.name}
-                type={typeof icon === 'string' ? undefined : icon.type}
-                className={clsx([
-                    'shrink-0',
-                    {
-                        'w-3 h-3': size === 'tiny',
-                        'w-4 h-4': size === 'small',
-                        'w-6 h-6': size === 'medium',
-                        'w-8 h-8': size === 'large',
-                    },
-                ])}
-            />
+            {icon && mode !== 'text-only' && (
+                <Icon
+                    name={icon}
+                    className={twMerge(
+                        clsx(
+                            'shrink-0',
+                            {
+                                xs: isFull ? 'w-2 h-2' : 'w-3 h-3',
+                                sm: isFull ? 'w-3 h-3' : 'w-4 h-4',
+                                md: isFull ? 'w-3 h-3' : 'w-5 h-5',
+                                lg: isFull ? 'w-4 h-4' : 'w-6 h-6',
+                                xl: isFull ? 'w-5 h-5' : 'w-8 h-8',
+                            }[size],
+                        ),
+                    )}
+                />
+            )}
             <span
-                className={clsx([
-                    'pl-1',
+                className={clsx(
                     'truncate',
-                    {'text-xs': size === 'small', 'text-sm': size === 'medium', 'text-base': size === 'large'},
-                    {'sr-only': !full},
-                ])}
+                    {'pl-1': mode !== 'text-only'},
+                    {'sr-only': !hasText},
+                    {
+                        xs: 'text-xs',
+                        sm: 'text-sm',
+                        md: 'text-base',
+                        lg: 'text-base',
+                        xl: 'text-lg',
+                    }[size],
+                )}
             >
                 {name}
             </span>
         </button>
     );
-}
+});

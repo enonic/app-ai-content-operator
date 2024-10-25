@@ -1,5 +1,5 @@
 import {useStore} from '@nanostores/react';
-import clsx from 'clsx';
+import {twMerge} from 'tailwind-merge';
 
 import {$scope} from '../../../../stores/scope';
 import AssistantInput from '../../input/AssistantInput/AssistantInput';
@@ -14,7 +14,7 @@ export default function ChatContainer({className}: Props): JSX.Element {
     const scope = useStore($scope);
 
     return (
-        <div className={clsx(['ChatContainer flex flex-col gap-1 pb-3', className])}>
+        <div className={twMerge('ChatContainer flex flex-col gap-1 pb-3', className)}>
             <ChatThread />
             <ScopeControl scope={scope} />
             <AssistantInput />

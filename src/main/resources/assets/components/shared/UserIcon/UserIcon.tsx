@@ -13,7 +13,7 @@ export default function UserIcon({className}: Props): JSX.Element {
     return (
         <div
             className={twMerge(
-                clsx([
+                clsx(
                     'flex justify-center items-center',
                     'w-8 h-8',
                     'text-xs',
@@ -21,7 +21,7 @@ export default function UserIcon({className}: Props): JSX.Element {
                     'text-white',
                     'bg-black',
                     className,
-                ]),
+                ),
             )}
         >
             {user.shortName}
