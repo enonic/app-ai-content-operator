@@ -23,7 +23,7 @@ google.api.gemini.pro.url=https://us-central1-aiplatform.googleapis.com/v1/proje
 google.api.sak.path=/Users/enonic/config/playground-186416-e13cb1741f87.json
 
 # (Optional) (Default: "all") A comma separated list of debug groups to limit the debug output.
-# Possible values: all, none, openai, rest, node, query, func
+# Possible values: all, none, google, rest, node, query, func
 # Leaving empty or adding "all" to list will log all debug groups.
 log.debug.groups=all
 ```

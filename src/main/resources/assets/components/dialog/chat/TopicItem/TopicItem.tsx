@@ -26,7 +26,7 @@ export default function TopicItem({className, messageId, name, value}: Props): J
     return (
         <li
             className={twMerge(
-                clsx(['group/item grid grid-cols-fit-fit-1fr gap-x-1 gap-y-1 hover:bg-slate-50', className]),
+                clsx('group/item grid grid-cols-fit-fit-1fr gap-x-1 gap-y-1 hover:bg-slate-50', className),
             )}
         >
             <button
@@ -38,7 +38,7 @@ export default function TopicItem({className, messageId, name, value}: Props): J
             </button>
             {typeof value !== 'string' && <MessageSwitcher messageId={messageId} name={name} content={value} />}
             <ElementItemControls
-                className={clsx(['col-start-3', {'invisible group-hover/item:visible': REGULAR_SCREEN}])}
+                className={clsx('col-start-3', {'invisible group-hover/item:visible': REGULAR_SCREEN})}
                 content={content}
                 name={SPECIAL_NAMES.topic}
             />

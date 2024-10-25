@@ -14,7 +14,7 @@ export default function CloseButton({className}: Props): JSX.Element {
         'CloseButton',
         'w-10 h-10',
         'bg-transparent enabled:bg-transparent',
-        'text-enonic-gray enabled:hover:text-black enabled:hover:active:text-enonic-blue',
+        'text-enonic-gray-600 enabled:hover:text-black enabled:hover:active:text-enonic-blue',
         className,
     );
 
@@ -24,8 +24,8 @@ export default function CloseButton({className}: Props): JSX.Element {
             name={t('action.close')}
             icon='close'
             mode='icon-only'
-            size='medium'
-            handleClick={() => {
+            size='md'
+            clickHandler={() => {
                 setDialogView('none');
             }}
         />

@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import {twMerge} from 'tailwind-merge';
 
 import {combineMessageValues} from '../../../../common/mentions';
@@ -12,7 +11,7 @@ type Props = {
 
 export default function IssueItem({className, value}: Props): JSX.Element {
     return (
-        <li className={twMerge(clsx(['grid grid-cols-fit-1fr gap-x-2 gap-y-1', className]))}>
+        <li className={twMerge('grid grid-cols-fit-1fr gap-x-2 gap-y-1', className)}>
             <ElementItemContent className='leading-6' content={combineMessageValues(value)} />
         </li>
     );

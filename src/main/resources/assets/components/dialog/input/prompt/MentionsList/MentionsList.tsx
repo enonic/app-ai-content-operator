@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import {useEffect, useRef, useState} from 'react';
+import {twMerge} from 'tailwind-merge';
 
 import {Portal} from '../../../../../common/components';
 import {MENTION_ALL} from '../../../../../common/mentions';
@@ -14,7 +15,13 @@ type Props = {
     handleClick: (mention: Mention) => void;
 };
 
-export default function MentionsList({targetRect, mentions, selectedIndex, handleClick}: Props): JSX.Element {
+export default function MentionsList({
+    className,
+    targetRect,
+    mentions,
+    selectedIndex,
+    handleClick,
+}: Props): JSX.Element {
     const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const [listWidth, setListWidth] = useState(0);
 
@@ -38,13 +45,13 @@ export default function MentionsList({targetRect, mentions, selectedIndex, handl
         }
     }, [mentions, isRendered]);
 
-    const classNames = clsx([
+    const classNames = twMerge(
         'enonic-ai',
         'EnonicAiMentionsList',
         'absolute',
-        {hidden: !targetRect},
+        !targetRect && 'hidden',
         'box-content',
-        {'flex flex-col': listWidth > 0},
+        listWidth > 0 && 'flex flex-col',
         'max-w-96 max-h-30',
         'p-1',
         'bg-white',
@@ -53,7 +60,8 @@ export default function MentionsList({targetRect, mentions, selectedIndex, handl
         'overflow-y-auto',
         'z-[2000]',
         'enonic-ai-scroll',
-    ]);
+        className,
+    );
 
     const style = {
         ...(targetRect && {
@@ -72,7 +80,7 @@ export default function MentionsList({targetRect, mentions, selectedIndex, handl
                         ref={el => (buttonRefs.current[i] = el)}
                         onClick={() => handleClick(mention)}
                         title={mention.prettified !== mention.label ? mention.prettified : undefined}
-                        className={clsx([
+                        className={clsx(
                             'block',
                             'flex-none',
                             'h-6',
@@ -80,23 +88,15 @@ export default function MentionsList({targetRect, mentions, selectedIndex, handl
                             'truncate',
                             'rounded-sm',
                             'hover:bg-slate-50',
-                            {
-                                'bg-slate-100 hover:bg-slate-200': i === selectedIndex,
-                                'hover:bg-slate-50': i !== selectedIndex,
-                            },
+                            i === selectedIndex && 'bg-slate-100 hover:bg-slate-200',
+                            i !== selectedIndex && 'hover:bg-slate-50',
                             'text-left text-sm',
-                            {
-                                "before:content-['<'] after:content-['>']": mention.path === MENTION_ALL.path,
-                            },
-                            {
-                                'flex items-center gap-1': mention.type === 'scope',
-                            },
-                        ])}
+                            mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
+                            mention.type === 'scope' && 'flex items-center gap-1',
+                        )}
                     >
                         {mention.label}
-                        {mention.type === 'scope' ? (
-                            <Icon name={'expand'} className={clsx(['shrink-0', 'w-3 h-3'])} />
-                        ) : null}
+                        {mention.type === 'scope' && <Icon name={'expand'} className={'shrink-0 w-3 h-3'} />}
                     </button>
                 ))}
             </div>

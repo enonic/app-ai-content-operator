@@ -28,11 +28,11 @@ export default function ApplyControl({className, name, content}: Props): JSX.Ele
 
     return (
         <ActionButton
-            className={clsx([`${applying ? 'text-enonic-green' : ''}`, className])}
+            className={clsx(applying && 'text-enonic-green', className)}
             name={t('action.insert')}
             icon={applying ? 'check' : 'apply'}
             mode='compact'
-            handleClick={handleApply}
+            clickHandler={handleApply}
         />
     );
 }

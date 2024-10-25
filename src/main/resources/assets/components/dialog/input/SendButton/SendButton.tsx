@@ -6,10 +6,10 @@ import ActionButton from '../../../shared/ActionButton/ActionButton';
 type Props = {
     className?: string;
     disabled?: boolean;
-    handleClick: () => void;
+    clickHandler: () => void;
 };
 
-export default function SendButton({className, disabled, handleClick}: Props): JSX.Element {
+export default function SendButton({className, disabled, clickHandler}: Props): JSX.Element {
     const {t} = useTranslation();
 
     const classNames = clsx(
@@ -19,7 +19,7 @@ export default function SendButton({className, disabled, handleClick}: Props): J
         'border border-enonic-blue rounded-full',
         'bg-enonic-blue',
         'enabled:hover:bg-enonic-blue-light',
-        'disabled:bg-enonic-gray-light disabled:border-enonic-gray-light',
+        'disabled:bg-enonic-gray-400 disabled:border-enonic-gray-400',
         className,
     );
 
@@ -30,8 +30,8 @@ export default function SendButton({className, disabled, handleClick}: Props): J
             name={t('action.send')}
             icon='send'
             mode='compact'
-            size='medium'
-            handleClick={handleClick}
+            size='md'
+            clickHandler={clickHandler}
         />
     );
 }

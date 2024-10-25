@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import {twMerge} from 'tailwind-merge';
 
 import ApplyControl from '../ApplyControl/ApplyControl';
@@ -14,14 +13,12 @@ export default function ElementItemControls({className, name, content}: Props): 
     return (
         <div
             className={twMerge(
-                clsx([
-                    'inline-flex justify-end items-center',
-                    'ml-auto',
-                    'divide-x rounded',
-                    'overflow-hidden',
-                    'shadow',
-                    className,
-                ]),
+                'inline-flex justify-end items-center',
+                'ml-auto',
+                'divide-x rounded',
+                'overflow-hidden',
+                'shadow',
+                className,
             )}
         >
             <CopyControl className='rounded-none' key='copy' content={content} />

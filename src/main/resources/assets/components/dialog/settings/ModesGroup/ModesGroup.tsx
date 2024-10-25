@@ -1,6 +1,6 @@
-import clsx from 'clsx';
 import {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
+import {twMerge} from 'tailwind-merge';
 
 import {Mode, MODES} from '../../../../../lib/shared/modes';
 import {IconName} from '../../../shared/Icon/Icon';
@@ -45,7 +45,7 @@ export default function ModesGroup({className, mode, label, group, handleChange}
 
     return (
         <RadioGroup
-            className={clsx(['ModesGroup', 'max-w-4xl', className])}
+            className={twMerge('ModesGroup max-w-4xl', className)}
             label={label}
             group={group}
             options={options}

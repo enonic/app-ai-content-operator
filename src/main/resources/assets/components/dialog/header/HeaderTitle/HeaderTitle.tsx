@@ -1,6 +1,6 @@
 import {useStore} from '@nanostores/react';
-import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
+import {twMerge} from 'tailwind-merge';
 
 import {$dialog} from '../../../../stores/dialog';
 
@@ -13,17 +13,16 @@ export default function HeaderTitle({className}: Props): JSX.Element {
     const {view} = useStore($dialog, {keys: ['view']});
 
     const isSettings = view === 'settings';
-
     const title = isSettings ? t('field.settings') : `${t('field.chat')}`;
 
     return (
         <div
-            className={clsx([
+            className={twMerge(
                 'flex justify-center items-center flex-nowrap',
                 'px-2',
-                'text-sm text-enonic-gray text-center',
+                'text-sm text-enonic-gray-600 text-center',
                 className,
-            ])}
+            )}
         >
             <span>{title}</span>
         </div>

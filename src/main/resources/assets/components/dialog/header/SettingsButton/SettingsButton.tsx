@@ -17,8 +17,8 @@ export default function SettingsButton({className}: Props): JSX.Element {
     const classNames = clsx(
         'w-10 h-10',
         'bg-transparent enabled:bg-transparent',
-        {'text-enonic-blue enabled:hover:text-enonic-blue-light enabled:hover:active:text-enonic-gray': isActive},
-        {'text-enonic-gray enabled:hover:text-black enabled:hover:active:text-enonic-blue': !isActive},
+        {'text-enonic-blue enabled:hover:text-enonic-blue-light enabled:hover:active:text-enonic-gray-600': isActive},
+        {'text-enonic-gray-600 enabled:hover:text-black enabled:hover:active:text-enonic-blue': !isActive},
         className,
     );
 
@@ -28,8 +28,8 @@ export default function SettingsButton({className}: Props): JSX.Element {
             name={t('action.settings')}
             icon={'cog'}
             mode='compact'
-            size='medium'
-            handleClick={() => {
+            size='md'
+            clickHandler={() => {
                 toggleDialogView();
             }}
         />

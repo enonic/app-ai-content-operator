@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import {twMerge} from 'tailwind-merge';
 
 import {IconNameOrOptions} from '../Icon/Icon';
 import RadioOption from '../RadioOption/RadioOption';
@@ -28,7 +28,7 @@ export default function RadioGroup<T extends string>({
     handleChange,
 }: Props<T>): JSX.Element {
     return (
-        <fieldset className={clsx(['grid grid-cols-min-280', className])}>
+        <fieldset className={twMerge('grid grid-cols-min-280', className)}>
             {label && <legend className='font-bold capitalize text-base pb-2'>{label}</legend>}
             {options.map(({icon, name, description, value}, index) => (
                 <RadioOption
