@@ -9,6 +9,8 @@ export type DialogView = 'none' | 'chat' | 'settings';
 
 export type Dialog = {
     view: DialogView;
+    firstTime: boolean;
+    contextPath: Optional<string>;
 };
 
 type OpenDialogData = {
@@ -17,9 +19,15 @@ type OpenDialogData = {
 
 export const $dialog = map<Dialog>({
     view: 'none',
+    firstTime: true,
+    contextPath: undefined,
 });
 
 export const $visible = computed($dialog, state => state.view !== 'none');
+
+export const markVisited = (): void => $dialog.setKey('firstTime', false);
+
+export const setContextPath = (path: Optional<string>): void => $dialog.setKey('contextPath', path);
 
 export const setDialogView = (view: DialogView): void => $dialog.setKey('view', view);
 
@@ -45,5 +53,6 @@ addGlobalOpenDialogHandler((event: CustomEvent<OpenDialogData>) => {
 
         setScope(scope);
         setFocusedElementPath(dataPath);
+        setContextPath(dataPath);
     }
 });

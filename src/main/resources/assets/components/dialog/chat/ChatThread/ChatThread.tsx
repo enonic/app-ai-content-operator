@@ -45,7 +45,7 @@ export default function ChatThread({className = ''}: Props): JSX.Element {
 
     return (
         <div ref={ref} className={twMerge('flex-1 overflow-y-auto scroll-smooth', className)}>
-            <div className={clsx('flex w-full h-full flex-col grow gap-6 px-3 pt-3', empty && 'justify-center')}>
+            <div className={clsx('flex w-full h-full flex-col grow gap-6 px-3 pt-3')}>
                 {empty ? <WelcomeMessage /> : createMessages(history, requestRunning)}
             </div>
         </div>

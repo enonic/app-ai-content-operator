@@ -13,7 +13,7 @@ import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugi
 import {sendUserMessage} from '../../../../../stores/chat';
 import {$mentions, getStoredPathByDataAttrString} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
-import {$visible} from '../../../../../stores/dialog';
+import {$visible, setContextPath} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
 import {$focus, setFocusedElementPath} from '../../../../../stores/focus';
 import {isChatRequestRunning} from '../../../../../stores/requests';
@@ -75,6 +75,7 @@ export default function PromptArea({className}: Props): JSX.Element {
     useEffect(() => {
         if (!visible) {
             clearTarget();
+            setContextPath(null);
             return;
         }
 
@@ -182,7 +183,7 @@ export default function PromptArea({className}: Props): JSX.Element {
         'relative',
         'flex flex-col flex-grow items-center',
         'w-full',
-        'bg-enonic-gray-400er',
+        'bg-enonic-gray-100',
         'rounded-[1.5rem]',
         'overflow-y-auto',
         className,
