@@ -25,7 +25,7 @@ export class GeminiProxy implements ModelProxy {
         const {temperature, topP} = MODES_DATA[config.mode].gemini;
         const responseMimeType = 'application/json';
         const contents = GeminiProxy.createContents(config);
-        const responseSchema = GeminiProxy.createResponseSchema(config);
+        const responseSchema = undefined; // GeminiProxy.createResponseSchema(config);
         const systemInstruction = GeminiProxy.createTextContent('system', createSystemInstructions());
 
         return {

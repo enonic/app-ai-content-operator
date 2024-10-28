@@ -1,15 +1,13 @@
 import {map} from 'nanostores';
 
 import {addGlobalOpenDialogHandler, AiEvents, dispatch} from '../common/events';
+import {setContext} from './context';
 import {getParentPath, pathFromString, pathToString} from './pathUtil';
 import {setScope} from './scope';
 
-type WelcomeState = 'in-progress' | 'done';
-
 export type Dialog = {
     hidden: boolean;
-    welcomeState?: WelcomeState;
-    contextPath: Optional<string>;
+    welcomed: boolean;
 };
 
 type OpenDialogData = {
@@ -18,14 +16,12 @@ type OpenDialogData = {
 
 export const $dialog = map<Dialog>({
     hidden: true,
-    contextPath: undefined,
+    welcomed: false,
 });
 
 export const setDialogHidden = (hidden: boolean): void => $dialog.setKey('hidden', hidden);
 
-export const setWelcomeState = (state: WelcomeState): void => $dialog.setKey('welcomeState', state);
-
-export const setContextPath = (path: Optional<string>): void => $dialog.setKey('contextPath', path);
+export const markWelcomed = (): void => $dialog.setKey('welcomed', true);
 
 export const toggleDialog = (): void => {
     const {hidden} = $dialog.get();
@@ -45,6 +41,6 @@ addGlobalOpenDialogHandler((event: CustomEvent<OpenDialogData>) => {
         const scope = scopePath ? pathToString(scopePath) : null;
 
         setScope(scope);
-        setContextPath(dataPath);
+        setContext(dataPath);
     }
 });

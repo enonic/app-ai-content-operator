@@ -13,7 +13,7 @@ import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugi
 import {sendUserMessage} from '../../../../../stores/chat';
 import {$mentions, getStoredPathByDataAttrString} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
-import {$dialog, setContextPath} from '../../../../../stores/dialog';
+import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
 import {$focus, setFocusedElementPath} from '../../../../../stores/focus';
 import {isChatRequestRunning} from '../../../../../stores/requests';
@@ -82,7 +82,6 @@ export default function PromptArea({className}: Props): React.ReactNode {
     useEffect(() => {
         if (hidden) {
             clearTarget();
-            setContextPath(null);
             return;
         }
 

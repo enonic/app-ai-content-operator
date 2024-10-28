@@ -5,7 +5,8 @@ import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {SchemaField} from '../../types/shared/model';
 import {isNonNullable} from '../common/data';
 import {addGlobalUpdateDataHandler} from '../common/events';
-import {findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
+import {findMentionByPath, findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
+import {$context} from './context';
 import {ContentData, PropertyArray, PropertyValue} from './data/ContentData';
 import {EventData} from './data/EventData';
 import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from './data/FormItemWithPath';
@@ -34,7 +35,7 @@ import {
     isInputWithPath,
     isOrContainsEditableInput,
 } from './schemaUtil';
-import {$scope, isScopeSet} from './scope';
+import {$scope, isScopeEmpty} from './scope';
 
 export type Data = {
     language: Language;
@@ -95,9 +96,11 @@ function putEventDataToStore(eventData: EventData): void {
     }
 }
 
+export const $topic = computed($data, data => data.persisted?.topic ?? '');
+
 export const $allFormItemsWithPaths = computed($data, store => {
     void store.persisted;
-    const schemaPaths: FormItemWithPath[] = makePathsToFormItems();
+    const schemaPaths = makePathsToFormItems();
 
     const data = getPersistedData();
     return data ? getDataPathsToEditableItems(schemaPaths, data) : [];
@@ -119,11 +122,27 @@ export const $mentions = computed($scopedPaths, scopedPaths => {
         mentions.push(MENTION_ALL);
     }
 
-    if (!isScopeSet()) {
+    if (isScopeEmpty()) {
         mentions.push(MENTION_TOPIC);
     }
 
     return mentions;
+});
+
+export const $mentionInContext = computed([$context, $allFormItemsWithPaths], (context, allFormItems) => {
+    if (!context) {
+        return undefined;
+    }
+
+    const allPaths = allFormItems.filter(isOrContainsEditableInput);
+    const path = allPaths.find(path => pathToString(path) === context);
+
+    if (!path) {
+        return undefined;
+    }
+
+    const mentions = allPaths.map(pathToMention);
+    return findMentionByPath(mentions, path);
 });
 
 function makePathsToFormItems(): FormItemWithPath[] {
@@ -271,12 +290,11 @@ function pathToMention(item: FormItemWithPath): Mention {
     };
 }
 
-export const $topic = computed($data, data => data.persisted?.topic ?? '');
 export const getLanguageTag = (): string => getLanguage()?.tag ?? navigator?.language ?? 'en';
 export const generatePathsEntries = (): Record<string, DataEntry> => {
     const result: Record<string, DataEntry> = {};
 
-    if (!isScopeSet()) {
+    if (isScopeEmpty()) {
         result[MENTION_TOPIC.path] = generateTopicDataEntry();
     }
 
@@ -304,7 +322,15 @@ export function createPrompt(text: string): string {
 }
 
 function createContext(): string {
-    return ['# Context', `- Topic is "${$topic.get()}"`, `- Language is "${getLanguageTag()}"`].join('\n');
+    const mentionInContext = $mentionInContext.get()?.path;
+
+    const context = ['# Context', `- Topic is "${$topic.get()}"`, `- Language is "${getLanguageTag()}"`];
+
+    if (mentionInContext) {
+        context.push(`- Field in Context is "${mentionInContext}"`);
+    }
+
+    return context.join('\n');
 }
 
 export function findFields(text: string): SchemaField[] {
@@ -347,7 +373,10 @@ export function findFields(text: string): SchemaField[] {
 }
 
 function createFields(text: string): Optional<string> {
-    const mentions = findMentionsNames(text);
+    const mentionInContext = $mentionInContext.get()?.path;
+    const mentionsInText = findMentionsNames(text);
+    const canAddContext = mentionInContext && !mentionsInText.includes(mentionInContext);
+    const mentions = canAddContext ? [mentionInContext, ...mentionsInText] : mentionsInText;
 
     if (mentions.length === 0) {
         return null;
