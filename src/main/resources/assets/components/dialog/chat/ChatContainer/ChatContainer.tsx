@@ -10,7 +10,7 @@ type Props = {
     className?: string;
 };
 
-export default function ChatContainer({className}: Props): JSX.Element {
+export default function ChatContainer({className}: Props): React.ReactNode {
     const scope = useStore($scope);
 
     return (

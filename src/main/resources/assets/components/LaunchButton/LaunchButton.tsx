@@ -2,22 +2,22 @@ import {useStore} from '@nanostores/react';
 import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
 
-import {$visible, toggleDialog} from '../../stores/dialog';
+import {$dialog, toggleDialog} from '../../stores/dialog';
 import {saveActiveFocus} from '../../stores/focus';
 import AssistantIcon from '../shared/AssistantIcon/AssistantIcon';
 
-export default function LaunchButton(): JSX.Element {
+export default function LaunchButton(): React.ReactNode {
     const {t} = useTranslation();
-    const visible = useStore($visible);
+    const {hidden} = useStore($dialog, {keys: ['hidden']});
 
     const classNames = twJoin([
         'enonic-ai',
         'w-full h-full flex items-center justify-center',
         'box-border',
-        visible ? 'text-enonic-blue-light hover:text-enonic-blue' : 'text-enonic-gray-700 hover:text-enonic-gray-600',
+        hidden ? 'text-enonic-gray-700 hover:text-enonic-gray-600' : 'text-enonic-blue-light hover:text-enonic-blue',
     ]);
 
-    const title = visible ? t('action.close') : t('action.open');
+    const title = hidden ? t('action.open') : t('action.close');
 
     return (
         <button className={classNames} onClick={toggleDialog} title={title} onMouseDown={saveActiveFocus}>

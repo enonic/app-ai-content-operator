@@ -271,7 +271,7 @@ function pathToMention(item: FormItemWithPath): Mention {
     };
 }
 
-const getTopic = (): string => getPersistedData()?.topic ?? '';
+export const $topic = computed($data, data => data.persisted?.topic ?? '');
 export const getLanguageTag = (): string => getLanguage()?.tag ?? navigator?.language ?? 'en';
 export const generatePathsEntries = (): Record<string, DataEntry> => {
     const result: Record<string, DataEntry> = {};
@@ -304,7 +304,7 @@ export function createPrompt(text: string): string {
 }
 
 function createContext(): string {
-    return ['# Context', `- Topic is "${getTopic()}"`, `- Language is "${getLanguageTag()}"`].join('\n');
+    return ['# Context', `- Topic is "${$topic.get()}"`, `- Language is "${getLanguageTag()}"`].join('\n');
 }
 
 export function findFields(text: string): SchemaField[] {

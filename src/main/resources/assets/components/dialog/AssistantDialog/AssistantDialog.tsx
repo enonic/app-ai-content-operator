@@ -1,22 +1,22 @@
 import {useStore} from '@nanostores/react';
-import clsx from 'clsx';
 import debounce from 'lodash.debounce';
 import {useEffect, useRef, useState} from 'react';
 import Draggable from 'react-draggable';
+import {twJoin} from 'tailwind-merge';
 
-import {$visible} from '../../../stores/dialog';
+import {$dialog} from '../../../stores/dialog';
 import {clearTarget} from '../../../stores/editor';
 import Resizable from '../../shared/Resizable/Resizable';
 import AssistantContent from '../AssistantContent/AssistantContent';
-import Header from '../header/AssistantHeader/AssistantHeader';
+import AssistantHeader from '../header/AssistantHeader/AssistantHeader';
 import './AssistantDialog.css';
 
 export type Props = {
     className?: string;
 };
 
-export default function AssistantDialog({className = ''}: Props): JSX.Element {
-    const visible = useStore($visible);
+export default function AssistantDialog({className = ''}: Props): React.ReactNode {
+    const {hidden} = useStore($dialog, {keys: ['hidden']});
     const [dragging, setDragging] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
@@ -70,7 +70,7 @@ export default function AssistantDialog({className = ''}: Props): JSX.Element {
             nodeRef={ref}
         >
             <Resizable
-                className={clsx(
+                className={twJoin(
                     'enonic-ai',
                     'AssistantDialog',
                     'absolute',
@@ -80,14 +80,14 @@ export default function AssistantDialog({className = ''}: Props): JSX.Element {
                     'border',
                     'shadow-xl',
                     'z-[2000]',
-                    {'opacity-80': dragging},
-                    {hidden: !visible},
+                    dragging && 'opacity-80',
+                    hidden && 'hidden',
                     className,
                 )}
                 ref={ref}
                 onStart={() => clearTarget()}
             >
-                <Header className={dragging ? 'cursor-grabbing' : 'cursor-grab'} />
+                <AssistantHeader className={dragging ? 'cursor-grabbing' : 'cursor-grab'} />
                 <AssistantContent />
             </Resizable>
         </Draggable>

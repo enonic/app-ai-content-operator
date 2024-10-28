@@ -6,7 +6,7 @@ type Props = {
     animated?: boolean;
 };
 
-export default function AssistantIcon({className, animated = false}: Props): JSX.Element {
+export default function AssistantIcon({className, animated = false}: Props): React.ReactNode {
     const pupilId = useId();
     const eyeId = useId();
 

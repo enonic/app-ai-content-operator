@@ -1,7 +1,7 @@
 import {atom} from 'nanostores';
 
 import {MENTION_TOPIC} from '../common/mentions';
-import {$visible} from './dialog';
+import {$dialog} from './dialog';
 
 export const $focus = atom<Optional<string>>(undefined);
 
@@ -24,12 +24,12 @@ function init(): void {
         (e: FocusEvent) => {
             const {target} = e;
 
-            if (!$visible.get() || !(target instanceof Element)) {
+            if ($dialog.get().hidden || !(target instanceof Element)) {
                 return;
             }
 
             const dataPathAttr = target.getAttribute('data-path');
-            if (target.getAttribute('data-path')) {
+            if (dataPathAttr) {
                 setFocusedElementPath(dataPathAttr);
             } else if (target.getAttribute('name') === 'displayName') {
                 setFocusedElementPath(MENTION_TOPIC.path);

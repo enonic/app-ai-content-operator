@@ -10,7 +10,7 @@ type Props = {
     scope: Optional<string>;
 };
 
-export default function ScopeControl({className, scope}: Props): JSX.Element {
+export default function ScopeControl({className, scope}: Props): React.ReactNode {
     const scopePath = scope ? pathFromString(scope) : null;
     const scopeBreadcrumbItems: Path[] = [];
     let scopeParentPath: Optional<Path> = scopePath;

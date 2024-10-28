@@ -9,7 +9,7 @@ type Props = {
     content: string;
 };
 
-export default function ElementItemControls({className, name, content}: Props): JSX.Element {
+export default function ElementItemControls({className, name, content}: Props): React.ReactNode {
     return (
         <div
             className={twMerge(

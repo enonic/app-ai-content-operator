@@ -26,7 +26,7 @@ export default function RadioGroup<T extends string>({
     options,
     selectedValue,
     handleChange,
-}: Props<T>): JSX.Element {
+}: Props<T>): React.ReactNode {
     return (
         <fieldset className={twMerge('grid grid-cols-min-280', className)}>
             {label && <legend className='font-bold capitalize text-base pb-2'>{label}</legend>}

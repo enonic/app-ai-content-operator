@@ -11,7 +11,6 @@
     "action.showNext": "Следующий вариант",
     "action.showPrevious": "Предыдущий вариант",
     "field.chat": "Чат",
-    "field.settings": "Настройки",
     "text.greeting": "Чем могу помочь сегодня?",
     "text.input.placeholder": "Сообщение AI Ассистенту...",
     "text.input.tip": "Нажмите @ для упоминания элементов на странице."

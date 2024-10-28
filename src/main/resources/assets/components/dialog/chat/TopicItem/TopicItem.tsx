@@ -18,7 +18,7 @@ type Props = {
     value: string | MultipleContentValue;
 };
 
-export default function TopicItem({className, messageId, name, value}: Props): JSX.Element {
+export default function TopicItem({className, messageId, name, value}: Props): React.ReactNode {
     const {t} = useTranslation();
     const topic = t('field.label.topic');
     const content = pickMessageValue(value);

@@ -9,7 +9,7 @@ type Props = {
     last: boolean;
 };
 
-export default function Message({className, message, last}: Props): JSX.Element {
+export default function Message({className, message, last}: Props): React.ReactNode {
     return message.role === MessageRole.USER ? (
         <UserMessage className={className}>{message.content.node}</UserMessage>
     ) : (

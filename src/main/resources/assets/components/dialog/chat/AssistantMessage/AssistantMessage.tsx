@@ -19,7 +19,7 @@ type Props = {
 
 const ORDER: string[] = Object.values(SPECIAL_NAMES).reverse();
 
-function createFields({id: messageId, content}: ModelChatMessage): JSX.Element[] {
+function createFields({id: messageId, content}: ModelChatMessage): React.ReactNode[] {
     const classNames = 'p-2 border-dashed last:!border-b';
     return Object.entries(content)
         .sort(([keyA], [keyB]) => {
@@ -48,7 +48,7 @@ function createFields({id: messageId, content}: ModelChatMessage): JSX.Element[]
         });
 }
 
-export default function AssistantMessage({className, message, last}: Props): JSX.Element {
+export default function AssistantMessage({className, message, last}: Props): React.ReactNode {
     return (
         <div className={twMerge('flex gap-2', className)}>
             <AssistantIcon className='shrink-0 mt-3 text-enonic-blue-light' />

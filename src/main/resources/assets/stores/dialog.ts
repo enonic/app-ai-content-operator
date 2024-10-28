@@ -1,15 +1,14 @@
-import {computed, map} from 'nanostores';
+import {map} from 'nanostores';
 
 import {addGlobalOpenDialogHandler, AiEvents, dispatch} from '../common/events';
-import {setFocusedElementPath} from './focus';
 import {getParentPath, pathFromString, pathToString} from './pathUtil';
 import {setScope} from './scope';
 
-export type DialogView = 'none' | 'chat' | 'settings';
+type WelcomeState = 'in-progress' | 'done';
 
 export type Dialog = {
-    view: DialogView;
-    firstTime: boolean;
+    hidden: boolean;
+    welcomeState?: WelcomeState;
     contextPath: Optional<string>;
 };
 
@@ -18,30 +17,24 @@ type OpenDialogData = {
 };
 
 export const $dialog = map<Dialog>({
-    view: 'none',
-    firstTime: true,
+    hidden: true,
     contextPath: undefined,
 });
 
-export const $visible = computed($dialog, state => state.view !== 'none');
+export const setDialogHidden = (hidden: boolean): void => $dialog.setKey('hidden', hidden);
 
-export const markVisited = (): void => $dialog.setKey('firstTime', false);
+export const setWelcomeState = (state: WelcomeState): void => $dialog.setKey('welcomeState', state);
 
 export const setContextPath = (path: Optional<string>): void => $dialog.setKey('contextPath', path);
 
-export const setDialogView = (view: DialogView): void => $dialog.setKey('view', view);
-
-export const toggleDialogVisible = (): void => $dialog.setKey('view', $dialog.get().view === 'none' ? 'chat' : 'none');
-
-export const toggleDialogView = (): void => $dialog.setKey('view', $dialog.get().view === 'chat' ? 'settings' : 'chat');
-
 export const toggleDialog = (): void => {
-    dispatch($visible.get() ? AiEvents.DIALOG_HIDDEN : AiEvents.DIALOG_SHOWN);
-    toggleDialogVisible();
+    const {hidden} = $dialog.get();
+    dispatch(hidden ? AiEvents.DIALOG_SHOWN : AiEvents.DIALOG_HIDDEN);
+    setDialogHidden(!hidden);
 };
 
 addGlobalOpenDialogHandler((event: CustomEvent<OpenDialogData>) => {
-    if (!$visible.get()) {
+    if ($dialog.get().hidden) {
         toggleDialog();
     }
 
@@ -52,7 +45,6 @@ addGlobalOpenDialogHandler((event: CustomEvent<OpenDialogData>) => {
         const scope = scopePath ? pathToString(scopePath) : null;
 
         setScope(scope);
-        setFocusedElementPath(dataPath);
         setContextPath(dataPath);
     }
 });

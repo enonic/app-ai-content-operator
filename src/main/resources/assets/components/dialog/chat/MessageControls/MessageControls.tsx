@@ -26,7 +26,7 @@ function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
         }));
 }
 
-export default function MessageControls({className, content, last}: Props): JSX.Element {
+export default function MessageControls({className, content, last}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     const multiple = Object.keys(content).length > 1;

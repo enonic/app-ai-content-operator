@@ -18,7 +18,7 @@ function scrollBottom(element: HTMLDivElement): void {
     element.scrollTop = element.scrollHeight;
 }
 
-function createMessages(history: ChatMessage[], isLoading: boolean): JSX.Element[] {
+function createMessages(history: ChatMessage[], isLoading: boolean): React.ReactNode[] {
     const messages = history.map((message, index) => {
         const last = index === history.length - 1;
         return <Message key={message.id} className='first:mt-auto' message={message} last={last} />;
@@ -29,7 +29,7 @@ function createMessages(history: ChatMessage[], isLoading: boolean): JSX.Element
     return messages;
 }
 
-export default function ChatThread({className = ''}: Props): JSX.Element {
+export default function ChatThread({className = ''}: Props): React.ReactNode {
     const {history} = useStore($chat, {keys: ['history']});
     const count = history.length;
     const empty = count === 0;

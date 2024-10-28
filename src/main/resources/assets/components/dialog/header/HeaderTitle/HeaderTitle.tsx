@@ -1,19 +1,14 @@
-import {useStore} from '@nanostores/react';
 import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
-
-import {$dialog} from '../../../../stores/dialog';
 
 type Props = {
     className?: string;
 };
 
-export default function HeaderTitle({className}: Props): JSX.Element {
+export default function HeaderTitle({className}: Props): React.ReactNode {
     const {t} = useTranslation();
-    const {view} = useStore($dialog, {keys: ['view']});
 
-    const isSettings = view === 'settings';
-    const title = isSettings ? t('field.settings') : `${t('field.chat')}`;
+    const title = t('field.chat');
 
     return (
         <div

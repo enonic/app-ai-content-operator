@@ -15,8 +15,6 @@ import {
     HeroIconClipboardDocumentCheck,
     HeroIconClose,
     HeroIconCodeBracket,
-    HeroIconCog,
-    HeroIconCogSolid,
     HeroIconExclamationTriangleMicro,
     HeroIconPencilSquared,
     HeroIconPencilSquaredSolid,
@@ -47,12 +45,10 @@ const outlineIcons = {
     sparkles: HeroIconSparkles,
     presentationChartLine: HeroIconPresentationChartLine,
     codeBracket: HeroIconCodeBracket,
-    cog: HeroIconCog,
     pencilSquared: HeroIconPencilSquared,
 } as const;
 
 const solidIcons = {
-    cog: HeroIconCogSolid,
     checkCircle: HeroIconCheckCircleSolid,
     pencilSquared: HeroIconPencilSquaredSolid,
 } as const;
@@ -90,7 +86,7 @@ type IconType = 'outline' | 'solid' | 'micro';
 function selectIcon(
     name: IconName,
     type: Optional<IconType>,
-): (props: {className?: string; title?: string}) => JSX.Element {
+): (props: {className?: string; title?: string}) => React.ReactNode {
     if (type === 'solid') {
         if (isSolidIcon(name)) {
             return solidIcons[name];
@@ -125,7 +121,7 @@ function selectIcon(
     return svgIcons[name];
 }
 
-export default function Icon({className, name, type, title}: Props): JSX.Element {
+export default function Icon({className, name, type, title}: Props): React.ReactNode {
     const IconElement = selectIcon(name, type);
     return <IconElement className={twMerge('w-6 h-6', className)} title={title} />;
 }

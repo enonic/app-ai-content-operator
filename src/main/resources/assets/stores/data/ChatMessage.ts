@@ -15,7 +15,7 @@ export type ModelChatMessage = {
 };
 
 export type UserChatMessageContent = {
-    node: JSX.Element;
+    node: React.ReactNode;
     text: string;
     prompt: string;
 };

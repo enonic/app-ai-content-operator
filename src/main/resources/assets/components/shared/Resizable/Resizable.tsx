@@ -12,7 +12,7 @@ const MIN_SIZE = 360;
 export default forwardRef(function Resizable(
     {className, children, onStart, style = {}, ...props}: Props,
     ref: ForwardedRef<HTMLDivElement>,
-): JSX.Element {
+): React.ReactNode {
     const [width, setWidth] = useState<number | undefined>(undefined);
     const [height, setHeight] = useState<number | undefined>(undefined);
 
@@ -69,6 +69,7 @@ export default forwardRef(function Resizable(
                     'active:-bottom-4 active:-right-4 active:pl-4 active:pr-5 active:py-4 active:outline-none',
                 )}
                 onMouseDown={rsMouseDownHandler}
+                tabIndex={-1}
             >
                 ⌟
             </button>

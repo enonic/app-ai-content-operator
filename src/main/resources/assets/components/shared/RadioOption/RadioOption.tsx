@@ -27,7 +27,7 @@ export default function RadioOption<T extends string>({
     disabled,
     readOnly,
     changeHandler,
-}: Props<T>): JSX.Element {
+}: Props<T>): React.ReactNode {
     return (
         <label
             className={twMerge(

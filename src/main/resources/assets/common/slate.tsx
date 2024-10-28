@@ -5,7 +5,7 @@ import MentionElement from '../components/dialog/input/prompt/MentionElement/Men
 import {insertMention} from '../plugins/withMentions';
 import {Mention} from '../stores/data/Mention';
 
-type ElementEntry = JSX.Element | string;
+type ElementEntry = React.ReactNode | string;
 
 const isCustomText = (node: Descendant): node is Slate.CustomText => 'text' in node;
 
@@ -25,7 +25,7 @@ const isEmptyEntry = (element: ElementEntry): boolean => {
     );
 };
 
-export function parseNodes(nodes: Descendant[]): JSX.Element {
+export function parseNodes(nodes: Descendant[]): React.ReactNode {
     const elements = nodes.map((node, index): ElementEntry => {
         if (isCustomText(node)) {
             return node.text;

@@ -9,7 +9,7 @@ type Props = {
     disabled?: boolean;
 };
 
-export default function NewChatButton({className, disabled}: Props): JSX.Element {
+export default function NewChatButton({className, disabled}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     const classNames = clsx(

@@ -9,7 +9,7 @@ type Props = {
     clickHandler: () => void;
 };
 
-export default function SendButton({className, disabled, clickHandler}: Props): JSX.Element {
+export default function SendButton({className, disabled, clickHandler}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     const classNames = clsx(

@@ -10,7 +10,7 @@ type Props = {
     value: string | MultipleContentValue;
 };
 
-export default function ErrorItem({className, value}: Props): JSX.Element {
+export default function ErrorItem({className, value}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     return (

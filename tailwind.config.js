@@ -56,8 +56,24 @@ export default {
                 auto: 'auto',
                 'fit-1fr': 'minmax(auto, min-content) 1fr',
             },
+            keyframes: {
+                'slide-fade-in': {
+                    '0%': {
+                        opacity: '0',
+                        transform: 'translateY(0.5rem)',
+                    },
+                    '100%': {
+                        opacity: '1',
+                        transform: 'translateY(0)',
+                    },
+                },
+            },
+            animation: {
+                'slide-fade-in': 'slide-fade-in 500ms ease-in-out forwards',
+            },
         },
     },
+    safelist: ['animate-slide-fade-in'],
     plugins: [
         require('@tailwindcss/typography'),
         scopedPreflightStyles({

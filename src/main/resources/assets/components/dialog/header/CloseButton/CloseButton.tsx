@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
 
-import {setDialogView} from '../../../../stores/dialog';
+import {setDialogHidden} from '../../../../stores/dialog';
 import ActionButton from '../../../shared/ActionButton/ActionButton';
 
 type Props = {
     className?: string;
 };
 
-export default function CloseButton({className}: Props): JSX.Element {
+export default function CloseButton({className}: Props): React.ReactNode {
     const {t} = useTranslation();
     const classNames = clsx(
         'CloseButton',
@@ -26,7 +26,7 @@ export default function CloseButton({className}: Props): JSX.Element {
             mode='icon-only'
             size='md'
             clickHandler={() => {
-                setDialogView('none');
+                setDialogHidden(true);
             }}
         />
     );
