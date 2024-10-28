@@ -6,7 +6,7 @@ type Props = {
     className?: string;
 };
 
-export default function LoadingMessage({className}: Props): JSX.Element {
+export default function LoadingMessage({className}: Props): React.ReactNode {
     return (
         <div className={twMerge('flex gap-2', className)}>
             <AssistantIcon className='shrink-0 text-enonic-blue-light' animated />

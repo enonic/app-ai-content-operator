@@ -13,7 +13,7 @@ type Props = {
     active?: boolean;
 };
 
-export default function ScopeItem({className, path, active}: Props): JSX.Element {
+export default function ScopeItem({className, path, active}: Props): React.ReactNode {
     const formItem = path ? getFormItemByPath(path) : null;
     const parentPath = getParentPath(path);
     const parentFormItem = parentPath ? getFormItemByPath(parentPath) : null;

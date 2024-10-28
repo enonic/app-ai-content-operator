@@ -6,7 +6,7 @@ type Props = {
     type?: 'text' | 'html';
 };
 
-export default function ElementItemContent({className, content, type = 'text'}: Props): JSX.Element {
+export default function ElementItemContent({className, content, type = 'text'}: Props): React.ReactNode {
     switch (type) {
         case 'html':
             return (

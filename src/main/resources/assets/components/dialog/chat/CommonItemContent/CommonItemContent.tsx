@@ -9,7 +9,7 @@ type Props = {
     content: string;
 };
 
-export default function CommonItemContent({className, content}: Props): JSX.Element {
+export default function CommonItemContent({className, content}: Props): React.ReactNode {
     return (
         <div className={twMerge('group/item relative leading-6', className)}>
             <CopyControl

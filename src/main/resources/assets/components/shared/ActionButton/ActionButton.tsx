@@ -18,7 +18,7 @@ type Props = {
 export default forwardRef(function ActionButton(
     {className, disabled, name, icon, mode = 'full', size = 'sm', clickHandler}: Props,
     ref: React.Ref<HTMLButtonElement>,
-): JSX.Element {
+): React.ReactNode {
     const isFull = mode === 'full';
     const hasText = isFull || mode === 'text-only';
 

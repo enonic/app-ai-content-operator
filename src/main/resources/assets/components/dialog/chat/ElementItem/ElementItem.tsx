@@ -18,7 +18,7 @@ type Props = {
     value: string | MultipleContentValue;
 };
 
-export default function ElementItem({className, messageId, name, value}: Props): JSX.Element {
+export default function ElementItem({className, messageId, name, value}: Props): React.ReactNode {
     const inputWithPath = getStoredPathByDataAttrString(name);
     const title = inputWithPath ? pathToPrettifiedString(inputWithPath) : '';
     const label = inputWithPath ? getPathLabel(inputWithPath) : name;

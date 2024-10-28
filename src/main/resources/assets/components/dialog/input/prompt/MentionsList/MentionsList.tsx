@@ -21,7 +21,7 @@ export default function MentionsList({
     mentions,
     selectedIndex,
     handleClick,
-}: Props): JSX.Element {
+}: Props): React.ReactNode {
     const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const [listWidth, setListWidth] = useState(0);
 

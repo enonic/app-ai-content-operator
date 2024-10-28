@@ -13,7 +13,7 @@ type Props = {
     content: string;
 };
 
-export default function ApplyControl({className, name, content}: Props): JSX.Element {
+export default function ApplyControl({className, name, content}: Props): React.ReactNode {
     const {t} = useTranslation();
     const [applying, setApplying] = useState(false);
 

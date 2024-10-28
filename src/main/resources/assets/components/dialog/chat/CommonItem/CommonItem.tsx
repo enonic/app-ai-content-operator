@@ -9,7 +9,7 @@ type Props = {
     value: string | MultipleContentValue;
 };
 
-export default function CommonItem({className, value}: Props): JSX.Element {
+export default function CommonItem({className, value}: Props): React.ReactNode {
     return (
         <li className={twMerge('grid grid-cols-1 gap-y-1', className)}>
             <CommonItemContent content={combineMessageValues(value)} />

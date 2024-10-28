@@ -18,7 +18,7 @@ function animateScrollForPath(path: string): void {
     }
 }
 
-export default function MentionElement({attributes = {}, children, element}: Props): JSX.Element {
+export default function MentionElement({attributes = {}, children, element}: Props): React.ReactNode {
     const selected = useSelected();
     const focused = useFocused();
 

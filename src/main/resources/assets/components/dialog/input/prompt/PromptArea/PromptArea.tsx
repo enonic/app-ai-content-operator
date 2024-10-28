@@ -1,6 +1,6 @@
 import {useStore} from '@nanostores/react';
 import clsx from 'clsx';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {createEditor, Descendant, Editor, Node, Transforms} from 'slate';
 import {withHistory} from 'slate-history';
@@ -13,7 +13,7 @@ import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugi
 import {sendUserMessage} from '../../../../../stores/chat';
 import {$mentions, getStoredPathByDataAttrString} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
-import {$visible, setContextPath} from '../../../../../stores/dialog';
+import {$dialog, setContextPath} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
 import {$focus, setFocusedElementPath} from '../../../../../stores/focus';
 import {isChatRequestRunning} from '../../../../../stores/requests';
@@ -56,10 +56,17 @@ function sendPrompt(editor: Editor): void {
     clearPrompt(editor);
 }
 
-export default function PromptArea({className}: Props): JSX.Element {
+export default function PromptArea({className}: Props): React.ReactNode {
+    const ref = useRef<HTMLDivElement | null>(null);
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.focus();
+        }
+    }, []);
+
     const [editor] = useState(() => withMentions(withHistory(withReact(createEditor()))));
     const [rect, setRect] = useState<DOMRect | undefined>();
-    const visible = useStore($visible);
+    const {hidden} = useStore($dialog, {keys: ['hidden']});
     const target = useStore($target);
 
     const [index, setIndex] = useState(0);
@@ -73,7 +80,7 @@ export default function PromptArea({className}: Props): JSX.Element {
     const focusedElementPath = useStore($focus);
 
     useEffect(() => {
-        if (!visible) {
+        if (hidden) {
             clearTarget();
             setContextPath(null);
             return;
@@ -96,7 +103,7 @@ export default function PromptArea({className}: Props): JSX.Element {
         }
 
         ReactEditor.focus(editor);
-    }, [focusedElementPath, allMentions, visible]);
+    }, [focusedElementPath, allMentions, hidden]);
 
     const requestRunning = useStore(isChatRequestRunning);
     const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));
@@ -207,6 +214,7 @@ export default function PromptArea({className}: Props): JSX.Element {
                     onKeyDown={handleKeyDown}
                     placeholder={t('text.input.placeholder')}
                     renderElement={PromptAreaElement}
+                    ref={ref}
                 />
                 {target && hasMentions && (
                     <MentionsList

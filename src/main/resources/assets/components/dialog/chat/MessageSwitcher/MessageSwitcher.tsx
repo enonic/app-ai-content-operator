@@ -12,7 +12,7 @@ export interface Props {
     content: MultipleContentValue;
 }
 
-export default function MessageSwitcher({className, messageId, name, content}: Props): JSX.Element {
+export default function MessageSwitcher({className, messageId, name, content}: Props): React.ReactNode {
     const {t} = useTranslation();
     const {values, selectedIndex} = content;
     const isFirst = selectedIndex === 0;

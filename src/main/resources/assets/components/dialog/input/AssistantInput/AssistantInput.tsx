@@ -8,7 +8,7 @@ export type Props = {
     className?: string;
 };
 
-export default function AssistantInput({className = ''}: Props): JSX.Element {
+export default function AssistantInput({className = ''}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     return (

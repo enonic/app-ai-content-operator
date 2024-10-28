@@ -7,15 +7,18 @@ type MentionSpec = {
     search: string;
 };
 
-export function insertMention(editor: Editor, mention: Mention): void {
-    const mentionElement: Slate.MentionElement = {
+export function toMentionElement(mention: Mention): Slate.MentionElement {
+    return {
         type: 'mention',
         character: mention.label,
         path: mention.path,
         children: [{text: ''}],
         title: mention.prettified,
     };
-    Transforms.insertNodes(editor, [mentionElement, {text: ' '}]);
+}
+
+export function insertMention(editor: Editor, mention: Mention): void {
+    Transforms.insertNodes(editor, [toMentionElement(mention), {text: ' '}]);
     Transforms.move(editor);
 }
 

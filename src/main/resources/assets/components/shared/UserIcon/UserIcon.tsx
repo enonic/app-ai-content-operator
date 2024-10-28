@@ -8,7 +8,7 @@ type Props = {
     className?: string;
 };
 
-export default function UserIcon({className}: Props): JSX.Element {
+export default function UserIcon({className}: Props): React.ReactNode {
     const {user} = useStore($config, {keys: ['user']});
     return (
         <div

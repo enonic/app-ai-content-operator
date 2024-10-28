@@ -1,19 +1,15 @@
-import {useStore} from '@nanostores/react';
-import {twJoin, twMerge} from 'tailwind-merge';
+import {useTranslation} from 'react-i18next';
+import {twMerge} from 'tailwind-merge';
 
-import {$dialog} from '../../../../stores/dialog';
 import CloseButton from '../CloseButton/CloseButton';
-import HeaderTitle from '../HeaderTitle/HeaderTitle';
 import NewChatButton from '../NewChatButton/NewChatButton';
-import SettingsButton from '../SettingsButton/SettingsButton';
 
 type Props = {
     className?: string;
 };
 
-export default function AssistantHeader({className}: Props): JSX.Element {
-    const {view} = useStore($dialog, {keys: ['view']});
-    const isSettings = view === 'settings';
+export default function AssistantHeader({className}: Props): React.ReactNode {
+    const {t} = useTranslation();
 
     return (
         <div
@@ -25,10 +21,9 @@ export default function AssistantHeader({className}: Props): JSX.Element {
                 className,
             )}
         >
-            <NewChatButton className={twJoin(isSettings && 'invisible')} disabled={isSettings} />
-            <HeaderTitle className='drag-handle self-stretch' />
+            <NewChatButton />
+            <div className='px-2 text-center leading-10 font-semibold drag-handle self-stretch'>{t('field.chat')}</div>
             <div className='text-right text-nowrap'>
-                <SettingsButton />
                 <CloseButton />
             </div>
         </div>

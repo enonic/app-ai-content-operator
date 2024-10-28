@@ -10,7 +10,7 @@ type Props = {
     content: string;
 };
 
-export default function CopyControl({className, content}: Props): JSX.Element {
+export default function CopyControl({className, content}: Props): React.ReactNode {
     const {t} = useTranslation();
     const [copying, setCopying] = useState(false);
 
