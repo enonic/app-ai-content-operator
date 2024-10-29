@@ -69,7 +69,7 @@ export default {
                 },
             },
             animation: {
-                'slide-fade-in': 'slide-fade-in 500ms ease-in-out forwards',
+                'slide-fade-in': 'slide-fade-in 300ms ease-in-out forwards',
             },
         },
     },
