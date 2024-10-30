@@ -8,7 +8,7 @@ import {addGlobalUpdateDataHandler} from '../common/events';
 import {findMentionByPath, findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
 import {$context} from './context';
 import {ContentData, PropertyArray, PropertyValue} from './data/ContentData';
-import {EventData} from './data/EventData';
+import {UpdateEventData} from './data/EventData';
 import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from './data/FormItemWithPath';
 import {Language} from './data/Language';
 import {Mention} from './data/Mention';
@@ -60,7 +60,7 @@ export interface DataEntry {
     schemaHelpText?: string;
 }
 
-addGlobalUpdateDataHandler((event: CustomEvent<EventData>) => {
+addGlobalUpdateDataHandler(event => {
     putEventDataToStore(event.detail);
 });
 
@@ -76,7 +76,7 @@ export const getSchema = (): Optional<Readonly<Schema>> => $data.get().schema;
 
 export const setSchema = (schema: Schema): void => $data.setKey('schema', schema);
 
-function putEventDataToStore(eventData: EventData): void {
+function putEventDataToStore(eventData: UpdateEventData): void {
     if (!eventData['payload']) {
         return;
     }

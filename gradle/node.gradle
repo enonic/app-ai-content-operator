@@ -13,3 +13,8 @@ task pnpmInstallForce( type: PnpmTask ) {
 task cleanNode( type: Delete ) {
     delete 'node_modules'
 }
+
+pnpmInstall {
+    inputs.file 'package.json'
+    outputs.file 'pnpm-lock.yaml'
+}

@@ -1,27 +1,33 @@
-import {map} from 'nanostores';
+import {computed, map} from 'nanostores';
 
 import {addGlobalOpenDialogHandler, AiEvents, dispatch} from '../common/events';
-import {setContext} from './context';
-import {getParentPath, pathFromString, pathToString} from './pathUtil';
-import {setScope} from './scope';
+import {$chatRequestRunning} from './requests';
 
 export type Dialog = {
     hidden: boolean;
-    welcomed: boolean;
-};
-
-type OpenDialogData = {
-    sourceDataPath: Optional<string>;
+    initialized: boolean;
 };
 
 export const $dialog = map<Dialog>({
     hidden: true,
-    welcomed: false,
+    initialized: false,
 });
 
-export const setDialogHidden = (hidden: boolean): void => $dialog.setKey('hidden', hidden);
+const unsubscribe = $dialog.listen(({hidden}, _, key) => {
+    if (key === 'hidden' && !hidden) {
+        unsubscribe();
+        setTimeout(() => {
+            $dialog.setKey('initialized', true);
+        }, 800);
+    }
+});
 
-export const markWelcomed = (): void => $dialog.setKey('welcomed', true);
+export const $loading = computed(
+    [$dialog, $chatRequestRunning],
+    ({initialized}, requestRunning) => !initialized || requestRunning,
+);
+
+export const setDialogHidden = (hidden: boolean): void => $dialog.setKey('hidden', hidden);
 
 export const toggleDialog = (): void => {
     const {hidden} = $dialog.get();
@@ -29,18 +35,8 @@ export const toggleDialog = (): void => {
     setDialogHidden(!hidden);
 };
 
-addGlobalOpenDialogHandler((event: CustomEvent<OpenDialogData>) => {
+addGlobalOpenDialogHandler(() => {
     if ($dialog.get().hidden) {
         toggleDialog();
-    }
-
-    const dataPath = event.detail.sourceDataPath;
-
-    if (dataPath) {
-        const scopePath = getParentPath(pathFromString(dataPath));
-        const scope = scopePath ? pathToString(scopePath) : null;
-
-        setScope(scope);
-        setContext(dataPath);
     }
 });

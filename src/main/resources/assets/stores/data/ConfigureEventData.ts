@@ -1,4 +1,4 @@
-export type ConfigData = {
+export type ConfigureEventData = {
     payload: {
         user?: {
             fullName: string;

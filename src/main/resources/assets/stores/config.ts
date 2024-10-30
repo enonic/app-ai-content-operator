@@ -1,7 +1,6 @@
 import {map} from 'nanostores';
 
 import {addGlobalConfigureHandler} from '../common/events';
-import {ConfigData} from './data/ConfigData';
 
 export type Config = {
     serviceUrl: string;
@@ -28,7 +27,7 @@ export const setUser = (user: Config['user']): void => $config.setKey('user', us
 export const setLocales = (locales: string[]): void => $config.setKey('locales', locales.slice());
 export const setInstructions = (instructions: string): void => $config.setKey('instructions', instructions);
 
-addGlobalConfigureHandler((event: CustomEvent<ConfigData>) => {
+addGlobalConfigureHandler(event => {
     const {user, instructions} = event.detail.payload;
 
     if (user) {

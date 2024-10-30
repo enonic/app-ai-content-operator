@@ -49,11 +49,9 @@ function createFields({id: messageId, content}: ModelChatMessage): React.ReactNo
 
 export default function AssistantMessage({className, message, last}: Props): React.ReactNode {
     return (
-        <div className={twMerge('flex gap-2 overflow-hidden', className)}>
-            <AssistantIcon
-                className={twJoin('shrink-0 mt-3 text-enonic-blue-light', last && 'animate-slide-fade-in')}
-            />
-            <article className={twJoin('flex flex-col gap-1 flex-1', last && 'animate-slide-fade-in')}>
+        <div className={twMerge('flex gap-2', className)}>
+            <AssistantIcon className={twJoin('shrink-0 mt-3 text-enonic-blue-light')} />
+            <article className={twJoin('flex flex-col gap-1 flex-1')}>
                 <ul className='flex flex-col divide-y'>{createFields(message)}</ul>
                 <MessageControls className='pt-1' content={message.content} last={last} />
             </article>

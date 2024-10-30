@@ -8,7 +8,7 @@ import {pickMessageValue} from '../../../../common/mentions';
 import {sendRetryMessage} from '../../../../stores/chat';
 import {ApplyMessage} from '../../../../stores/data/ApplyMessage';
 import {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
-import {isChatRequestRunning} from '../../../../stores/requests';
+import {$chatRequestRunning} from '../../../../stores/requests';
 import ActionButton from '../../../shared/ActionButton/ActionButton';
 
 export interface Props {
@@ -30,7 +30,7 @@ export default function MessageControls({className, content, last}: Props): Reac
     const {t} = useTranslation();
 
     const multiple = Object.keys(content).length > 1;
-    const requestRunning = useStore(isChatRequestRunning);
+    const requestRunning = useStore($chatRequestRunning);
     const lastAndAvailable = last && !requestRunning;
 
     return (

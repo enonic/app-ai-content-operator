@@ -16,7 +16,7 @@ import {Mention} from '../../../../../stores/data/Mention';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
 import {$focus, setFocusedElementPath} from '../../../../../stores/focus';
-import {isChatRequestRunning} from '../../../../../stores/requests';
+import {$chatRequestRunning} from '../../../../../stores/requests';
 import {setScope} from '../../../../../stores/scope';
 import SendButton from '../../SendButton/SendButton';
 import MentionsList from '../MentionsList/MentionsList';
@@ -104,7 +104,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
         ReactEditor.focus(editor);
     }, [focusedElementPath, allMentions, hidden]);
 
-    const requestRunning = useStore(isChatRequestRunning);
+    const requestRunning = useStore($chatRequestRunning);
     const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));
     const isSendDisabled = requestRunning || editorEmpty;
 
@@ -201,7 +201,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                 <Editable
                     className={clsx(
                         'w-full max-h-[7.75rem]',
-                        'm-0 py-3 pr-13',
+                        'm-0 py-3 pr-11',
                         'bg-transparent placeholder-black/50',
                         'border-0 rounded-[1.5rem]',
                         'resize-none',

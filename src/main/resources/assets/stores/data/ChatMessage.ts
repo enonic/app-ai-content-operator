@@ -1,6 +1,6 @@
 import {MessageRole} from './MessageType';
 
-export type ChatMessage = UserChatMessage | ModelChatMessage;
+export type ChatMessage = UserChatMessage | ModelChatMessage | SystemChatMessage;
 
 export type UserChatMessage = {
     id: string;
@@ -14,6 +14,12 @@ export type ModelChatMessage = {
     content: ModelChatMessageContent;
 };
 
+export type SystemChatMessage = {
+    id: string;
+    role: MessageRole.SYSTEM;
+    content: SystemChatMessageContent;
+};
+
 export type UserChatMessageContent = {
     node: React.ReactNode;
     text: string;
@@ -25,4 +31,9 @@ export type ModelChatMessageContent = Record<string, string | MultipleContentVal
 export type MultipleContentValue = {
     values: string[];
     selectedIndex: number;
+};
+
+export type SystemChatMessageContent = {
+    type: 'context';
+    node: React.ReactNode;
 };

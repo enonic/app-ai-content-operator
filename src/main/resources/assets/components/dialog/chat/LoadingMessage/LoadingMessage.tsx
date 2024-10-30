@@ -8,9 +8,9 @@ type Props = {
 
 export default function LoadingMessage({className}: Props): React.ReactNode {
     return (
-        <div className={twMerge('flex gap-2 overflow-hidden', className)}>
-            <AssistantIcon className='shrink-0 text-enonic-blue-light animate-slide-fade-in' animated />
-            <article className='flex items-center animate-slide-fade-in'>
+        <div className={twMerge('flex gap-2', className)}>
+            <AssistantIcon className='shrink-0 text-enonic-blue-light' animated />
+            <article className='flex items-center'>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='120'

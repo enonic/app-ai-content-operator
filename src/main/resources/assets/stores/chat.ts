@@ -195,8 +195,12 @@ function mapToModelMessageContent(content: Record<string, unknown>): ModelChatMe
     }, {});
 }
 
+const isUserOrModel = (message: ChatMessage): message is UserChatMessage | ModelChatMessage => {
+    return message.role !== MessageRole.SYSTEM;
+};
+
 function historyToMessages(history: ChatMessage[]): Message[] {
-    return history.map(({role, content}) => ({
+    return history.filter(isUserOrModel).map(({role, content}) => ({
         role,
         text: role === MessageRole.USER ? content.prompt : modelChatMessageContentToText(content),
     }));

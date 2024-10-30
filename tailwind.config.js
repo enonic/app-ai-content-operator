@@ -60,16 +60,36 @@ export default {
                 'slide-fade-in': {
                     '0%': {
                         opacity: '0',
-                        transform: 'translateY(0.5rem)',
+                        'padding-bottom': '0',
+                        'padding-top': '0.5rem',
                     },
                     '100%': {
                         opacity: '1',
-                        transform: 'translateY(0)',
+                        'padding-bottom': '0.5rem',
+                        'padding-top': '0',
+                    },
+                },
+                blink: {
+                    '0%': {
+                        outline: '0 solid rgb(147 197 253)',
+                    },
+                    '50%': {
+                        outline: '0.5rem solid rgb(147 197 253 / 10%)',
+                    },
+                    '90%': {
+                        outline: '0.75rem solid rgb(147 197 253 / 0%)',
+                    },
+                    '99%': {
+                        outline: '0 solid transparent',
+                    },
+                    '100%': {
+                        outline: 'inherit',
                     },
                 },
             },
             animation: {
                 'slide-fade-in': 'slide-fade-in 300ms ease-in-out forwards',
+                blink: 'blink 600ms linear forwards',
             },
         },
     },

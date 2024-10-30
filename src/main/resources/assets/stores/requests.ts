@@ -29,7 +29,7 @@ export const $requests = map<RequestStore>({
     chat: {state: RequestState.DONE},
 });
 
-export const isChatRequestRunning = computed($requests, ({chat}) => chat.state === RequestState.IN_PROGRESS);
+export const $chatRequestRunning = computed($requests, ({chat}) => chat.state === RequestState.IN_PROGRESS);
 
 async function attachRequest<T extends ModelPostResponse, K extends keyof RequestStore>(
     key: K,

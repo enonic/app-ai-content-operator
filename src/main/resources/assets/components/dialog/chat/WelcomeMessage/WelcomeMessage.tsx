@@ -1,16 +1,13 @@
 import {useStore} from '@nanostores/react';
 import {t} from 'i18next';
-import {useEffect, useRef} from 'react';
 import {Trans} from 'react-i18next';
 
 import {toMentionElement} from '../../../../plugins/withMentions';
 import {$config} from '../../../../stores/config';
 import {$mentionInContext, $topic} from '../../../../stores/data';
 import {Mention} from '../../../../stores/data/Mention';
-import {$dialog, markWelcomed} from '../../../../stores/dialog';
-import AssistantIcon from '../../../shared/AssistantIcon/AssistantIcon';
 import MentionElement from '../../input/prompt/MentionElement/MentionElement';
-import LoadingMessage from '../LoadingMessage/LoadingMessage';
+import SystemMessage from '../SystemMessage/SystemMessage';
 
 function createTimedGreeting(name: string): React.ReactNode {
     const hours = new Date().getHours();
@@ -46,35 +43,28 @@ function createContextMessage(topic: string, mentionInContext: Optional<Mention>
         return <Trans i18nKey='text.greeting.context.all.named' components={[topicElements]} />;
     }
 
-    const mentionElement = <MentionElement element={toMentionElement(mentionInContext)} />;
+    const mentionElement = (
+        <MentionElement
+            element={toMentionElement(mentionInContext)}
+            key={mentionInContext.label}
+            className='animate-blink'
+        />
+    );
     return <Trans i18nKey='text.greeting.context.mention' components={[mentionElement]} />;
 }
 
 export default function WelcomeMessage(): React.ReactNode {
     const topic = useStore($topic);
     const mentionInContext = useStore($mentionInContext);
-    const {hidden, welcomed} = useStore($dialog);
-    const ref = useRef<HTMLElement | null>(null);
 
     const {user} = useStore($config, {keys: ['user']});
     const name = user.fullName;
 
-    useEffect(() => {
-        if (!hidden && !welcomed) {
-            setTimeout(() => {
-                markWelcomed();
-            }, 800);
-        }
-    }, [hidden, welcomed]);
+    const classNames = 'first:mt-auto animate-slide-fade-in';
 
-    return !welcomed ? (
-        <LoadingMessage className={'first:mt-auto'} />
-    ) : (
-        <div className='flex gap-2 first:mt-auto overflow-hidden'>
-            <AssistantIcon className='shrink-0 text-enonic-blue-light animate-slide-fade-in' />
-            <article className='pt-1 leading-6 animate-slide-fade-in' ref={ref}>
-                {createTimedGreeting(name)} {createContextMessage(topic, mentionInContext)}
-            </article>
-        </div>
+    return (
+        <SystemMessage className={classNames}>
+            {createTimedGreeting(name)} {createContextMessage(topic, mentionInContext)}
+        </SystemMessage>
     );
 }
