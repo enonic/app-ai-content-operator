@@ -1,7 +1,7 @@
 import {atom} from 'nanostores';
 
 import {addGlobalOpenDialogHandler} from '../common/events';
-import {getParentPath, pathFromString, pathToString} from './pathUtil';
+import {getParentPath, pathFromString, pathToString} from './utils/path';
 
 export const $scope = atom<Optional<string>>(undefined);
 

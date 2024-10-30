@@ -4,9 +4,9 @@ import {twMerge} from 'tailwind-merge';
 import {animateScroll} from '../../../../common/animations';
 import {REGULAR_SCREEN} from '../../../../common/device';
 import {pickMessageValue} from '../../../../common/mentions';
-import {getPathType, getStoredPathByDataAttrString} from '../../../../stores/data';
+import {getInputType, getStoredPathByDataAttrString} from '../../../../stores/data';
 import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
-import {getPathLabel, pathToPrettifiedString} from '../../../../stores/pathUtil';
+import {getPathLabel, pathToPrettifiedString} from '../../../../stores/utils/path';
 import ElementItemContent from '../ElementItemContent/ElementItemContent';
 import ElementItemControls from '../ElementItemControls/ElementItemControls';
 import MessageSwitcher from '../MessageSwitcher/MessageSwitcher';
@@ -39,7 +39,7 @@ export default function ElementItem({className, messageId, name, value}: Props):
                 content={content}
                 name={name}
             />
-            <ElementItemContent className='col-span-3' content={content} type={getPathType(inputWithPath)} />
+            <ElementItemContent className='col-span-3' content={content} type={getInputType(inputWithPath)} />
         </li>
     );
 }

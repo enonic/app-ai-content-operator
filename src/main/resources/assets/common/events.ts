@@ -1,8 +1,5 @@
-import {SPECIAL_NAMES} from '../../lib/shared/prompts';
-import {$data, getPersistedData, getStoredPathByDataAttrString, setPersistedData, setValueByPath} from '../stores/data';
-import {ApplyMessage} from '../stores/data/ApplyMessage';
+import {$data} from '../stores/data';
 import {ConfigureEventData} from '../stores/data/ConfigureEventData';
-import {ContentData} from '../stores/data/ContentData';
 import {UpdateEventData} from '../stores/data/EventData';
 import {OpenDialogEventData} from '../stores/data/OpenDialogEventData';
 
@@ -57,39 +54,6 @@ export function addGlobalConfigureHandler(handler: CustomEventHandler<ConfigureE
 
 export function addGlobalOpenDialogHandler(handler: CustomEventHandler<OpenDialogEventData>): FnVoid {
     return addGlobalHandler(AiEvents.OPEN_DIALOG, handler);
-}
-
-export function dispatchResultApplied(entries: ApplyMessage[]): void {
-    const persistedData = getPersistedData();
-    if (!persistedData) {
-        return;
-    }
-
-    const newData = structuredClone<ContentData>(persistedData);
-    let isAnyChanged = false;
-
-    entries.forEach(({name, content}) => {
-        if (name === SPECIAL_NAMES.topic) {
-            newData.topic = content;
-            isAnyChanged = true;
-            return;
-        }
-
-        const path = getStoredPathByDataAttrString(name);
-        if (path) {
-            setValueByPath({v: content}, path, newData);
-            isAnyChanged = true;
-            return;
-        }
-
-        // handle value not updated
-        console.warn('No path found for:', name);
-    });
-
-    if (isAnyChanged) {
-        setPersistedData(newData);
-        dispatch(AiEvents.RESULT_APPLIED);
-    }
 }
 
 function addGlobalHandler<T>(eventType: AiEvents, handler: CustomEventHandler<T>): FnVoid {

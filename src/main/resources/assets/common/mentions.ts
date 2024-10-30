@@ -1,7 +1,7 @@
 import {MultipleContentValue} from '../stores/data/ChatMessage';
 import {Mention} from '../stores/data/Mention';
 import {Path} from '../stores/data/Path';
-import {pathToString} from '../stores/pathUtil';
+import {pathToString} from '../stores/utils/path';
 
 export const MENTION_ALL = {
     path: '__all__',

@@ -4,26 +4,28 @@ import {SchemaType} from '../../lib/shared/enums';
 import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {SchemaField} from '../../types/shared/model';
 import {isNonNullable} from '../common/data';
-import {addGlobalUpdateDataHandler} from '../common/events';
+import {addGlobalUpdateDataHandler, AiEvents, dispatch} from '../common/events';
 import {findMentionByPath, findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
 import {$context} from './context';
+import {ApplyMessage} from './data/ApplyMessage';
 import {ContentData, PropertyArray, PropertyValue} from './data/ContentData';
+import {DataEntry} from './data/DataEntry';
 import {UpdateEventData} from './data/EventData';
 import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from './data/FormItemWithPath';
 import {Language} from './data/Language';
 import {Mention} from './data/Mention';
 import {Path, PathElement} from './data/Path';
 import {FormItemSet, FormOptionSet, Schema} from './data/Schema';
+import {$scope, isScopeEmpty} from './scope';
 import {
     clonePath,
     getPathLabel,
     isChildPath,
     isRootPath,
     pathFromString,
-    pathsEqual,
     pathToPrettifiedString,
     pathToString,
-} from './pathUtil';
+} from './utils/path';
 import {
     getFormItemsWithPaths,
     isFormItemSet,
@@ -34,8 +36,7 @@ import {
     isInput,
     isInputWithPath,
     isOrContainsEditableInput,
-} from './schemaUtil';
-import {$scope, isScopeEmpty} from './scope';
+} from './utils/schema';
 
 export type Data = {
     language: Language;
@@ -52,19 +53,9 @@ export const $data = map<Data>({
     schema: null,
 });
 
-export interface DataEntry {
-    value: string | boolean | number;
-    type: 'text' | 'html';
-    schemaType: string;
-    schemaLabel: string;
-    schemaHelpText?: string;
-}
-
 addGlobalUpdateDataHandler(event => {
     putEventDataToStore(event.detail);
 });
-
-export const getLanguage = (): Readonly<Language> => $data.get().language;
 
 export const setLanguage = (language: Language): void => $data.setKey('language', language);
 
@@ -72,12 +63,10 @@ export const getPersistedData = (): Optional<Readonly<ContentData>> => $data.get
 
 export const setPersistedData = (data: ContentData): void => $data.setKey('persisted', data);
 
-export const getSchema = (): Optional<Readonly<Schema>> => $data.get().schema;
-
 export const setSchema = (schema: Schema): void => $data.setKey('schema', schema);
 
 function putEventDataToStore(eventData: UpdateEventData): void {
-    if (!eventData['payload']) {
+    if (!eventData.payload) {
         return;
     }
 
@@ -98,12 +87,9 @@ function putEventDataToStore(eventData: UpdateEventData): void {
 
 export const $topic = computed($data, data => data.persisted?.topic ?? '');
 
-export const $allFormItemsWithPaths = computed($data, store => {
-    void store.persisted;
-    const schemaPaths = makePathsToFormItems();
-
-    const data = getPersistedData();
-    return data ? getDataPathsToEditableItems(schemaPaths, data) : [];
+export const $allFormItemsWithPaths = computed($data, ({schema, persisted}) => {
+    const schemaPaths = schema ? getFormItemsWithPaths(schema.form.formItems) : [];
+    return persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
 });
 
 export const $scopedPaths = computed([$allFormItemsWithPaths, $scope], (allFormItems, scope) => {
@@ -144,11 +130,6 @@ export const $mentionInContext = computed([$context, $allFormItemsWithPaths], (c
     const mentions = allPaths.map(pathToMention);
     return findMentionByPath(mentions, path);
 });
-
-function makePathsToFormItems(): FormItemWithPath[] {
-    const schema = getSchema();
-    return schema ? getFormItemsWithPaths(schema.form.formItems) : [];
-}
 
 function getDataPathsToEditableItems(schemaPaths: FormItemWithPath[], data: ContentData): FormItemWithPath[] {
     return schemaPaths.flatMap((schemaPath: FormItemWithPath) => {
@@ -228,24 +209,12 @@ export function getValueByStringPath(pathAsString: string): Optional<PropertyVal
 }
 
 export function getValueByPath(path: Path): Optional<PropertyValue> {
-    const array = getPropertyArrayByPath(path);
-
-    if (array) {
-        const index = path.elements[path.elements.length - 1]?.index ?? 0;
-        return array.values[index];
-    }
-
-    return null;
+    const fields = $data.get().persisted?.fields ?? [];
+    const array = doGetPropertyArrayByPath(fields, path);
+    return array?.values.at(path.elements.at(-1)?.index ?? 0);
 }
 
-function getPropertyArrayByPath(
-    path: Path,
-    data = structuredClone(getPersistedData()),
-): Optional<Readonly<PropertyArray>> {
-    return data ? doGetPropertyArrayByPath(data.fields, path) : undefined;
-}
-
-function doGetPropertyArrayByPath(properties: PropertyArray[], path: Path): Optional<PropertyArray> {
+function doGetPropertyArrayByPath(properties: ReadonlyArray<PropertyArray>, path: Path): Optional<PropertyArray> {
     const pathElements = path.elements.slice();
     const pathElement = pathElements.shift();
 
@@ -270,10 +239,10 @@ function doGetPropertyArrayByPath(properties: PropertyArray[], path: Path): Opti
 }
 
 export function setValueByPath(value: PropertyValue, path: Path, data: ContentData): void {
-    const array = getPropertyArrayByPath(path, data);
+    const array = doGetPropertyArrayByPath(data.fields, path);
 
     if (array) {
-        const index = path.elements[path.elements.length - 1]?.index ?? 0;
+        const index = path.elements.at(-1)?.index ?? 0;
         array.values[index] = value;
     }
 }
@@ -290,7 +259,7 @@ function pathToMention(item: FormItemWithPath): Mention {
     };
 }
 
-export const getLanguageTag = (): string => getLanguage()?.tag ?? navigator?.language ?? 'en';
+export const getLanguageTag = (): string => $data.get().language?.tag ?? navigator?.language ?? 'en';
 export const generatePathsEntries = (): Record<string, DataEntry> => {
     const result: Record<string, DataEntry> = {};
 
@@ -310,7 +279,7 @@ export const generatePathsEntries = (): Record<string, DataEntry> => {
 
 function generateTopicDataEntry(): DataEntry {
     return {
-        value: getPersistedData()?.topic || '',
+        value: $topic.get(),
         type: 'text',
         schemaType: 'text',
         schemaLabel: 'Display Name',
@@ -394,24 +363,20 @@ function createFields(text: string): Optional<string> {
 }
 
 function createContent(): string {
-    return ['# Content', '```json', pathsEntriesToString(generatePathsEntries()), '```'].join('\n');
+    return ['# Content', '```json', JSON.stringify((generatePathsEntries(), null, 2)), '```'].join('\n');
 }
 
-export function getPathType(path: InputWithPath | undefined): 'html' | 'text' {
-    return path?.Input.inputType === 'HtmlArea' ? 'html' : 'text';
+export function getInputType(inputWithPath: InputWithPath | undefined): 'html' | 'text' {
+    return inputWithPath?.Input.inputType === 'HtmlArea' ? 'html' : 'text';
 }
 
-function createDataEntry(path: InputWithPath): DataEntry {
+function createDataEntry(inputWithPath: InputWithPath): DataEntry {
     return {
-        value: getValueByPath(path)?.v ?? '',
-        type: getPathType(path),
-        schemaType: path.Input.inputType,
-        schemaLabel: path.Input.label,
+        value: getValueByPath(inputWithPath)?.v ?? '',
+        type: getInputType(inputWithPath),
+        schemaType: inputWithPath.Input.inputType,
+        schemaLabel: inputWithPath.Input.label,
     };
-}
-
-function pathsEntriesToString(pathsEntries: Record<string, DataEntry>): string {
-    return JSON.stringify(pathsEntries, null, 2);
 }
 
 export function getStoredPathByDataAttrString(value: string): InputWithPath | undefined {
@@ -421,21 +386,39 @@ export function getStoredPathByDataAttrString(value: string): InputWithPath | un
         .find(path => pathToString(path) === value);
 }
 
-export function getFormItemByStringPath(pathAsString: string): Optional<FormItemWithPath> {
-    return $allFormItemsWithPaths.get().find(path => pathToString(path) === pathAsString);
-}
+//
+//* EVENTS
+//
 
-export function getFormItemByPath(path: Path): Optional<FormItemWithPath> {
-    return $allFormItemsWithPaths.get().find(p => pathsEqual(p, path));
-}
+export function dispatchResultApplied(entries: ApplyMessage[]): void {
+    const {persisted} = $data.get();
+    if (!persisted) {
+        return;
+    }
 
-export function generateAllPathsEntries(): Record<string, DataEntry> {
-    const entries: Record<string, DataEntry> = {};
+    const newData = structuredClone(persisted);
+    let isAnyChanged = false;
 
-    const inputs = $allFormItemsWithPaths.get().filter(isInputWithPath);
-    inputs.forEach(path => {
-        entries[pathToString(path)] = createDataEntry(path);
+    entries.forEach(({name, content}) => {
+        if (name === SPECIAL_NAMES.topic) {
+            newData.topic = content;
+            isAnyChanged = true;
+            return;
+        }
+
+        const path = getStoredPathByDataAttrString(name);
+        if (path) {
+            setValueByPath({v: content}, path, newData);
+            isAnyChanged = true;
+            return;
+        }
+
+        // handle value not updated
+        console.warn('No path found for:', name);
     });
 
-    return entries;
+    if (isAnyChanged) {
+        setPersistedData(newData);
+        dispatch(AiEvents.RESULT_APPLIED);
+    }
 }

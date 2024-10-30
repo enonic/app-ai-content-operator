@@ -28,7 +28,7 @@ export function clearChat(): void {
 
 function addOrReplaceChatMessage(message: ChatMessage): void {
     const {history} = $chat.get();
-    const lastMessage = history[history.length - 1];
+    const lastMessage = history.at(-1);
     if (lastMessage?.role === message.role && message.role === MessageRole.USER) {
         $chat.setKey('history', [...history.slice(0, -1), message]);
     } else {

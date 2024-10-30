@@ -2,7 +2,7 @@ import {Fragment} from 'react';
 import {twMerge} from 'tailwind-merge';
 
 import {Path} from '../../../../stores/data/Path';
-import {getParentPath, pathFromString, pathToString} from '../../../../stores/pathUtil';
+import {getParentPath, pathFromString, pathToString} from '../../../../stores/utils/path';
 import ScopeItem from '../ScopeItem/ScopeItem';
 
 type Props = {
