@@ -43,6 +43,7 @@ function addWelcomeMessage(): void {
     const {name, topic, mentionInContext} = $systemData.get();
     addSystemMessage({
         type: 'context',
+        key: `${name}-${topic}-${mentionInContext?.path ?? ''}`,
         node: <WelcomeMessagePhrase name={name} topic={topic} mentionInContext={mentionInContext} />,
     });
 }
@@ -51,6 +52,7 @@ function addContextMessage(): void {
     const {topic, mentionInContext} = $systemData.get();
     addSystemMessage({
         type: 'context',
+        key: `${topic}-${mentionInContext?.path ?? ''}`,
         node: <ContextMessagePhrase topic={topic} mentionInContext={mentionInContext} />,
     });
 }

@@ -70,7 +70,7 @@ function addUserMessage(content: UserChatMessageContent): void {
 }
 
 export function addSystemMessage(content: SystemChatMessageContent): void {
-    const newMessage: SystemChatMessage = {id: nanoid(), content, role: MessageRole.SYSTEM};
+    const newMessage: SystemChatMessage = {id: content.key, content, role: MessageRole.SYSTEM};
     addOrReplaceChatMessage(newMessage);
 }
 

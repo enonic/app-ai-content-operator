@@ -35,5 +35,6 @@ export type MultipleContentValue = {
 
 export type SystemChatMessageContent = {
     type: 'context';
+    key: string;
     node: React.ReactNode;
 };

@@ -11,7 +11,7 @@ type Props = {
 export default function WelcomeMessagePhrase({name, topic, mentionInContext}: Props): React.ReactNode {
     return (
         <>
-            <GreetingMessagePhrase name={name} />
+            <GreetingMessagePhrase name={name} />{' '}
             <ContextMessagePhrase topic={topic} mentionInContext={mentionInContext} />
         </>
     );
