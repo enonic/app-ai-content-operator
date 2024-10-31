@@ -2,6 +2,7 @@ import {computed, map} from 'nanostores';
 
 import {addGlobalOpenDialogHandler, AiEvents, dispatch} from '../common/events';
 import {$chatRequestRunning} from './requests';
+import {subscribeToSystemDataChanges} from './system';
 
 export type Dialog = {
     hidden: boolean;
@@ -18,6 +19,7 @@ const unsubscribe = $dialog.listen(({hidden}, _, key) => {
         unsubscribe();
         setTimeout(() => {
             $dialog.setKey('initialized', true);
+            subscribeToSystemDataChanges();
         }, 800);
     }
 });

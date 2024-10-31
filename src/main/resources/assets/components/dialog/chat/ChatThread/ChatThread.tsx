@@ -8,7 +8,6 @@ import {ChatMessage} from '../../../../stores/data/ChatMessage';
 import {$loading} from '../../../../stores/dialog';
 import LoadingMessage from '../LoadingMessage/LoadingMessage';
 import Message from '../Message/Message';
-import WelcomeMessage from '../WelcomeMessage/WelcomeMessage';
 
 export type Props = {
     className?: string;
@@ -34,10 +33,9 @@ function createMessages(history: ChatMessage[], isLoading: boolean): React.React
 }
 
 export default function ChatThread({className = ''}: Props): React.ReactNode {
+    const isLoading = useStore($loading);
     const {history} = useStore($chat, {keys: ['history']});
     const count = history.length;
-    const isEmpty = count === 0;
-    const isLoading = useStore($loading);
 
     const ref = useRef<HTMLDivElement>(null);
 
@@ -50,7 +48,7 @@ export default function ChatThread({className = ''}: Props): React.ReactNode {
     return (
         <div ref={ref} className={twMerge('flex-1 overflow-y-auto scroll-smooth', className)}>
             <div className={clsx('flex w-full h-full flex-col grow gap-6 px-3 pt-3')}>
-                {isEmpty && !isLoading ? <WelcomeMessage /> : createMessages(history, isLoading)}
+                {createMessages(history, isLoading)}
             </div>
         </div>
     );

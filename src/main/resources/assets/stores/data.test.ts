@@ -1,16 +1,9 @@
 import {MENTION_ALL} from '../common/mentions';
-import {
-    createPrompt,
-    getValueByPath,
-    getValueByStringPath,
-    setLanguage,
-    setPersistedData,
-    setSchema,
-    setValueByPath,
-} from './data';
+import {createPrompt, findValueByPath, setLanguage, setPersistedData, setSchema} from './data';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {Path} from './data/Path';
 import {Schema} from './data/Schema';
+import {setValueByPath} from './utils/data';
 
 beforeAll(() => {
     setLanguage({tag: 'ak', name: 'Akkadian'});
@@ -24,7 +17,7 @@ describe('getValueByPath', () => {
             elements: [{name: 'myTextArea'}],
         };
 
-        const received = getValueByPath(parentPath);
+        const received = findValueByPath(parentPath);
         const expected: PropertyValue = {v: 'v1'};
 
         expect(received).toEqual(expected);
@@ -37,7 +30,7 @@ describe('getValueByPath', () => {
             elements: [{name: 'myTextArea', index: 1}],
         };
 
-        const received = getValueByPath(parentPath);
+        const received = findValueByPath(parentPath);
         const expected: PropertyValue = {v: 'v2'};
 
         expect(received).toEqual(expected);
@@ -50,7 +43,7 @@ describe('getValueByPath', () => {
             elements: [{name: 'contact_info'}, {name: 'phone_number'}],
         };
 
-        const received = getValueByPath(parentPath);
+        const received = findValueByPath(parentPath);
         const expected: PropertyValue = {v: 'phone number 00'};
 
         expect(received).toEqual(expected);
@@ -66,50 +59,8 @@ describe('getValueByPath', () => {
             ],
         };
 
-        const received = getValueByPath(parentPath);
+        const received = findValueByPath(parentPath);
         const expected: PropertyValue = {v: 'phone number 01'};
-
-        expect(received).toEqual(expected);
-    });
-});
-
-describe('getValueByStringPath', () => {
-    it('should return first item when no index defined', () => {
-        setPersistedData(getRootTextItems());
-
-        const parentPath = 'myTextArea';
-        const received = getValueByStringPath(parentPath);
-        const expected: PropertyValue = {v: 'v1'};
-
-        expect(received).toEqual(expected);
-    });
-
-    it('should return right item when index specified', () => {
-        setPersistedData(getRootTextItems());
-
-        const parentPath = 'myTextArea[1]';
-        const received = getValueByStringPath(parentPath);
-        const expected: PropertyValue = {v: 'v2'};
-
-        expect(received).toEqual(expected);
-    });
-
-    it('should return right item with trailing slash', () => {
-        setPersistedData(getRootTextItems());
-
-        const parentPath = '/myTextArea[1]';
-        const received = getValueByStringPath(parentPath);
-        const expected: PropertyValue = {v: 'v2'};
-
-        expect(received).toEqual(expected);
-    });
-
-    it('should return nested property value', () => {
-        setPersistedData(getFieldSetData());
-
-        const parentPath = 'contact_info[1]/phone_number[1]';
-        const received = getValueByStringPath(parentPath);
-        const expected: PropertyValue = {v: 'phone number 11'};
 
         expect(received).toEqual(expected);
     });
@@ -126,7 +77,7 @@ describe('setValueByPath', () => {
         setValueByPath({v: 'newValue'}, parentPath, data);
         setPersistedData(data);
 
-        const received = getValueByPath(parentPath);
+        const received = findValueByPath(parentPath);
         const expected: PropertyValue = {v: 'newValue'};
 
         expect(received).toEqual(expected);
@@ -145,7 +96,7 @@ describe('setValueByPath', () => {
         setValueByPath({v: 'newValue'}, parentPath, data);
         setPersistedData(data);
 
-        const received = getValueByPath(parentPath);
+        const received = findValueByPath(parentPath);
         const expected: PropertyValue = {v: 'newValue'};
 
         expect(received).toEqual(expected);

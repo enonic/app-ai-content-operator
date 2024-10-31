@@ -1,14 +1,21 @@
 import {t} from 'i18next';
 import {nanoid} from 'nanoid';
-import {map} from 'nanostores';
+import {computed, map} from 'nanostores';
 import {Descendant} from 'slate';
 
 import {SPECIAL_NAMES} from '../../lib/shared/prompts';
-import {ErrorResponse, Message, ModelResponseGenerateData, SchemaField} from '../../types/shared/model';
+import {ErrorResponse, Message, ModelResponseGenerateData} from '../../types/shared/model';
 import {isErrorResponse} from '../common/data';
 import {parseNodes, parseText} from '../common/slate';
-import {createPrompt, findFields} from './data';
-import {ChatMessage, ModelChatMessage, ModelChatMessageContent, UserChatMessage} from './data/ChatMessage';
+import {createPrompt} from './data';
+import {
+    ChatMessage,
+    ModelChatMessage,
+    ModelChatMessageContent,
+    SystemChatMessage,
+    SystemChatMessageContent,
+    UserChatMessage,
+} from './data/ChatMessage';
 import {MessageRole} from './data/MessageType';
 import {postMessage} from './requests';
 
@@ -18,7 +25,17 @@ export type Chat = {
     history: ChatMessage[];
 };
 
+export type ChatState = 'empty' | 'new' | 'ongoing';
+
 export const $chat = map<Chat>({history: []});
+
+export const $chatState = computed($chat, (chat): ChatState => {
+    if (chat.history.length === 0) {
+        return 'empty';
+    }
+    const hasSystemMessagesOnly = chat.history.every(message => message.role === MessageRole.SYSTEM);
+    return hasSystemMessagesOnly ? 'new' : 'ongoing';
+});
 
 export function clearChat(): void {
     if ($chat.get().history.length > 0) {
@@ -26,10 +43,21 @@ export function clearChat(): void {
     }
 }
 
+function isChatMessageReplaceable(a: ChatMessage, b: ChatMessage): boolean {
+    if (a.role === MessageRole.USER && b.role === MessageRole.USER) {
+        return true;
+    }
+    if (a.role === MessageRole.SYSTEM && b.role === MessageRole.SYSTEM) {
+        return a.id === b.id || a.content.type === b.content.type;
+    }
+    return false;
+}
+
 function addOrReplaceChatMessage(message: ChatMessage): void {
     const {history} = $chat.get();
     const lastMessage = history.at(-1);
-    if (lastMessage?.role === message.role && message.role === MessageRole.USER) {
+
+    if (lastMessage && isChatMessageReplaceable(lastMessage, message)) {
         $chat.setKey('history', [...history.slice(0, -1), message]);
     } else {
         $chat.setKey('history', [...history, message]);
@@ -38,6 +66,11 @@ function addOrReplaceChatMessage(message: ChatMessage): void {
 
 function addUserMessage(content: UserChatMessageContent): void {
     const newMessage: UserChatMessage = {id: nanoid(), content, role: MessageRole.USER};
+    addOrReplaceChatMessage(newMessage);
+}
+
+export function addSystemMessage(content: SystemChatMessageContent): void {
+    const newMessage: SystemChatMessage = {id: nanoid(), content, role: MessageRole.SYSTEM};
     addOrReplaceChatMessage(newMessage);
 }
 
@@ -77,14 +110,13 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
 export async function sendUserMessage(nodes: Descendant[]): Promise<void> {
     const node = parseNodes(nodes);
     const text = parseText(nodes);
-    const fields = findFields(text);
     const prompt = createPrompt(text);
 
     addUserMessage({node, text, prompt});
 
     const messages = historyToMessages($chat.get().history);
 
-    await sendMessages(messages, fields);
+    await sendMessages(messages);
 }
 
 export async function sendRetryMessage(): Promise<void> {
@@ -92,15 +124,14 @@ export async function sendRetryMessage(): Promise<void> {
 
     const text = lastUserMessage ? lastUserMessage.content.text : 'Create text for all fields.';
     const prompt = lastUserMessage ? lastUserMessage.content.prompt : createPrompt(text);
-    const fields = findFields(text);
 
     const messages: Message[] = [...historyToMessages($chat.get().history), {role: 'user', text: prompt}];
 
-    await sendMessages(messages, fields);
+    await sendMessages(messages);
 }
 
-async function sendMessages(messages: Message[], fields: SchemaField[]): Promise<void> {
-    const response = await postMessage(messages, fields);
+async function sendMessages(messages: Message[]): Promise<void> {
+    const response = await postMessage(messages);
     handleResponse(response);
 }
 

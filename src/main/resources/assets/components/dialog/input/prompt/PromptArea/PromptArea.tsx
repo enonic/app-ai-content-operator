@@ -6,12 +6,12 @@ import {createEditor, Descendant, Editor, Node, Transforms} from 'slate';
 import {withHistory} from 'slate-history';
 import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
 
-import {findLooseMatch, findMentionByPath, MENTION_TOPIC} from '../../../../../common/mentions';
+import {findLooseMatch, MENTION_TOPIC} from '../../../../../common/mentions';
 import {insertOrReplaceLastMention} from '../../../../../common/slate';
 import {useDeepMemo} from '../../../../../hooks/useDeepMemo';
 import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugins/withMentions';
 import {sendUserMessage} from '../../../../../stores/chat';
-import {$mentions, getStoredPathByDataAttrString} from '../../../../../stores/data';
+import {$mentions} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
@@ -85,19 +85,14 @@ export default function PromptArea({className}: Props): React.ReactNode {
             return;
         }
 
-        if (focusedElementPath) {
-            if (focusedElementPath === MENTION_TOPIC.path) {
-                insertOrReplaceLastMention(editor, MENTION_TOPIC);
+        if (focusedElementPath === MENTION_TOPIC.path) {
+            insertOrReplaceLastMention(editor, MENTION_TOPIC);
+            setFocusedElementPath(null);
+        } else if (focusedElementPath) {
+            const mentionToInsert = allMentions.find(v => v.path === focusedElementPath);
+            if (mentionToInsert) {
+                insertOrReplaceLastMention(editor, mentionToInsert);
                 setFocusedElementPath(null);
-            } else {
-                const path = getStoredPathByDataAttrString(focusedElementPath);
-                if (path) {
-                    const mentionToInsert = findMentionByPath(allMentions, path);
-                    if (mentionToInsert) {
-                        insertOrReplaceLastMention(editor, mentionToInsert);
-                        setFocusedElementPath(null);
-                    }
-                }
             }
         }
 
