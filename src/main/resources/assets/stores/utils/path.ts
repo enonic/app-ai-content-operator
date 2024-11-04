@@ -1,4 +1,4 @@
-import {Path, PathElement} from './data/Path';
+import {Path, PathElement} from '../data/Path';
 
 export const pathElementEqual = (element1: PathElement, element2: PathElement, compareLabel?: boolean): boolean => {
     const index1 = element1.index ?? 0;
@@ -50,8 +50,8 @@ function pathElementToString(element: PathElement): string {
 }
 
 export function getPathLabel(path: Path): string {
-    const lastElement = path.elements[path.elements.length - 1];
-    return lastElement.label || lastElement.name;
+    const lastElement = path.elements.at(-1);
+    return lastElement?.label ?? lastElement?.name ?? '';
 }
 
 export function clonePath(path: Path): Path {

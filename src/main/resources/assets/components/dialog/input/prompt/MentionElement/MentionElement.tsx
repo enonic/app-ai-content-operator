@@ -6,6 +6,7 @@ import {MENTION_ALL, MENTION_TOPIC} from '../../../../../common/mentions';
 
 export type Props = {
     attributes?: React.Attributes;
+    className?: string;
     children?: React.ReactNode;
     element: Slate.MentionElement;
 };
@@ -18,7 +19,7 @@ function animateScrollForPath(path: string): void {
     }
 }
 
-export default function MentionElement({attributes = {}, children, element}: Props): React.ReactNode {
+export default function MentionElement({attributes = {}, className, children, element}: Props): React.ReactNode {
     const selected = useSelected();
     const focused = useFocused();
 
@@ -33,6 +34,7 @@ export default function MentionElement({attributes = {}, children, element}: Pro
         !isAllMention && 'text-sky-600',
         isAllMention && 'cursor-default',
         selected && focused && 'outline outline-2',
+        className,
     );
 
     return (

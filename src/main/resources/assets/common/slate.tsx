@@ -82,26 +82,26 @@ export function insertOrReplaceLastMention(editor: Editor, mention: Mention): vo
 }
 
 function deleteLastMention(editor: Editor, nodes: Descendant[]): void {
-    const lastElement = nodes[nodes.length - 1];
+    const lastElement = nodes.at(-1);
 
     if (!lastElement) {
         return;
     }
 
-    if (isCustomText(lastElement)) {
-        if (lastElement.text.trim() === '') {
-            const potentialMention = nodes[nodes.length - 2];
-
-            if (potentialMention && isMentionElement(potentialMention)) {
-                if (lastElement.text.length > 0) {
-                    // if non-empty element has spaces then need to delete them first
-                    editor.delete({unit: 'character', reverse: true, distance: lastElement.text.length});
-                }
-
-                editor.deleteBackward('word');
-            }
-        }
-    } else {
+    if (!isCustomText(lastElement)) {
         return deleteLastMention(editor, lastElement.children);
+    }
+
+    if (lastElement.text.trim() === '') {
+        const potentialMention = nodes.at(-2);
+
+        if (potentialMention && isMentionElement(potentialMention)) {
+            if (lastElement.text.length > 0) {
+                // if non-empty element has spaces then need to delete them first
+                editor.delete({unit: 'character', reverse: true, distance: lastElement.text.length});
+            }
+
+            editor.deleteBackward('word');
+        }
     }
 }

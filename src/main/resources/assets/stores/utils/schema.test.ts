@@ -1,5 +1,5 @@
-import {Schema} from './data/Schema';
-import {getFormItemsWithPaths} from './schemaUtil';
+import {Schema} from '../data/Schema';
+import {getFormItemsWithPaths} from './schema';
 
 describe('schemaUtil', () => {
     it('should return two top items', () => {

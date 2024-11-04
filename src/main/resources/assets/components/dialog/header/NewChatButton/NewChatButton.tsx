@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
 
 import {clearChat} from '../../../../stores/chat';
+import {resetContext} from '../../../../stores/context';
 import ActionButton from '../../../shared/ActionButton/ActionButton';
 
 type Props = {
@@ -29,6 +30,7 @@ export default function NewChatButton({className, disabled}: Props): React.React
             size='md'
             clickHandler={() => {
                 clearChat();
+                resetContext();
             }}
         />
     );

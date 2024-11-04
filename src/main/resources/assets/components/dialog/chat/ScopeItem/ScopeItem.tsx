@@ -1,10 +1,17 @@
+import {useStore} from '@nanostores/react';
 import {twJoin, twMerge} from 'tailwind-merge';
 
 import {animateScroll} from '../../../../common/animations';
-import {getFormItemByPath} from '../../../../stores/data';
+import {$allFormItemsWithPaths} from '../../../../stores/data';
 import {Path} from '../../../../stores/data/Path';
-import {getParentPath, getPathLabel, pathToPrettifiedString, pathToString} from '../../../../stores/pathUtil';
 import {resetScope, setScope} from '../../../../stores/scope';
+import {
+    getParentPath,
+    getPathLabel,
+    pathsEqual,
+    pathToPrettifiedString,
+    pathToString,
+} from '../../../../stores/utils/path';
 import Icon from '../../../shared/Icon/Icon';
 
 type Props = {
@@ -14,9 +21,10 @@ type Props = {
 };
 
 export default function ScopeItem({className, path, active}: Props): React.ReactNode {
-    const formItem = path ? getFormItemByPath(path) : null;
+    const paths = useStore($allFormItemsWithPaths);
+    const formItem = path && paths.find(p => pathsEqual(p, path));
     const parentPath = getParentPath(path);
-    const parentFormItem = parentPath ? getFormItemByPath(parentPath) : null;
+    const parentFormItem = parentPath && paths.find(p => pathsEqual(p, parentPath));
     const label = getPathLabel(formItem ?? path);
 
     return (

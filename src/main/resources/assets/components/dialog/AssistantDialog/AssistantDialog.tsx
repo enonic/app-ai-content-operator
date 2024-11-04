@@ -71,10 +71,11 @@ export default function AssistantDialog({className = ''}: Props): React.ReactNod
         >
             <Resizable
                 className={twJoin(
-                    'enonic-ai',
+                    'ai-content-operator',
                     'AssistantDialog',
                     'absolute',
                     'flex flex-col',
+                    'text-base',
                     'leading-initial',
                     'bg-white',
                     'border',

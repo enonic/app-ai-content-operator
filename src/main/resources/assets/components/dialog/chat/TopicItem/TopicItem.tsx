@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
-import {twMerge} from 'tailwind-merge';
+import {twJoin, twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../lib/shared/prompts';
 import {animateTopicScroll} from '../../../../common/animations';
@@ -15,10 +15,11 @@ type Props = {
     className?: string;
     messageId: string;
     name: string;
+    last: boolean;
     value: string | MultipleContentValue;
 };
 
-export default function TopicItem({className, messageId, name, value}: Props): React.ReactNode {
+export default function TopicItem({className, messageId, name, last, value}: Props): React.ReactNode {
     const {t} = useTranslation();
     const topic = t('field.label.topic');
     const content = pickMessageValue(value);
@@ -38,7 +39,7 @@ export default function TopicItem({className, messageId, name, value}: Props): R
             </button>
             {typeof value !== 'string' && <MessageSwitcher messageId={messageId} name={name} content={value} />}
             <ElementItemControls
-                className={clsx('col-start-3', {'invisible group-hover/item:visible': REGULAR_SCREEN})}
+                className={twJoin('col-start-3', REGULAR_SCREEN && !last && 'invisible group-hover/item:visible')}
                 content={content}
                 name={SPECIAL_NAMES.topic}
             />

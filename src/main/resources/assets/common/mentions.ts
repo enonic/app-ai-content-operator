@@ -1,7 +1,5 @@
 import {MultipleContentValue} from '../stores/data/ChatMessage';
 import {Mention} from '../stores/data/Mention';
-import {Path} from '../stores/data/Path';
-import {pathToString} from '../stores/pathUtil';
 
 export const MENTION_ALL = {
     path: '__all__',
@@ -52,9 +50,8 @@ export function findLooseMatch(list: Mention[], search: string, size = Infinity)
     return [...exactlyMatched, ...looselyMatched].slice(0, size);
 }
 
-export function findMentionByPath(list: Mention[], path: Path): Mention | undefined {
-    const pathAsString = pathToString(path);
-    return list.find(v => v.path === pathAsString);
+export function findMentionByPath(list: Mention[], path: string): Mention | undefined {
+    return list.find(v => v.path === path);
 }
 
 export const pickMessageValue = (value: string | MultipleContentValue): string => {

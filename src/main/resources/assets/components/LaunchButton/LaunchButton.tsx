@@ -11,7 +11,7 @@ export default function LaunchButton(): React.ReactNode {
     const {hidden} = useStore($dialog, {keys: ['hidden']});
 
     const classNames = twJoin([
-        'enonic-ai',
+        'ai-content-operator',
         'w-full h-full flex items-center justify-center',
         'box-border',
         hidden ? 'text-enonic-gray-700 hover:text-enonic-gray-600' : 'text-enonic-blue-light hover:text-enonic-blue',

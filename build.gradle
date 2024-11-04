@@ -93,6 +93,7 @@ tasks.register('pnpmBuild', PnpmTask ) {
     inputs.file 'package.json'
     inputs.file 'tsconfig.json'
     inputs.file 'vite.config.js'
+    inputs.file 'tailwind.config.js'
     outputs.dir "${buildDir}/resources/main"
 }
 

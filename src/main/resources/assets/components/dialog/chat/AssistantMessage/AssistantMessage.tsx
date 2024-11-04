@@ -1,5 +1,4 @@
-import clsx from 'clsx';
-import {twMerge} from 'tailwind-merge';
+import {twJoin, twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../lib/shared/prompts';
 import {ModelChatMessage} from '../../../../stores/data/ChatMessage';
@@ -19,7 +18,7 @@ type Props = {
 
 const ORDER: string[] = Object.values(SPECIAL_NAMES).reverse();
 
-function createFields({id: messageId, content}: ModelChatMessage): React.ReactNode[] {
+function createFields({id: messageId, content}: ModelChatMessage, last: boolean): React.ReactNode[] {
     const classNames = 'p-2 border-dashed last:!border-b';
     return Object.entries(content)
         .sort(([keyA], [keyB]) => {
@@ -35,14 +34,28 @@ function createFields({id: messageId, content}: ModelChatMessage): React.ReactNo
                 case SPECIAL_NAMES.unclear:
                     return <IssueItem key={key} className={classNames} value={value} />;
                 case SPECIAL_NAMES.common:
-                    return <CommonItem key={key} className={classNames} value={value} />;
+                    return <CommonItem key={key} className={classNames} value={value} last={last} />;
                 case SPECIAL_NAMES.topic:
                     return (
-                        <TopicItem key={key} className={classNames} messageId={messageId} name={key} value={value} />
+                        <TopicItem
+                            key={key}
+                            className={classNames}
+                            messageId={messageId}
+                            name={key}
+                            value={value}
+                            last={last}
+                        />
                     );
                 default:
                     return (
-                        <ElementItem key={key} className={classNames} messageId={messageId} name={key} value={value} />
+                        <ElementItem
+                            key={key}
+                            className={classNames}
+                            messageId={messageId}
+                            name={key}
+                            value={value}
+                            last={last}
+                        />
                     );
             }
         });
@@ -51,9 +64,9 @@ function createFields({id: messageId, content}: ModelChatMessage): React.ReactNo
 export default function AssistantMessage({className, message, last}: Props): React.ReactNode {
     return (
         <div className={twMerge('flex gap-2', className)}>
-            <AssistantIcon className='shrink-0 mt-3 text-enonic-blue-light' />
-            <article className={clsx('flex flex-col gap-1', 'flex-1')}>
-                <ul className='flex flex-col divide-y'>{createFields(message)}</ul>
+            <AssistantIcon className={twJoin('shrink-0 mt-3 text-enonic-blue-light')} />
+            <article className={twJoin('flex flex-col gap-1 flex-1 text-sm')}>
+                <ul className='flex flex-col divide-y'>{createFields(message, last)}</ul>
                 <MessageControls className='pt-1' content={message.content} last={last} />
             </article>
         </div>
