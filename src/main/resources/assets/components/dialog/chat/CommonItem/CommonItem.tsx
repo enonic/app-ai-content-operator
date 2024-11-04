@@ -6,13 +6,14 @@ import CommonItemContent from '../CommonItemContent/CommonItemContent';
 
 type Props = {
     className?: string;
+    last: boolean;
     value: string | MultipleContentValue;
 };
 
-export default function CommonItem({className, value}: Props): React.ReactNode {
+export default function CommonItem({className, last, value}: Props): React.ReactNode {
     return (
         <li className={twMerge('grid grid-cols-1 gap-y-1', className)}>
-            <CommonItemContent content={combineMessageValues(value)} />
+            <CommonItemContent content={combineMessageValues(value)} last={last} />
         </li>
     );
 }

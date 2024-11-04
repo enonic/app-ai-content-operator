@@ -12,7 +12,12 @@ export default function ElementItemContent({className, content, type = 'text'}: 
             return (
                 <div
                     dangerouslySetInnerHTML={{__html: content}}
-                    className={twMerge('enonic-ai-html-based prose prose-sm', 'relative', 'col-span-2', className)}
+                    className={twMerge(
+                        'ai-content-operator-html-based prose prose-sm',
+                        'relative',
+                        'col-span-2',
+                        className,
+                    )}
                 />
             );
         case 'text':

@@ -200,10 +200,10 @@ export default function PromptArea({className}: Props): React.ReactNode {
                         'bg-transparent placeholder-black/50',
                         'border-0 rounded-[1.5rem]',
                         'resize-none',
-                        'leading-6',
+                        'text-sm leading-6',
                         'outline-none',
                         'overflow-x-hidden overflow-y-auto',
-                        'enonic-ai-compact-scroll',
+                        'ai-content-operator-compact-scroll',
                     )}
                     onKeyDown={handleKeyDown}
                     placeholder={t('text.input.placeholder')}

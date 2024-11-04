@@ -46,7 +46,7 @@ export default function MentionsList({
     }, [mentions, isRendered]);
 
     const classNames = twMerge(
-        'enonic-ai',
+        'ai-content-operator',
         'EnonicAiMentionsList',
         'absolute',
         !targetRect && 'hidden',
@@ -59,7 +59,7 @@ export default function MentionsList({
         'shadow-md',
         'overflow-y-auto',
         'z-[2000]',
-        'enonic-ai-scroll',
+        'ai-content-operator-scroll',
         className,
     );
 

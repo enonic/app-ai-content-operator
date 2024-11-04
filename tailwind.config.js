@@ -97,7 +97,7 @@ export default {
     plugins: [
         require('@tailwindcss/typography'),
         scopedPreflightStyles({
-            isolationStrategy: isolateInsideOfContainer('.enonic-ai'),
+            isolationStrategy: isolateInsideOfContainer('.ai-content-operator'),
         }),
     ],
 };

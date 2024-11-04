@@ -1,6 +1,5 @@
 import {useStore} from '@nanostores/react';
-import clsx from 'clsx';
-import {twMerge} from 'tailwind-merge';
+import {twJoin, twMerge} from 'tailwind-merge';
 
 import {animateScroll} from '../../../../common/animations';
 import {REGULAR_SCREEN} from '../../../../common/device';
@@ -18,10 +17,11 @@ type Props = {
     className?: string;
     messageId: string;
     name: string;
+    last: boolean;
     value: string | MultipleContentValue;
 };
 
-export default function ElementItem({className, messageId, name, value}: Props): React.ReactNode {
+export default function ElementItem({className, messageId, name, value, last}: Props): React.ReactNode {
     const allItems = useStore($allFormItemsWithPaths);
 
     const inputWithPath = findPathByDataAttrString(allItems, name);
@@ -40,7 +40,7 @@ export default function ElementItem({className, messageId, name, value}: Props):
             </button>
             {typeof value !== 'string' && <MessageSwitcher messageId={messageId} name={name} content={value} />}
             <ElementItemControls
-                className={clsx({'col-start-3 invisible group-hover/item:visible': REGULAR_SCREEN})}
+                className={twJoin('col-start-3', REGULAR_SCREEN && !last && 'invisible group-hover/item:visible')}
                 content={content}
                 name={name}
             />
