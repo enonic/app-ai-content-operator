@@ -15,9 +15,9 @@ updates:
           interval: 'weekly'
       open-pull-requests-limit: 10
       assignees:
-          - 'alansemenov'
+          - 'edloidas'
       reviewers:
-          - 'alansemenov'
+          - 'edloidas'
     - package-ecosystem: 'github-actions'
       directory: '/'
       schedule:
