@@ -3,7 +3,7 @@ import {createRoot} from 'react-dom/client';
 
 import AssistantDialog from './components/dialog/AssistantDialog/AssistantDialog';
 import LaunchButton from './components/LaunchButton/LaunchButton';
-import './i18n/config';
+import './i18n/i18n';
 import './index.css';
 import {$config, setServiceUrl} from './stores/config';
 
