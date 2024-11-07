@@ -79,6 +79,8 @@ export const $allFormItemsWithPaths = computed($data, ({schema, persisted}) => {
     return persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
 });
 
+export const $allPaths = computed($allFormItemsWithPaths, paths => paths.map(pathToString));
+
 //
 //* SCOPE
 //
@@ -191,7 +193,7 @@ function createPromptFields(text: string): Optional<string> {
               .filter(v => v !== MENTION_ALL.path)
         : mentions;
 
-    return ['# Fields', ...fields.sort().map(v => `- ${v}`)].join('\n');
+    return ['# Fields', ...fields.map(v => `- ${v}`)].join('\n');
 }
 
 function createPromptContent(): string {

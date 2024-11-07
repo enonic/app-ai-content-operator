@@ -1,7 +1,7 @@
 export const SPECIAL_NAMES = {
-    error: '__error__',
     common: '__common__',
     unclear: '__unclear__',
+    error: '__error__',
     topic: '__topic__',
 } as const;
 

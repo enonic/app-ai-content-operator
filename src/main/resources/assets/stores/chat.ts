@@ -7,7 +7,7 @@ import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {ErrorResponse, Message, ModelResponseGenerateData} from '../../types/shared/model';
 import {isErrorResponse} from '../common/data';
 import {parseNodes, parseText} from '../common/slate';
-import {createPrompt} from './data';
+import {$allPaths, createPrompt} from './data';
 import {
     ChatMessage,
     ModelChatMessage,
@@ -215,25 +215,33 @@ export function isRecord(record: unknown): record is AnyObject {
 }
 
 function mapToModelMessageContent(content: Record<string, unknown>): ModelChatMessageContent {
-    return Object.entries(content).reduce((acc, [key, value]) => {
-        if (typeof value === 'string') {
-            return {...acc, [key]: value};
-        }
+    const ORDERED_KEYS: string[] = [...Object.values(SPECIAL_NAMES), ...$allPaths.get()].reverse();
 
-        if (Array.isArray(value)) {
-            if (value.length > 1) {
-                return {...acc, [key]: {values: value, selectedIndex: 0}};
-            } else {
-                return {...acc, [key]: String(value[0] ?? '')};
+    return Object.entries(content)
+        .sort(([keyA], [keyB]) => {
+            const indexA = ORDERED_KEYS.indexOf(keyA);
+            const indexB = ORDERED_KEYS.indexOf(keyB);
+            return indexB - indexA;
+        })
+        .reduce((acc, [key, value]) => {
+            if (typeof value === 'string') {
+                return {...acc, [key]: value};
             }
-        }
 
-        if (isRecord(value) && 'value' in value && typeof value.value === 'string') {
-            return {...acc, [key]: value.value};
-        }
+            if (Array.isArray(value)) {
+                if (value.length > 1) {
+                    return {...acc, [key]: {values: value, selectedIndex: 0}};
+                } else {
+                    return {...acc, [key]: String(value[0] ?? '')};
+                }
+            }
 
-        return {...acc, [key]: String(value)};
-    }, {});
+            if (isRecord(value) && 'value' in value && typeof value.value === 'string') {
+                return {...acc, [key]: value.value};
+            }
+
+            return {...acc, [key]: String(value)};
+        }, {});
 }
 
 const isUserOrModel = (message: ChatMessage): message is UserChatMessage | ModelChatMessage => {
