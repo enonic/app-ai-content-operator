@@ -25,7 +25,7 @@ export type Chat = {
     history: ChatMessage[];
 };
 
-export type ChatState = 'empty' | 'new' | 'ongoing';
+export type ChatState = 'empty' | 'systemOnly' | 'activeChat' | 'systemPending';
 
 export const $chat = map<Chat>({history: []});
 
@@ -33,8 +33,18 @@ export const $chatState = computed($chat, (chat): ChatState => {
     if (chat.history.length === 0) {
         return 'empty';
     }
-    const hasSystemMessagesOnly = chat.history.every(message => message.role === MessageRole.SYSTEM);
-    return hasSystemMessagesOnly ? 'new' : 'ongoing';
+
+    const hasOnlySystemMessages = chat.history.every(message => message.role === MessageRole.SYSTEM);
+    if (hasOnlySystemMessages) {
+        return 'systemOnly';
+    }
+
+    const lastMessage = chat.history.at(-1);
+    if (lastMessage?.role === MessageRole.SYSTEM) {
+        return 'systemPending';
+    }
+
+    return 'activeChat';
 });
 
 export function clearChat(): void {
