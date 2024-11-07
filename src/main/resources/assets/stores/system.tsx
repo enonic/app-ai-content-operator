@@ -26,14 +26,17 @@ export function subscribeToSystemDataChanges(): void {
     $systemData.subscribe((systemData, oldSystemData) => {
         const isMentionChanges = !isEqual(systemData.mentionInContext, oldSystemData?.mentionInContext);
         const isTopicChanges = systemData.topic !== oldSystemData?.topic;
-        const isNameChanges = systemData.name !== systemData?.name;
+        const isNameChanges = systemData.name !== oldSystemData?.name;
         const hasMention = systemData.mentionInContext != null;
 
-        if (systemData.chatState !== 'ongoing') {
+        if (systemData.chatState !== 'activeChat' && systemData.chatState !== 'systemPending') {
             if (isMentionChanges || isTopicChanges || isNameChanges || systemData.chatState === 'empty') {
                 addWelcomeMessage();
             }
-        } else if ((hasMention && isMentionChanges) || (!hasMention && isTopicChanges)) {
+        } else if (
+            (hasMention && isMentionChanges) ||
+            (!hasMention && isTopicChanges && systemData.chatState === 'systemPending')
+        ) {
             addContextMessage();
         }
     });
