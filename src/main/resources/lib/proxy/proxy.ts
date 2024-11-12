@@ -1,5 +1,5 @@
 import {ERRORS} from '../errors';
-import {getOptions} from '../google/options';
+import {parseOptions} from '../google/options';
 import {logDebug, LogDebugGroups} from '../logger';
 import {DEFAULT_MODEL, isModel, Model} from '../shared/models';
 import {DEFAULT_MODE, isMode, Mode} from '../shared/modes';
@@ -27,7 +27,7 @@ export function connect({model, mode, instructions, messages, schema}: Connectio
         return [null, ERRORS.FUNC_UNKNOWN_MODE];
     }
 
-    const [options, err] = getOptions();
+    const [options, err] = parseOptions();
     if (err) {
         return [null, err];
     }
