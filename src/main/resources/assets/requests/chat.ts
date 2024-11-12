@@ -6,24 +6,10 @@ import type {
     ResponseSchema,
     SchemaField,
 } from '../../types/shared/model';
-import {isErrorResponse} from '../common/data';
 import {$config} from '../stores/config';
 import {$settings} from '../stores/settings';
 
 export async function generate(
-    messages: Message[],
-    fields?: SchemaField[],
-): Promise<ModelResponseGenerateData | ErrorResponse> {
-    const result = await requestGenerate(messages, fields);
-
-    if (isErrorResponse(result)) {
-        throw new Error(result.error.message);
-    }
-
-    return result;
-}
-
-async function requestGenerate(
     messages: Message[],
     fields?: SchemaField[],
 ): Promise<ModelResponseGenerateData | ErrorResponse> {

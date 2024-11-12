@@ -7,6 +7,7 @@ import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {ErrorResponse, Message, ModelResponseGenerateData} from '../../types/shared/model';
 import {isErrorResponse} from '../common/data';
 import {parseNodes, parseText} from '../common/slate';
+import {ERRORS} from './../../lib/errors';
 import {$allPaths, createPrompt} from './data';
 import {
     ChatMessage,
@@ -147,6 +148,7 @@ async function sendMessages(messages: Message[]): Promise<void> {
 
 function handleResponse([response, error]: Err<ModelResponseGenerateData | ErrorResponse>): void {
     if (error) {
+        console.error(error);
         addCompleteModelMessage(createErrorContent(error.message));
         return;
     }
@@ -173,23 +175,57 @@ function handleResponse([response, error]: Err<ModelResponseGenerateData | Error
     }
 }
 
-function checkAndHandleInvalidResponse(
-    response: Optional<ModelResponseGenerateData | ErrorResponse>,
-): response is Optional<ErrorResponse> {
-    if (response == null) {
-        addCompleteModelMessage(createErrorContent(t('text.error.response.noResponse')));
-        return true;
-    }
-    if (isErrorResponse(response)) {
-        addCompleteModelMessage(createErrorContent(response.error.message));
-        return true;
+function checkAndHandleInvalidResponse(response: ModelResponseGenerateData | ErrorResponse): response is ErrorResponse {
+    if (!isErrorResponse(response)) {
+        return false;
     }
 
-    return false;
+    const message = getErrorMessageByCode(response.error.code);
+    console.error(`Error <${response.error.code}>: ${message}`);
+
+    addCompleteModelMessage(createErrorContent(message));
+
+    return true;
+}
+
+function getErrorMessageByCode(code: number): string {
+    switch (code) {
+        case ERRORS.GOOGLE_SAK_MISSING.code:
+        case ERRORS.GOOGLE_SAK_READ_FAILED.code:
+        case ERRORS.GOOGLE_ACCESS_TOKEN_MISSING.code:
+        case ERRORS.GOOGLE_PROJECT_ID_MISSING.code:
+        case ERRORS.GOOGLE_GEMINI_URL_MISSING.code:
+        case ERRORS.GOOGLE_GEMINI_URL_INVALID.code:
+        case ERRORS.GOOGLE_PROJECT_ID_MISMATCH.code:
+        case ERRORS.GOOGLE_MODEL_NOT_SUPPORTED.code:
+            return t('text.error.configuration');
+        case ERRORS.REST_TIMEOUT.code:
+            return t('text.error.rest.timeout');
+        case ERRORS.REST_WRONG_CONTENT_TYPE.code:
+            return t('text.error.rest.wrongContentType');
+        case ERRORS.GOOGLE_BLOCKED.code:
+            return t('text.error.response.safety');
+        case ERRORS.GOOGLE_BAD_REQUEST.code:
+            return t('text.error.google.badRequest');
+        case ERRORS.GOOGLE_UNAUTHORIZED.code:
+            return t('text.error.google.unauthorized');
+        case ERRORS.GOOGLE_FORBIDDEN.code:
+            return t('text.error.google.forbidden');
+        case ERRORS.GOOGLE_NOT_FOUND.code:
+            return t('text.error.google.notFound');
+        case ERRORS.GOOGLE_REQUEST_TIMEOUT.code:
+            return t('text.error.google.requestTimeout');
+        case ERRORS.GOOGLE_SERVER_ERROR.code:
+            return t('text.error.google.serverError');
+        case ERRORS.GOOGLE_SERVICE_UNAVAILABLE.code:
+            return t('text.error.google.serviceUnavailable');
+        default:
+            return t('text.error.rest.unknown', {code});
+    }
 }
 
 function createErrorContent(message: string): ModelChatMessageContent {
-    return {'Oops! Something went wrong': message};
+    return {[t('field.message.error')]: message};
 }
 
 function createModelMessage(text: string): ModelChatMessage {

@@ -1,7 +1,7 @@
 import {GOOGLE_GEMINI_FLASH_URL, GOOGLE_GEMINI_PRO_URL, GOOGLE_SAK_PATH} from '../config';
 import {APP_NAME} from '../constants';
 import {ERRORS} from '../errors';
-import {logDebug, LogDebugGroups} from '../logger';
+import {logDebug, LogDebugGroups, logError} from '../logger';
 import {Model} from '../shared/models';
 
 export type ModelOptions = {
@@ -15,6 +15,15 @@ type ClientOptions = {
 } & Record<Model, ModelOptions>;
 
 export function getOptions(): Try<ClientOptions> {
+    const [options, err] = parseOptions();
+    if (err) {
+        logError(err);
+        return [null, err];
+    }
+    return [options, null];
+}
+
+export function parseOptions(): Try<ClientOptions> {
     logDebug(LogDebugGroups.GOOGLE, 'options.getOptions()');
 
     if (!GOOGLE_GEMINI_FLASH_URL) {

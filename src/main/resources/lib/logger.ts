@@ -1,5 +1,5 @@
 import {DEBUG_GROUPS} from './config';
-import {CustomAiError} from './errors';
+import {CustomAiError, isNashornError} from './errors';
 
 export enum LogDebugGroups {
     ALL = 'all',
@@ -22,6 +22,8 @@ function parseMessage(message: unknown): string {
         return String(message);
     } else if (message instanceof Error) {
         return message.stack || message.message;
+    } else if (isNashornError(message)) {
+        return message.message;
     } else if (typeof message === 'object') {
         return stringifyCode(message);
     } else {

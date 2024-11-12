@@ -1,9 +1,9 @@
 import type {HttpClientResponse} from '/lib/http-client';
 
-import {ERRORS} from '../errors';
+import {CustomAiError, ERRORS} from '../errors';
 import {logDebug, LogDebugGroups, logError} from '../logger';
 import {request, RequestParams} from '../requests';
-import {getOptions} from './options';
+import {parseOptions} from './options';
 
 type GoogleRequestOptions = RequestParams & {
     method: Enonic.HttpMethod;
@@ -22,9 +22,9 @@ type GoogleErrorResponseBody = {
 function sendRequest(params: GoogleRequestOptions): Try<HttpClientResponse> {
     logDebug(LogDebugGroups.GOOGLE, `client.sendRequest(${params?.method}})`);
 
-    const [options, err] = getOptions();
-    if (err) {
-        return [null, err];
+    const [options, optionsErr] = parseOptions();
+    if (optionsErr) {
+        return [null, optionsErr];
     }
     const {accessToken} = options;
 
@@ -35,10 +35,23 @@ function sendRequest(params: GoogleRequestOptions): Try<HttpClientResponse> {
         Authorization: `Bearer ${accessToken}`,
         'content-type': 'application/json',
     };
-    return request({
+    const [response, requestErr] = request({
         ...params,
         headers,
     });
+
+    if (requestErr) {
+        return [null, requestErr];
+    }
+    if (!response) {
+        return [null, ERRORS.RESPONSE_BODY_MISSING];
+    }
+    const isJson = response.headers?.['contentType']?.indexOf('application/json') !== -1;
+    if (!isJson) {
+        return [null, ERRORS.REST_WRONG_CONTENT_TYPE];
+    }
+
+    return [response, null];
 }
 
 export function sendPostRequest(url: string, body?: unknown): Try<HttpClientResponse> {
@@ -53,9 +66,8 @@ export function parseResponse<Data, Body = unknown>(
 
     try {
         if (response.status >= 400) {
-            const message = parseError(response);
             logDebug(LogDebugGroups.GOOGLE, `client.parseResponse() error: ${JSON.stringify(response)}`);
-            return [null, message ? ERRORS.GOOGLE_REQUEST_FAILED.withMsg(message) : ERRORS.GOOGLE_REQUEST_FAILED];
+            return [null, parseError(response)];
         }
 
         if (response.body == null) {
@@ -70,8 +82,14 @@ export function parseResponse<Data, Body = unknown>(
     }
 }
 
-function parseError(response: HttpClientResponse): Optional<string> {
-    logDebug(LogDebugGroups.GOOGLE, 'client.parseError()');
+function parseError(response: HttpClientResponse): AiError {
+    const error = getErrorByCode(response.status);
+    const message = parseErrorMessage(response);
+    return message ? error.withMsg(message) : error;
+}
+
+function parseErrorMessage(response: HttpClientResponse): Optional<string> {
+    logDebug(LogDebugGroups.GOOGLE, 'client.parseErrorMessage()');
 
     try {
         if (response.body == null) {
@@ -81,5 +99,26 @@ function parseError(response: HttpClientResponse): Optional<string> {
         return error.message;
     } catch (e) {
         return null;
+    }
+}
+
+function getErrorByCode(code: number): CustomAiError {
+    switch (code) {
+        case 400:
+            return ERRORS.GOOGLE_BAD_REQUEST;
+        case 401:
+            return ERRORS.GOOGLE_UNAUTHORIZED;
+        case 403:
+            return ERRORS.GOOGLE_FORBIDDEN;
+        case 404:
+            return ERRORS.GOOGLE_NOT_FOUND;
+        case 408:
+            return ERRORS.GOOGLE_REQUEST_TIMEOUT;
+        case 500:
+            return ERRORS.GOOGLE_SERVER_ERROR;
+        case 503:
+            return ERRORS.GOOGLE_SERVICE_UNAVAILABLE;
+        default:
+            return ERRORS.GOOGLE_REQUEST_FAILED;
     }
 }

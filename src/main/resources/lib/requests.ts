@@ -1,7 +1,7 @@
 import libHttpClient, {HttpClientResponse} from '/lib/http-client';
 
 import type {ErrorResponse} from '../types/shared/model';
-import {ERRORS} from './errors';
+import {ERRORS, isNashornError} from './errors';
 import {logError} from './logger';
 
 export type RequestParams = {
@@ -18,7 +18,7 @@ export function request({
     headers = {},
     body,
     queryParams,
-}: RequestParams): Try<HttpClientResponse> {
+}: RequestParams): TryOptional<HttpClientResponse> {
     try {
         return [
             libHttpClient.request({
@@ -28,7 +28,7 @@ export function request({
                     accept: 'application/json',
                     ...headers,
                 },
-                connectionTimeout: 15000,
+                connectionTimeout: 60000,
                 readTimeout: 10000,
                 body: body != null ? JSON.stringify(body) : undefined,
                 queryParams,
@@ -36,9 +36,20 @@ export function request({
             null,
         ];
     } catch (e) {
-        logError(e);
-        return [null, ERRORS.REST_REQUEST_FAILED];
+        const error = parseHttpLibError(e);
+        logError(error);
+        return [null, error];
     }
+}
+
+function parseHttpLibError(error: unknown): AiError {
+    if (!isNashornError(error)) {
+        return ERRORS.REST_REQUEST_FAILED;
+    }
+    if (error.message.indexOf("couldn't receive headers on time") >= 0 || error.message.indexOf('closed') >= 0) {
+        return ERRORS.REST_TIMEOUT.withMsg(error.message);
+    }
+    return ERRORS.REST_REQUEST_FAILED;
 }
 
 export function respond<T extends Enonic.ResponseBody = Enonic.ResponseBody>(
