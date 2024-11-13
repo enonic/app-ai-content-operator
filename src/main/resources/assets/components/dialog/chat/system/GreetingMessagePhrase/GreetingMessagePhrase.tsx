@@ -1,26 +1,23 @@
-import {Trans} from 'react-i18next';
+import {useStore} from '@nanostores/react';
+import {useTranslation} from 'react-i18next';
 
-type Props = {
-    name: string;
-};
+import {$config} from '../../../../../stores/config';
 
-export default function GreetingMessagePhrase({name}: Props): React.ReactNode {
+export default function GreetingMessagePhrase(): React.ReactNode {
+    const {t} = useTranslation();
+    const {user} = useStore($config, {keys: ['user']});
+
+    const name = user.fullName.split(' ')[0];
     const hours = new Date().getHours();
-    const components = {
-        name: (
-            <span className='font-semibold italic' key='name'>
-                {name}
-            </span>
-        ),
-    };
+
     switch (true) {
         case hours < 6:
-            return <Trans i18nKey='text.greeting.recurring.night' components={components} />;
+            return t('text.greeting.recurring.night', {name});
         case hours < 12:
-            return <Trans i18nKey='text.greeting.recurring.morning' components={components} />;
+            return t('text.greeting.recurring.morning', {name});
         case hours < 18:
-            return <Trans i18nKey='text.greeting.recurring.afternoon' components={components} />;
+            return t('text.greeting.recurring.afternoon', {name});
         default:
-            return <Trans i18nKey='text.greeting.recurring.evening' components={components} />;
+            return t('text.greeting.recurring.evening', {name});
     }
 }
