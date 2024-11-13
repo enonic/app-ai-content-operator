@@ -1,6 +1,6 @@
 import {t} from 'i18next';
 import {nanoid} from 'nanoid';
-import {computed, map} from 'nanostores';
+import {map} from 'nanostores';
 import {Descendant} from 'slate';
 
 import {SPECIAL_NAMES} from '../../lib/shared/prompts';
@@ -26,27 +26,7 @@ export type Chat = {
     history: ChatMessage[];
 };
 
-export type ChatState = 'empty' | 'systemOnly' | 'activeChat' | 'systemPending';
-
 export const $chat = map<Chat>({history: []});
-
-export const $chatState = computed($chat, (chat): ChatState => {
-    if (chat.history.length === 0) {
-        return 'empty';
-    }
-
-    const hasOnlySystemMessages = chat.history.every(message => message.role === MessageRole.SYSTEM);
-    if (hasOnlySystemMessages) {
-        return 'systemOnly';
-    }
-
-    const lastMessage = chat.history.at(-1);
-    if (lastMessage?.role === MessageRole.SYSTEM) {
-        return 'systemPending';
-    }
-
-    return 'activeChat';
-});
 
 export function clearChat(): void {
     if ($chat.get().history.length > 0) {
