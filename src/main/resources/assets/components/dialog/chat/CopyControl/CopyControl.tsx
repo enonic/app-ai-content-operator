@@ -8,15 +8,27 @@ import ActionButton from '../../../shared/ActionButton/ActionButton';
 type Props = {
     className?: string;
     content: string;
+    type?: 'text' | 'html';
 };
 
-export default function CopyControl({className, content}: Props): React.ReactNode {
+export default function CopyControl({className, content, type}: Props): React.ReactNode {
     const {t} = useTranslation();
     const [copying, setCopying] = useState(false);
 
     const handleCopy = useCallback(() => {
         setCopying(true);
-        void Promise.all([navigator.clipboard.writeText(content), delay(500)]).finally(() => {
+
+        const copyPromise =
+            type === 'html'
+                ? navigator.clipboard.write([
+                      new ClipboardItem({
+                          'text/plain': new Blob([content], {type: 'text/plain'}),
+                          'text/html': new Blob([content], {type: 'text/html'}),
+                      }),
+                  ])
+                : navigator.clipboard.writeText(content);
+
+        void Promise.all([copyPromise, delay(500)]).finally(() => {
             setCopying(false);
         });
     }, [content]);

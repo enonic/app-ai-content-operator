@@ -7,9 +7,10 @@ type Props = {
     className?: string;
     name: string;
     content: string;
+    type?: 'text' | 'html';
 };
 
-export default function ElementItemControls({className, name, content}: Props): React.ReactNode {
+export default function ElementItemControls({className, name, content, type}: Props): React.ReactNode {
     return (
         <div
             className={twMerge(
@@ -21,7 +22,7 @@ export default function ElementItemControls({className, name, content}: Props): 
                 className,
             )}
         >
-            <CopyControl className='rounded-none' key='copy' content={content} />
+            <CopyControl className='rounded-none' key='copy' content={content} type={type} />
             <ApplyControl className='rounded-none' key='apply' name={name} content={content} />
         </div>
     );

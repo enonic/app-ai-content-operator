@@ -28,6 +28,7 @@ export default function ElementItem({className, messageId, name, value, last}: P
     const title = inputWithPath ? pathToPrettifiedString(inputWithPath) : '';
     const label = inputWithPath ? getPathLabel(inputWithPath) : name;
     const content = pickMessageValue(value);
+    const type = getInputType(inputWithPath);
 
     return (
         <li className={twMerge('group/item grid grid-cols-fit-fit-1fr gap-x-1 gap-y-1 hover:bg-slate-50', className)}>
@@ -43,8 +44,9 @@ export default function ElementItem({className, messageId, name, value, last}: P
                 className={twJoin('col-start-3', REGULAR_SCREEN && !last && 'invisible group-hover/item:visible')}
                 content={content}
                 name={name}
+                type={type}
             />
-            <ElementItemContent className='col-span-3' content={content} type={getInputType(inputWithPath)} />
+            <ElementItemContent className='col-span-3' content={content} type={type} />
         </li>
     );
 }
