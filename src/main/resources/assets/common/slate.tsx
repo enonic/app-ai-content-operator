@@ -1,9 +1,7 @@
 import {isValidElement} from 'react';
-import {Descendant, Editor} from 'slate';
+import {Descendant} from 'slate';
 
 import MentionElement from '../components/dialog/input/prompt/MentionElement/MentionElement';
-import {insertMention} from '../plugins/withMentions';
-import {Mention} from '../stores/data/Mention';
 
 type ElementEntry = React.ReactNode | string;
 
@@ -74,34 +72,4 @@ export function parseText(nodes: Descendant[]): string {
         })
         .join('')
         .trim();
-}
-
-export function insertOrReplaceLastMention(editor: Editor, mention: Mention): void {
-    deleteLastMention(editor, editor.children);
-    insertMention(editor, mention);
-}
-
-function deleteLastMention(editor: Editor, nodes: Descendant[]): void {
-    const lastElement = nodes.at(-1);
-
-    if (!lastElement) {
-        return;
-    }
-
-    if (!isCustomText(lastElement)) {
-        return deleteLastMention(editor, lastElement.children);
-    }
-
-    if (lastElement.text.trim() === '') {
-        const potentialMention = nodes.at(-2);
-
-        if (potentialMention && isMentionElement(potentialMention)) {
-            if (lastElement.text.length > 0) {
-                // if non-empty element has spaces then need to delete them first
-                editor.delete({unit: 'character', reverse: true, distance: lastElement.text.length});
-            }
-
-            editor.deleteBackward('word');
-        }
-    }
 }

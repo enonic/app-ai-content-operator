@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
 
 import {$dialog, toggleDialog} from '../../stores/dialog';
-import {saveActiveFocus} from '../../stores/focus';
 import AssistantIcon from '../shared/AssistantIcon/AssistantIcon';
 
 export default function LaunchButton(): React.ReactNode {
@@ -20,7 +19,7 @@ export default function LaunchButton(): React.ReactNode {
     const title = hidden ? t('action.open') : t('action.close');
 
     return (
-        <button className={classNames} onClick={toggleDialog} title={title} onMouseDown={saveActiveFocus}>
+        <button className={classNames} onClick={toggleDialog} title={title}>
             <AssistantIcon className='shrink-0 w-7 h-7' />
         </button>
     );

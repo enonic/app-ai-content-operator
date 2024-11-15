@@ -6,8 +6,7 @@ import {createEditor, Descendant, Editor, Node, Transforms} from 'slate';
 import {withHistory} from 'slate-history';
 import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
 
-import {findLooseMatch, MENTION_TOPIC} from '../../../../../common/mentions';
-import {insertOrReplaceLastMention} from '../../../../../common/slate';
+import {findLooseMatch} from '../../../../../common/mentions';
 import {useDeepMemo} from '../../../../../hooks/useDeepMemo';
 import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugins/withMentions';
 import {sendUserMessage} from '../../../../../stores/chat';
@@ -15,7 +14,6 @@ import {$mentions} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
-import {$focus, setFocusedElementPath} from '../../../../../stores/focus';
 import {$chatRequestRunning} from '../../../../../stores/requests';
 import {setScope} from '../../../../../stores/scope';
 import SendButton from '../../SendButton/SendButton';
@@ -77,27 +75,14 @@ export default function PromptArea({className}: Props): React.ReactNode {
     const allMentions = useStore($mentions);
     const mentionsToDisplay = useDeepMemo(findLooseMatch(allMentions, search));
     const hasMentions = mentionsToDisplay.length > 0;
-    const focusedElementPath = useStore($focus);
 
     useEffect(() => {
         if (hidden) {
             clearTarget();
-            return;
+        } else {
+            ReactEditor.focus(editor);
         }
-
-        if (focusedElementPath === MENTION_TOPIC.path) {
-            insertOrReplaceLastMention(editor, MENTION_TOPIC);
-            setFocusedElementPath(null);
-        } else if (focusedElementPath) {
-            const mentionToInsert = allMentions.find(v => v.path === focusedElementPath);
-            if (mentionToInsert) {
-                insertOrReplaceLastMention(editor, mentionToInsert);
-                setFocusedElementPath(null);
-            }
-        }
-
-        ReactEditor.focus(editor);
-    }, [focusedElementPath, allMentions, hidden]);
+    }, [hidden]);
 
     const requestRunning = useStore($chatRequestRunning);
     const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));
