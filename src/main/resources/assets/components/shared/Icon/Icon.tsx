@@ -22,6 +22,7 @@ import {
     HeroIconQuestion,
     HeroIconScale,
     HeroIconSparkles,
+    HeroIconTrash,
     SvgIconGemini,
     SvgIconGeminiFlash,
     SvgIconGeminiPro,
@@ -46,6 +47,7 @@ const outlineIcons = {
     presentationChartLine: HeroIconPresentationChartLine,
     codeBracket: HeroIconCodeBracket,
     pencilSquared: HeroIconPencilSquared,
+    trash: HeroIconTrash,
 } as const;
 
 const solidIcons = {

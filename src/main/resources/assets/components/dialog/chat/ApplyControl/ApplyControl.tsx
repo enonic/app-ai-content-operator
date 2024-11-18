@@ -31,7 +31,7 @@ export default function ApplyControl({className, name, content}: Props): React.R
             className={clsx(applying && 'text-enonic-green', className)}
             name={t('action.insert')}
             icon={applying ? 'check' : 'apply'}
-            mode='compact'
+            mode='icon-with-title'
             clickHandler={handleApply}
         />
     );

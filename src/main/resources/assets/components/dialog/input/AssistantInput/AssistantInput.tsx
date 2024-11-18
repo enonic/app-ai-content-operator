@@ -1,7 +1,6 @@
 import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
 
-import UserIcon from '../../../shared/UserIcon/UserIcon';
 import PromptArea from '../prompt/PromptArea/PromptArea';
 
 export type Props = {
@@ -12,8 +11,7 @@ export default function AssistantInput({className = ''}: Props): React.ReactNode
     const {t} = useTranslation();
 
     return (
-        <div className={twJoin('grid gap-x-2 items-end', 'grid-cols-[auto_1fr]', 'w-full px-3')}>
-            <UserIcon className='mb-2' />
+        <div className='w-full px-3'>
             <PromptArea className={className} />
             <p
                 className={twJoin(

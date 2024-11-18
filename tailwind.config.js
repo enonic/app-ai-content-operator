@@ -29,6 +29,9 @@ export default {
                 '1/2': '50%',
                 '4/5': '80%',
             },
+            margin: {
+                18: '4.5rem',
+            },
             padding: {
                 2.5: '.625rem',
                 7.5: '1.875rem',
@@ -44,6 +47,7 @@ export default {
             },
             flex: {
                 max: '1 0 100%',
+                '1-0-auto': '1 0 auto',
             },
             gridTemplateColumns: {
                 auto: 'auto',

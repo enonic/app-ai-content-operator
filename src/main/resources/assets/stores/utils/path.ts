@@ -86,3 +86,24 @@ export const isRootPath = (path: Path): boolean => {
 export const getParentPath = (path: Path): Optional<Path> => {
     return path.elements.length > 1 ? {elements: path.elements.slice(0, -1)} : null;
 };
+
+export const pathsFromString = (pathAsString: string): Path[] => {
+    const paths: Path[] = [];
+    let path: Optional<Path> = pathFromString(pathAsString);
+
+    while (path) {
+        paths.unshift(path);
+        path = getParentPath(path);
+    }
+
+    return paths;
+};
+
+export function getAllPaths(path: Path): Path[] {
+    const parentPath = getParentPath(path);
+    return parentPath ? [...getAllPaths(parentPath), path] : [path];
+}
+
+export function getAllPathsFromString(pathAsString: string): Path[] {
+    return getAllPaths(pathFromString(pathAsString));
+}

@@ -81,11 +81,9 @@ export class GeminiProxy implements ModelProxy {
         };
     }
 
-    private static createResponseSchema({schema, modelName}: ModelProxyConfig): ResponseSchema | undefined {
-        const isSchemaSupported = modelName.startsWith('gemini-1.5-pro');
+    private static createResponseSchema({schema}: ModelProxyConfig): ResponseSchema | undefined {
         const hasSchema = schema != null && schema.fields.length > 0;
-
-        return isSchemaSupported && hasSchema ? fieldsToSchema(schema.fields) : undefined;
+        return hasSchema ? fieldsToSchema(schema.fields) : undefined;
     }
 
     private static extractText(content: Content | undefined): string {

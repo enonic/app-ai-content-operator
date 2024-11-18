@@ -26,7 +26,7 @@ export default function NewChatButton({className, disabled}: Props): React.React
             disabled={disabled}
             name={t('action.newChat')}
             icon={'pencilSquared'}
-            mode='compact'
+            mode='icon-with-title'
             size='md'
             clickHandler={() => {
                 clearChat();
