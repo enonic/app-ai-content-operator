@@ -1,6 +1,6 @@
 import {atom} from 'nanostores';
 
-import {addGlobalOpenDialogHandler} from '../common/events';
+import {$context} from './context';
 import {getParentPath, pathFromString, pathToString} from './utils/path';
 
 export const $scope = atom<Optional<string>>(undefined);
@@ -11,13 +11,9 @@ export const resetScope = (): void => $scope.set(undefined);
 
 export const isScopeEmpty = (): boolean => $scope.get() == null;
 
-addGlobalOpenDialogHandler(event => {
-    const dataPath = event.detail.sourceDataPath;
+$context.subscribe(context => {
+    const scopePath = context ? getParentPath(pathFromString(context)) : null;
+    const scope = scopePath ? pathToString(scopePath) : null;
 
-    if (dataPath) {
-        const scopePath = getParentPath(pathFromString(dataPath));
-        const scope = scopePath ? pathToString(scopePath) : null;
-
-        setScope(scope);
-    }
+    setScope(scope);
 });

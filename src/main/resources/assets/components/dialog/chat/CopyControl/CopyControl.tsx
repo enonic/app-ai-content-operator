@@ -43,7 +43,7 @@ export default function CopyControl({className, content, type}: Props): React.Re
             className={clsx(copying && 'text-enonic-green', className)}
             name={t('action.copy')}
             icon={copying ? 'copySuccess' : 'copy'}
-            mode='compact'
+            mode='icon-with-title'
             clickHandler={() => void handleCopy()}
         />
     );

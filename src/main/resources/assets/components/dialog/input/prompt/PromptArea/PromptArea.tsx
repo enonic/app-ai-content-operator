@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import {createEditor, Descendant, Editor, Node, Transforms} from 'slate';
 import {withHistory} from 'slate-history';
 import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
+import {twMerge} from 'tailwind-merge';
 
 import {findLooseMatch} from '../../../../../common/mentions';
 import {useDeepMemo} from '../../../../../hooks/useDeepMemo';
@@ -165,25 +166,25 @@ export default function PromptArea({className}: Props): React.ReactNode {
         [mentionsToDisplay, editor, index, target, isSendDisabled],
     );
 
-    const classNames = clsx(
-        'relative',
-        'flex flex-col flex-grow items-center',
-        'w-full',
-        'bg-enonic-gray-100',
-        'rounded-[1.5rem]',
-        'overflow-y-auto',
-        className,
-    );
-
     return (
-        <div className={classNames}>
+        <div
+            className={twMerge(
+                'relative',
+                'flex flex-col flex-grow items-center',
+                'w-full',
+                'bg-enonic-gray-100',
+                'rounded-lg',
+                'overflow-y-auto',
+                className,
+            )}
+        >
             <Slate editor={editor} initialValue={INITIAL_VALUE} onChange={handleChange}>
                 <Editable
                     className={clsx(
                         'w-full max-h-[7.75rem]',
-                        'm-0 py-3 pr-11',
+                        'm-0 py-3.5 pr-11',
                         'bg-transparent placeholder-black/50',
-                        'border-0 rounded-[1.5rem]',
+                        'border-0 rounded-lg',
                         'resize-none',
                         'text-sm leading-6',
                         'outline-none',

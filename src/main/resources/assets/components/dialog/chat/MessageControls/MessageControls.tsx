@@ -39,7 +39,7 @@ export default function MessageControls({className, content, last}: Props): Reac
                 <ActionButton
                     name={t('action.retry')}
                     icon='retry'
-                    mode='compact'
+                    mode='icon-with-title'
                     clickHandler={() => void sendRetryMessage()}
                 />
             )}
@@ -47,7 +47,7 @@ export default function MessageControls({className, content, last}: Props): Reac
                 <ActionButton
                     name={t('action.insertAll')}
                     icon='applyAll'
-                    mode='compact'
+                    mode='icon-with-title'
                     clickHandler={() => {
                         const items = extractItems(content);
                         dispatchResultApplied(items);
