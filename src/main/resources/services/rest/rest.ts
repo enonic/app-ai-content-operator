@@ -45,21 +45,25 @@ function parsePostRequest(request: Enonic.Request): Try<ModelRequestData> {
         return [null, ERRORS.REST_REQUEST_BODY_MISSING];
     }
 
-    const body = JSON.parse(request.body) as ModelRequestData;
+    try {
+        const body = JSON.parse(request.body) as ModelRequestData;
 
-    switch (body.operation) {
-        case 'generate':
-            if (body.model == null) {
-                return [null, ERRORS.REST_MODEL_REQUIRED];
-            }
-            if (body.mode == null) {
-                return [null, ERRORS.REST_MODE_REQUIRED];
-            }
-            if (body.messages == null) {
-                return [null, ERRORS.REST_MESSAGES_REQUIRED];
-            }
-            return [body, null];
-        default:
-            return [null, ERRORS.REST_OPERATION_NOT_SUPPORTED];
+        switch (body.operation) {
+            case 'generate':
+                if (body.model == null) {
+                    return [null, ERRORS.REST_MODEL_REQUIRED];
+                }
+                if (body.mode == null) {
+                    return [null, ERRORS.REST_MODE_REQUIRED];
+                }
+                if (body.messages == null) {
+                    return [null, ERRORS.REST_MESSAGES_REQUIRED];
+                }
+                return [body, null];
+            default:
+                return [null, ERRORS.REST_OPERATION_NOT_SUPPORTED];
+        }
+    } catch (err) {
+        return [null, ERRORS.REST_REQUEST_BODY_INVALID];
     }
 }

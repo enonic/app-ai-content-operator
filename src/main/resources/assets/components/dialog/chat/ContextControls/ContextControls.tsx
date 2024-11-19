@@ -1,12 +1,27 @@
 import {useStore} from '@nanostores/react';
 import {t} from 'i18next';
-import {Fragment} from 'react';
 import {twJoin} from 'tailwind-merge';
 
 import {$context, resetContext} from '../../../../stores/context';
+import {Path} from '../../../../stores/data/Path';
 import {getAllPathsFromString, pathToString} from '../../../../stores/utils/path';
 import ActionButton from '../../../shared/ActionButton/ActionButton';
 import ContextItem from '../ContextItem/ContextItem';
+
+function createItems(paths: Path[]): React.ReactNode[] {
+    return paths.flatMap((path, i) => {
+        const isLast = i === paths.length - 1;
+        const key = pathToString(path);
+        return isLast
+            ? [<ContextItem key={`${key}-item-last`} path={path} last={isLast} />]
+            : [
+                  <ContextItem key={`${key}-item`} path={path} last={isLast} />,
+                  <span key={`${key}-sep`} className='text-enonic-gray-400 cursor-default select-none flex-shrink-0'>
+                      /
+                  </span>,
+              ];
+    });
+}
 
 export default function ContextControl(): React.ReactNode {
     const context = useStore($context);
@@ -18,38 +33,20 @@ export default function ContextControl(): React.ReactNode {
             className={twJoin(
                 'flex gap-0.5 justify-start items-center',
                 'box-content',
-                'mx-5',
-                'border border-gray-200 rounded-md',
+                'ml-17 mr-6',
                 'text-xs',
                 'transition-all duration-200 ease-in-out',
-                isEmpty ? 'h-0 -mb-1 opacity-0 pointer-events-none' : 'h-6 mb-0 opacity-100',
+                isEmpty ? 'h-0 -mb-2 opacity-0 pointer-events-none' : 'h-6 mb-0 opacity-100',
             )}
         >
+            <div className='flex items-center w-fit overflow-hidden'>{createItems(paths)}</div>
             <ActionButton
                 name={t('action.resetContext')}
                 mode='icon-with-title'
                 size='sm'
-                icon='trash'
+                icon='close'
                 clickHandler={resetContext}
             />
-            <span className='inline-block border-l border-gray-200 mr-1 h-[calc(100%-0.5rem)]'></span>
-            <span className='text-enonic-gray-400 cursor-default select-none'>{t('field.context')}</span>
-            <span className='inline-block border-l border-gray-200 mx-1 h-[calc(100%-0.5rem)]'></span>
-            <div className='flex items-center w-full overflow-hidden'>
-                {paths.map((path, i) => (
-                    <Fragment key={pathToString(path)}>
-                        <span className='text-enonic-gray-400 cursor-default select-none flex-shrink-0'>/</span>
-                        <ContextItem
-                            path={path}
-                            last={i === paths.length - 1}
-                            className={twJoin(
-                                'max-w-none min-w-6',
-                                i === paths.length - 1 ? 'flex-1-0-auto justify-start' : 'shrink',
-                            )}
-                        />
-                    </Fragment>
-                ))}
-            </div>
         </div>
     );
 }

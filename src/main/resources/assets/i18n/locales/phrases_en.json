@@ -13,7 +13,6 @@
     "action.resetContext": "Clear Context",
     "action.switchContextTo": "Switch Context To '{{name}}'",
     "field.chat": "AI Chat",
-    "field.context": "Context",
     "field.message.error": "Oops!",
     "field.label.topic": "Display Name",
     "text.greeting.first": "Hi, I’m Juke, your AI assistant.",

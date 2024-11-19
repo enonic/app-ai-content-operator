@@ -22,7 +22,7 @@ export default function ContextItem({className, path, last}: Props): React.React
 
     return (
         <ActionButton
-            className={twJoin('rounded-sm disabled:opacity-100', !last && 'text-enonic-blue-light', className)}
+            className={twJoin('disabled:opacity-100', !last && 'text-enonic-blue-light', className)}
             size='sm'
             mode='text-with-title'
             title={t('action.switchContextTo', {name})}

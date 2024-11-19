@@ -30,7 +30,7 @@ export default {
                 '4/5': '80%',
             },
             margin: {
-                18: '4.5rem',
+                17: '4.25rem',
             },
             padding: {
                 2.5: '.625rem',

@@ -18,7 +18,7 @@ export default function SendButton({className, disabled, clickHandler}: Props): 
                 'w-8 h-8',
                 'p-0.5',
                 'text-white',
-                'border border-enonic-blue rounded-md',
+                'border border-enonic-blue rounded-full',
                 'bg-enonic-blue',
                 'enabled:hover:bg-enonic-blue-light',
                 'disabled:bg-enonic-gray-400 disabled:border-enonic-gray-400',

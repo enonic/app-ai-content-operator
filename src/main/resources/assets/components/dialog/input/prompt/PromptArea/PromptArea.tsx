@@ -173,7 +173,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                 'flex flex-col flex-grow items-center',
                 'w-full',
                 'bg-enonic-gray-100',
-                'rounded-lg',
+                'rounded-[1.5rem]',
                 'overflow-y-auto',
                 className,
             )}
@@ -184,7 +184,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                         'w-full max-h-[7.75rem]',
                         'm-0 py-3.5 pr-11',
                         'bg-transparent placeholder-black/50',
-                        'border-0 rounded-lg',
+                        'border-0 rounded-[1.5rem]',
                         'resize-none',
                         'text-sm leading-6',
                         'outline-none',
