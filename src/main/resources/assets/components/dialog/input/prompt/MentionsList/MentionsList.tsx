@@ -1,11 +1,11 @@
 import clsx from 'clsx';
+import {t} from 'i18next';
 import {useEffect, useRef, useState} from 'react';
 import {twMerge} from 'tailwind-merge';
 
 import {Portal} from '../../../../../common/components';
 import {MENTION_ALL} from '../../../../../common/mentions';
 import {Mention} from '../../../../../stores/data/Mention';
-import Icon from '../../../../shared/Icon/Icon';
 
 type Props = {
     className?: string;
@@ -24,8 +24,17 @@ export default function MentionsList({
 }: Props): React.ReactNode {
     const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const [listWidth, setListWidth] = useState(0);
-
     const [isRendered, setIsRendered] = useState(false);
+    const hasMentions = mentions.length > 0;
+    const mentionsToUse = hasMentions
+        ? mentions
+        : [
+              {
+                  path: '__not_found__',
+                  label: t('text.mentions.missing'),
+                  prettified: t('text.mentions.missing'),
+              },
+          ];
 
     useEffect(() => {
         setIsRendered(true);
@@ -43,7 +52,7 @@ export default function MentionsList({
             const widths = buttonRefs.current.map(button => button?.offsetWidth || 0);
             setListWidth(Math.max(...widths));
         }
-    }, [mentions, isRendered]);
+    }, [hasMentions, mentionsToUse, isRendered]);
 
     const classNames = twMerge(
         'ai-content-operator',
@@ -68,35 +77,33 @@ export default function MentionsList({
             top: targetRect.top + window.scrollY + 20,
             left: targetRect.left + window.scrollX,
         }),
-        width: listWidth,
+        width: hasMentions ? listWidth : 'auto',
     };
 
     return (
         <Portal>
             <div className={classNames} style={style}>
-                {mentions.map((mention, i) => (
+                {mentionsToUse.map((mention, i) => (
                     <button
                         key={mention.path}
                         ref={el => (buttonRefs.current[i] = el)}
-                        onClick={() => handleClick(mention)}
+                        onClick={hasMentions ? () => handleClick(mention) : undefined}
                         title={mention.prettified !== mention.label ? mention.prettified : undefined}
                         className={clsx(
                             'block',
                             'flex-none',
                             'h-6',
                             'px-2 py-0.5',
-                            'truncate',
+                            hasMentions && 'truncate',
                             'rounded-sm',
                             'hover:bg-slate-50',
                             i === selectedIndex && 'bg-slate-100 hover:bg-slate-200',
                             i !== selectedIndex && 'hover:bg-slate-50',
                             'text-left text-sm',
                             mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
-                            mention.type === 'scope' && 'flex items-center gap-1',
                         )}
                     >
                         {mention.label}
-                        {mention.type === 'scope' && <Icon name={'expand'} className={'shrink-0 w-3 h-3'} />}
                     </button>
                 ))}
             </div>

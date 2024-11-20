@@ -37,5 +37,6 @@
     "text.error.google.serviceUnavailable": "AI service is currently unavailable. Try again later.",
     "text.error.response.maxTokens": "Token limit exceeded. Your prompt lead to pruned response that cannot be parsed.",
     "text.error.response.finishReason": "AI service stopped generating response. Reason <{{finishReason}}>.",
-    "text.error.response.safety": "AI service stopped generating response due to safety violation."
+    "text.error.response.safety": "AI service stopped generating response due to safety violation.",
+    "text.mentions.missing": "No inputs found"
 }

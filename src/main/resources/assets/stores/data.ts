@@ -4,16 +4,15 @@ import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {isNonNullable} from '../common/data';
 import {addGlobalUpdateDataHandler, AiEvents, dispatch} from '../common/events';
 import {findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
-import {$context} from './context';
+import {$context, isContextEmpty} from './context';
 import {ApplyMessage} from './data/ApplyMessage';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {DataEntry} from './data/DataEntry';
 import {UpdateEventData} from './data/EventData';
-import {FormItemWithPath, InputWithPath} from './data/FormItemWithPath';
+import {InputWithPath} from './data/FormItemWithPath';
 import {Language} from './data/Language';
 import {Path} from './data/Path';
 import {Schema} from './data/Schema';
-import {$scope, isScopeEmpty} from './scope';
 import {
     findPathByDataAttrString,
     getDataPathsToEditableItems,
@@ -22,8 +21,8 @@ import {
     setValueByPath,
 } from './utils/data';
 import {getInputType} from './utils/input';
-import {isChildPath, isRootPath, pathFromString, pathToString} from './utils/path';
-import {getFormItemsWithPaths, isInputWithPath, isOrContainsEditableInput} from './utils/schema';
+import {isChildPath, isRootPath, pathFromString, pathsEqual, pathToString} from './utils/path';
+import {getFormItemsWithPaths, isEditableInput, isInputWithPath, isOrContainsEditableInput} from './utils/schema';
 
 export type Data = {
     language: Language;
@@ -84,23 +83,33 @@ export const $allPaths = computed($allFormItemsWithPaths, paths => paths.map(pat
 //
 //* SCOPE
 //
-export const $scopedPaths = computed([$allFormItemsWithPaths, $scope], (allFormItems, scope) => {
-    const scopePath = scope ? pathFromString(scope) : null;
-    const items: FormItemWithPath[] = scopePath
-        ? allFormItems.filter(path => isChildPath(path, scopePath))
-        : allFormItems.filter(isRootPath);
+export const $scopedPaths = computed([$allFormItemsWithPaths, $context], (allFormItems, context) => {
+    // no context
+    if (!context) {
+        return allFormItems.filter(isRootPath).filter(isEditableInput);
+    }
 
-    return items.filter(isOrContainsEditableInput);
+    const contextPath = pathFromString(context);
+    const formItem = allFormItems.find(p => pathsEqual(p, contextPath));
+
+    // context is a specific input, scope is this input
+    if (formItem && isEditableInput(formItem)) {
+        return [formItem];
+    }
+
+    // context is a set or an option, scope is all direct children
+    return allFormItems.filter(path => isChildPath(path, contextPath)).filter(isEditableInput);
 });
 
 export const $mentions = computed($scopedPaths, scopedPaths => {
     const mentions = scopedPaths.map(pathToMention);
 
-    if (mentions.length > 0) {
+    if (mentions.length > 1) {
         mentions.push(MENTION_ALL);
     }
 
-    if (isScopeEmpty()) {
+    if (isContextEmpty()) {
+        // for root always return display name as a mention
         mentions.push(MENTION_TOPIC);
     }
 
@@ -203,7 +212,7 @@ function createPromptContent(): string {
 function generatePathsEntries(): Record<string, DataEntry> {
     const result: Record<string, DataEntry> = {};
 
-    if (isScopeEmpty()) {
+    if (isContextEmpty()) {
         result[MENTION_TOPIC.path] = {
             value: $topic.get(),
             type: 'text',

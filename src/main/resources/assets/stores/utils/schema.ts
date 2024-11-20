@@ -158,3 +158,7 @@ export function isOrContainsEditableInput(formItem: FormItem): boolean {
 
     return false;
 }
+
+export function isEditableInput(formItem: FormItem): boolean {
+    return isInput(formItem) && isInputToEdit(formItem);
+}
