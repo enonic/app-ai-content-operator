@@ -75,17 +75,17 @@ function pathElementToPrettifiedString(element: PathElement): string {
     return element.index == undefined || element.index === 0 ? text : `${text}[${element.index}]`;
 }
 
-export const isChildPath = (child: Path, parent: Path): boolean => {
+export function isChildPath(child: Path, parent: Path): boolean {
     return startsWith(child, parent) && child.elements.length === parent.elements.length + 1;
-};
+}
 
-export const isRootPath = (path: Path): boolean => {
+export function isRootPath(path: Path): boolean {
     return path.elements.length === 1;
-};
+}
 
-export const getParentPath = (path: Path): Optional<Path> => {
+export function getParentPath(path: Path): Optional<Path> {
     return path.elements.length > 1 ? {elements: path.elements.slice(0, -1)} : null;
-};
+}
 
 export const pathsFromString = (pathAsString: string): Path[] => {
     const paths: Path[] = [];

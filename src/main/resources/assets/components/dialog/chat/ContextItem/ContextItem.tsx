@@ -4,8 +4,10 @@ import {twJoin} from 'tailwind-merge';
 
 import {setContext} from '../../../../stores/context';
 import {$allFormItemsWithPaths} from '../../../../stores/data';
+import {FormItemWithPath} from '../../../../stores/data/FormItemWithPath';
 import {Path} from '../../../../stores/data/Path';
-import {getPathLabel, pathsEqual, pathToString} from '../../../../stores/utils/path';
+import {getPathLabel, isChildPath, pathsEqual, pathToString} from '../../../../stores/utils/path';
+import {isInput} from '../../../../stores/utils/schema';
 import ActionButton from '../../../shared/ActionButton/ActionButton';
 
 type Props = {
@@ -14,15 +16,22 @@ type Props = {
     last: boolean;
 };
 
+function hasChildrenInputs(allPaths: FormItemWithPath[], path: Path): boolean {
+    return allPaths.filter(p => isChildPath(p, path) && isInput(p)).length > 0;
+}
+
 export default function ContextItem({className, path, last}: Props): React.ReactNode {
     const allFormItemsWithPaths = useStore($allFormItemsWithPaths);
     const formItem = allFormItemsWithPaths.find(p => pathsEqual(p, path));
+    const isEnabled = hasChildrenInputs(allFormItemsWithPaths, path) && !last && formItem != null;
+
     const name = formItem ? getPathLabel(formItem) : '';
-    const clickHandler = name && !last ? () => setContext(pathToString(path)) : undefined;
+
+    const clickHandler = isEnabled ? () => setContext(pathToString(path)) : undefined;
 
     return (
         <ActionButton
-            className={twJoin('disabled:opacity-100', !last && 'text-enonic-blue-light', className)}
+            className={twJoin('disabled:opacity-100', isEnabled && 'text-enonic-blue-light', className)}
             size='sm'
             mode='text-with-title'
             title={t('action.switchContextTo', {name})}
