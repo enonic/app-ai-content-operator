@@ -1,4 +1,6 @@
 export type ContentData = {
+    contentId: string;
+    contentPath: string;
     fields: PropertyArray[];
     topic: string;
 };

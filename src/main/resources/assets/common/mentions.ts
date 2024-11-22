@@ -61,18 +61,3 @@ export const pickMessageValue = (value: string | MultipleContentValue): string =
 export const combineMessageValues = (value: string | MultipleContentValue): string => {
     return typeof value === 'string' ? value : value.values.join('\n');
 };
-
-export function findMentionsNames(text: string): string[] {
-    const MATCH = /{{((?:\/?\w+(?:\[\d+\])?)+)}}/gi;
-    const names: string[] = [];
-
-    for (;;) {
-        const [, name] = MATCH.exec(text) || [];
-        if (name == null) {
-            break;
-        }
-        names.push(name);
-    }
-
-    return names.filter((name, index, arr) => !!name && arr.indexOf(name) === index);
-}

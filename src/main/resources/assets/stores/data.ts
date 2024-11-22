@@ -1,21 +1,23 @@
 import {computed, map} from 'nanostores';
 
+import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {isNonNullable} from '../common/data';
 import {addGlobalUpdateDataHandler, AiEvents, dispatch} from '../common/events';
-import {findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
+import {MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
+import {$config} from './config';
 import {$context} from './context';
 import {ApplyMessage} from './data/ApplyMessage';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {DataEntry} from './data/DataEntry';
 import {UpdateEventData} from './data/EventData';
-import {InputWithPath} from './data/FormItemWithPath';
+import {FormItemWithPath, InputWithPath} from './data/FormItemWithPath';
 import {Language} from './data/Language';
 import {Path} from './data/Path';
 import {Schema} from './data/Schema';
 import {getDataPathsToEditableItems, getPropertyArrayByPath, pathToMention} from './utils/data';
 import {getInputType} from './utils/input';
-import {isChildPath, isRootPath, pathFromString, pathsEqual, pathToString} from './utils/path';
-import {getFormItemsWithPaths, isEditableInput, isInputWithPath, isOrContainsEditableInput} from './utils/schema';
+import {isChildPath, pathFromString, pathsEqual, pathToString} from './utils/path';
+import {getFormItemsWithPaths, isEditableInput, isOrContainsEditableInput} from './utils/schema';
 
 export type Data = {
     language: Language;
@@ -74,42 +76,6 @@ export const $allFormItemsWithPaths = computed($data, ({schema, persisted}) => {
 export const $allPaths = computed($allFormItemsWithPaths, paths => paths.map(pathToString));
 
 //
-//* SCOPE
-//
-export const $scopedPaths = computed([$allFormItemsWithPaths, $context], (allFormItems, context) => {
-    // no context
-    if (!context) {
-        return allFormItems.filter(isRootPath).filter(isEditableInput);
-    }
-
-    const contextPath = pathFromString(context);
-    const formItem = allFormItems.find(p => pathsEqual(p, contextPath));
-
-    // context is a specific input, scope is this input
-    if (formItem && isEditableInput(formItem)) {
-        return [formItem];
-    }
-
-    // context is a set or an option, scope is all direct children
-    return allFormItems.filter(path => isChildPath(path, contextPath)).filter(isEditableInput);
-});
-
-export const $mentions = computed([$scopedPaths, $context], (scopedPaths, context) => {
-    const mentions = scopedPaths.map(pathToMention);
-
-    if (mentions.length > 1) {
-        mentions.push(MENTION_ALL);
-    }
-
-    const isRootContext = context == null;
-    if (isRootContext) {
-        mentions.push(MENTION_TOPIC);
-    }
-
-    return mentions;
-});
-
-//
 //* CONTEXT
 //
 export const $mentionInContext = computed([$context, $allFormItemsWithPaths], (context, allFormItems) => {
@@ -119,6 +85,28 @@ export const $mentionInContext = computed([$context, $allFormItemsWithPaths], (c
 
     const matchingPath = allFormItems.filter(isOrContainsEditableInput).find(path => pathToString(path) === context);
     return matchingPath && pathToMention(matchingPath);
+});
+
+export const $inputsInContext = computed([$context, $allFormItemsWithPaths], (context, allFormItems) => {
+    const contextPath = context && pathFromString(context);
+
+    const input = contextPath
+        ? allFormItems.find((path): path is InputWithPath => pathsEqual(path, contextPath) && isEditableInput(path))
+        : null;
+    if (input) {
+        return [input];
+    }
+
+    const items: FormItemWithPath[] = contextPath
+        ? allFormItems.filter(path => isChildPath(path, contextPath))
+        : allFormItems;
+
+    return items.filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item));
+});
+
+export const $mentions = computed([$inputsInContext, $context], (inputs, context) => {
+    const mentions = inputs.map(pathToMention);
+    return [...(mentions.length > 1 ? [MENTION_ALL] : []), ...(context == null ? [MENTION_TOPIC] : []), ...mentions];
 });
 
 //
@@ -132,45 +120,44 @@ export function dispatchResultApplied(entries: ApplyMessage[]): void {
 //
 //* PROMPT
 //
+
+// #Request:
+// #Instructions:
+// #Metadata:
+// #Fields:
+// #Content:
 export function createPrompt(text: string): string {
-    return [text, createPromptContext(), createPromptFields(text), createPromptContent()]
-        .filter(isNonNullable)
-        .join('\n\n');
+    return [
+        createPromptRequest(text),
+        createPromptInstructions(),
+        createPromptMetadata(),
+        createPromptFields(),
+        createPromptContent(),
+    ].join('\n\n');
 }
 
-function createPromptContext(): string {
-    const mentionInContext = $mentionInContext.get()?.path;
+function createPromptRequest(text: string): string {
+    return `#Request:\n${text}`;
+}
+
+function createPromptInstructions(): string {
+    return `#Instructions:\n${$config.get().instructions}`;
+}
+
+function createPromptMetadata(): string {
     return [
-        '# Context',
-        `- Topic is "${$topic.get()}"`,
-        `- Language is "${$data.get().language?.tag ?? navigator?.language ?? 'en'}"`,
-        ...(mentionInContext ? [`- Field in Context is "${mentionInContext}"`] : []),
+        '#Metadata',
+        `- Language: ${$data.get().language?.tag ?? navigator?.language ?? 'en'}`,
+        `- Content path: ${$data.get()?.persisted?.contentPath ?? ''}`,
     ].join('\n');
 }
 
-function createPromptFields(text: string): Optional<string> {
-    const mentionInContext = $mentionInContext.get()?.path;
-    const mentionsInText = findMentionsNames(text);
-    const canAddContext = mentionInContext && !mentionsInText.includes(mentionInContext);
-    const mentions = canAddContext ? [mentionInContext, ...mentionsInText] : mentionsInText;
-
-    if (mentions.length === 0) {
-        return null;
-    }
-
-    const hasDirectAllMentions = mentions.includes(MENTION_ALL.path);
-    const fields = hasDirectAllMentions
-        ? $mentions
-              .get()
-              .map(v => v.path)
-              .filter(v => v !== MENTION_ALL.path)
-        : mentions;
-
-    return ['# Fields', ...fields.map(v => `- ${v}`)].join('\n');
+function createPromptFields(): string {
+    return '#Fields:\n' + $inputsInContext.get().map(pathToString).join('\n');
 }
 
 function createPromptContent(): string {
-    return ['# Content', '```json', JSON.stringify(generatePathsEntries(), null, 2), '```'].join('\n');
+    return ['#Content', '```\n', JSON.stringify(generatePathsEntries(), null, 2), '\n```'].join('\n');
 }
 
 function generatePathsEntries(): Record<string, DataEntry> {
@@ -186,17 +173,14 @@ function generatePathsEntries(): Record<string, DataEntry> {
         };
     }
 
-    $scopedPaths
-        .get()
-        .filter(isInputWithPath)
-        .forEach((inputWithPath: InputWithPath) => {
-            result[pathToString(inputWithPath)] = {
-                value: findValueByPath(inputWithPath)?.v ?? '',
-                type: getInputType(inputWithPath),
-                schemaType: inputWithPath.Input.inputType,
-                schemaLabel: inputWithPath.Input.label,
-            };
-        });
+    $inputsInContext.get().forEach((inputWithPath: InputWithPath) => {
+        result[pathToString(inputWithPath)] = {
+            value: findValueByPath(inputWithPath)?.v ?? '',
+            type: getInputType(inputWithPath),
+            schemaType: inputWithPath.Input.inputType,
+            schemaLabel: inputWithPath.Input.label,
+        };
+    });
 
     return result;
 }
