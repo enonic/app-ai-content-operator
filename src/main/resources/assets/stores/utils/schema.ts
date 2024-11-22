@@ -135,6 +135,10 @@ function getFormOptionSetOptionPathEntries(
     return [optionFormItemWithPath, ...getPathsOfMentionableItems(option.items, {elements: pathElements})];
 }
 
+export function isEditableInput(item: FormItem): item is Input {
+    return isInput(item) && isInputToEdit(item);
+}
+
 export function isOrContainsEditableInput(formItem: FormItem): boolean {
     if (isInput(formItem)) {
         return isInputToEdit(formItem);
@@ -157,8 +161,4 @@ export function isOrContainsEditableInput(formItem: FormItem): boolean {
     }
 
     return false;
-}
-
-export function isEditableInput(formItem: FormItem): boolean {
-    return isInput(formItem) && isInputToEdit(formItem);
 }
