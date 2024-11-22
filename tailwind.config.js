@@ -33,6 +33,7 @@ export default {
                 17: '4.25rem',
             },
             padding: {
+                0.25: '.0625rem',
                 2.5: '.625rem',
                 7.5: '1.875rem',
             },

@@ -16,7 +16,6 @@ import {Mention} from '../../../../../stores/data/Mention';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
 import {$chatRequestRunning} from '../../../../../stores/requests';
-import {setScope} from '../../../../../stores/scope';
 import SendButton from '../../SendButton/SendButton';
 import MentionsList from '../MentionsList/MentionsList';
 import PromptAreaElement from '../PromptAreaElement/PromptAreaElement';
@@ -75,7 +74,6 @@ export default function PromptArea({className}: Props): React.ReactNode {
 
     const allMentions = useStore($mentions);
     const mentionsToDisplay = useDeepMemo(findLooseMatch(allMentions, search));
-    const hasMentions = mentionsToDisplay.length > 0;
 
     useEffect(() => {
         if (hidden) {
@@ -90,12 +88,12 @@ export default function PromptArea({className}: Props): React.ReactNode {
     const isSendDisabled = requestRunning || editorEmpty;
 
     useEffect(() => {
-        if (target && hasMentions) {
+        if (target) {
             const domRange = ReactEditor.toDOMRange(editor, target);
             const rect = domRange.getBoundingClientRect();
             setRect(rect);
         }
-    }, [hasMentions, editor, search, target]);
+    }, [editor, search, target]);
 
     const handleChange = (): void => {
         const matches = calcMentionSpec(editor);
@@ -112,12 +110,12 @@ export default function PromptArea({className}: Props): React.ReactNode {
 
     const handleMentionSelected = useCallback(
         (mention: Mention): void => {
-            if (mention.type === 'scope') {
-                setScope(mention.path);
-                editor.deleteBackward('word');
-            } else if (target) {
-                Transforms.select(editor, target);
-                insertMention(editor, mention);
+            if (target) {
+                if (mentionsToDisplay.length > 0) {
+                    Transforms.select(editor, target);
+                    insertMention(editor, mention);
+                }
+
                 clearTarget();
                 ReactEditor.focus(editor);
             }
@@ -127,7 +125,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
 
     const handleKeyDown = useCallback(
         (event: React.KeyboardEvent): void => {
-            if (!target || !hasMentions) {
+            if (!target) {
                 if (event.key === 'Enter') {
                     event.preventDefault();
                     if (event.altKey || event.shiftKey) {
@@ -196,7 +194,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                     renderElement={PromptAreaElement}
                     ref={ref}
                 />
-                {target && hasMentions && (
+                {target && (
                     <MentionsList
                         mentions={mentionsToDisplay}
                         targetRect={rect}

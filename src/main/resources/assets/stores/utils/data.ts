@@ -3,25 +3,13 @@ import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithP
 import {Mention} from '../data/Mention';
 import {Path, PathElement} from '../data/Path';
 import {clonePath, getPathLabel, pathToPrettifiedString, pathToString} from './path';
-import {
-    isFormItemSet,
-    isFormItemSetWithPath,
-    isFormOptionSet,
-    isFormOptionSetOptionWithPath,
-    isFormOptionSetWithPath,
-    isInput,
-    isInputWithPath,
-} from './schema';
+import {isFormItemSet, isFormOptionSet, isInput, isInputWithPath} from './schema';
 
 export function pathToMention(item: FormItemWithPath): Mention {
     return {
         path: pathToString(item),
         prettified: pathToPrettifiedString(item),
         label: getPathLabel(item),
-        type:
-            isFormItemSetWithPath(item) || isFormOptionSetWithPath(item) || isFormOptionSetOptionWithPath(item)
-                ? 'scope'
-                : 'normal',
     };
 }
 
