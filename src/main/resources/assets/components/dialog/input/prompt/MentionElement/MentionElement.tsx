@@ -27,7 +27,7 @@ export default function MentionElement({attributes = {}, className, children, el
 
     const classNames = twJoin(
         'inline-flex',
-        'px-1 py-0.5',
+        'px-1 py-0.25',
         'align-baseline',
         'rounded',
         'border border-slate-300',

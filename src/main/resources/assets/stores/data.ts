@@ -4,7 +4,7 @@ import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {isNonNullable} from '../common/data';
 import {addGlobalUpdateDataHandler, AiEvents, dispatch} from '../common/events';
 import {findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
-import {$context, isContextEmpty} from './context';
+import {$context} from './context';
 import {ApplyMessage} from './data/ApplyMessage';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {DataEntry} from './data/DataEntry';
@@ -101,15 +101,15 @@ export const $scopedPaths = computed([$allFormItemsWithPaths, $context], (allFor
     return allFormItems.filter(path => isChildPath(path, contextPath)).filter(isEditableInput);
 });
 
-export const $mentions = computed($scopedPaths, scopedPaths => {
+export const $mentions = computed([$scopedPaths, $context], (scopedPaths, context) => {
     const mentions = scopedPaths.map(pathToMention);
 
     if (mentions.length > 1) {
         mentions.push(MENTION_ALL);
     }
 
-    if (isContextEmpty()) {
-        // for root always return display name as a mention
+    const isRootContext = context == null;
+    if (isRootContext) {
         mentions.push(MENTION_TOPIC);
     }
 
@@ -212,7 +212,8 @@ function createPromptContent(): string {
 function generatePathsEntries(): Record<string, DataEntry> {
     const result: Record<string, DataEntry> = {};
 
-    if (isContextEmpty()) {
+    const isRootContext = $context.get() == null;
+    if (isRootContext) {
         result[MENTION_TOPIC.path] = {
             value: $topic.get(),
             type: 'text',

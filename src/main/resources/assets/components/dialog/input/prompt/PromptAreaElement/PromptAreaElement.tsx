@@ -13,7 +13,7 @@ export default function PromptAreaElement(props: Props): JSX.Element {
         return <MentionElement {...props} />;
     }
     return (
-        <p {...props.attributes} className='relative pl-4'>
+        <p {...props.attributes} className='relative h-5 pl-4'>
             {props.children as React.ReactNode}
         </p>
     );

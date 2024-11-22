@@ -1,7 +1,6 @@
-import clsx from 'clsx';
 import {t} from 'i18next';
-import {useEffect, useRef, useState} from 'react';
-import {twMerge} from 'tailwind-merge';
+import {useEffect, useRef} from 'react';
+import {twJoin, twMerge} from 'tailwind-merge';
 
 import {Portal} from '../../../../../common/components';
 import {MENTION_ALL} from '../../../../../common/mentions';
@@ -23,22 +22,8 @@ export default function MentionsList({
     handleClick,
 }: Props): React.ReactNode {
     const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
-    const [listWidth, setListWidth] = useState(0);
-    const [isRendered, setIsRendered] = useState(false);
+    const ref = useRef<HTMLDivElement | null>(null);
     const hasMentions = mentions.length > 0;
-    const mentionsToUse = hasMentions
-        ? mentions
-        : [
-              {
-                  path: '__not_found__',
-                  label: t('text.mentions.missing'),
-                  prettified: t('text.mentions.missing'),
-              },
-          ];
-
-    useEffect(() => {
-        setIsRendered(true);
-    }, []);
 
     useEffect(() => {
         buttonRefs.current[selectedIndex]?.scrollIntoView({
@@ -48,64 +33,73 @@ export default function MentionsList({
     }, [selectedIndex]);
 
     useEffect(() => {
-        if (buttonRefs.current.length > 0 && isRendered) {
-            const widths = buttonRefs.current.map(button => button?.offsetWidth || 0);
-            setListWidth(Math.max(...widths));
+        const list = ref.current;
+        if (list) {
+            list.style.width = 'auto';
+            if (buttonRefs.current.length > 0 && mentions.length > 0) {
+                const widths = buttonRefs.current.map(button => button?.offsetWidth || 0);
+                list.style.width = `${Math.max(...widths) + 1}px`;
+            }
         }
-    }, [hasMentions, mentionsToUse, isRendered]);
-
-    const classNames = twMerge(
-        'ai-content-operator',
-        'EnonicAiMentionsList',
-        'absolute',
-        !targetRect && 'hidden',
-        'box-content',
-        listWidth > 0 && 'flex flex-col',
-        'max-w-96 max-h-30',
-        'p-1',
-        'bg-white',
-        'rounded',
-        'shadow-md',
-        'overflow-y-auto',
-        'z-[2000]',
-        'ai-content-operator-scroll',
-        className,
-    );
-
-    const style = {
-        ...(targetRect && {
-            top: targetRect.top + window.scrollY + 20,
-            left: targetRect.left + window.scrollX,
-        }),
-        width: hasMentions ? listWidth : 'auto',
-    };
+    }, [mentions, buttonRefs, ref]);
 
     return (
         <Portal>
-            <div className={classNames} style={style}>
-                {mentionsToUse.map((mention, i) => (
-                    <button
-                        key={mention.path}
-                        ref={el => (buttonRefs.current[i] = el)}
-                        onClick={hasMentions ? () => handleClick(mention) : undefined}
-                        title={mention.prettified !== mention.label ? mention.prettified : undefined}
-                        className={clsx(
-                            'block',
-                            'flex-none',
-                            'h-6',
-                            'px-2 py-0.5',
-                            hasMentions && 'truncate',
-                            'rounded-sm',
-                            'hover:bg-slate-50',
-                            i === selectedIndex && 'bg-slate-100 hover:bg-slate-200',
-                            i !== selectedIndex && 'hover:bg-slate-50',
-                            'text-left text-sm',
-                            mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
-                        )}
-                    >
-                        {mention.label}
-                    </button>
-                ))}
+            <div
+                ref={ref}
+                className={twMerge(
+                    'ai-content-operator',
+                    'EnonicAiMentionsList',
+                    'absolute',
+                    !targetRect && 'hidden',
+                    'box-content',
+                    'flex flex-col',
+                    'max-w-96 max-h-30',
+                    'p-1',
+                    'bg-white',
+                    'rounded',
+                    'shadow-md',
+                    'overflow-y-auto',
+                    'z-[2000]',
+                    'ai-content-operator-scroll',
+                    className,
+                )}
+                style={{
+                    ...(targetRect && {
+                        top: targetRect.top + window.scrollY + 20,
+                        left: targetRect.left + window.scrollX,
+                    }),
+                }}
+            >
+                {hasMentions ? (
+                    mentions.map((mention, i) => (
+                        <button
+                            key={mention.path}
+                            ref={el => (buttonRefs.current[i] = el)}
+                            onClick={() => handleClick(mention)}
+                            title={mention.prettified !== mention.label ? mention.prettified : undefined}
+                            className={twJoin(
+                                'block',
+                                'flex-none',
+                                'h-6',
+                                'px-2 py-0.5',
+                                'truncate',
+                                'rounded-sm',
+                                'hover:bg-slate-50',
+                                i === selectedIndex && 'bg-slate-100 hover:bg-slate-200',
+                                i !== selectedIndex && 'hover:bg-slate-50',
+                                'text-left text-sm',
+                                mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
+                            )}
+                        >
+                            {mention.label}
+                        </button>
+                    ))
+                ) : (
+                    <div className='flex items-center h-6 px-2 text-sm text-enonic-gray-400 select-none'>
+                        {t('text.mentions.notFound')}
+                    </div>
+                )}
             </div>
         </Portal>
     );
