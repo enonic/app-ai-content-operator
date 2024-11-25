@@ -21,7 +21,7 @@
         "@nanostores/react": "^0.8.0",
         "clsx": "^2.1.1",
         "i18next": "^24.0.2",
-        "i18next-http-backend": "^2.6.2",
+        "i18next-http-backend": "^3.0.1",
         "lodash.debounce": "^4.0.8",
         "lodash.isequal": "^4.5.0",
         "lodash.merge": "^4.6.2",
