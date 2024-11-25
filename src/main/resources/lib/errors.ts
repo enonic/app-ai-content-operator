@@ -57,6 +57,8 @@ export const ERRORS = {
     GOOGLE_RESPONSE_PARSE_FAILED: err(5020, 'Failed to parse Google response.'),
     GOOGLE_CANDIDATES_EMPTY: err(5040, 'Candidates in response are empty.'),
     GOOGLE_BLOCKED: err(5041, 'Generation was blocked.'),
+    GOOGLE_FINISHED_UNEXPECTEDLY: err(5042, 'Generation finished unexpectedly.'),
+    GOOGLE_CANDIDATES_INVALID: err(5043, 'Unexpected format of JSON in candidates.'),
     GOOGLE_BAD_REQUEST: err(5400, 'Google API: Bad request.'),
     GOOGLE_UNAUTHORIZED: err(5401, 'Google API: Unauthorized.'),
     GOOGLE_FORBIDDEN: err(5403, 'Google API: Forbidden.'),

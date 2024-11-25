@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../lib/shared/prompts';
+import {SPECIAL_NAMES} from '../../../../../lib/shared/enums';
 import {animateTopicScroll} from '../../../../common/animations';
 import {REGULAR_SCREEN} from '../../../../common/device';
 import {pickMessageValue} from '../../../../common/mentions';

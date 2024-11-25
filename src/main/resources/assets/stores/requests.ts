@@ -1,12 +1,6 @@
 import {computed, map} from 'nanostores';
 
-import type {
-    ErrorResponse,
-    Message,
-    ModelPostResponse,
-    ModelResponseGenerateData,
-    SchemaField,
-} from '../../types/shared/model';
+import type {ErrorResponse, Message, ModelPostResponse, ModelResponseGenerateData} from '../../types/shared/model';
 import {generate} from '../requests/chat';
 import {RequestState} from './data/RequestState';
 
@@ -47,11 +41,8 @@ async function attachRequest<T extends ModelPostResponse, K extends keyof Reques
     }
 }
 
-export async function postMessage(
-    messages: Message[],
-    fields?: SchemaField[],
-): Promise<Err<ModelResponseGenerateData | ErrorResponse>> {
-    const request = attachRequest('chat', generate(messages, fields));
+export async function postMessage(messages: Message[]): Promise<Err<ModelResponseGenerateData | ErrorResponse>> {
+    const request = attachRequest('chat', generate(messages));
 
     $requests.setKey('chat', {state: RequestState.IN_PROGRESS, request});
 

@@ -1,6 +1,6 @@
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../lib/shared/prompts';
+import {SPECIAL_NAMES} from '../../../../../lib/shared/enums';
 import {ModelChatMessage} from '../../../../stores/data/ChatMessage';
 import AssistantIcon from '../../../shared/AssistantIcon/AssistantIcon';
 import CommonItem from '../CommonItem/CommonItem';

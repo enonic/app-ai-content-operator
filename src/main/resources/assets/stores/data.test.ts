@@ -200,9 +200,10 @@ describe('createPrompt', () => {
         expect(received).toEqual(expected);
     });
 });
-
 function getRootTextItems(): ContentData {
     return {
+        contentId: '123',
+        contentPath: '/path',
         fields: [
             {
                 name: 'myTextArea',
@@ -218,9 +219,10 @@ function getRootTextItems(): ContentData {
         topic: 'all input types',
     };
 }
-
 function getFieldSetData(): ContentData {
     return {
+        contentId: '123',
+        contentPath: '/path',
         fields: [
             {
                 name: 'contact_info',

@@ -1,8 +1,5 @@
 // ------------------------------------
 // DATA
-import {SchemaType} from '../../lib/shared/enums';
-import {Model} from '../../lib/shared/models';
-
 // ------------------------------------
 type Operation = 'generate';
 
@@ -31,22 +28,8 @@ export type FinishReason =
 // ------------------------------------
 export type ModelRequestData = ModelRequestGenerateData;
 export type ModelRequestGenerateData = OperationData<'generate'> & {
-    model: Model;
-    mode: string;
     instructions?: string;
     messages: Message[];
-    schema?: ResponseSchema;
-};
-
-export type ResponseSchema = {
-    fields: SchemaField[];
-};
-
-export type SchemaField<T extends string = string> = {
-    name: T;
-    type: SchemaType;
-    description?: string;
-    required?: boolean;
 };
 
 // ------------------------------------
