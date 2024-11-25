@@ -21,9 +21,9 @@ export default function MessageSwitcher({className, messageId, name, content}: P
     const text = `${selectedIndex + 1}/${totalCount}`;
 
     return (
-        <div className={twMerge('flex', className)}>
+        <div className={twMerge('flex items-center', className)}>
             <ActionButton
-                className='w-4 disabled:opacity-25'
+                className='w-4 h-auto disabled:opacity-25'
                 name={t('showPrevious')}
                 icon='left'
                 mode='icon-only'
@@ -43,7 +43,7 @@ export default function MessageSwitcher({className, messageId, name, content}: P
                 {text}
             </span>
             <ActionButton
-                className='w-4 disabled:opacity-25'
+                className='w-4 h-auto disabled:opacity-25'
                 name={t('action.showNext')}
                 icon='right'
                 mode='icon-only'

@@ -1,8 +1,6 @@
 export const MODES = ['precise', 'focused', 'balanced', 'creative'] as const;
 export type Mode = (typeof MODES)[number];
 
-export const DEFAULT_MODE: Mode = 'balanced';
-
 export type ModelParameters = {
     temperature: number;
     topP: number;

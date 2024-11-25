@@ -1,41 +1,45 @@
-import type {Content, GenerateContentRequest, POSSIBLE_ROLES, ResponseSchema} from '@google/generative-ai';
+import type {Content, GenerateContentRequest, POSSIBLE_ROLES} from '@google/generative-ai';
 
 import type {ModelResponseGenerateData} from '../../types/shared/model';
 import {ERRORS} from '../errors';
-import {generate} from '../google/api/generate';
+import {generateCandidate} from '../google/api/generate';
 import {fieldsToSchema} from '../google/schema';
 import {logDebug, LogDebugGroups} from '../logger';
 import {HarmBlockThreshold, HarmCategory} from '../shared/enums';
-import {MODES_DATA} from '../shared/modes';
-import {createSystemInstructions} from '../shared/prompts';
+import {ModelParameters, MODES_DATA} from '../shared/modes';
+import {
+    createStructureAnalysisInstructions,
+    isStructureAnalysisFieldsResult,
+    StructureAnalysisResult,
+} from '../shared/prompts/structureAnalysis';
+import {createTextGenerationInstructions} from '../shared/prompts/textGeneration';
 import {ModelProxy, ModelProxyConfig} from './model';
 
 type Role = (typeof POSSIBLE_ROLES)[number];
 
+type RequestConfig = Omit<ModelProxyConfig, 'models'> &
+    ModelParameters & {
+        systemInstruction: string;
+    };
+
 export class GeminiProxy implements ModelProxy {
-    private readonly url: string;
-    private readonly params: GenerateContentRequest;
+    private readonly config: ModelProxyConfig;
 
     constructor(config: ModelProxyConfig) {
-        this.url = config.url;
-        this.params = GeminiProxy.createRequestParams(config);
+        this.config = config;
     }
 
-    private static createRequestParams(config: ModelProxyConfig): GenerateContentRequest {
-        const {temperature, topP} = MODES_DATA[config.mode].gemini;
-        const responseMimeType = 'application/json';
+    private static createRequestParams(config: RequestConfig): GenerateContentRequest {
         const contents = GeminiProxy.createContents(config);
-        const responseSchema = undefined; // GeminiProxy.createResponseSchema(config);
-        const systemInstruction = GeminiProxy.createTextContent('system', createSystemInstructions());
+        const systemInstruction = GeminiProxy.createTextContent('system', config.systemInstruction);
 
         return {
             contents,
             generationConfig: {
                 candidateCount: 1,
-                temperature,
-                topP,
-                responseMimeType,
-                responseSchema,
+                temperature: config.temperature,
+                topP: config.topP,
+                responseMimeType: 'application/json',
             },
             safetySettings: [
                 {
@@ -59,7 +63,7 @@ export class GeminiProxy implements ModelProxy {
         };
     }
 
-    private static createContents(config: ModelProxyConfig): Content[] {
+    private static createContents(config: RequestConfig): Content[] {
         const {instructions, messages} = config;
         const contents: Content[] = [];
 
@@ -81,11 +85,6 @@ export class GeminiProxy implements ModelProxy {
         };
     }
 
-    private static createResponseSchema({schema}: ModelProxyConfig): ResponseSchema | undefined {
-        const hasSchema = schema != null && schema.fields.length > 0;
-        return hasSchema ? fieldsToSchema(schema.fields) : undefined;
-    }
-
     private static extractText(content: Content | undefined): string {
         return content?.parts.map(({text}) => text).join('') ?? '';
     }
@@ -93,26 +92,49 @@ export class GeminiProxy implements ModelProxy {
     generate(): Try<ModelResponseGenerateData> {
         logDebug(LogDebugGroups.FUNC, 'gemini.GeminiProxy.generate()');
 
-        const [response, err] = generate(this.url, this.params);
-        if (err) {
-            return [null, err];
+        const {flash, pro} = this.config.models;
+
+        const analyzeParams = GeminiProxy.createRequestParams({
+            ...MODES_DATA.focused.gemini,
+            messages: this.config.messages,
+            systemInstruction: createStructureAnalysisInstructions(),
+        });
+
+        const [content, error] = generateCandidate(flash.url, analyzeParams);
+
+        if (error) {
+            return [null, error];
         }
 
-        const {candidates, promptFeedback} = response;
-        if (promptFeedback?.blockReason != null) {
-            return [{content: '', finishReason: promptFeedback.blockReason}, null];
+        if (content.finishReason !== 'STOP') {
+            logDebug(
+                LogDebugGroups.FUNC,
+                `Analyzing prompt not completed. Finish reason: ${content.finishReason}.\nPrompt: ${JSON.stringify(analyzeParams.contents)}`,
+            );
+            return [content, null];
         }
 
-        const [content] = candidates ?? [];
-        if (!content) {
-            return [null, ERRORS.GOOGLE_CANDIDATES_EMPTY];
+        try {
+            const text = content.content;
+            const result = JSON.parse(text) as StructureAnalysisResult;
+
+            log.info(JSON.stringify(result, null, 2));
+
+            if (!isStructureAnalysisFieldsResult(result)) {
+                return [content, null];
+            }
+
+            const generateParams = GeminiProxy.createRequestParams({
+                ...MODES_DATA.creative.gemini,
+                messages: [{role: 'user', text}],
+                schema: fieldsToSchema(result),
+                systemInstruction: createTextGenerationInstructions(),
+            });
+
+            return generateCandidate(pro.url, generateParams);
+        } catch (error) {
+            log.error(error);
+            return [null, ERRORS.GOOGLE_CANDIDATES_INVALID];
         }
-
-        const data: ModelResponseGenerateData = {
-            content: GeminiProxy.extractText(content.content),
-            finishReason: content.finishReason,
-        };
-
-        return [data, null];
     }
 }

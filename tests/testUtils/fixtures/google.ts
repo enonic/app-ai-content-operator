@@ -9,7 +9,7 @@ export const content = Object.freeze({
             content: {
                 parts: [
                     {
-                        text: 'The backpack, heavier than it looked, hummed with the weight of a thousand untold stories, each zipper pull a potential portal to another world. \n',
+                        text: 'Towering mountain\nPiercing through misty morning\nSilent sentinel.',
                     },
                 ],
                 role: 'model',

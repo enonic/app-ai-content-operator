@@ -3,7 +3,7 @@ import {nanoid} from 'nanoid';
 import {map} from 'nanostores';
 import {Descendant} from 'slate';
 
-import {SPECIAL_NAMES} from '../../lib/shared/prompts';
+import {SPECIAL_NAMES} from '../../lib/shared/enums';
 import {ErrorResponse, Message, ModelResponseGenerateData} from '../../types/shared/model';
 import {isErrorResponse} from '../common/data';
 import {parseNodes, parseText} from '../common/slate';
@@ -29,8 +29,10 @@ export type Chat = {
 export const $chat = map<Chat>({history: []});
 
 export function clearChat(): void {
+    const firstMessage = $chat.get().history.at(0);
     if ($chat.get().history.length > 0) {
-        $chat.setKey('history', []);
+        const hasFirstSystemMessage = firstMessage?.role === MessageRole.SYSTEM;
+        $chat.setKey('history', hasFirstSystemMessage ? [firstMessage] : []);
     }
 }
 

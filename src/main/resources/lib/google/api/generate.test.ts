@@ -2,10 +2,11 @@ import type {HttpClientResponse} from '/lib/http-client';
 import {createResponse} from '/tests/testUtils/testHelpers';
 
 import type {GenerateContentRequest} from '@google/generative-ai';
+import {ModelResponseGenerateData} from 'src/main/resources/types/shared/model';
 
 import {content} from '../../../../../../tests/testUtils/fixtures/google';
 import {ERRORS} from '../../errors';
-import {generate} from './generate';
+import {generate, generateCandidate} from './generate';
 
 type Client = typeof import('../client');
 
@@ -58,6 +59,75 @@ describe('generate', () => {
         mocks.sendPostRequest.mockImplementationOnce(() => [null, ERRORS.REST_REQUEST_FAILED]);
 
         const [result, err] = generate(url, params);
+
+        expect(result).toBeNull();
+        expect(err).toEqual(ERRORS.REST_REQUEST_FAILED);
+    });
+});
+
+describe('generateCandidate', () => {
+    const params: GenerateContentRequest = {
+        contents: [
+            {
+                role: 'user',
+                parts: [{text: 'Write a haiku about a mountain.'}],
+            },
+        ],
+    };
+
+    it('should generate candidate content', () => {
+        const expectedResponse: ModelResponseGenerateData = {
+            content: 'Towering mountain\nPiercing through misty morning\nSilent sentinel.',
+            finishReason: 'STOP',
+        };
+
+        mocks.sendPostRequest.mockImplementationOnce(() => [createResponse(content), null]);
+
+        const [result, err] = generateCandidate(url, params);
+
+        expect(result).toEqual(expectedResponse);
+        expect(err).toBeNull();
+
+        expect(mocks.sendPostRequest).toHaveBeenCalledWith(url, params);
+    });
+
+    it('should handle blocked content', () => {
+        const blockedContent = {
+            candidates: [],
+            promptFeedback: {
+                blockReason: 'SAFETY',
+            },
+        };
+
+        mocks.sendPostRequest.mockImplementationOnce(() => [createResponse(blockedContent), null]);
+
+        const [result, err] = generateCandidate(url, params);
+
+        expect(result).toEqual({
+            content: '',
+            finishReason: 'SAFETY',
+        });
+        expect(err).toBeNull();
+    });
+
+    it('should handle empty candidates', () => {
+        const emptyResponse = {
+            candidates: [],
+            promptFeedback: {},
+        };
+
+        mocks.sendPostRequest.mockImplementationOnce(() => [createResponse(emptyResponse), null]);
+
+        const [result, err] = generateCandidate(url, params);
+
+        expect(result).toBeNull();
+        expect(err).toEqual(ERRORS.GOOGLE_CANDIDATES_EMPTY);
+    });
+
+    it('should return an error if request fails', () => {
+        mocks.sendPostRequest.mockImplementationOnce(() => [null, ERRORS.REST_REQUEST_FAILED]);
+
+        const [result, err] = generateCandidate(url, params);
 
         expect(result).toBeNull();
         expect(err).toEqual(ERRORS.REST_REQUEST_FAILED);

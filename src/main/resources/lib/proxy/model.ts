@@ -1,25 +1,16 @@
-import type {Message, ModelResponseGenerateData, ResponseSchema} from '../../types/shared/model';
-import {Model, MODELS} from '../shared/models';
-import {Mode, MODES} from '../shared/modes';
-import {find} from '../utils/objects';
+import type {Schema} from '@google/generative-ai';
+
+import type {Message, ModelResponseGenerateData} from '../../types/shared/model';
+import {ModelOptions} from '../google/options';
+import {Model} from '../shared/models';
 
 export type ModelProxy = {
     generate(): Try<ModelResponseGenerateData>;
 };
 
 export type ModelProxyConfig = {
-    modelName: string;
-    mode: Mode;
-    url: string;
+    models: Record<Model, ModelOptions>;
     instructions?: string;
     messages: Message[];
-    schema?: ResponseSchema;
+    schema?: Schema;
 };
-
-export function validateModel(model: unknown): Optional<Model> {
-    return find(MODELS, m => m === model);
-}
-
-export function validateMode(mode: unknown): Optional<Mode> {
-    return find(MODES, m => m === mode);
-}

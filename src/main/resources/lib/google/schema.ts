@@ -1,23 +1,27 @@
-import type {FunctionDeclarationSchema, Schema} from '@google/generative-ai';
+import type {FunctionDeclarationSchemaProperty, Schema} from '@google/generative-ai';
 
-import type {SchemaField} from '../../types/shared/model';
 import {SchemaType} from '../shared/enums';
-import {emptyToUndefined} from '../utils/objects';
 
-export function fieldsToSchema(fields: SchemaField[]): Schema {
-    const required = emptyToUndefined(fields.filter(({required}) => required).map(({name}) => name));
+export type SchemaFields = Record<string, {count?: number}>;
 
-    const properties: Record<string, FunctionDeclarationSchema> = {};
-    fields.reduce((acc, {name, type, description}) => {
-        const items = type === SchemaType.ARRAY ? {type: SchemaType.STRING} : undefined;
-        acc[name] = {
-            type: type,
-            properties: {},
-            items,
-            description,
-        } as FunctionDeclarationSchema;
-        return acc;
-    }, properties);
+export function fieldsToSchema(fields: SchemaFields): Schema {
+    const required = Object.keys(fields);
+
+    const properties: Record<string, FunctionDeclarationSchemaProperty> = {};
+    required.forEach(name => {
+        const count = fields[name]?.count || 1;
+        properties[name] =
+            count > 1
+                ? {
+                      type: SchemaType.ARRAY,
+                      items: {
+                          type: SchemaType.STRING,
+                      },
+                  }
+                : {
+                      type: SchemaType.STRING,
+                  };
+    });
 
     return {
         type: SchemaType.OBJECT,

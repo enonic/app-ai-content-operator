@@ -1,7 +1,5 @@
 import {computed, map} from 'nanostores';
 
-import {SPECIAL_NAMES} from '../../lib/shared/prompts';
-import {isNonNullable} from '../common/data';
 import {addGlobalUpdateDataHandler, AiEvents, dispatch} from '../common/events';
 import {MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
 import {$config} from './config';
@@ -16,7 +14,7 @@ import {Path} from './data/Path';
 import {Schema} from './data/Schema';
 import {getDataPathsToEditableItems, getPropertyArrayByPath, pathToMention} from './utils/data';
 import {getInputType} from './utils/input';
-import {isChildPath, pathFromString, pathsEqual, pathToString} from './utils/path';
+import {isChildPath, isRootPath, pathFromString, pathsEqual, pathToString} from './utils/path';
 import {getFormItemsWithPaths, isEditableInput, isOrContainsEditableInput} from './utils/schema';
 
 export type Data = {
@@ -93,20 +91,30 @@ export const $inputsInContext = computed([$context, $allFormItemsWithPaths], (co
     const input = contextPath
         ? allFormItems.find((path): path is InputWithPath => pathsEqual(path, contextPath) && isEditableInput(path))
         : null;
+
     if (input) {
         return [input];
     }
 
     const items: FormItemWithPath[] = contextPath
         ? allFormItems.filter(path => isChildPath(path, contextPath))
-        : allFormItems;
+        : allFormItems.filter(path => isRootPath(path));
 
     return items.filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item));
 });
 
 export const $mentions = computed([$inputsInContext, $context], (inputs, context) => {
     const mentions = inputs.map(pathToMention);
-    return [...(mentions.length > 1 ? [MENTION_ALL] : []), ...(context == null ? [MENTION_TOPIC] : []), ...mentions];
+
+    if (context == null) {
+        mentions.unshift(MENTION_TOPIC);
+    }
+
+    if (mentions.length > 1) {
+        mentions.unshift(MENTION_ALL);
+    }
+
+    return mentions;
 });
 
 //
@@ -121,11 +129,6 @@ export function dispatchResultApplied(entries: ApplyMessage[]): void {
 //* PROMPT
 //
 
-// #Request:
-// #Instructions:
-// #Metadata:
-// #Fields:
-// #Content:
 export function createPrompt(text: string): string {
     return [
         createPromptRequest(text),

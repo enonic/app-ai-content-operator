@@ -111,17 +111,13 @@ function getFormOptionSetPathEntries(item: FormOptionSet, path: Path): FormItemW
     result.push(formOptionSetWithPath);
 
     item.FormOptionSet.options.forEach(option => {
-        result.push(...getFormOptionSetOptionPathEntries(item, option, {elements: pathElements}));
+        result.push(...getFormOptionSetOptionPathEntries(option, {elements: pathElements}));
     });
 
     return result;
 }
 
-function getFormOptionSetOptionPathEntries(
-    item: FormOptionSet,
-    option: FormOptionSetOption,
-    path: Path,
-): FormItemWithPath[] {
+function getFormOptionSetOptionPathEntries(option: FormOptionSetOption, path: Path): FormItemWithPath[] {
     const pathElements = path.elements.slice();
     pathElements.push({name: option.name, label: option.label});
 
