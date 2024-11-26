@@ -1,4 +1,5 @@
 import {MENTION_ALL} from '../common/mentions';
+import {setContext} from './context';
 import {createPrompt, findValueByPath, setLanguage, setPersistedData, setSchema} from './data';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {Path} from './data/Path';
@@ -110,20 +111,18 @@ describe('createPrompt', () => {
 
         const received = createPrompt('Generate lorem ipsum for {{' + MENTION_ALL.path + '}} items');
         const expected =
-            'Generate lorem ipsum for {{__all__}} items\n' +
-            '\n' +
-            '# Context\n' +
-            '- Topic is "all input types"\n' +
-            '- Language is "ak"\n' +
-            '\n' +
-            '# Fields\n' +
-            '- /myTextArea\n' +
-            '- /myTextArea[1]\n' +
-            '- /myTextLine\n' +
-            '- __topic__\n' +
-            '\n' +
-            '# Content\n' +
-            '```json\n' +
+            '#Request:\n' +
+            'Generate lorem ipsum for {{__all__}} items\n\n' +
+            '#Instructions:\n\n\n' +
+            '#Metadata\n' +
+            '- Language: ak\n' +
+            '- Content path: /path\n\n' +
+            '#Fields:\n' +
+            '/myTextArea\n' +
+            '/myTextArea[1]\n' +
+            '/myTextLine\n\n' +
+            '#Content\n' +
+            '```\n\n' +
             '{\n' +
             '  "__topic__": {\n' +
             '    "value": "all input types",\n' +
@@ -149,52 +148,37 @@ describe('createPrompt', () => {
             '    "schemaType": "TextLine",\n' +
             '    "schemaLabel": "My Text Line"\n' +
             '  }\n' +
-            '}\n' +
+            '}\n\n' +
             '```';
 
         expect(received).toEqual(expected);
     });
 
-    it('should add all fields into the request if no fields mentioned in user input', () => {
+    it('should keep only fields in context', () => {
         setSchema(getRootTextItemsSchema());
         setPersistedData(getRootTextItems());
+        setContext('/myTextLine');
 
         const received = createPrompt('Generate lorem ipsum for all items');
         const expected =
-            'Generate lorem ipsum for all items\n' +
-            '\n' +
-            '# Context\n' +
-            '- Topic is "all input types"\n' +
-            '- Language is "ak"\n' +
-            '\n' +
-            '# Content\n' +
-            '```json\n' +
+            '#Request:\n' +
+            'Generate lorem ipsum for all items\n\n' +
+            '#Instructions:\n\n\n' +
+            '#Metadata\n' +
+            '- Language: ak\n' +
+            '- Content path: /path\n\n' +
+            '#Fields:\n' +
+            '/myTextLine\n\n' +
+            '#Content\n' +
+            '```\n\n' +
             '{\n' +
-            '  "__topic__": {\n' +
-            '    "value": "all input types",\n' +
-            '    "type": "text",\n' +
-            '    "schemaType": "text",\n' +
-            '    "schemaLabel": "Display Name"\n' +
-            '  },\n' +
-            '  "/myTextArea": {\n' +
-            '    "value": "v1",\n' +
-            '    "type": "text",\n' +
-            '    "schemaType": "TextArea",\n' +
-            '    "schemaLabel": "My Text Area"\n' +
-            '  },\n' +
-            '  "/myTextArea[1]": {\n' +
-            '    "value": "v2",\n' +
-            '    "type": "text",\n' +
-            '    "schemaType": "TextArea",\n' +
-            '    "schemaLabel": "My Text Area"\n' +
-            '  },\n' +
             '  "/myTextLine": {\n' +
             '    "value": "",\n' +
             '    "type": "text",\n' +
             '    "schemaType": "TextLine",\n' +
             '    "schemaLabel": "My Text Line"\n' +
             '  }\n' +
-            '}\n' +
+            '}\n\n' +
             '```';
 
         expect(received).toEqual(expected);
