@@ -1,6 +1,5 @@
 import {computed, map} from 'nanostores';
 
-import {SPECIAL_NAMES} from '../../lib/shared/prompts';
 import {isNonNullable} from '../common/data';
 import {addGlobalUpdateDataHandler, AiEvents, dispatch} from '../common/events';
 import {findMentionsNames, MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
@@ -13,13 +12,7 @@ import {InputWithPath} from './data/FormItemWithPath';
 import {Language} from './data/Language';
 import {Path} from './data/Path';
 import {Schema} from './data/Schema';
-import {
-    findPathByDataAttrString,
-    getDataPathsToEditableItems,
-    getPropertyArrayByPath,
-    pathToMention,
-    setValueByPath,
-} from './utils/data';
+import {getDataPathsToEditableItems, getPropertyArrayByPath, pathToMention} from './utils/data';
 import {getInputType} from './utils/input';
 import {isChildPath, isRootPath, pathFromString, pathsEqual, pathToString} from './utils/path';
 import {getFormItemsWithPaths, isEditableInput, isInputWithPath, isOrContainsEditableInput} from './utils/schema';
@@ -133,36 +126,7 @@ export const $mentionInContext = computed([$context, $allFormItemsWithPaths], (c
 //
 
 export function dispatchResultApplied(entries: ApplyMessage[]): void {
-    const {persisted} = $data.get();
-    if (!persisted) {
-        return;
-    }
-
-    const newData = structuredClone(persisted);
-    let isAnyChanged = false;
-
-    entries.forEach(({name, content}) => {
-        if (name === SPECIAL_NAMES.topic) {
-            newData.topic = content;
-            isAnyChanged = true;
-            return;
-        }
-
-        const path = findPathByDataAttrString($allFormItemsWithPaths.get(), name);
-        if (path) {
-            setValueByPath({v: content}, path, newData);
-            isAnyChanged = true;
-            return;
-        }
-
-        // handle value not updated
-        console.warn('No path found for:', name);
-    });
-
-    if (isAnyChanged) {
-        setPersistedData(newData);
-        dispatch(AiEvents.RESULT_APPLIED);
-    }
+    dispatch(AiEvents.RESULT_APPLIED, entries);
 }
 
 //

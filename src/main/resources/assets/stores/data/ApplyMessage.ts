@@ -1,4 +1,4 @@
 export type ApplyMessage = {
-    name: string;
-    content: string;
+    path: string;
+    text: string;
 };

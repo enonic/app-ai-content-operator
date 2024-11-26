@@ -1,4 +1,4 @@
-import {$data} from '../stores/data';
+import {ApplyMessage} from '../stores/data/ApplyMessage';
 import {ConfigureEventData} from '../stores/data/ConfigureEventData';
 import {UpdateEventData} from '../stores/data/EventData';
 import {OpenDialogEventData} from '../stores/data/OpenDialogEventData';
@@ -30,18 +30,18 @@ function createEventHandler<T>(handler: CustomEventHandler<T>): EventHandler {
     };
 }
 
-function createCustomEvent(type: DispatchableAiEvents): CustomEvent {
+function createCustomEvent(type: DispatchableAiEvents, data?: ApplyMessage[]): CustomEvent {
     switch (type) {
         case AiEvents.RESULT_APPLIED:
-            return new CustomEvent(type, {detail: {result: $data.get().persisted}});
+            return new CustomEvent(type, {detail: {items: data}});
         case AiEvents.DIALOG_SHOWN:
         case AiEvents.DIALOG_HIDDEN:
             return new CustomEvent(type);
     }
 }
 
-export function dispatch(type: DispatchableAiEvents): void {
-    window.dispatchEvent(createCustomEvent(type));
+export function dispatch(type: DispatchableAiEvents, data?: ApplyMessage[]): void {
+    window.dispatchEvent(createCustomEvent(type, data));
 }
 
 export function addGlobalUpdateDataHandler(handler: CustomEventHandler<UpdateEventData>): FnVoid {

@@ -19,7 +19,7 @@ export default function ApplyControl({className, name, content}: Props): React.R
 
     const handleApply = useCallback(() => {
         setApplying(true);
-        dispatchResultApplied([{name, content}]);
+        dispatchResultApplied([{path: name, text: content}]);
         animateGlow(name);
         void delay(500).then(() => {
             setApplying(false);

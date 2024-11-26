@@ -21,8 +21,8 @@ function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
     return Object.entries(content)
         .filter(([name]) => name !== '_error_' && name !== '_unclear')
         .map(([name, content = '']) => ({
-            name,
-            content: pickMessageValue(content),
+            path: name,
+            text: pickMessageValue(content),
         }));
 }
 
