@@ -3,9 +3,9 @@ import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
 import {animateGlow} from '../../../../common/animations';
+import {dispatchResultApplied} from '../../../../common/events';
 import {pickMessageValue} from '../../../../common/mentions';
 import {sendRetryMessage} from '../../../../stores/chat';
-import {dispatchResultApplied} from '../../../../stores/data';
 import {ApplyMessage} from '../../../../stores/data/ApplyMessage';
 import {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
 import {$chatRequestRunning} from '../../../../stores/requests';

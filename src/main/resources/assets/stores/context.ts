@@ -1,6 +1,6 @@
 import {atom} from 'nanostores';
 
-import {addGlobalOpenDialogHandler} from '../common/events';
+import {addGlobalOpenDialogHandler, dispatchContextChanged} from '../common/events';
 
 export const $context = atom<Optional<string>>(undefined);
 
@@ -13,4 +13,8 @@ addGlobalOpenDialogHandler(event => {
     if (sourceDataPath) {
         setContext(sourceDataPath);
     }
+});
+
+$context.listen((context: Optional<string>) => {
+    dispatchContextChanged(context);
 });

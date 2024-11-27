@@ -1,10 +1,9 @@
 import {computed, map} from 'nanostores';
 
-import {addGlobalUpdateDataHandler, AiEvents, dispatch} from '../common/events';
+import {addGlobalUpdateDataHandler} from '../common/events';
 import {MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
 import {$config} from './config';
 import {$context} from './context';
-import {ApplyMessage} from './data/ApplyMessage';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {DataEntry} from './data/DataEntry';
 import {UpdateEventData} from './data/EventData';
@@ -116,14 +115,6 @@ export const $mentions = computed([$inputsInContext, $context], (inputs, context
 
     return mentions;
 });
-
-//
-//* EVENTS
-//
-
-export function dispatchResultApplied(entries: ApplyMessage[]): void {
-    dispatch(AiEvents.RESULT_APPLIED, entries);
-}
 
 //
 //* PROMPT
