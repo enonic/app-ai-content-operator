@@ -9,6 +9,7 @@ export enum AiEvents {
     DIALOG_SHOWN = 'AiContentOperatorDialogShownEvent',
     DIALOG_HIDDEN = 'AiContentOperatorDialogHiddenEvent',
     RESULT_APPLIED = 'AiContentOperatorResultAppliedEvent',
+    CONTEXT_CHANGED = 'AiContentOperatorContextChangedEvent',
     //   Incoming
     OPEN_DIALOG = 'AiContentOperatorOpenDialogEvent',
     CONFIGURE = 'AiContentOperatorConfigureEvent',
@@ -20,7 +21,11 @@ export enum AiEvents {
 export type EventHandler<T extends Event = Event> = (event: T) => void;
 export type CustomEventHandler<T = unknown> = EventHandler<CustomEvent<T>>;
 
-export type DispatchableAiEvents = AiEvents.DIALOG_SHOWN | AiEvents.DIALOG_HIDDEN | AiEvents.RESULT_APPLIED;
+export type DispatchableAiEvents =
+    | AiEvents.DIALOG_SHOWN
+    | AiEvents.DIALOG_HIDDEN
+    | AiEvents.RESULT_APPLIED
+    | AiEvents.CONTEXT_CHANGED;
 
 function createEventHandler<T>(handler: CustomEventHandler<T>): EventHandler {
     return (event: Event): void => {
@@ -30,18 +35,16 @@ function createEventHandler<T>(handler: CustomEventHandler<T>): EventHandler {
     };
 }
 
-function createCustomEvent(type: DispatchableAiEvents, data?: ApplyMessage[]): CustomEvent {
-    switch (type) {
-        case AiEvents.RESULT_APPLIED:
-            return new CustomEvent(type, {detail: {items: data}});
-        case AiEvents.DIALOG_SHOWN:
-        case AiEvents.DIALOG_HIDDEN:
-            return new CustomEvent(type);
-    }
+export function dispatchDialogEvent(type: AiEvents.DIALOG_SHOWN | AiEvents.DIALOG_HIDDEN): void {
+    window.dispatchEvent(new CustomEvent(type));
 }
 
-export function dispatch(type: DispatchableAiEvents, data?: ApplyMessage[]): void {
-    window.dispatchEvent(createCustomEvent(type, data));
+export function dispatchResultApplied(items: ApplyMessage[]): void {
+    window.dispatchEvent(new CustomEvent(AiEvents.RESULT_APPLIED, {detail: {items}}));
+}
+
+export function dispatchContextChanged(context: Optional<string>): void {
+    window.dispatchEvent(new CustomEvent(AiEvents.CONTEXT_CHANGED, {detail: {context}}));
 }
 
 export function addGlobalUpdateDataHandler(handler: CustomEventHandler<UpdateEventData>): FnVoid {

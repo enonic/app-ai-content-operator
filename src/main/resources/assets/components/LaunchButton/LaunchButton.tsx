@@ -13,7 +13,7 @@ export default function LaunchButton(): React.ReactNode {
         'ai-content-operator',
         'w-full h-full flex items-center justify-center',
         'box-border',
-        hidden ? 'text-enonic-gray-700 hover:text-enonic-gray-600' : 'text-enonic-blue-light hover:text-enonic-blue',
+        hidden && '[&:not(:hover)]:opacity-50 [&:not(:hover)]:grayscale-[50%]',
     ]);
 
     const title = hidden ? t('action.open') : t('action.close');

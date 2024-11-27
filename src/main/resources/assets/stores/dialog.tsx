@@ -1,6 +1,6 @@
 import {computed, map} from 'nanostores';
 
-import {addGlobalOpenDialogHandler, AiEvents, dispatch} from '../common/events';
+import {addGlobalOpenDialogHandler, AiEvents, dispatchDialogEvent} from '../common/events';
 import GreetingMessagePhrase from '../components/dialog/chat/system/GreetingMessagePhrase/GreetingMessagePhrase';
 import {addSystemMessage} from './chat';
 import {$chatRequestRunning} from './requests';
@@ -30,16 +30,20 @@ export const $loading = computed(
     ({initialized}, requestRunning) => !initialized || requestRunning,
 );
 
-export const setDialogHidden = (hidden: boolean): void => $dialog.setKey('hidden', hidden);
+export const setDialogHidden = (hidden: boolean): void => {
+    const isStateChanged = $dialog.get().hidden !== hidden;
+    if (isStateChanged) {
+        dispatchDialogEvent(hidden ? AiEvents.DIALOG_HIDDEN : AiEvents.DIALOG_SHOWN);
+        $dialog.setKey('hidden', hidden);
+    }
+};
 
 export const toggleDialog = (): void => {
-    const {hidden} = $dialog.get();
-    dispatch(hidden ? AiEvents.DIALOG_SHOWN : AiEvents.DIALOG_HIDDEN);
-    setDialogHidden(!hidden);
+    setDialogHidden(!$dialog.get().hidden);
 };
 
 addGlobalOpenDialogHandler(() => {
     if ($dialog.get().hidden) {
-        toggleDialog();
+        setDialogHidden(false);
     }
 });

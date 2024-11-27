@@ -3,8 +3,8 @@ import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {animateGlow} from '../../../../common/animations';
+import {dispatchResultApplied} from '../../../../common/events';
 import {delay} from '../../../../common/func';
-import {dispatchResultApplied} from '../../../../stores/data';
 import ActionButton from '../../../shared/ActionButton/ActionButton';
 
 type Props = {
