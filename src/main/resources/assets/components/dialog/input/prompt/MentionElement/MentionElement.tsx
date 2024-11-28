@@ -1,8 +1,8 @@
 import {useFocused, useSelected} from 'slate-react';
 import {twJoin} from 'tailwind-merge';
 
-import {animateScroll, animateTopicScroll} from '../../../../../common/animations';
-import {MENTION_ALL, MENTION_TOPIC} from '../../../../../common/mentions';
+import {dispatchInteracted} from '../../../../../common/events';
+import {MENTION_ALL} from '../../../../../common/mentions';
 
 export type Props = {
     attributes?: React.Attributes;
@@ -10,14 +10,6 @@ export type Props = {
     children?: React.ReactNode;
     element: Slate.MentionElement;
 };
-
-function animateScrollForPath(path: string): void {
-    if (path === MENTION_TOPIC.path) {
-        animateTopicScroll();
-    } else {
-        animateScroll(path);
-    }
-}
 
 export default function MentionElement({attributes = {}, className, children, element}: Props): React.ReactNode {
     const selected = useSelected();
@@ -44,7 +36,7 @@ export default function MentionElement({attributes = {}, className, children, el
             contentEditable={false}
             className={classNames}
             title={element.title}
-            onClick={isAllMention ? undefined : () => animateScrollForPath(element.path)}
+            onClick={isAllMention ? undefined : () => dispatchInteracted(element.path)}
         >
             <span className='text-xs mention'>
                 {element.character}

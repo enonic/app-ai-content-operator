@@ -1,8 +1,8 @@
 import {useStore} from '@nanostores/react';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {animateScroll} from '../../../../common/animations';
 import {REGULAR_SCREEN} from '../../../../common/device';
+import {dispatchInteracted} from '../../../../common/events';
 import {pickMessageValue} from '../../../../common/mentions';
 import {$allFormItemsWithPaths} from '../../../../stores/data';
 import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
@@ -35,7 +35,7 @@ export default function ElementItem({className, messageId, name, value, last}: P
             <button
                 className='-mx-1 px-1 align-baseline cursor-pointer text-sky-600 truncate'
                 title={title}
-                onClick={() => animateScroll(name)}
+                onClick={() => dispatchInteracted(name)}
             >
                 <span className='text-xs'>{`${label}`}</span>
             </button>

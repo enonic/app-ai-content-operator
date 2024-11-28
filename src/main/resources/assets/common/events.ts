@@ -9,6 +9,7 @@ export enum AiEvents {
     DIALOG_SHOWN = 'AiContentOperatorDialogShownEvent',
     DIALOG_HIDDEN = 'AiContentOperatorDialogHiddenEvent',
     RESULT_APPLIED = 'AiContentOperatorResultAppliedEvent',
+    INTERACTED = 'AiContentOperatorInteractionEvent',
     CONTEXT_CHANGED = 'AiContentOperatorContextChangedEvent',
     //   Incoming
     OPEN_DIALOG = 'AiContentOperatorOpenDialogEvent',
@@ -21,11 +22,7 @@ export enum AiEvents {
 export type EventHandler<T extends Event = Event> = (event: T) => void;
 export type CustomEventHandler<T = unknown> = EventHandler<CustomEvent<T>>;
 
-export type DispatchableAiEvents =
-    | AiEvents.DIALOG_SHOWN
-    | AiEvents.DIALOG_HIDDEN
-    | AiEvents.RESULT_APPLIED
-    | AiEvents.CONTEXT_CHANGED;
+type InteractionType = 'click';
 
 function createEventHandler<T>(handler: CustomEventHandler<T>): EventHandler {
     return (event: Event): void => {
@@ -45,6 +42,10 @@ export function dispatchResultApplied(items: ApplyMessage[]): void {
 
 export function dispatchContextChanged(context: Optional<string>): void {
     window.dispatchEvent(new CustomEvent(AiEvents.CONTEXT_CHANGED, {detail: {context}}));
+}
+
+export function dispatchInteracted(path: string, interaction: InteractionType = 'click'): void {
+    window.dispatchEvent(new CustomEvent(AiEvents.INTERACTED, {detail: {path, interaction}}));
 }
 
 export function addGlobalUpdateDataHandler(handler: CustomEventHandler<UpdateEventData>): FnVoid {
