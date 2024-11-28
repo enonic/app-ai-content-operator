@@ -2,7 +2,6 @@ import {useStore} from '@nanostores/react';
 import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
-import {animateGlow} from '../../../../common/animations';
 import {dispatchResultApplied} from '../../../../common/events';
 import {pickMessageValue} from '../../../../common/mentions';
 import {sendRetryMessage} from '../../../../stores/chat';
@@ -51,7 +50,6 @@ export default function MessageControls({className, content, last}: Props): Reac
                     clickHandler={() => {
                         const items = extractItems(content);
                         dispatchResultApplied(items);
-                        Object.keys(content).forEach(name => animateGlow(name));
                     }}
                 />
             )}

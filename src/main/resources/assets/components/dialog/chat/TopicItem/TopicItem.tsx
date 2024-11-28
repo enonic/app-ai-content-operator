@@ -3,9 +3,9 @@ import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../lib/shared/enums';
-import {animateTopicScroll} from '../../../../common/animations';
 import {REGULAR_SCREEN} from '../../../../common/device';
-import {pickMessageValue} from '../../../../common/mentions';
+import {dispatchInteracted} from '../../../../common/events';
+import {MENTION_TOPIC, pickMessageValue} from '../../../../common/mentions';
 import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
 import ElementItemContent from '../ElementItemContent/ElementItemContent';
 import ElementItemControls from '../ElementItemControls/ElementItemControls';
@@ -33,7 +33,7 @@ export default function TopicItem({className, messageId, name, last, value}: Pro
             <button
                 className='-mx-1 px-1 align-baseline cursor-pointer text-sky-600 truncate'
                 title={topic}
-                onClick={() => animateTopicScroll()}
+                onClick={() => dispatchInteracted(MENTION_TOPIC.path)}
             >
                 <span className='text-xs'>{topic}</span>
             </button>
