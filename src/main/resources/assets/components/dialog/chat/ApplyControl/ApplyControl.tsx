@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {animateGlow} from '../../../../common/animations';
 import {delay} from '../../../../common/func';
 import {dispatchResultApplied} from '../../../../stores/data';
 import ActionButton from '../../../shared/ActionButton/ActionButton';
@@ -20,7 +19,6 @@ export default function ApplyControl({className, name, content}: Props): React.R
     const handleApply = useCallback(() => {
         setApplying(true);
         dispatchResultApplied([{path: name, text: content}]);
-        animateGlow(name);
         void delay(500).then(() => {
             setApplying(false);
         });

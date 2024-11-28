@@ -1,4 +1,3 @@
-import {ApplyMessage} from '../stores/data/ApplyMessage';
 import {ConfigureEventData} from '../stores/data/ConfigureEventData';
 import {UpdateEventData} from '../stores/data/EventData';
 import {OpenDialogEventData} from '../stores/data/OpenDialogEventData';
@@ -9,6 +8,7 @@ export enum AiEvents {
     DIALOG_SHOWN = 'AiContentOperatorDialogShownEvent',
     DIALOG_HIDDEN = 'AiContentOperatorDialogHiddenEvent',
     RESULT_APPLIED = 'AiContentOperatorResultAppliedEvent',
+    INTERACTED = 'AiContentOperatorInteractionEvent',
     //   Incoming
     OPEN_DIALOG = 'AiContentOperatorOpenDialogEvent',
     CONFIGURE = 'AiContentOperatorConfigureEvent',
@@ -20,7 +20,11 @@ export enum AiEvents {
 export type EventHandler<T extends Event = Event> = (event: T) => void;
 export type CustomEventHandler<T = unknown> = EventHandler<CustomEvent<T>>;
 
-export type DispatchableAiEvents = AiEvents.DIALOG_SHOWN | AiEvents.DIALOG_HIDDEN | AiEvents.RESULT_APPLIED;
+export type DispatchableAiEvents =
+    | AiEvents.DIALOG_SHOWN
+    | AiEvents.DIALOG_HIDDEN
+    | AiEvents.RESULT_APPLIED
+    | AiEvents.INTERACTED;
 
 function createEventHandler<T>(handler: CustomEventHandler<T>): EventHandler {
     return (event: Event): void => {
@@ -30,17 +34,19 @@ function createEventHandler<T>(handler: CustomEventHandler<T>): EventHandler {
     };
 }
 
-function createCustomEvent(type: DispatchableAiEvents, data?: ApplyMessage[]): CustomEvent {
+function createCustomEvent(type: DispatchableAiEvents, data?: unknown): CustomEvent {
     switch (type) {
         case AiEvents.RESULT_APPLIED:
             return new CustomEvent(type, {detail: {items: data}});
+        case AiEvents.INTERACTED:
+            return new CustomEvent(type, {detail: data});
         case AiEvents.DIALOG_SHOWN:
         case AiEvents.DIALOG_HIDDEN:
             return new CustomEvent(type);
     }
 }
 
-export function dispatch(type: DispatchableAiEvents, data?: ApplyMessage[]): void {
+export function dispatch(type: DispatchableAiEvents, data?: unknown): void {
     window.dispatchEvent(createCustomEvent(type, data));
 }
 
