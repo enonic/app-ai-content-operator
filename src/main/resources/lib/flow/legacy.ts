@@ -80,24 +80,30 @@ function sortAndFixResult(result: Record<string, unknown>, fields: string[]): Mo
         })
         .map((key): [string, unknown] => [key, result[key]])
         .reduce((acc, [key, value]) => {
-            if (typeof value === 'string') {
-                return {...acc, [key]: value};
-            }
-
-            if (Array.isArray(value)) {
-                if (value.length > 1) {
-                    return {...acc, [key]: value.map(v => String(v))};
-                } else {
-                    return {...acc, [key]: String(value[0] ?? '')};
-                }
-            }
-
-            if (isRecord(value) && 'value' in value && typeof value.value === 'string') {
-                return {...acc, [key]: value.value};
-            }
-
-            return {...acc, [key]: String(value)};
+            const parsedValue = parseValue(value);
+            const isEmpty = typeof parsedValue === 'string' && parsedValue === '';
+            return isEmpty ? acc : {...acc, [key]: parsedValue};
         }, {});
+}
+
+function parseValue(value: unknown): string | string[] {
+    if (typeof value === 'string') {
+        return value.trim();
+    }
+
+    if (Array.isArray(value)) {
+        if (value.length > 1) {
+            return value.map(v => String(v).trim()).filter(v => v !== '');
+        } else {
+            return String(value[0] ?? '').trim();
+        }
+    }
+
+    if (isRecord(value) && 'value' in value && typeof value.value === 'string') {
+        return value.value.trim();
+    }
+
+    return String(value).trim();
 }
 
 //
