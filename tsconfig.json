@@ -30,6 +30,5 @@
         "src/main/resources/**/*.ts",
         "tests/**/*.ts",
         "tsup.config.ts",
-        "src/main/resources/assets/plugins/withMentions.tsx",
     ],
 }

@@ -1,8 +1,8 @@
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../lib/shared/enums';
+import {SPECIAL_NAMES} from '../../../../../shared/enums';
 import {ModelChatMessage} from '../../../../stores/data/ChatMessage';
-import AssistantIcon from '../../../shared/AssistantIcon/AssistantIcon';
+import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
 import CommonItem from '../CommonItem/CommonItem';
 import ElementItem from '../ElementItem/ElementItem';
 import ErrorItem from '../ErrorItem/ErrorItem';
@@ -58,7 +58,7 @@ export default function AssistantMessage({className, message, last}: Props): Rea
             <AssistantIcon className={twJoin('shrink-0 mt-3 text-enonic-blue-light')} />
             <article className={twJoin('flex flex-col gap-1 flex-1 text-sm')}>
                 <ul className='flex flex-col divide-y'>{createFields(message, last)}</ul>
-                <MessageControls className='pt-1' content={message.content} last={last} />
+                <MessageControls className='pt-1' forId={message.forId} content={message.content} last={last} />
             </article>
         </div>
     );

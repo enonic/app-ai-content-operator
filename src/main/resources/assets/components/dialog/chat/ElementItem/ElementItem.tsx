@@ -5,7 +5,7 @@ import {REGULAR_SCREEN} from '../../../../common/device';
 import {dispatchInteracted} from '../../../../common/events';
 import {pickMessageValue} from '../../../../common/mentions';
 import {$allFormItemsWithPaths} from '../../../../stores/data';
-import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
+import {MultipleValues} from '../../../../stores/data/MultipleValues';
 import {findPathByDataAttrString} from '../../../../stores/utils/data';
 import {getInputType} from '../../../../stores/utils/input';
 import {getPathLabel, pathToPrettifiedString} from '../../../../stores/utils/path';
@@ -18,7 +18,7 @@ type Props = {
     messageId: string;
     name: string;
     last: boolean;
-    value: string | MultipleContentValue;
+    value: string | MultipleValues;
 };
 
 export default function ElementItem({className, messageId, name, value, last}: Props): React.ReactNode {

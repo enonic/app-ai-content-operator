@@ -1,11 +1,11 @@
 import {computed, map} from 'nanostores';
 
+import type {DataEntry} from '../../shared/data/DataEntry';
 import {addGlobalUpdateDataHandler} from '../common/events';
 import {MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
 import {$config} from './config';
 import {$context} from './context';
 import {ContentData, PropertyValue} from './data/ContentData';
-import {DataEntry} from './data/DataEntry';
 import {UpdateEventData} from './data/EventData';
 import {FormItemWithPath, InputWithPath} from './data/FormItemWithPath';
 import {Language} from './data/Language';
@@ -30,6 +30,9 @@ export const $data = map<Data>({
     persisted: null,
     schema: null,
 });
+
+export const $language = computed($data, ({language}) => language?.tag ?? navigator?.language ?? 'en');
+export const $contentPath = computed($data, ({persisted}) => persisted?.contentPath ?? '');
 
 addGlobalUpdateDataHandler(event => {
     putEventDataToStore(event.detail);
@@ -151,10 +154,10 @@ function createPromptFields(): string {
 }
 
 function createPromptContent(): string {
-    return ['#Content', '```\n', JSON.stringify(generatePathsEntries(), null, 2), '\n```'].join('\n');
+    return ['#Content', '```\n', JSON.stringify(createFields(), null, 2), '\n```'].join('\n');
 }
 
-function generatePathsEntries(): Record<string, DataEntry> {
+export function createFields(): Record<string, DataEntry> {
     const result: Record<string, DataEntry> = {};
 
     const isRootContext = $context.get() == null;

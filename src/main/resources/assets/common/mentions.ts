@@ -1,5 +1,5 @@
-import {MultipleContentValue} from '../stores/data/ChatMessage';
 import {Mention} from '../stores/data/Mention';
+import {MultipleValues} from '../stores/data/MultipleValues';
 
 export const MENTION_ALL = {
     path: '__all__',
@@ -54,10 +54,10 @@ export function findMentionByPath(list: Mention[], path: string): Mention | unde
     return list.find(v => v.path === path);
 }
 
-export const pickMessageValue = (value: string | MultipleContentValue): string => {
+export const pickMessageValue = (value: string | MultipleValues): string => {
     return typeof value === 'string' ? value : value.values[value.selectedIndex];
 };
 
-export const combineMessageValues = (value: string | MultipleContentValue): string => {
+export const combineMessageValues = (value: string | MultipleValues): string => {
     return typeof value === 'string' ? value : value.values.join('\n');
 };

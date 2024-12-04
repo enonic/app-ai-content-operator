@@ -15,7 +15,11 @@ export default function Message({className, message, last}: Props): React.ReactN
         case MessageRole.USER:
             return <UserMessage className={className}>{message.content.node}</UserMessage>;
         case MessageRole.SYSTEM:
-            return <SystemMessage className={className}>{message.content.node}</SystemMessage>;
+            return (
+                <SystemMessage className={className} type={message.content.type}>
+                    {message.content.node}
+                </SystemMessage>
+            );
         default:
             return <AssistantMessage className={className} message={message} last={last} />;
     }

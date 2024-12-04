@@ -2,14 +2,14 @@ import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
 import {changeModelMessageSelectedIndex} from '../../../../stores/chat';
-import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
-import ActionButton from '../../../shared/ActionButton/ActionButton';
+import {MultipleValues} from '../../../../stores/data/MultipleValues';
+import ActionButton from '../../../base/ActionButton/ActionButton';
 
 export interface Props {
     className?: string;
     messageId: string;
     name: string;
-    content: MultipleContentValue;
+    content: MultipleValues;
 }
 
 export default function MessageSwitcher({className, messageId, name, content}: Props): React.ReactNode {

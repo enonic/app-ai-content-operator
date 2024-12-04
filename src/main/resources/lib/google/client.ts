@@ -1,6 +1,6 @@
 import type {HttpClientResponse} from '/lib/http-client';
 
-import {CustomAiError, ERRORS} from '../errors';
+import {CustomAiError, ERRORS} from '../../shared/errors';
 import {logDebug, LogDebugGroups, logError} from '../logger';
 import {request, RequestParams} from '../requests';
 import {parseOptions} from './options';

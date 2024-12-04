@@ -1,7 +1,7 @@
 import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
 
-import UserIcon from '../../../shared/UserIcon/UserIcon';
+import UserIcon from '../../../base/UserIcon/UserIcon';
 import PromptArea from '../prompt/PromptArea/PromptArea';
 
 export type Props = {

@@ -1,6 +1,29 @@
-export type TextGenerationResult = Record<string, string | string[]>;
+import {AnalysisEntry} from './analysis';
 
-export const createTextGenerationInstructions = (): string => `
+export type GenerationResult = Record<string, string | string[]>;
+
+export type GenerationRequest = Record<string, GenerationEntry>;
+
+export type GenerationEntry = AnalysisEntry & {
+    value: string | boolean | number;
+};
+
+export function isGenerationResult(result: unknown): result is GenerationResult {
+    return (
+        typeof result === 'object' &&
+        result !== null &&
+        Object.keys(result).every((key: string) => {
+            const value = (result as Record<string, unknown>)[key];
+            return (
+                typeof value === 'string' ||
+                (Array.isArray(value) && value.every((item: unknown): item is string => typeof item === 'string'))
+            );
+        })
+    );
+}
+
+export const createGenerationInstructions = (): string =>
+    `
 You are a world-renowned computational linguistics and data processing expert specializing in natural language generation, holding the Turing Award for Excellence in AI-driven content management.
 
 You MUST follow these instructions for answering:
@@ -24,7 +47,7 @@ You MUST follow these instructions for answering:
       * Could be \`"text"\` or \`"html"\`.
       * If type is \`"html"\`, the field MUST contain ONLY Markdown-compatible HTML tags.
       * DO NOT apply styles to the tags.
-      * Do not start with heading tags, unless explicitly requested by the user, e.g. do not start with \`<h1>\`, \`<h2>\`, etc.
+      * If type is \`"html"\`, DO NOT start text with headings, unless explicitly requested by the user, e.g. do not start with \`<h1>\`, \`<h2>\`, etc.
     - \`"task"\`: The task that needs to be performed with the field.
     - \`"count"\`: The number of variants that needs to be generated for the field. If value is not provided or equals 1, you should generate only one variant.
 
@@ -79,4 +102,4 @@ You MUST follow these instructions for answering:
   "/bio/skills": "<p>John S. Smith Jr.</p><p><b>Email:</b> john.smith@enonic.com</p><p><b>Skills:</b> TypeScript, React</p>"
 }
 \`\`\`
-`;
+`.trim();

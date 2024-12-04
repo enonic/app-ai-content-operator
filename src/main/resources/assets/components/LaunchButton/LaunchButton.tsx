@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
 
 import {$dialog, toggleDialog} from '../../stores/dialog';
-import AssistantIcon from '../shared/AssistantIcon/AssistantIcon';
+import AssistantIcon from '../base/AssistantIcon/AssistantIcon';
 
 export default function LaunchButton(): React.ReactNode {
     const {t} = useTranslation();

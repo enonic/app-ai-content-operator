@@ -1,6 +1,6 @@
 import {twMerge} from 'tailwind-merge';
 
-import AssistantIcon from '../../../shared/AssistantIcon/AssistantIcon';
+import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
 
 type Props = {
     className?: string;
