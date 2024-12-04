@@ -105,7 +105,7 @@ function sortAndFixResult(result: Record<string, unknown>, fields: string[]): Mo
 //
 
 function createMessages(prompt: string, messages: Message[]): Message[] {
-    return [{role: 'user', text: prompt}, ...messages];
+    return [...messages, {role: 'user', text: prompt}];
 }
 
 function createPrompt({prompt, instructions, meta, fields}: ModelRequestData): string {
