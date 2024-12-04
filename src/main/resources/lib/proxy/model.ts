@@ -1,16 +1,16 @@
 import type {Schema} from '@google/generative-ai';
 
-import type {Message, ModelResponseGenerateData} from '../../types/shared/model';
-import {ModelOptions} from '../google/options';
-import {Model} from '../shared/models';
+import type {Message} from '../../shared/model';
+import {ModelParameters} from '../../shared/modes';
 
 export type ModelProxy = {
-    generate(): Try<ModelResponseGenerateData>;
+    generate(): Try<string>;
 };
 
 export type ModelProxyConfig = {
-    models: Record<Model, ModelOptions>;
-    instructions?: string;
+    url: string;
+    instructions: string;
+    modelParameters: ModelParameters;
     messages: Message[];
     schema?: Schema;
 };

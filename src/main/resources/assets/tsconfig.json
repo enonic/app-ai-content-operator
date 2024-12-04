@@ -15,12 +15,5 @@
         "noEmit": true,
         "jsx": "react-jsx",
     },
-    "include": [
-        "**/*.ts",
-        "**/*.tsx",
-        "../types/shared/*.ts",
-        "../types/types.d.ts",
-        "./types/*.ts",
-        "../lib/shared/*.ts",
-    ],
+    "include": ["**/*.ts", "**/*.tsx", "../types/types.d.ts", "../shared/**/*.ts"],
 }

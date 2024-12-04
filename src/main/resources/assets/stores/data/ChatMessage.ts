@@ -1,4 +1,6 @@
-import {MessageRole} from './MessageType';
+import type {ModelRequestData} from '../../../shared/model';
+import type {MessageRole} from './MessageType';
+import type {MultipleValues} from './MultipleValues';
 
 export type ChatMessage = UserChatMessage | ModelChatMessage | SystemChatMessage;
 
@@ -8,11 +10,20 @@ export type UserChatMessage = {
     content: UserChatMessageContent;
 };
 
+export type UserChatMessageContent = {
+    node: React.ReactNode;
+    data: ModelRequestData;
+    prompt?: string;
+};
+
 export type ModelChatMessage = {
     id: string;
+    forId: string; // ID of the related user message
     role: MessageRole.MODEL;
     content: ModelChatMessageContent;
 };
+
+export type ModelChatMessageContent = Record<string, string | MultipleValues>;
 
 export type SystemChatMessage = {
     id: string;
@@ -20,21 +31,8 @@ export type SystemChatMessage = {
     content: SystemChatMessageContent;
 };
 
-export type UserChatMessageContent = {
-    node: React.ReactNode;
-    text: string;
-    prompt: string;
-};
-
-export type ModelChatMessageContent = Record<string, string | MultipleContentValue | undefined>;
-
-export type MultipleContentValue = {
-    values: string[];
-    selectedIndex: number;
-};
-
 export type SystemChatMessageContent = {
-    type: 'context';
+    type: 'context' | 'error';
     key: string;
     node: React.ReactNode;
 };

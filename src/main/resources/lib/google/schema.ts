@@ -1,6 +1,6 @@
 import type {FunctionDeclarationSchemaProperty, Schema} from '@google/generative-ai';
 
-import {SchemaType} from '../shared/enums';
+import {SchemaType} from '../../shared/enums';
 
 export type SchemaFields = Record<string, {count?: number}>;
 

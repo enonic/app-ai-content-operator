@@ -1,48 +1,29 @@
 import {SPECIAL_NAMES} from '../enums';
 
-type StructureAnalysisSimpleResult =
-    | {
-          [SPECIAL_NAMES.common]: string;
-      }
-    | {
-          [SPECIAL_NAMES.error]: string;
-      }
-    | {
-          [SPECIAL_NAMES.unclear]: string;
-      };
+export type AnalysisResult = Record<string, AnalysisEntry>;
 
-type StructureAnalysisFieldsResult = Record<
-    string,
-    {
-        value: string;
-        type: 'text' | 'html';
-        task: string;
-        count?: number;
-        language: string;
-    }
->;
+export type AnalysisEntry = {
+    type: 'text' | 'html';
+    task: string;
+    count?: number;
+    language: string;
+};
 
-export type StructureAnalysisResult = StructureAnalysisSimpleResult | StructureAnalysisFieldsResult;
-
-export function isStructureAnalysisFieldsResult(result: unknown): result is StructureAnalysisFieldsResult {
+export function isAnalysisResult(result: unknown): result is AnalysisResult {
     return (
         typeof result === 'object' &&
         result !== null &&
         Object.keys(result).every(key => {
             const value = result[key as keyof typeof result];
             return (
-                typeof value === 'object' &&
-                value !== null &&
-                'value' in value &&
-                'type' in value &&
-                'task' in value &&
-                'language' in value
+                typeof value === 'object' && value !== null && 'type' in value && 'task' in value && 'language' in value
             );
         })
     );
 }
 
-export const createStructureAnalysisInstructions = (): string => `
+export const createAnalysisInstructions = (): string =>
+    `
 You are a world-renowned blogging expert awarded the Webby Award for Excellence in Online Content Writing.
 Your task is to process user JSON request.
 
@@ -217,4 +198,4 @@ Move text from {{/article/intro}} to {{/article/main}}. Place a proper Latin quo
   "${SPECIAL_NAMES.common}": "Расстояние от Земли до Луны составляет около 384 400 километров."
 }
 \`\`\`
-`;
+`.trim();

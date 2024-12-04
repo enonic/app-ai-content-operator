@@ -2,11 +2,11 @@ import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../lib/shared/enums';
+import {SPECIAL_NAMES} from '../../../../../shared/enums';
 import {REGULAR_SCREEN} from '../../../../common/device';
 import {dispatchInteracted} from '../../../../common/events';
 import {MENTION_TOPIC, pickMessageValue} from '../../../../common/mentions';
-import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
+import {MultipleValues} from '../../../../stores/data/MultipleValues';
 import ElementItemContent from '../ElementItemContent/ElementItemContent';
 import ElementItemControls from '../ElementItemControls/ElementItemControls';
 import MessageSwitcher from '../MessageSwitcher/MessageSwitcher';
@@ -16,7 +16,7 @@ type Props = {
     messageId: string;
     name: string;
     last: boolean;
-    value: string | MultipleContentValue;
+    value: string | MultipleValues;
 };
 
 export default function TopicItem({className, messageId, name, last, value}: Props): React.ReactNode {

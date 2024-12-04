@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 
 import {clearChat} from '../../../../stores/chat';
 import {resetContext} from '../../../../stores/context';
-import ActionButton from '../../../shared/ActionButton/ActionButton';
+import ActionButton from '../../../base/ActionButton/ActionButton';
 
 type Props = {
     className?: string;

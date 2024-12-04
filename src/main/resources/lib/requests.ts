@@ -1,7 +1,7 @@
 import libHttpClient, {HttpClientResponse} from '/lib/http-client';
 
-import type {ErrorResponse} from '../types/shared/model';
-import {ERRORS, isNashornError} from './errors';
+import {ERRORS, isNashornError} from '../shared/errors';
+import type {ErrorResponse} from '../shared/model';
 import {logError} from './logger';
 
 export type RequestParams = {

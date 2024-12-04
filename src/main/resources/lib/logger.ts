@@ -1,5 +1,5 @@
+import {CustomAiError, isNashornError} from '../shared/errors';
 import {DEBUG_GROUPS} from './config';
-import {CustomAiError, isNashornError} from './errors';
 
 export enum LogDebugGroups {
     ALL = 'all',
@@ -9,6 +9,7 @@ export enum LogDebugGroups {
     NODE = 'node',
     QUERY = 'query',
     FUNC = 'func',
+    WS = 'ws',
 }
 
 function stringifyCode(code: object): string {

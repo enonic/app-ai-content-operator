@@ -2,12 +2,12 @@ import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
 import {combineMessageValues} from '../../../../common/mentions';
-import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
+import {MultipleValues} from '../../../../stores/data/MultipleValues';
 import ElementItemContent from '../ElementItemContent/ElementItemContent';
 
 type Props = {
     className?: string;
-    value: string | MultipleContentValue;
+    value: string | MultipleValues;
 };
 
 export default function ErrorItem({className, value}: Props): React.ReactNode {

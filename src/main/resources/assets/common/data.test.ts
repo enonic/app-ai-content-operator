@@ -1,4 +1,3 @@
-import type {ModelChatMessageContent} from '../stores/data/ChatMessage';
 import {mergeContent} from './data';
 
 describe('mergeContent', () => {
@@ -23,14 +22,5 @@ describe('mergeContent', () => {
 
     it('should merge nested objects', () => {
         expect(mergeContent({a: {b: 'b'}}, {a: {c: 'c'}})).toEqual({a: {b: 'b', c: 'c'}});
-    });
-
-    it('should merge ModelChatMessageContent', () => {
-        const oldContent: ModelChatMessageContent = {a: 'a', b: {values: ['b', 'c'], selectedIndex: 0}};
-        const newContent: ModelChatMessageContent = {b: {values: ['d'], selectedIndex: 1}};
-        expect(mergeContent(oldContent, newContent)).toEqual({
-            a: 'a',
-            b: {values: ['b', 'c', 'd'], selectedIndex: 0},
-        });
     });
 });

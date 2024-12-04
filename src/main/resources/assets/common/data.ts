@@ -1,4 +1,4 @@
-import type {ErrorResponse} from '../../types/shared/model';
+import type {ErrorResponse} from '../../shared/model';
 
 export const isNonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 

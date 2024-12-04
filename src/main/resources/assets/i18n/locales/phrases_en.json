@@ -37,5 +37,8 @@
     "text.error.response.maxTokens": "Token limit exceeded. Your prompt lead to pruned response that cannot be parsed.",
     "text.error.response.finishReason": "AI service stopped generating response. Reason <{{finishReason}}>.",
     "text.error.response.safety": "AI service stopped generating response due to safety violation.",
+    "text.error.message.repeat.notFound": "Sorry, I couldn't repeat your message.",
+    "text.error.message.update.notFound": "Sorry, something went wrong, while displaying result.",
+    "text.error.response.parse": "Sorry, I couldn't parse the result correctly.",
     "text.mentions.notFound": "No editable inputs found"
 }

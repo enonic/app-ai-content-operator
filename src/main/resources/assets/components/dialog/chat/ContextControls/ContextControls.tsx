@@ -5,7 +5,7 @@ import {twJoin} from 'tailwind-merge';
 import {$context, resetContext} from '../../../../stores/context';
 import {Path} from '../../../../stores/data/Path';
 import {getAllPathsFromString, pathToString} from '../../../../stores/utils/path';
-import ActionButton from '../../../shared/ActionButton/ActionButton';
+import ActionButton from '../../../base/ActionButton/ActionButton';
 import ContextItem from '../ContextItem/ContextItem';
 
 function createItems(paths: Path[]): React.ReactNode[] {

@@ -6,7 +6,7 @@ import {twJoin} from 'tailwind-merge';
 
 import {$dialog} from '../../../stores/dialog';
 import {clearTarget} from '../../../stores/editor';
-import Resizable from '../../shared/Resizable/Resizable';
+import Resizable from '../../base/Resizable/Resizable';
 import AssistantContent from '../AssistantContent/AssistantContent';
 import AssistantHeader from '../header/AssistantHeader/AssistantHeader';
 import './AssistantDialog.css';

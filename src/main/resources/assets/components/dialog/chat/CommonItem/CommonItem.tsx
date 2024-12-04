@@ -1,13 +1,13 @@
 import {twMerge} from 'tailwind-merge';
 
 import {combineMessageValues} from '../../../../common/mentions';
-import {MultipleContentValue} from '../../../../stores/data/ChatMessage';
+import {MultipleValues} from '../../../../stores/data/MultipleValues';
 import CommonItemContent from '../CommonItemContent/CommonItemContent';
 
 type Props = {
     className?: string;
     last: boolean;
-    value: string | MultipleContentValue;
+    value: string | MultipleValues;
 };
 
 export default function CommonItem({className, last, value}: Props): React.ReactNode {

@@ -8,7 +8,7 @@ import {FormItemWithPath} from '../../../../stores/data/FormItemWithPath';
 import {Path} from '../../../../stores/data/Path';
 import {getPathLabel, isChildPath, pathsEqual, pathToString} from '../../../../stores/utils/path';
 import {isInput} from '../../../../stores/utils/schema';
-import ActionButton from '../../../shared/ActionButton/ActionButton';
+import ActionButton from '../../../base/ActionButton/ActionButton';
 
 type Props = {
     className?: string;
