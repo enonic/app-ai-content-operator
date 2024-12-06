@@ -2,7 +2,7 @@ import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
 import {changeModelMessageSelectedIndex} from '../../../../stores/chat';
-import {MultipleValues} from '../../../../stores/data/MultipleValues';
+import {MultipleValues} from '../../../../stores/data/MultipleContentValue';
 import ActionButton from '../../../base/ActionButton/ActionButton';
 
 export interface Props {

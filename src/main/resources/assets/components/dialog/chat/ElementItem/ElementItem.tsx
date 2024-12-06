@@ -3,9 +3,9 @@ import {twJoin, twMerge} from 'tailwind-merge';
 
 import {REGULAR_SCREEN} from '../../../../common/device';
 import {dispatchInteracted} from '../../../../common/events';
-import {pickMessageValue} from '../../../../common/mentions';
+import {pickValue} from '../../../../common/messages';
 import {$allFormItemsWithPaths} from '../../../../stores/data';
-import {MultipleValues} from '../../../../stores/data/MultipleValues';
+import {MultipleValues} from '../../../../stores/data/MultipleContentValue';
 import {findPathByDataAttrString} from '../../../../stores/utils/data';
 import {getInputType} from '../../../../stores/utils/input';
 import {getPathLabel, pathToPrettifiedString} from '../../../../stores/utils/path';
@@ -18,7 +18,7 @@ type Props = {
     messageId: string;
     name: string;
     last: boolean;
-    value: string | MultipleValues;
+    value: Optional<string | MultipleValues>;
 };
 
 export default function ElementItem({className, messageId, name, value, last}: Props): React.ReactNode {
@@ -27,7 +27,7 @@ export default function ElementItem({className, messageId, name, value, last}: P
     const inputWithPath = findPathByDataAttrString(allItems, name);
     const title = inputWithPath ? pathToPrettifiedString(inputWithPath) : '';
     const label = inputWithPath ? getPathLabel(inputWithPath) : name;
-    const content = pickMessageValue(value);
+    const content = value && pickValue(value);
     const type = getInputType(inputWithPath);
 
     return (
@@ -39,13 +39,17 @@ export default function ElementItem({className, messageId, name, value, last}: P
             >
                 <span className='text-xs'>{`${label}`}</span>
             </button>
-            {typeof value !== 'string' && <MessageSwitcher messageId={messageId} name={name} content={value} />}
-            <ElementItemControls
-                className={twJoin('col-start-3', REGULAR_SCREEN && !last && 'invisible group-hover/item:visible')}
-                content={content}
-                name={name}
-                type={type}
-            />
+            {content && typeof value !== 'string' && (
+                <MessageSwitcher messageId={messageId} name={name} content={value} />
+            )}
+            {content && (
+                <ElementItemControls
+                    className={twJoin('col-start-3', REGULAR_SCREEN && !last && 'invisible group-hover/item:visible')}
+                    content={content}
+                    name={name}
+                    type={type}
+                />
+            )}
             <ElementItemContent className='col-span-3' content={content} type={type} />
         </li>
     );

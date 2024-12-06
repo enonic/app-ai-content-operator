@@ -2,37 +2,35 @@ import {useStore} from '@nanostores/react';
 import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../shared/enums';
 import {dispatchResultApplied} from '../../../../common/events';
-import {pickMessageValue} from '../../../../common/mentions';
-import {sendRetryMessage} from '../../../../stores/chat';
+import {messageContentToValues, pickValue} from '../../../../common/messages';
 import {ApplyMessage} from '../../../../stores/data/ApplyMessage';
 import {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
-import {$chatRequestRunning} from '../../../../stores/requests';
+import {MultipleValues} from '../../../../stores/data/MultipleContentValue';
+import {$canChat, sendRetry} from '../../../../stores/websocket';
 import ActionButton from '../../../base/ActionButton/ActionButton';
 
 export interface Props {
     className?: string;
-    forId: string;
     content: ModelChatMessageContent;
     last: boolean;
 }
 
 function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
-    return Object.entries(content)
-        .filter(([name]) => name !== SPECIAL_NAMES.error && name !== SPECIAL_NAMES.unclear)
-        .map(([name, content = '']) => ({
+    return Object.entries(messageContentToValues(content))
+        .filter((value): value is [string, string | MultipleValues] => value[1] != null)
+        .map(([name, value]) => ({
             path: name,
-            text: pickMessageValue(content),
+            text: pickValue(value),
         }));
 }
 
-export default function MessageControls({className, forId, content, last}: Props): React.ReactNode {
+export default function MessageControls({className, content, last}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     const multiple = Object.keys(content).length > 1;
-    const requestRunning = useStore($chatRequestRunning);
-    const lastAndAvailable = last && !requestRunning;
+    const canChat = useStore($canChat);
+    const lastAndAvailable = last && canChat;
 
     return (
         <div className={twMerge('empty:hidden', className)}>
@@ -41,7 +39,7 @@ export default function MessageControls({className, forId, content, last}: Props
                     name={t('action.retry')}
                     icon='retry'
                     mode='icon-with-title'
-                    clickHandler={() => void sendRetryMessage(forId)}
+                    clickHandler={() => sendRetry()}
                 />
             )}
             {lastAndAvailable && multiple && (

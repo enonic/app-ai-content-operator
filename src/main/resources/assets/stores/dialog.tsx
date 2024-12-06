@@ -1,9 +1,8 @@
-import {computed, map} from 'nanostores';
+import {map} from 'nanostores';
 
 import {addGlobalOpenDialogHandler, AiEvents, dispatchDialogEvent} from '../common/events';
 import GreetingMessagePhrase from '../components/dialog/chat/system/GreetingMessagePhrase/GreetingMessagePhrase';
 import {addSystemMessage} from './chat';
-import {$chatRequestRunning} from './requests';
 
 export type Dialog = {
     hidden: boolean;
@@ -24,11 +23,6 @@ const unsubscribe = $dialog.listen(({hidden}, _, key) => {
         }, 800);
     }
 });
-
-export const $loading = computed(
-    [$dialog, $chatRequestRunning],
-    ({initialized}, requestRunning) => !initialized || requestRunning,
-);
 
 export const setDialogHidden = (hidden: boolean): void => {
     const isStateChanged = $dialog.get().hidden !== hidden;

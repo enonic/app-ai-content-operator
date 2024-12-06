@@ -1,25 +1,21 @@
 import {t} from 'i18next';
 import {nanoid} from 'nanoid';
 import {computed, map} from 'nanostores';
-import {Descendant} from 'slate';
 
 import {ERRORS} from '../../shared/errors';
-import type {ErrorResponse, Message, ModelPostResponse, ModelRequestData, ModelResult} from '../../shared/model';
-import {parseNodes, parseText} from '../common/slate';
-import {$config} from './config';
-import {$contentPath, $language, createFields} from './data';
+import {Message} from '../../shared/model';
+import {AnalysisResult} from '../../shared/prompts/analysis';
+import {GenerationResult} from '../../shared/prompts/generation';
+import {FailedMessagePayload} from '../../shared/websocket';
 import {
     ChatMessage,
     ModelChatMessage,
-    ModelChatMessageContent,
     SystemChatMessage,
     SystemChatMessageContent,
     UserChatMessage,
+    UserChatMessageContent,
 } from './data/ChatMessage';
 import {MessageRole} from './data/MessageType';
-import {postMessage} from './requests';
-
-type UserChatMessageContent = UserChatMessage['content'];
 
 export type Chat = {
     history: ChatMessage[];
@@ -28,7 +24,15 @@ export type Chat = {
 export const $chat = map<Chat>({history: []});
 
 export const $forIds = computed($chat, ({history}) =>
-    history.filter(message => message.role === MessageRole.MODEL).map(message => message.forId),
+    history.filter(message => message.role === MessageRole.MODEL).map(message => message.for),
+);
+
+export const $lastUserMessage = computed($chat, ({history}) =>
+    history.findLast(message => message.role === MessageRole.USER),
+);
+
+export const $lastModelMessage = computed($chat, ({history}) =>
+    history.findLast(message => message.role === MessageRole.MODEL),
 );
 
 export function clearChat(): void {
@@ -40,38 +44,43 @@ export function clearChat(): void {
 }
 
 //
-//* Data & History
+//* History
 //
 
-function createModelRequestData(prompt: string): ModelRequestData {
-    return {
-        prompt,
-        instructions: $config.get().instructions,
-        history: createHistory(),
-        meta: {
-            language: $language.get(),
-            contentPath: $contentPath.get(),
-        },
-        fields: createFields(),
-    };
-}
-
-function createHistory(): Message[] {
-    const forIds = $forIds.get();
+export function createAnalysisHistory(): Message[] {
     return $chat
         .get()
         .history.filter(message => message.role !== MessageRole.SYSTEM)
-        .filter(message => message.role === MessageRole.MODEL || forIds.includes(message.id))
+        .filter(message => message.role === MessageRole.MODEL || $forIds.get().includes(message.id))
         .map((message): Message => {
             if (message.role === MessageRole.MODEL) {
                 return {
                     role: 'model',
-                    text: JSON.stringify(mapModelMessageContentToResult(message.content), null, 2),
+                    text: JSON.stringify(message.content.analysisResult, null, 2),
                 };
             }
             return {
                 role: 'user',
-                text: message.content.prompt ?? message.content.data.prompt,
+                text: message.content.analysisPrompt ?? '',
+            };
+        });
+}
+
+export function createGenerationHistory(): Message[] {
+    return $chat
+        .get()
+        .history.filter(message => message.role !== MessageRole.SYSTEM)
+        .filter(message => message.role === MessageRole.MODEL || $forIds.get().includes(message.id))
+        .map((message): Message => {
+            if (message.role === MessageRole.MODEL) {
+                return {
+                    role: 'model',
+                    text: JSON.stringify(message.content, null, 2),
+                };
+            }
+            return {
+                role: 'user',
+                text: message.content.generationPrompt ?? '',
             };
         });
 }
@@ -79,6 +88,11 @@ function createHistory(): Message[] {
 //
 //* Messages
 //
+
+function findModelMessageById(id: string): Optional<Readonly<ModelChatMessage>> {
+    const message = $chat.get().history.find(message => message.id === id);
+    return message != null && message.role === MessageRole.MODEL ? message : null;
+}
 
 function findUserMessageById(id: string): Optional<Readonly<UserChatMessage>> {
     const message = $chat.get().history.find(message => message.id === id);
@@ -92,10 +106,23 @@ function isChatMessageReplaceable(a: ChatMessage, b: ChatMessage): boolean {
     if (a.role === MessageRole.SYSTEM && b.role === MessageRole.SYSTEM) {
         return a.id === b.id || a.content.type === b.content.type;
     }
-    return a.id === b.id;
+    if (a.role === MessageRole.MODEL && b.role === MessageRole.MODEL) {
+        return a.id === b.id;
+    }
+    return false;
 }
 
-function addOrReplaceLastChatMessage<T extends ChatMessage>(message: T): Readonly<T> {
+function replaceChatMessage<T extends ChatMessage>(message: T): Optional<T> {
+    const {history} = $chat.get();
+
+    const index = history.findIndex(m => m.id === message.id && m.role === message.role);
+    if (index >= 0) {
+        $chat.setKey('history', [...history.slice(0, index), message, ...history.slice(index + 1)]);
+        return message;
+    }
+}
+
+function addOrReplaceChatMessage<T extends ChatMessage>(message: T): T {
     const {history} = $chat.get();
     const lastMessage = history.at(-1);
 
@@ -108,32 +135,14 @@ function addOrReplaceLastChatMessage<T extends ChatMessage>(message: T): Readonl
     return message;
 }
 
-function replaceChatMessage<T extends ChatMessage>(message: T): Optional<Readonly<T>> {
-    const {history} = $chat.get();
-
-    const index = history.findIndex(m => m.id === message.id && m.role === message.role);
-    if (index >= 0) {
-        $chat.setKey('history', [...history.slice(0, index), message, ...history.slice(index + 1)]);
-        return message;
-    }
+export function addUserMessage(content: UserChatMessageContent): Readonly<UserChatMessage> {
+    return addOrReplaceChatMessage({id: nanoid(), content, role: MessageRole.USER} satisfies UserChatMessage);
 }
 
-function addUserMessage(content: UserChatMessageContent): Readonly<UserChatMessage> {
-    const newMessage: UserChatMessage = {id: nanoid(), content, role: MessageRole.USER};
-    return addOrReplaceLastChatMessage(newMessage);
-}
-
-export function addSystemMessage(content: SystemChatMessageContent): Readonly<SystemChatMessage> {
-    const newMessage: SystemChatMessage = {id: content.key, content, role: MessageRole.SYSTEM};
-    return addOrReplaceLastChatMessage(newMessage);
-}
-
-function addModelMessage(content: ModelChatMessageContent, forId: string): Readonly<ModelChatMessage> {
-    const newMessage: ModelChatMessage = {id: nanoid(), content, role: MessageRole.MODEL, forId};
-    return addOrReplaceLastChatMessage(newMessage);
-}
-
-export function updateUserMessage(id: string, prompt: string): Optional<Readonly<UserChatMessage>> {
+export function updateUserMessage(
+    id: string,
+    content: Omit<UserChatMessageContent, 'node'>,
+): Optional<Readonly<UserChatMessage>> {
     const message = findUserMessageById(id);
     if (message == null) {
         return null;
@@ -141,99 +150,89 @@ export function updateUserMessage(id: string, prompt: string): Optional<Readonly
 
     return replaceChatMessage({
         id: message.id,
-        content: {...message.content, prompt},
+        content: {...message.content, ...content},
         role: MessageRole.USER,
     } satisfies UserChatMessage);
 }
 
+export function addSystemMessage(content: SystemChatMessageContent): Readonly<SystemChatMessage> {
+    return addOrReplaceChatMessage({id: content.key, content, role: MessageRole.SYSTEM} satisfies SystemChatMessage);
+}
+
+export function addModelMessage(analysisResult: AnalysisResult, forId: string): Optional<Readonly<ModelChatMessage>> {
+    return addOrReplaceChatMessage({
+        id: nanoid(),
+        for: forId,
+        content: {analysisResult, selectedIndices: {}},
+        role: MessageRole.MODEL,
+    } satisfies ModelChatMessage);
+}
+
+export function updateModelMessage(
+    id: string,
+    generationResult: GenerationResult,
+): Optional<Readonly<ModelChatMessage>> {
+    const message = findModelMessageById(id);
+    if (message == null || message.content.generationResult != null) {
+        return null;
+    }
+
+    return replaceChatMessage({
+        id: message.id,
+        for: message.for,
+        content: {...message.content, generationResult: generationResult ?? message.content.generationResult},
+        role: MessageRole.MODEL,
+    } satisfies ModelChatMessage);
+}
+
 //
-//* Indexing
+//* Switching indices
 //
 
 export function changeModelMessageSelectedIndex(id: string, key: string, index: number): void {
     const {history} = $chat.get();
     const messageIndex = history.findIndex(message => message.id === id);
-    const message = structuredClone(history[messageIndex]);
+    const message = history[messageIndex];
 
     if (message == null || message.role !== MessageRole.MODEL) {
         return;
     }
 
-    const value = message.content[key];
-    if (value == null || typeof value === 'string' || !('selectedIndex' in value)) {
+    const {generationResult, selectedIndices} = message.content;
+
+    if (generationResult == null || !(key in generationResult)) {
         return;
     }
 
-    if (index < 0 || index >= value.values.length || index === value.selectedIndex) {
+    const value = generationResult[key];
+    if (value == null || !Array.isArray(value)) {
         return;
     }
 
-    value.selectedIndex = index;
-
-    $chat.setKey('history', [...history.slice(0, messageIndex), message, ...history.slice(messageIndex + 1)]);
-}
-
-//
-//* Flow
-//
-
-export async function sendUserMessage(nodes: Descendant[]): Promise<void> {
-    const node = parseNodes(nodes);
-    const text = parseText(nodes);
-    const data = createModelRequestData(text);
-
-    const userMessage = addUserMessage({node, data});
-
-    await sendData(userMessage);
-}
-
-export async function sendRetryMessage(userMessageId: string): Promise<void> {
-    const userMessage = findUserMessageById(userMessageId);
-    if (userMessage == null) {
-        addSystemMessage({key: nanoid(), type: 'error', node: t('text.error.message.repeat.notFound')});
+    if (index < 0 || index >= value.length || index === selectedIndices[key]) {
         return;
     }
 
-    const {node, prompt} = userMessage.content;
-    const data = structuredClone(userMessage.content.data);
-    addUserMessage({node, data, prompt});
+    selectedIndices[key] = index;
 
-    await sendData(userMessage);
-}
+    const newMessage: ModelChatMessage = {
+        id: message.id,
+        for: message.for,
+        content: {...message.content, selectedIndices},
+        role: MessageRole.MODEL,
+    };
 
-async function sendData(userMessage: Readonly<UserChatMessage>): Promise<void> {
-    const {id, content} = userMessage;
-
-    const response = await postMessage(content.data);
-
-    if (isErrorResponse(response)) {
-        addErrorMessage(response.error);
-        return;
-    }
-
-    const {request, result} = response;
-
-    const updatedUserMessage = updateUserMessage(id, request);
-    if (updatedUserMessage == null) {
-        addSystemMessage({key: nanoid(), type: 'error', node: t('text.error.message.update.notFound')});
-        return;
-    }
-
-    addModelMessage(mapToModelMessageContent(result), userMessage.id);
+    $chat.setKey('history', [...history.slice(0, messageIndex), newMessage, ...history.slice(messageIndex + 1)]);
 }
 
 //
 //* Errors
 //
 
-function isErrorResponse(response: ModelPostResponse): response is ErrorResponse {
-    return 'error' in response;
-}
+export function addErrorMessage(payload: FailedMessagePayload): void {
+    console.error(`Error <${payload.code}>: ${payload.message}`);
 
-export function addErrorMessage(error: AiError): void {
-    console.error(`Error <${error.code}>: ${error.message}`);
-
-    const message = getErrorMessageByCode(error.code);
+    const message = getErrorMessageByCode(payload.code);
     addSystemMessage({key: nanoid(), type: 'error', node: message});
 }
 
@@ -274,40 +273,11 @@ function getErrorMessageByCode(code: number): string {
             return t('text.error.response.safety');
         case ERRORS.MODEL_UNEXPECTED.code:
             return t('text.error.response.unexpected');
-        case ERRORS.MODEL_RESPONSE_PARSE_FAILED.code:
-        case ERRORS.MODEL_RESPONSE_INCORRECT.code:
-            return t('text.error.response.parse');
         default:
             return t('text.error.rest.unknown', {code});
     }
 }
 
-//
-//* Data
-//
-
 export function isRecord(record: unknown): record is AnyObject {
     return record != null && typeof record === 'object' && !Array.isArray(record);
-}
-
-function mapToModelMessageContent(content: ModelResult): ModelChatMessageContent {
-    return Object.entries(content).reduce((acc, [key, value]) => {
-        if (Array.isArray(value)) {
-            if (value.length > 1) {
-                return {...acc, [key]: {values: value, selectedIndex: 0}};
-            } else {
-                return {...acc, [key]: String(value[0] ?? '')};
-            }
-        }
-
-        return {...acc, [key]: String(value)};
-    }, {});
-}
-
-function mapModelMessageContentToResult(content: ModelChatMessageContent): ModelResult {
-    const result: ModelResult = {};
-    Object.entries(content).forEach(([key, value]) => {
-        result[key] = typeof value === 'string' ? value : value.values;
-    });
-    return result;
 }

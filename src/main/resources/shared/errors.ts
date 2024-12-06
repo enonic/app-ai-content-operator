@@ -47,8 +47,10 @@ export const ERRORS = {
     MODEL_SAFETY: err(4001, 'Generation was stopped due to safety reasons.'),
     MODEL_UNEXPECTED: err(4002, 'Generation finished unexpectedly.'),
     // Model (Flow) Errors 4100
-    MODEL_RESPONSE_PARSE_FAILED: err(4100, 'Failed to parse response.'),
-    MODEL_RESPONSE_INCORRECT: err(4101, 'Response has incorrect format.'),
+    MODEL_ANALYSIS_PARSE_FAILED: err(4100, 'Failed to parse analysis result.'),
+    MODEL_ANALYSIS_INCORRECT: err(4101, 'Analysis result has incorrect format.'),
+    MODEL_GENERATION_PARSE_FAILED: err(4102, 'Failed to parse generation result.'),
+    MODEL_GENERATION_INCORRECT: err(4103, 'Generation result has incorrect format.'),
 
     // Google Errors 5000
     GOOGLE_SAK_MISSING: err(5000, 'Google Service Account Key is missing or invalid.'),

@@ -10,12 +10,11 @@ import {twMerge} from 'tailwind-merge';
 import {findLooseMatch} from '../../../../../common/mentions';
 import {useDeepMemo} from '../../../../../hooks/useDeepMemo';
 import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugins/withMentions';
-import {sendUserMessage} from '../../../../../stores/chat';
 import {$mentions} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
-import {$chatRequestRunning} from '../../../../../stores/requests';
+import {$canChat, sendPrompt} from '../../../../../stores/websocket';
 import SendButton from '../../SendButton/SendButton';
 import MentionsList from '../MentionsList/MentionsList';
 import PromptAreaElement from '../PromptAreaElement/PromptAreaElement';
@@ -49,8 +48,8 @@ function isEditorEmpty(editor: Editor): boolean {
     );
 }
 
-function sendPrompt(editor: Editor): void {
-    void sendUserMessage(editor.children);
+function sendPromptAndClear(editor: Editor): void {
+    sendPrompt(editor.children);
     clearPrompt(editor);
 }
 
@@ -83,9 +82,9 @@ export default function PromptArea({className}: Props): React.ReactNode {
         }
     }, [hidden]);
 
-    const requestRunning = useStore($chatRequestRunning);
+    const canChat = useStore($canChat);
     const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));
-    const isSendDisabled = requestRunning || editorEmpty;
+    const isSendDisabled = !canChat || editorEmpty;
 
     useEffect(() => {
         if (target) {
@@ -131,7 +130,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                     if (event.altKey || event.shiftKey) {
                         editor.insertBreak();
                     } else if (!isSendDisabled) {
-                        sendPrompt(editor);
+                        sendPromptAndClear(editor);
                     }
                 }
                 return;
@@ -206,7 +205,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
             <SendButton
                 className='absolute bottom-2 right-2'
                 disabled={isSendDisabled}
-                clickHandler={() => sendPrompt(editor)}
+                clickHandler={() => sendPromptAndClear(editor)}
             />
         </div>
     );
