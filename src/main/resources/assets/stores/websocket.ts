@@ -26,16 +26,12 @@ import {
 import {$config} from './config';
 import {$contentPath, $language, createFields} from './data';
 
-type WebSocketState =
-    | 'mounted'
-    | 'connecting'
-    | 'connected'
-    | 'disconnecting'
-    | 'disconnected'
-    | 'unmounting'
-    | 'unmounted';
+type WebSocketLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
+
+type WebSocketState = 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
 
 type WebSocketStore = {
+    lifecycle: WebSocketLifecycle;
     state: WebSocketState;
     connection: Optional<WebSocket>;
     online: boolean;
@@ -43,7 +39,8 @@ type WebSocketStore = {
 };
 
 export const $websocket = map<WebSocketStore>({
-    state: 'unmounted',
+    lifecycle: 'unmounted',
+    state: 'disconnected',
     connection: null,
     online: navigator.onLine,
     reconnectAttempts: 0,
@@ -80,32 +77,54 @@ export const $canChat = computed([$websocket, $busy], ({connection, state, onlin
     return connection != null && connection.readyState === WebSocket.OPEN && state === 'connected' && online && !busy;
 });
 
+function isActiveConnection(connection: Optional<WebSocket>): connection is WebSocket {
+    return (
+        connection != null &&
+        (connection.readyState === WebSocket.OPEN || connection.readyState === WebSocket.CONNECTING)
+    );
+}
+
 //
 //* Lifecycle
 //
 
-const $needsUnmount = computed([$websocket, $busy], ({state}, busy) => state === 'unmounting' && !busy);
+const $needsUnmount = computed([$websocket, $busy], ({lifecycle}, busy) => lifecycle === 'unmounting' && !busy);
+
+let unsubscribeUnmount: Optional<() => void>;
 
 export function mountWebSocket(): () => void {
-    $websocket.setKey('state', 'mounted');
-    $websocket.setKey('online', navigator.onLine);
+    const {lifecycle} = $websocket.get();
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    if (lifecycle === 'unmounting' || lifecycle === 'unmounted') {
+        unsubscribeUnmount?.();
 
-    connect();
+        $websocket.setKey('lifecycle', 'mounting');
+        $websocket.setKey('online', navigator.onLine);
+
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        connect();
+
+        $websocket.setKey('lifecycle', 'mounted');
+    }
 
     return () => {
-        $websocket.setKey('state', 'unmounting');
-        $needsUnmount.subscribe(needsUnmount => {
-            if (needsUnmount) {
-                // unsubscribe();
-
-                window.removeEventListener('online', handleOnline);
-                window.removeEventListener('offline', handleOffline);
-
-                // disconnect();
+        $websocket.setKey('lifecycle', 'unmounting');
+        unsubscribeUnmount = $needsUnmount.subscribe(needsUnmount => {
+            if (!needsUnmount) {
+                return;
             }
+
+            // `subscribe` may be undefined if handler is called instantly
+            setTimeout(() => unsubscribeUnmount?.(), 0);
+
+            disconnect();
+
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+
+            $websocket.setKey('lifecycle', 'unmounted');
         });
     };
 }
@@ -125,15 +144,20 @@ let reconnectTimeout: number;
 
 function connect(): void {
     const {state, connection} = $websocket.get();
-    if (state === 'unmounting' || state === 'unmounted' || connection != null) {
+
+    if (state === 'connecting' || state === 'connected') {
         return;
+    }
+
+    if (isActiveConnection(connection)) {
+        cleanup(connection);
     }
 
     const {wsServiceUrl} = $config.get();
     const ws = new WebSocket(wsServiceUrl, [WS_PROTOCOL]);
+    $websocket.setKey('connection', ws);
 
     $websocket.setKey('state', 'connecting');
-
     const connectionTimeout = setTimeout(() => {
         if ($websocket.get().state === 'connecting') {
             ws.close();
@@ -143,7 +167,6 @@ function connect(): void {
     ws.onopen = () => {
         clearTimeout(connectionTimeout);
 
-        $websocket.setKey('connection', ws);
         $websocket.setKey('reconnectAttempts', 0);
 
         sendMessage({
@@ -156,6 +179,7 @@ function connect(): void {
                 type: MessageType.PING,
                 metadata: createMetadata(),
             });
+            clearTimeout(pongTimeout);
             pongTimeout = setTimeout(() => {
                 disconnect();
             }, PONG_TIMEOUT);
@@ -166,7 +190,7 @@ function connect(): void {
 
     ws.onclose = () => {
         clearTimeout(connectionTimeout);
-        cleanup();
+        cleanup(ws);
         scheduleReconnect();
     };
 
@@ -177,14 +201,18 @@ function connect(): void {
 
 function disconnect(): void {
     const {state, connection} = $websocket.get();
-    if (state !== 'disconnected') {
+    if (state !== 'disconnected' && state !== 'disconnecting') {
         $websocket.setKey('state', 'disconnecting');
         sendMessage({
             type: MessageType.DISCONNECT,
             metadata: createMetadata(),
         });
     }
-    connection?.close();
+
+    if (isActiveConnection(connection)) {
+        connection.onerror = null;
+        connection.close();
+    }
 }
 
 function handleOnline(): void {
@@ -198,24 +226,47 @@ function handleOffline(): void {
 }
 
 function scheduleReconnect(): void {
-    const {state, reconnectAttempts} = $websocket.get();
-    if (state === 'unmounting' || state === 'unmounted' || reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+    const {lifecycle, reconnectAttempts} = $websocket.get();
+    if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+        console.warn(`Max reconnect attempts reached: ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}`);
+        return;
+    }
+
+    if (lifecycle === 'unmounting' || lifecycle === 'unmounted') {
         return;
     }
 
     incrementReconnectAttempts();
-    window.setTimeout(() => {
+    reconnectTimeout = window.setTimeout(() => {
         connect();
     }, $reconnectTimeout.get());
 }
 
-function cleanup(): void {
+function cleanup(ws: WebSocket): void {
+    if (isActiveConnection(ws)) {
+        ws.close();
+    }
+
+    const {connection} = $websocket.get();
+    if (ws !== connection) {
+        return;
+    }
+
     clearInterval(pingInterval);
     clearTimeout(reconnectTimeout);
     clearTimeout(pongTimeout);
-    $websocket.setKey('connection', null);
+
     $websocket.setKey('state', 'disconnected');
+    $websocket.setKey('connection', null);
+    $websocket.setKey('online', navigator.onLine);
     $buffer.set({});
+}
+
+function handleDisconnected(): void {
+    const {connection} = $websocket.get();
+    if (isActiveConnection(connection)) {
+        connection.close();
+    }
 }
 
 //
@@ -247,7 +298,7 @@ function handleMessage(event: MessageEvent<string>): void {
         }
 
         case MessageType.DISCONNECTED:
-            cleanup();
+            handleDisconnected();
             break;
 
         case MessageType.PONG:

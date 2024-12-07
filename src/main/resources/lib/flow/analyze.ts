@@ -50,7 +50,7 @@ export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndRe
 
 function parseAnalysisResult(textResult: string): Try<AnalysisResult> {
     try {
-        const result = JSON.parse(textResult) as AnalysisResult;
+        const result: unknown = JSON.parse(textResult);
         if (!isAnalysisResult(result)) {
             return [null, ERRORS.MODEL_ANALYSIS_INCORRECT];
         }
