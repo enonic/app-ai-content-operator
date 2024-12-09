@@ -30,7 +30,7 @@
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-draggable": "^4.4.6",
-        "react-i18next": "^15.1.1",
+        "react-i18next": "^15.1.4",
         "slate": "^0.112.0",
         "slate-history": "^0.110.3",
         "slate-react": "^0.111.0",
