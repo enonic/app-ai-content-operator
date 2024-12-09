@@ -18,7 +18,7 @@
         "url": "git+https://github.com/enonic/app-ai-content-operator"
     },
     "dependencies": {
-        "@nanostores/react": "^0.8.0",
+        "@nanostores/react": "^0.8.2",
         "clsx": "^2.1.1",
         "i18next": "^24.0.2",
         "i18next-http-backend": "^3.0.1",
