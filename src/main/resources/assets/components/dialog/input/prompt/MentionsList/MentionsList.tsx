@@ -75,7 +75,9 @@ export default function MentionsList({
                     mentions.map((mention, i) => (
                         <button
                             key={mention.path}
-                            ref={el => (buttonRefs.current[i] = el)}
+                            ref={el => {
+                                buttonRefs.current[i] = el;
+                            }}
                             onClick={() => handleClick(mention)}
                             title={mention.prettified !== mention.label ? mention.prettified : undefined}
                             className={twJoin(
