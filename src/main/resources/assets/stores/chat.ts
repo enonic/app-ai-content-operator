@@ -27,14 +27,6 @@ export const $forIds = computed($chat, ({history}) =>
     history.filter(message => message.role === MessageRole.MODEL).map(message => message.for),
 );
 
-export const $lastUserMessage = computed($chat, ({history}) =>
-    history.findLast(message => message.role === MessageRole.USER),
-);
-
-export const $lastModelMessage = computed($chat, ({history}) =>
-    history.findLast(message => message.role === MessageRole.MODEL),
-);
-
 export function clearChat(): void {
     const firstMessage = $chat.get().history.at(0);
     if ($chat.get().history.length > 0) {
@@ -94,7 +86,7 @@ function findModelMessageById(id: string): Optional<Readonly<ModelChatMessage>> 
     return message != null && message.role === MessageRole.MODEL ? message : null;
 }
 
-function findUserMessageById(id: string): Optional<Readonly<UserChatMessage>> {
+export function findUserMessageById(id: string): Optional<Readonly<UserChatMessage>> {
     const message = $chat.get().history.find(message => message.id === id);
     return message != null && message.role === MessageRole.USER ? message : null;
 }

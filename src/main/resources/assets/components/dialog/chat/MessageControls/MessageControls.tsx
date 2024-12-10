@@ -12,6 +12,7 @@ import ActionButton from '../../../base/ActionButton/ActionButton';
 
 export interface Props {
     className?: string;
+    forId: string;
     content: ModelChatMessageContent;
     last: boolean;
 }
@@ -25,7 +26,7 @@ function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
         }));
 }
 
-export default function MessageControls({className, content, last}: Props): React.ReactNode {
+export default function MessageControls({className, content, last, forId}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     const multiple = Object.keys(content).length > 1;
@@ -39,7 +40,7 @@ export default function MessageControls({className, content, last}: Props): Reac
                     name={t('action.retry')}
                     icon='retry'
                     mode='icon-with-title'
-                    clickHandler={() => sendRetry()}
+                    clickHandler={() => sendRetry(forId)}
                 />
             )}
             {lastAndAvailable && multiple && (
