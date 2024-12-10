@@ -1,3 +1,5 @@
+import {t} from 'i18next';
+import {nanoid} from 'nanoid';
 import {atom, computed, map} from 'nanostores';
 import {Descendant} from 'slate';
 
@@ -14,12 +16,13 @@ import {
 } from '../../shared/websocket';
 import {parseNodes, parseText} from '../common/slate';
 import {
-    $lastUserMessage,
     addErrorMessage,
     addModelMessage,
+    addSystemMessage,
     addUserMessage,
     createAnalysisHistory,
     createGenerationHistory,
+    findUserMessageById,
     updateModelMessage,
     updateUserMessage,
 } from './chat';
@@ -371,23 +374,26 @@ export function sendPrompt(nodes: Descendant[]): void {
     sendGenerateMessage(payload);
 }
 
-export function sendRetry(): void {
+export function sendRetry(forId: string): void {
     if (!$canChat.get()) {
         return;
     }
 
     const payload = structuredClone($lastPayload.get());
-    const node = $lastUserMessage.get()?.content.node;
-    if (!payload || !node) {
+    const userMessage = findUserMessageById(forId);
+
+    if (userMessage == null || payload == null) {
+        addSystemMessage({key: nanoid(), type: 'error', node: t('text.error.message.repeat.notFound')});
         return;
     }
 
-    const message = addUserMessage({node});
-    if (!message) {
+    const {node, analysisPrompt, generationPrompt} = userMessage.content;
+    const newMessage = addUserMessage({node, analysisPrompt, generationPrompt});
+    if (!newMessage) {
         return;
     }
 
-    $buffer.setKey('userMessageId', message.id);
+    $buffer.setKey('userMessageId', newMessage.id);
 
     sendGenerateMessage(payload);
 }

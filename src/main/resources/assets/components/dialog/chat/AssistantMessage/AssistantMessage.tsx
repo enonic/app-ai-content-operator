@@ -59,7 +59,7 @@ export default function AssistantMessage({className, message, last}: Props): Rea
             <AssistantIcon className={twJoin('shrink-0 mt-3 text-enonic-blue-light')} />
             <article className={twJoin('flex flex-col gap-1 flex-1 text-sm')}>
                 <ul className='flex flex-col divide-y'>{createItems(message, last)}</ul>
-                <MessageControls className='pt-1' content={message.content} last={last} />
+                <MessageControls className='pt-1' forId={message.for} content={message.content} last={last} />
             </article>
         </div>
     );
