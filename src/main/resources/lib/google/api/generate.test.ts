@@ -20,6 +20,10 @@ type MockedClient = Client & {
 const url =
     'https://us-central1-aiplatform.googleapis.com/v1/projects/playground-123456/locations/us-central1/publishers/google/models/gemini-1.5-flash-001';
 
+jest.mock('/lib/http-client', () => ({
+    request: jest.fn(),
+}));
+
 jest.mock('../client', () => {
     const originalModule = jest.requireActual<Client>('../client');
     return {

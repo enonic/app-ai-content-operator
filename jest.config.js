@@ -1,4 +1,4 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
+/** @type {import('jest').Config} */
 export default {
     coverageProvider: 'v8',
     collectCoverageFrom: ['src/main/resources/**/*.{ts,tsx}', '!src/**/*.d.ts'],
@@ -6,8 +6,10 @@ export default {
     projects: [
         {
             displayName: 'node',
-            preset: 'ts-jest',
             testEnvironment: 'node',
+            transform: {
+                '^.+\\.m?[tj]s?$': '@swc/jest',
+            },
             testMatch: ['<rootDir>/src/**/*(*.)@(spec|test).ts?(x)'],
             testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '/src/main/resources/assets/'],
             setupFilesAfterEnv: ['./tests/jest.node.setup.js'],
@@ -18,15 +20,9 @@ export default {
         },
         {
             displayName: 'browser',
-            preset: 'ts-jest/presets/js-with-ts-esm',
             testEnvironment: 'jsdom',
             transform: {
-                '^.+\\.tsx?$': [
-                    'ts-jest',
-                    {
-                        tsconfig: '<rootDir>/src/main/resources/assets/tsconfig.json',
-                    },
-                ],
+                '^.+\\.m?[tj]s?$': '@swc/jest',
             },
             transformIgnorePatterns: ['node_modules/.pnpm/(?!(nanostores))'],
             testMatch: ['<rootDir>/src/main/resources/assets/**/*(*.)@(spec|test).ts?(x)'],
