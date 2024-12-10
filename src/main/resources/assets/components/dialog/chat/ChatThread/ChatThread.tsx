@@ -5,7 +5,8 @@ import {twJoin, twMerge} from 'tailwind-merge';
 
 import {$chat} from '../../../../stores/chat';
 import {ChatMessage} from '../../../../stores/data/ChatMessage';
-import {$loading} from '../../../../stores/dialog';
+import {$dialog} from '../../../../stores/dialog';
+import {$busyAnalyzing} from '../../../../stores/websocket';
 import LoadingMessage from '../LoadingMessage/LoadingMessage';
 import Message from '../Message/Message';
 
@@ -33,7 +34,10 @@ function createMessages(history: ChatMessage[], isLoading: boolean): React.React
 }
 
 export default function ChatThread({className = ''}: Props): React.ReactNode {
-    const isLoading = useStore($loading);
+    const isDialogInitialized = useStore($dialog, {keys: ['initialized']}).initialized;
+    const isBusyAnalyzing = useStore($busyAnalyzing);
+    const isLoading = !isDialogInitialized || isBusyAnalyzing;
+
     const {history} = useStore($chat, {keys: ['history']});
     const count = history.length;
 

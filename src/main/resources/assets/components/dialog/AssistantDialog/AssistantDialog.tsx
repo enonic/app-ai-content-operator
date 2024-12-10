@@ -6,6 +6,7 @@ import {twJoin} from 'tailwind-merge';
 
 import {$dialog} from '../../../stores/dialog';
 import {clearTarget} from '../../../stores/editor';
+import {mountWebSocket} from '../../../stores/websocket';
 import Resizable from '../../base/Resizable/Resizable';
 import AssistantContent from '../AssistantContent/AssistantContent';
 import AssistantHeader from '../header/AssistantHeader/AssistantHeader';
@@ -19,6 +20,8 @@ export default function AssistantDialog({className = ''}: Props): React.ReactNod
     const {hidden} = useStore($dialog, {keys: ['hidden']});
     const [dragging, setDragging] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => mountWebSocket(), []);
 
     useEffect(() => {
         const liveFrame = document.querySelector<HTMLElement>('.live-edit-frame');

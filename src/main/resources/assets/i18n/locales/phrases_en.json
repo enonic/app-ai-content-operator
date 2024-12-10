@@ -40,5 +40,6 @@
     "text.error.message.repeat.notFound": "Sorry, I couldn't repeat your message.",
     "text.error.message.update.notFound": "Sorry, something went wrong, while displaying result.",
     "text.error.response.parse": "Sorry, I couldn't parse the result correctly.",
+    "text.error.response.unexpected": "Sorry, I couldn't generate the result correctly.",
     "text.mentions.notFound": "No editable inputs found"
 }
