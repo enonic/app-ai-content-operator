@@ -3,7 +3,7 @@ import {map} from 'nanostores';
 import {addGlobalConfigureHandler} from '../common/events';
 
 export type Config = {
-    serviceUrl: string;
+    wsServiceUrl: string;
     user: {
         fullName: string;
         shortName: string;
@@ -12,7 +12,7 @@ export type Config = {
 };
 
 export const $config = map<Config>({
-    serviceUrl: '',
+    wsServiceUrl: '',
     user: {
         fullName: 'You',
         shortName: 'Y',
@@ -20,7 +20,7 @@ export const $config = map<Config>({
     instructions: '',
 });
 
-export const setServiceUrl = (serviceUrl: string): void => $config.setKey('serviceUrl', serviceUrl);
+export const setWsServiceUrl = (wsServiceUrl: string): void => $config.setKey('wsServiceUrl', wsServiceUrl);
 export const setUser = (user: Config['user']): void => $config.setKey('user', user);
 export const setInstructions = (instructions: string): void => $config.setKey('instructions', instructions);
 

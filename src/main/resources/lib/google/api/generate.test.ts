@@ -5,7 +5,7 @@ import type {GenerateContentRequest} from '@google/generative-ai';
 
 import {content} from '../../../../../../tests/testUtils/fixtures/google';
 import {ERRORS} from '../../../shared/errors';
-import {GenerateResponseData} from '../../../shared/model';
+import {ModelResponseGenerateData} from '../../../shared/model';
 import {generate, generateCandidate} from './generate';
 
 type Client = typeof import('../client');
@@ -80,7 +80,7 @@ describe('generateCandidate', () => {
     };
 
     it('should generate candidate content', () => {
-        const expectedResponse: GenerateResponseData = {
+        const expectedResponse: ModelResponseGenerateData = {
             content: 'Towering mountain\nPiercing through misty morning\nSilent sentinel.',
             finishReason: 'STOP',
         };

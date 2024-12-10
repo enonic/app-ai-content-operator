@@ -16,5 +16,9 @@ namespace Enonic {
         postProcess?: boolean;
         redirect?: string;
         status?: number;
+        webSocket?: {
+            data?: Record<string, unknown>;
+            subProtocols?: string[];
+        };
     }
 }

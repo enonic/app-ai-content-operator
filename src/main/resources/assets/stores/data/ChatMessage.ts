@@ -1,6 +1,6 @@
-import type {ModelRequestData} from '../../../shared/model';
-import type {MessageRole} from './MessageType';
-import type {MultipleValues} from './MultipleValues';
+import {AnalysisResult} from '../../../shared/prompts/analysis';
+import {GenerationResult} from '../../../shared/prompts/generation';
+import {MessageRole} from './MessageType';
 
 export type ChatMessage = UserChatMessage | ModelChatMessage | SystemChatMessage;
 
@@ -12,18 +12,22 @@ export type UserChatMessage = {
 
 export type UserChatMessageContent = {
     node: React.ReactNode;
-    data: ModelRequestData;
-    prompt?: string;
+    analysisPrompt?: string; // May be initialized later
+    generationPrompt?: string; // May be initialized later
 };
 
 export type ModelChatMessage = {
     id: string;
-    forId: string; // ID of the related user message
+    for: string; // ID of the related user message
     role: MessageRole.MODEL;
     content: ModelChatMessageContent;
 };
 
-export type ModelChatMessageContent = Record<string, string | MultipleValues>;
+export type ModelChatMessageContent = {
+    analysisResult: AnalysisResult;
+    generationResult?: GenerationResult; // May be initialized later
+    selectedIndices: Record<string, number>;
+};
 
 export type SystemChatMessage = {
     id: string;

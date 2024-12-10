@@ -1,5 +1,4 @@
 import {Mention} from '../stores/data/Mention';
-import {MultipleValues} from '../stores/data/MultipleValues';
 
 export const MENTION_ALL = {
     path: '__all__',
@@ -49,15 +48,3 @@ export function findLooseMatch(list: Mention[], search: string, size = Infinity)
 
     return [...exactlyMatched, ...looselyMatched].slice(0, size);
 }
-
-export function findMentionByPath(list: Mention[], path: string): Mention | undefined {
-    return list.find(v => v.path === path);
-}
-
-export const pickMessageValue = (value: string | MultipleValues): string => {
-    return typeof value === 'string' ? value : value.values[value.selectedIndex];
-};
-
-export const combineMessageValues = (value: string | MultipleValues): string => {
-    return typeof value === 'string' ? value : value.values.join('\n');
-};

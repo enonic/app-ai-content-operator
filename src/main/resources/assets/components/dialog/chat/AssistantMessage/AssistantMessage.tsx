@@ -1,6 +1,7 @@
 import {twJoin, twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../shared/enums';
+import {messageContentToValues} from '../../../../common/messages';
 import {ModelChatMessage} from '../../../../stores/data/ChatMessage';
 import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
 import CommonItem from '../CommonItem/CommonItem';
@@ -16,9 +17,9 @@ type Props = {
     last: boolean;
 };
 
-function createFields({id: messageId, content}: ModelChatMessage, last: boolean): React.ReactNode[] {
+function createItems({id: messageId, content}: ModelChatMessage, last: boolean): React.ReactNode[] {
     const classNames = 'p-2 border-dashed last:!border-b';
-    return Object.entries(content).map(([key, value = '']) => {
+    return Object.entries(messageContentToValues(content)).map(([key, value]) => {
         switch (key) {
             case SPECIAL_NAMES.error:
                 return <ErrorItem key={key} className={classNames} value={value} />;
@@ -57,8 +58,8 @@ export default function AssistantMessage({className, message, last}: Props): Rea
         <div className={twMerge('flex gap-2', className)}>
             <AssistantIcon className={twJoin('shrink-0 mt-3 text-enonic-blue-light')} />
             <article className={twJoin('flex flex-col gap-1 flex-1 text-sm')}>
-                <ul className='flex flex-col divide-y'>{createFields(message, last)}</ul>
-                <MessageControls className='pt-1' forId={message.forId} content={message.content} last={last} />
+                <ul className='flex flex-col divide-y'>{createItems(message, last)}</ul>
+                <MessageControls className='pt-1' content={message.content} last={last} />
             </article>
         </div>
     );
