@@ -82,16 +82,22 @@ export type GeneratedMessage = MessageWithPayload<
 export type GeneratedMessagePayload = GeneratedMessage['payload'];
 
 // Server reports generate failure
-export type FailedMessage = MessageWithPayload<
-    MessageType.FAILED,
-    {
-        code: number;
-        message: string;
-        details?: unknown;
-    }
->;
+export type FailedMessage = MessageWithPayload<MessageType.FAILED, FailedMessagePayload>;
 
-export type FailedMessagePayload = FailedMessage['payload'];
+// Error is something thrown by code
+export type FailedMessageErrorPayload = {
+    type: 'error';
+    code: number;
+    message: string;
+};
+
+// Warning is something reported by the model
+export type FailedMessageWarningPayload = {
+    type: 'warning';
+    message: string;
+};
+
+export type FailedMessagePayload = FailedMessageErrorPayload | FailedMessageWarningPayload;
 
 // Connection messages
 export type ConnectMessage = BaseMessage<MessageType.CONNECT>;

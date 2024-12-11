@@ -16,7 +16,11 @@ export function messageContentToValues({
     selectedIndices,
 }: ModelChatMessageContent): MessageItems {
     if (!generationResult) {
-        return Object.fromEntries(Object.entries(analysisResult).map(([key]) => [key, null]));
+        return Object.fromEntries(
+            Object.entries(analysisResult)
+                .filter(([, value]) => 'task' in value)
+                .map(([key]) => [key, null]),
+        );
     }
 
     return Object.fromEntries(
