@@ -1,5 +1,4 @@
 import {t} from 'i18next';
-import {nanoid} from 'nanoid';
 import {atom, computed, map} from 'nanostores';
 import {Descendant} from 'slate';
 
@@ -18,7 +17,6 @@ import {parseNodes, parseText} from '../common/slate';
 import {
     addErrorMessage,
     addModelMessage,
-    addSystemMessage,
     addUserMessage,
     createAnalysisHistory,
     createGenerationHistory,
@@ -357,44 +355,35 @@ function sendGenerateMessage(payload: GenerateMessagePayload): void {
 //
 
 export function sendPrompt(nodes: Descendant[]): void {
+    const node = parseNodes(nodes);
+    const prompt = parseText(nodes);
+    send(node, prompt);
+}
+
+export function sendRetry(forId: string): void {
+    const userMessage = findUserMessageById(forId);
+    if (!userMessage) {
+        addErrorMessage(t('text.error.message.repeat.notFound'));
+        return;
+    }
+
+    const {node, prompt} = userMessage.content;
+    send(node, prompt);
+}
+
+function send(node: React.ReactNode, prompt: string): void {
     if (!$canChat.get()) {
         return;
     }
 
-    const node = parseNodes(nodes);
-    const message = addUserMessage({node});
+    const message = addUserMessage({node, prompt});
     if (!message) {
         return;
     }
 
     $buffer.setKey('userMessageId', message.id);
 
-    const prompt = parseText(nodes);
     const payload = createGenerateMessagePayload(prompt);
-    sendGenerateMessage(payload);
-}
-
-export function sendRetry(forId: string): void {
-    if (!$canChat.get()) {
-        return;
-    }
-
-    const payload = structuredClone($lastPayload.get());
-    const userMessage = findUserMessageById(forId);
-
-    if (userMessage == null || payload == null) {
-        addSystemMessage({key: nanoid(), type: 'error', node: t('text.error.message.repeat.notFound')});
-        return;
-    }
-
-    const {node, analysisPrompt, generationPrompt} = userMessage.content;
-    const newMessage = addUserMessage({node, analysisPrompt, generationPrompt});
-    if (!newMessage) {
-        return;
-    }
-
-    $buffer.setKey('userMessageId', newMessage.id);
-
     sendGenerateMessage(payload);
 }
 

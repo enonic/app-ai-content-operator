@@ -67,7 +67,7 @@ export function createGenerationHistory(): Message[] {
             if (message.role === MessageRole.MODEL) {
                 return {
                     role: 'model',
-                    text: JSON.stringify(message.content, null, 2),
+                    text: JSON.stringify(message.content.generationResult, null, 2),
                 };
             }
             return {
@@ -133,7 +133,7 @@ export function addUserMessage(content: UserChatMessageContent): Readonly<UserCh
 
 export function updateUserMessage(
     id: string,
-    content: Omit<UserChatMessageContent, 'node'>,
+    content: Omit<UserChatMessageContent, 'node' | 'prompt'>,
 ): Optional<Readonly<UserChatMessage>> {
     const message = findUserMessageById(id);
     if (message == null) {
@@ -221,10 +221,13 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
 //* Errors
 //
 
-export function addErrorMessage(payload: FailedMessagePayload): void {
-    console.error(`Error <${payload.code}>: ${payload.message}`);
+export function addErrorMessage(payload: FailedMessagePayload | string): void {
+    if (typeof payload === 'string') {
+        addSystemMessage({key: nanoid(), type: 'error', node: payload});
+        return;
+    }
 
-    const message = getErrorMessageByCode(payload.code);
+    const message = payload.type === 'error' ? getErrorMessageByCode(payload.code) : payload.message;
     addSystemMessage({key: nanoid(), type: 'error', node: message});
 }
 

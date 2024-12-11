@@ -6,8 +6,6 @@ import {ModelChatMessage} from '../../../../stores/data/ChatMessage';
 import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
 import CommonItem from '../CommonItem/CommonItem';
 import ElementItem from '../ElementItem/ElementItem';
-import ErrorItem from '../ErrorItem/ErrorItem';
-import IssueItem from '../IssueItem/IssueItem';
 import MessageControls from '../MessageControls/MessageControls';
 import TopicItem from '../TopicItem/TopicItem';
 
@@ -21,10 +19,6 @@ function createItems({id: messageId, content}: ModelChatMessage, last: boolean):
     const classNames = 'p-2 border-dashed last:!border-b';
     return Object.entries(messageContentToValues(content)).map(([key, value]) => {
         switch (key) {
-            case SPECIAL_NAMES.error:
-                return <ErrorItem key={key} className={classNames} value={value} />;
-            case SPECIAL_NAMES.unclear:
-                return <IssueItem key={key} className={classNames} value={value} />;
             case SPECIAL_NAMES.common:
                 return <CommonItem key={key} className={classNames} value={value} last={last} />;
             case SPECIAL_NAMES.topic:

@@ -130,12 +130,24 @@ function sendGeneratedMessage(socketId: string, payload: GeneratedMessagePayload
     sendMessage(socketId, message);
 }
 
-function sendFailedMessage(socketId: string, error: AiError): void {
+function sendFailedErrorMessage(socketId: string, error: AiError): void {
     const message = {
         type: MessageType.FAILED,
         payload: {
+            type: 'error',
             message: error.message,
             code: error.code,
+        },
+    } satisfies Omit<FailedMessage, 'metadata'>;
+    sendMessage(socketId, message);
+}
+
+function sendFailedWarningMessage(socketId: string, text: string): void {
+    const message = {
+        type: MessageType.FAILED,
+        payload: {
+            type: 'warning',
+            message: text,
         },
     } satisfies Omit<FailedMessage, 'metadata'>;
     sendMessage(socketId, message);
@@ -150,7 +162,11 @@ function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
         const [analysis, err1] = analyze(message.payload);
 
         if (err1) {
-            return sendFailedMessage(socketId, err1);
+            return sendFailedErrorMessage(socketId, err1);
+        }
+
+        if (typeof analysis === 'string') {
+            return sendFailedWarningMessage(socketId, analysis);
         }
 
         sendAnalyzedMessage(socketId, analysis);
@@ -162,12 +178,12 @@ function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
         });
 
         if (err2) {
-            return sendFailedMessage(socketId, err2);
+            return sendFailedErrorMessage(socketId, err2);
         }
 
         sendGeneratedMessage(socketId, generation);
     } catch (e) {
-        sendFailedMessage(socketId, ERRORS.WS_UNKNOWN_ERROR.withMsg('See server logs.'));
+        sendFailedErrorMessage(socketId, ERRORS.WS_UNKNOWN_ERROR.withMsg('See server logs.'));
         logError(e);
     }
 }

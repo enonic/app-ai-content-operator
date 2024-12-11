@@ -1,9 +1,12 @@
 export const SPECIAL_NAMES = {
     common: '__common__',
-    unclear: '__unclear__',
-    error: '__error__',
     topic: '__topic__',
     all: '__all__',
+} as const;
+
+export const SPECIAL_KEYS = {
+    unclear: '__unclear__',
+    error: '__error__',
 } as const;
 
 // Due to inability to import enums from @google/generative-ai (since non type imports are not compatible to ), we need to define them manually.
