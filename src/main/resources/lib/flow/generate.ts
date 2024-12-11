@@ -2,13 +2,8 @@ import {DataEntry} from '../../shared/data/DataEntry';
 import {ERRORS} from '../../shared/errors';
 import {Message} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
-import {AnalysisResult} from '../../shared/prompts/analysis';
-import {
-    createGenerationInstructions,
-    GenerationRequest,
-    GenerationResult,
-    isGenerationResult,
-} from '../../shared/prompts/generation';
+import {AnalysisObjectEntry, AnalysisReferenceEntry, AnalysisResult} from '../../shared/prompts/analysis';
+import {createGenerationInstructions, GenerationResult} from '../../shared/prompts/generation';
 import {getOptions} from '../google/options';
 import {fieldsToSchema} from '../google/schema';
 import {logError} from '../logger';
@@ -23,6 +18,10 @@ type GenerateParams = {
 type GeneratePromptAndResult = {
     request: string;
     result: GenerationResult;
+};
+
+type GenerationTasksEntry = AnalysisObjectEntry & {
+    type: DataEntry['type'];
 };
 
 export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
@@ -60,10 +59,15 @@ export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
     }
 }
 
+//
+//* PARSE
+//
+
 function parseGenerationResult(textResult: string): Try<GenerationResult> {
     try {
         const result: unknown = JSON.parse(cleanBackticks(textResult));
         if (!isGenerationResult(result)) {
+            logError(ERRORS.MODEL_GENERATION_INCORRECT.withMsg('\n' + textResult));
             return [null, ERRORS.MODEL_GENERATION_INCORRECT];
         }
         return [result, null];
@@ -77,23 +81,60 @@ function cleanBackticks(input: string): string {
     return input.replace(/^`+|`+$/g, '');
 }
 
-function createGenerationPrompt(params: GenerateParams): string {
-    const {prompt, fields} = params;
-    const reachPrompt = createReachPrompt(prompt, fields);
-    return JSON.stringify(reachPrompt);
-}
+//
+//* PROMPT
+//
 
 function createGenerationMessages(prompt: string, messages: Message[]): Message[] {
-    return [{role: 'user', text: prompt}, ...messages];
+    return [...messages, {role: 'user', text: prompt}];
 }
 
-function createReachPrompt(prompt: AnalysisResult, fields: Record<string, DataEntry>): GenerationRequest {
-    const result: GenerationRequest = {};
-    Object.keys(prompt).forEach(path => {
-        result[path] = {
-            ...prompt[path],
-            value: fields[path].value,
-        };
+function createGenerationPrompt(params: GenerateParams): string {
+    return [createPromptTasks(params), createPromptContent(params)].join('\n\n');
+}
+
+function isAnalysisObjectEntry(entry: AnalysisObjectEntry | AnalysisReferenceEntry): entry is AnalysisObjectEntry {
+    return 'task' in entry && entry.count > 0;
+}
+
+function createPromptTasks({prompt, fields}: GenerateParams): string {
+    const content: Record<string, GenerationTasksEntry> = {};
+
+    Object.keys(prompt).forEach(key => {
+        const entry = prompt[key];
+        if (isAnalysisObjectEntry(entry)) {
+            content[key] = {
+                ...entry,
+                type: fields[key]?.type ?? 'text',
+            };
+        }
     });
-    return result;
+
+    return `# Tasks\n${JSON.stringify(content)}`;
+}
+
+function createPromptContent({prompt, fields}: GenerateParams): string {
+    const content: Record<string, string> = {};
+
+    Object.keys(prompt).forEach(key => {
+        if (key in fields) {
+            content[key] = String(fields[key].value);
+        }
+    });
+
+    return `# Content\n${JSON.stringify(content)}`;
+}
+
+export function isGenerationResult(result: unknown): result is GenerationResult {
+    return (
+        typeof result === 'object' &&
+        result !== null &&
+        Object.keys(result).every((key: string) => {
+            const value = (result as Record<string, unknown>)[key];
+            return (
+                typeof value === 'string' ||
+                (Array.isArray(value) && value.every((item: unknown): item is string => typeof item === 'string'))
+            );
+        })
+    );
 }

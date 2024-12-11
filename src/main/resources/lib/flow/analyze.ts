@@ -1,8 +1,17 @@
 import {DataEntry} from '../../shared/data/DataEntry';
+import {SPECIAL_KEYS, SPECIAL_NAMES} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
 import {Message} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
-import {AnalysisResult, createAnalysisInstructions, isAnalysisResult} from '../../shared/prompts/analysis';
+import {
+    AnalysisErrorResult,
+    AnalysisObjectEntry,
+    AnalysisReferenceEntry,
+    AnalysisResult,
+    AnalysisUnclearResult,
+    createAnalysisInstructions,
+    RawAnalysisResult,
+} from '../../shared/prompts/analysis';
 import {GenerateMessagePayload} from '../../shared/websocket';
 import {getOptions} from '../google/options';
 import {logError} from '../logger';
@@ -13,19 +22,18 @@ type AnalyzePromptAndResult = {
     result: AnalysisResult;
 };
 
-export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndResult> {
+export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndResult | string> {
     try {
         const [options, err1] = getOptions();
         if (err1) {
             return [null, err1];
         }
 
-        const {url} = options.flash;
         const prompt = createAnalysisPrompt(payload);
         const messages = createAnalysisMessages(prompt, payload.history.analysis);
 
         const proxy = new GeminiProxy({
-            url,
+            url: options.pro.url,
             instructions: createAnalysisInstructions(),
             modelParameters: MODES_DATA.focused.gemini,
             messages,
@@ -36,9 +44,14 @@ export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndRe
             return [null, err2];
         }
 
-        const [result, err3] = parseAnalysisResult(textResult);
+        const allowedFields = createAllowedFields(payload.fields);
+        const [result, err3] = parseAnalysisResult(textResult, allowedFields);
         if (err3) {
             return [null, err3];
+        }
+
+        if (isWarningResult(result)) {
+            return [getWarningMessage(result), null];
         }
 
         return [{request: prompt, result}, null];
@@ -48,17 +61,98 @@ export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndRe
     }
 }
 
-function parseAnalysisResult(textResult: string): Try<AnalysisResult> {
+//
+//* PARSE
+//
+
+function createAllowedFields(fields: Record<string, DataEntry>): string[] {
+    return [...Object.keys(fields), SPECIAL_NAMES.topic, SPECIAL_NAMES.common];
+}
+
+function parseAnalysisResult(textResult: string, allowedFields: string[]): Try<RawAnalysisResult> {
     try {
-        const result: unknown = JSON.parse(textResult);
-        if (!isAnalysisResult(result)) {
+        const result: unknown = JSON.parse(cleanBackticks(textResult));
+        if (!isObject(result)) {
             return [null, ERRORS.MODEL_ANALYSIS_INCORRECT];
         }
-        return [result, null];
+        const cleaned = fixEntries(result, allowedFields);
+        if (Object.keys(cleaned).length === 0) {
+            return [null, ERRORS.MODEL_ANALYSIS_INCORRECT.withMsg('No fields found in the analysis result.')];
+        }
+        return [cleaned, null];
     } catch (err) {
         logError(err);
         return [null, ERRORS.MODEL_ANALYSIS_PARSE_FAILED];
     }
+}
+
+function cleanBackticks(input: string): string {
+    return input.replace(/^`+|`+$/g, '');
+}
+
+export function fixEntries(result: Record<string, unknown>, allowedFields: string[]): RawAnalysisResult {
+    const cleaned: AnalysisResult = {};
+    for (const key in result) {
+        const value = result[key];
+
+        // ! Return object with single special field
+        if (isAnalysisStringEntry(value)) {
+            if (key === SPECIAL_KEYS.error) {
+                return {[key]: value};
+            } else if (key === SPECIAL_KEYS.unclear) {
+                return {[key]: value};
+            }
+        }
+
+        if (allowedFields.indexOf(key) === -1) {
+            continue;
+        }
+
+        if (isAnalysisReferenceEntry(value)) {
+            cleaned[key] = {count: 0} satisfies AnalysisReferenceEntry;
+        } else if (isAnalysisObjectEntry(value)) {
+            cleaned[key] = {
+                task: value.task,
+                language: value.language,
+                count: Math.max(parseInt(String(value.count)) || 1, 1),
+            } satisfies AnalysisObjectEntry;
+        }
+    }
+    return cleaned;
+}
+
+function isObject(result: unknown): result is Record<string, unknown> {
+    return typeof result === 'object' && result !== null;
+}
+
+function isAnalysisObjectEntry(entry: unknown): entry is AnalysisObjectEntry {
+    return (
+        isObject(entry) &&
+        'task' in entry &&
+        'language' in entry &&
+        typeof entry.task === 'string' &&
+        typeof entry.language === 'string' &&
+        entry.task !== ''
+    );
+}
+
+function isAnalysisReferenceEntry(entry: unknown): entry is AnalysisReferenceEntry {
+    return isObject(entry) && !('task' in entry) && 'count' in entry;
+}
+
+function isAnalysisStringEntry(entry: unknown): entry is string {
+    return typeof entry === 'string' && entry !== '';
+}
+
+const isErrorResult = (result: RawAnalysisResult): result is AnalysisErrorResult => SPECIAL_KEYS.error in result;
+const isUnclearResult = (result: RawAnalysisResult): result is AnalysisUnclearResult => SPECIAL_KEYS.unclear in result;
+
+export function isWarningResult(result: RawAnalysisResult): result is AnalysisErrorResult | AnalysisUnclearResult {
+    return isErrorResult(result) || isUnclearResult(result);
+}
+
+export function getWarningMessage(result: AnalysisErrorResult | AnalysisUnclearResult): string {
+    return isErrorResult(result) ? result[SPECIAL_KEYS.error] : result[SPECIAL_KEYS.unclear];
 }
 
 //
@@ -66,7 +160,7 @@ function parseAnalysisResult(textResult: string): Try<AnalysisResult> {
 //
 
 function createAnalysisMessages(prompt: string, messages: Message[]): Message[] {
-    return [{role: 'user', text: prompt}, ...messages];
+    return [...messages, {role: 'user', text: prompt}];
 }
 
 function createAnalysisPrompt({prompt, instructions, meta, fields}: GenerateMessagePayload): string {
@@ -80,26 +174,24 @@ function createAnalysisPrompt({prompt, instructions, meta, fields}: GenerateMess
 }
 
 function createPromptRequest(prompt: string): string {
-    return `#Request:\n${prompt}`;
+    return `# Request\n${prompt}`;
 }
 
 function createPromptInstructions(instructions: string): string {
-    return `#Instructions:\n${instructions}`;
+    return `# Instructions\n${instructions}`;
 }
 
 function createPromptMetadata(language: string, contentPath: string): string {
-    return ['#Metadata', `- Language: ${language}`, `- Content path: ${contentPath}`].join('\n');
+    return `# Metadata\n- Language: ${language}\n- Content path: ${contentPath}`;
 }
 
 function createPromptFields(fields: Record<string, DataEntry>): string {
-    return (
-        '#Fields:\n' +
-        Object.keys(fields)
-            .map(path => `- ${path}`)
-            .join('\n')
-    );
+    const paths = Object.keys(fields)
+        .map(path => `- ${path}`)
+        .join('\n');
+    return `# Fields\n${paths}`;
 }
 
 function createPromptContent(fields: Record<string, DataEntry>): string {
-    return ['#Content', '```\n', JSON.stringify(fields, null, 2), '\n```'].join('\n');
+    return `# Content\n${JSON.stringify(fields, null, 2)}`;
 }

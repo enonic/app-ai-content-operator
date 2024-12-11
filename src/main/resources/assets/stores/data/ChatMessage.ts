@@ -12,6 +12,7 @@ export type UserChatMessage = {
 
 export type UserChatMessageContent = {
     node: React.ReactNode;
+    prompt: string; // user text prompt
     analysisPrompt?: string; // May be initialized later
     generationPrompt?: string; // May be initialized later
 };
