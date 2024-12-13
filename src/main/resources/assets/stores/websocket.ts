@@ -423,6 +423,6 @@ function handleGeneratedMessage({request, result}: GeneratedMessagePayload): voi
 }
 
 function handleFailedMessage(payload: FailedMessagePayload): void {
+    addErrorMessage(payload, $buffer.get().modelMessageId);
     $buffer.set({});
-    addErrorMessage(payload);
 }
