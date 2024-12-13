@@ -29,7 +29,7 @@ export function request({
                     ...headers,
                 },
                 connectionTimeout: 60000,
-                readTimeout: 10000,
+                readTimeout: 60000,
                 body: body != null ? JSON.stringify(body) : undefined,
                 queryParams,
             }) ?? null,
