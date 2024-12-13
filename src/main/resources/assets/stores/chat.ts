@@ -81,13 +81,17 @@ export function createGenerationHistory(): Message[] {
 //* Messages
 //
 
+function findMessageById(id: string): Optional<Readonly<ChatMessage>> {
+    return $chat.get().history.find(message => message.id === id);
+}
+
 function findModelMessageById(id: string): Optional<Readonly<ModelChatMessage>> {
-    const message = $chat.get().history.find(message => message.id === id);
+    const message = findMessageById(id);
     return message != null && message.role === MessageRole.MODEL ? message : null;
 }
 
 export function findUserMessageById(id: string): Optional<Readonly<UserChatMessage>> {
-    const message = $chat.get().history.find(message => message.id === id);
+    const message = findMessageById(id);
     return message != null && message.role === MessageRole.USER ? message : null;
 }
 
@@ -107,22 +111,25 @@ function isChatMessageReplaceable(a: ChatMessage, b: ChatMessage): boolean {
 function replaceChatMessage<T extends ChatMessage>(message: T): Optional<T> {
     const {history} = $chat.get();
 
-    const index = history.findIndex(m => m.id === message.id && m.role === message.role);
+    const index = history.findIndex(m => m.id === message.id);
     if (index >= 0) {
         $chat.setKey('history', [...history.slice(0, index), message, ...history.slice(index + 1)]);
         return message;
     }
 }
 
+function addChatMessage<T extends ChatMessage>(message: T): T {
+    $chat.setKey('history', [...$chat.get().history, message]);
+    return message;
+}
+
 function addOrReplaceChatMessage<T extends ChatMessage>(message: T): T {
     const {history} = $chat.get();
     const lastMessage = history.at(-1);
+    const isLastMessageToBeReplaced = lastMessage && isChatMessageReplaceable(lastMessage, message);
+    const newHistory = isLastMessageToBeReplaced ? [...history.slice(0, -1), message] : [...history, message];
 
-    if (lastMessage && isChatMessageReplaceable(lastMessage, message)) {
-        $chat.setKey('history', [...history.slice(0, -1), message]);
-    } else {
-        $chat.setKey('history', [...history, message]);
-    }
+    $chat.setKey('history', newHistory);
 
     return message;
 }
@@ -148,7 +155,11 @@ export function updateUserMessage(
 }
 
 export function addSystemMessage(content: SystemChatMessageContent): Readonly<SystemChatMessage> {
-    return addOrReplaceChatMessage({id: content.key, content, role: MessageRole.SYSTEM} satisfies SystemChatMessage);
+    return addOrReplaceChatMessage(toSystemMessage(content));
+}
+
+function toSystemMessage(content: SystemChatMessageContent): SystemChatMessage {
+    return {id: content.key, content, role: MessageRole.SYSTEM} satisfies SystemChatMessage;
 }
 
 export function addModelMessage(analysisResult: AnalysisResult, forId: string): Optional<Readonly<ModelChatMessage>> {
@@ -221,14 +232,25 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
 //* Errors
 //
 
-export function addErrorMessage(payload: FailedMessagePayload | string): void {
+export function addErrorMessage(payload: FailedMessagePayload | string, messageToReplaceId?: string): void {
+    const errorMessageText = getErrorMessageText(payload);
+    const messageToReplace = messageToReplaceId ? findMessageById(messageToReplaceId) : null;
+    const content = {key: messageToReplace ? messageToReplace.id : nanoid(), type: 'error', node: errorMessageText};
+    const systemMessage = toSystemMessage(content as SystemChatMessageContent);
+
+    if (messageToReplace) {
+        replaceChatMessage(systemMessage);
+    } else {
+        addChatMessage(systemMessage);
+    }
+}
+
+function getErrorMessageText(payload: FailedMessagePayload | string): string {
     if (typeof payload === 'string') {
-        addSystemMessage({key: nanoid(), type: 'error', node: payload});
-        return;
+        return payload;
     }
 
-    const message = payload.type === 'error' ? getErrorMessageByCode(payload.code) : payload.message;
-    addSystemMessage({key: nanoid(), type: 'error', node: message});
+    return payload.type === 'error' ? getErrorMessageByCode(payload.code) : payload.message;
 }
 
 function getErrorMessageByCode(code: number): string {
