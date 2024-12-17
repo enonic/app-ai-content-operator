@@ -10,6 +10,7 @@ export default defineConfig({
         lib: {
             entry: 'src/main/resources/assets/index.tsx',
             name: 'Enonic.AI.contentOperator',
+            cssFileName: 'style',
             formats: ['iife'],
         },
         rollupOptions: {
