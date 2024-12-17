@@ -1,5 +1,5 @@
 import {useStore} from '@nanostores/react';
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
 
@@ -9,6 +9,7 @@ import {$fieldDescriptors} from '../../../../stores/data';
 import {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
 import {FieldDescriptor} from '../../../../stores/data/FieldDescriptor';
 import ActionButton from '../../../base/ActionButton/ActionButton';
+import LoadingIcon from '../../../base/LoadingIcon/LoadingIcon';
 
 type Props = {
     content: Omit<ModelChatMessageContent, 'generationResult'>;
@@ -26,6 +27,14 @@ export default function AssistantMessagePlaceholder({content}: Props): React.Rea
 
     const [expanded, setExpanded] = useState(false);
 
+    const ref = useRef<HTMLButtonElement>(null);
+
+    useEffect(() => {
+        if (expanded && ref.current) {
+            ref.current.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+        }
+    }, [expanded]);
+
     return (
         <>
             <ActionButton
@@ -33,6 +42,7 @@ export default function AssistantMessagePlaceholder({content}: Props): React.Rea
                 icon={expanded ? 'expand' : 'right'}
                 size='sm'
                 clickHandler={() => setExpanded(!expanded)}
+                ref={ref}
             >
                 <span
                     className={twJoin([
@@ -51,14 +61,15 @@ export default function AssistantMessagePlaceholder({content}: Props): React.Rea
             </ActionButton>
             <ul className={twJoin('flex flex-col gap-1 pl-6 divide-y', !expanded && 'hidden')}>
                 {analyzedFieldsDescriptors.map(({name, label, displayName}) => (
-                    <li key={name}>
+                    <li key={name} className='flex items-center gap-0.5'>
                         <button
-                            className='-mx-1 px-1 align-baseline cursor-pointer text-sky-600 truncate'
+                            className='-mx-1 px-1 align-baseline cursor-pointer text-sky-600 truncate inline-flex items-center rounded'
                             title={displayName}
                             onClick={() => dispatchInteracted(name)}
                         >
                             <span className='text-xs'>{label}</span>
                         </button>
+                        <LoadingIcon className='w-4 h-4' />
                     </li>
                 ))}
             </ul>

@@ -1,4 +1,5 @@
 import {useStore} from '@nanostores/react';
+import {useEffect, useRef} from 'react';
 
 import {SPECIAL_NAMES} from '../../../../../shared/enums';
 import {messageContentToValues} from '../../../../common/messages';
@@ -18,8 +19,16 @@ export function AssistantMessageList({messageId, content, last}: Props): React.R
 
     const fieldDescriptors = useStore($fieldDescriptors);
 
+    const ref = useRef<HTMLUListElement>(null);
+
+    useEffect(() => {
+        if (last && ref.current) {
+            ref.current.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+        }
+    }, [ref, last]);
+
     return (
-        <ul className='flex flex-col divide-y'>
+        <ul className='flex flex-col divide-y' ref={ref}>
             {Object.entries(messageContentToValues(content)).map(([key, value]) => {
                 if (key === SPECIAL_NAMES.common) {
                     return <CommonItem key={key} className={classNames} value={value} last={last} />;
