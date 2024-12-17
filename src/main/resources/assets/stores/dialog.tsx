@@ -1,7 +1,7 @@
 import {map} from 'nanostores';
 
 import {addGlobalOpenDialogHandler, AiEvents, dispatchDialogEvent} from '../common/events';
-import GreetingMessagePhrase from '../components/dialog/chat/system/GreetingMessagePhrase/GreetingMessagePhrase';
+import GreetingText from '../components/dialog/chat/GreetingText/GreetingText';
 import {addSystemMessage} from './chat';
 
 export type Dialog = {
@@ -19,7 +19,7 @@ const unsubscribe = $dialog.listen(({hidden}, _, key) => {
         unsubscribe();
         setTimeout(() => {
             $dialog.setKey('initialized', true);
-            addSystemMessage({type: 'context', key: 'greeting', node: <GreetingMessagePhrase />});
+            addSystemMessage({type: 'context', key: 'greeting', node: <GreetingText />});
         }, 800);
     }
 });

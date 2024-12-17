@@ -3,7 +3,7 @@ import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithP
 import {Mention} from '../data/Mention';
 import {Path, PathElement} from '../data/Path';
 import {clonePath, getPathLabel, pathToPrettifiedString, pathToString} from './path';
-import {isFormItemSet, isFormOptionSet, isInput, isInputWithPath} from './schema';
+import {isFormItemSet, isFormOptionSet, isInput} from './schema';
 
 export function pathToMention(item: FormItemWithPath): Mention {
     return {
@@ -11,10 +11,6 @@ export function pathToMention(item: FormItemWithPath): Mention {
         prettified: pathToPrettifiedString(item),
         label: getPathLabel(item),
     };
-}
-
-export function findPathByDataAttrString(items: FormItemWithPath[], path: string): Optional<InputWithPath> {
-    return items.filter(isInputWithPath).find(p => pathToString(p) === path);
 }
 
 export function getPropertyArrayByPath(properties: ReadonlyArray<PropertyArray>, path: Path): Optional<PropertyArray> {

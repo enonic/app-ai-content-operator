@@ -2,22 +2,22 @@ import {useStore} from '@nanostores/react';
 import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
-import {dispatchResultApplied} from '../../../../common/events';
-import {messageContentToValues, pickValue} from '../../../../common/messages';
-import {ApplyMessage} from '../../../../stores/data/ApplyMessage';
-import {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
-import {MultipleValues} from '../../../../stores/data/MultipleContentValue';
-import {$canChat, sendRetry} from '../../../../stores/websocket';
-import ActionButton from '../../../base/ActionButton/ActionButton';
+import {dispatchResultApplied} from '../../../../../common/events';
+import {messageContentToValues, pickValue} from '../../../../../common/messages';
+import {ApplyMessage} from '../../../../../stores/data/ApplyMessage';
+import {ModelChatMessageContent} from '../../../../../stores/data/ChatMessage';
+import {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
+import {$canChat, sendRetry} from '../../../../../stores/websocket';
+import ActionButton from '../../../../base/ActionButton/ActionButton';
 
 export interface Props {
     className?: string;
     forId: string;
-    content: ModelChatMessageContent;
+    content: Required<ModelChatMessageContent>;
     last: boolean;
 }
 
-function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
+function extractItems(content: Required<ModelChatMessageContent>): ApplyMessage[] {
     return Object.entries(messageContentToValues(content))
         .filter((value): value is [string, string | MultipleValues] => value[1] != null)
         .map(([name, value]) => ({
@@ -26,7 +26,7 @@ function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
         }));
 }
 
-export default function MessageControls({className, content, last, forId}: Props): React.ReactNode {
+export default function AssistantMessageControls({className, content, last, forId}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     const multiple = Object.keys(content).length > 1;

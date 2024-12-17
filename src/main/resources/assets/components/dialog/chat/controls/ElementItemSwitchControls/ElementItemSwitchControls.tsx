@@ -1,9 +1,9 @@
 import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {changeModelMessageSelectedIndex} from '../../../../stores/chat';
-import {MultipleValues} from '../../../../stores/data/MultipleContentValue';
-import ActionButton from '../../../base/ActionButton/ActionButton';
+import {changeModelMessageSelectedIndex} from '../../../../../stores/chat';
+import {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
+import ActionButton from '../../../../base/ActionButton/ActionButton';
 
 export interface Props {
     className?: string;
@@ -12,7 +12,7 @@ export interface Props {
     content: MultipleValues;
 }
 
-export default function MessageSwitcher({className, messageId, name, content}: Props): React.ReactNode {
+export default function ElementItemSwitchControls({className, messageId, name, content}: Props): React.ReactNode {
     const {t} = useTranslation();
     const {values, selectedIndex} = content;
     const isFirst = selectedIndex === 0;

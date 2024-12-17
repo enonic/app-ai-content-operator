@@ -78,13 +78,13 @@ export class GeminiProxy implements ModelProxy {
             return [content, null];
         }
 
+        logDebug(LogDebugGroups.FUNC, `Generation not completed. Finish reason: ${finishReason}.`);
         switch (finishReason) {
             case 'SAFETY':
                 return [null, ERRORS.MODEL_SAFETY];
             case 'MAX_TOKENS':
                 return [null, ERRORS.MODEL_MAX_TOKENS];
             default:
-                logDebug(LogDebugGroups.FUNC, `Generation not completed. Finish reason: ${finishReason}.`);
                 return [null, ERRORS.MODEL_UNEXPECTED.withMsg(`Finish reason: ${finishReason}.`)];
         }
     }

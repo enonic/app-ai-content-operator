@@ -1,9 +1,9 @@
 import {useStore} from '@nanostores/react';
 import {useTranslation} from 'react-i18next';
 
-import {$config} from '../../../../../stores/config';
+import {$config} from '../../../../stores/config';
 
-export default function GreetingMessagePhrase(): React.ReactNode {
+export default function GreetingText(): React.ReactNode {
     const {t} = useTranslation();
     const {user} = useStore($config, {keys: ['user']});
 

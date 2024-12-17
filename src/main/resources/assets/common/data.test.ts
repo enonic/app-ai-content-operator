@@ -1,4 +1,16 @@
-import {mergeContent} from './data';
+import {isNonOptional, mergeContent} from './data';
+
+describe('isNonOptional', () => {
+    it('should return true if the value is not null or undefined', () => {
+        expect(isNonOptional(1)).toBe(true);
+        expect(isNonOptional('test')).toBe(true);
+    });
+
+    it('should return false if the value is null or undefined', () => {
+        expect(isNonOptional(null)).toBe(false);
+        expect(isNonOptional(undefined)).toBe(false);
+    });
+});
 
 describe('mergeContent', () => {
     it('should merge simple objects', () => {

@@ -2,8 +2,8 @@ import clsx from 'clsx';
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {delay} from '../../../../common/func';
-import ActionButton from '../../../base/ActionButton/ActionButton';
+import {delay} from '../../../../../common/func';
+import ActionButton from '../../../../base/ActionButton/ActionButton';
 
 type CopyType = 'text' | 'html';
 

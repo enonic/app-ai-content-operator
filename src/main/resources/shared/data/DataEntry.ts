@@ -1,7 +1,9 @@
 export type DataEntry = {
     value: string | boolean | number;
-    type: 'text' | 'html';
+    type: DataEntryType;
     schemaType: string;
     schemaLabel: string;
     schemaHelpText?: string;
 };
+
+export type DataEntryType = 'text' | 'html';

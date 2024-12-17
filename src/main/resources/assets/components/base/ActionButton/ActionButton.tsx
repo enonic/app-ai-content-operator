@@ -7,7 +7,8 @@ import Icon, {IconName} from '../Icon/Icon';
 type Props = {
     className?: string;
     disabled?: boolean;
-    name: string;
+    name?: string;
+    children?: React.ReactNode;
     title?: string;
     icon?: IconName;
     mode?: 'icon-only' | 'icon-with-title' | 'full' | 'text-only' | 'text-with-title';
@@ -17,7 +18,7 @@ type Props = {
 };
 
 export default forwardRef(function ActionButton(
-    {className, disabled, name, title, icon, mode = 'full', size = 'sm', clickHandler}: Props,
+    {className, disabled, name, title, icon, mode = 'full', size = 'sm', clickHandler, children}: Props,
     ref: React.Ref<HTMLButtonElement>,
 ): React.ReactNode {
     const isEnabled = !disabled && !!clickHandler;
@@ -28,7 +29,7 @@ export default forwardRef(function ActionButton(
 
     return (
         <button
-            title={hasTitle ? title || name : ''}
+            title={hasTitle ? title || name || '' : ''}
             onClick={clickHandler}
             className={twMerge(
                 clsx(
@@ -67,22 +68,25 @@ export default forwardRef(function ActionButton(
                     )}
                 />
             )}
-            <span
-                className={clsx(
-                    'truncate',
-                    {'pl-1': !hasNoIcon},
-                    {'sr-only': !hasText},
-                    {
-                        xs: 'text-xs',
-                        sm: 'text-sm',
-                        md: 'text-base',
-                        lg: 'text-base',
-                        xl: 'text-lg',
-                    }[size],
-                )}
-            >
-                {name}
-            </span>
+            {name && (
+                <span
+                    className={clsx(
+                        'truncate',
+                        {'pl-1': !hasNoIcon},
+                        {'sr-only': !hasText},
+                        {
+                            xs: 'text-xs',
+                            sm: 'text-sm',
+                            md: 'text-base',
+                            lg: 'text-base',
+                            xl: 'text-lg',
+                        }[size],
+                    )}
+                >
+                    {name}
+                </span>
+            )}
+            {children}
         </button>
     );
 });

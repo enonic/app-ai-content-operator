@@ -1,13 +1,10 @@
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../shared/enums';
-import {messageContentToValues} from '../../../../common/messages';
-import {ModelChatMessage} from '../../../../stores/data/ChatMessage';
+import {ModelChatMessage, ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
 import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
-import CommonItem from '../CommonItem/CommonItem';
-import ElementItem from '../ElementItem/ElementItem';
-import MessageControls from '../MessageControls/MessageControls';
-import TopicItem from '../TopicItem/TopicItem';
+import {AssistantMessageList} from '../AssistantMessageList/AssistantMessageList';
+import AssistantMessagePlaceholder from '../AssistantMessagePlaceholder/AssistantMessagePlaceholder';
+import AssistantMessageControls from '../controls/AssistantMessageControls/AssistantMessageControls';
 
 type Props = {
     className?: string;
@@ -15,45 +12,26 @@ type Props = {
     last: boolean;
 };
 
-function createItems({id: messageId, content}: ModelChatMessage, last: boolean): React.ReactNode[] {
-    const classNames = 'p-2 border-dashed last:!border-b';
-    return Object.entries(messageContentToValues(content)).map(([key, value]) => {
-        switch (key) {
-            case SPECIAL_NAMES.common:
-                return <CommonItem key={key} className={classNames} value={value} last={last} />;
-            case SPECIAL_NAMES.topic:
-                return (
-                    <TopicItem
-                        key={key}
-                        className={classNames}
-                        messageId={messageId}
-                        name={key}
-                        value={value}
-                        last={last}
-                    />
-                );
-            default:
-                return (
-                    <ElementItem
-                        key={key}
-                        className={classNames}
-                        messageId={messageId}
-                        name={key}
-                        value={value}
-                        last={last}
-                    />
-                );
-        }
-    });
-}
+const hasGenerationResult = (content: ModelChatMessageContent): content is Required<ModelChatMessageContent> => {
+    return content.generationResult != null;
+};
 
 export default function AssistantMessage({className, message, last}: Props): React.ReactNode {
+    const {id: messageId, for: forId, content} = message;
+    const isGenerating = !hasGenerationResult(content);
+
     return (
         <div className={twMerge('flex gap-2', className)}>
-            <AssistantIcon className={twJoin('shrink-0 mt-3 text-enonic-blue-light')} />
-            <article className={twJoin('flex flex-col gap-1 flex-1 text-sm')}>
-                <ul className='flex flex-col divide-y'>{createItems(message, last)}</ul>
-                <MessageControls className='pt-1' forId={message.for} content={message.content} last={last} />
+            <AssistantIcon className={twJoin('shrink-0 text-enonic-blue-400', !isGenerating && 'mt-3 ')} />
+            <article className={twJoin('flex flex-col flex-1', !isGenerating && 'gap-1 text-sm')}>
+                {isGenerating ? (
+                    <AssistantMessagePlaceholder content={content} />
+                ) : (
+                    <>
+                        <AssistantMessageList messageId={messageId} content={content} last={last} />
+                        <AssistantMessageControls forId={forId} content={content} last={last} />
+                    </>
+                )}
             </article>
         </div>
     );

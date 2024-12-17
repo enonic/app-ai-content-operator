@@ -2,14 +2,14 @@ import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../shared/enums';
-import {REGULAR_SCREEN} from '../../../../common/device';
-import {dispatchInteracted} from '../../../../common/events';
-import {pickValue} from '../../../../common/messages';
-import {MultipleValues} from '../../../../stores/data/MultipleContentValue';
+import {SPECIAL_NAMES} from '../../../../../../shared/enums';
+import {REGULAR_SCREEN} from '../../../../../common/device';
+import {dispatchInteracted} from '../../../../../common/events';
+import {pickValue} from '../../../../../common/messages';
+import {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
+import ElementItemControls from '../../controls/ElementItemControls/ElementItemControls';
+import ElementItemSwitchControls from '../../controls/ElementItemSwitchControls/ElementItemSwitchControls';
 import ElementItemContent from '../ElementItemContent/ElementItemContent';
-import ElementItemControls from '../ElementItemControls/ElementItemControls';
-import MessageSwitcher from '../MessageSwitcher/MessageSwitcher';
 
 type Props = {
     className?: string;
@@ -21,7 +21,7 @@ type Props = {
 
 export default function TopicItem({className, messageId, name, last, value}: Props): React.ReactNode {
     const {t} = useTranslation();
-    const topic = t('field.label.topic');
+    const topic = t('field.mentions.topic.label');
     const content = value && pickValue(value);
 
     return (
@@ -38,7 +38,7 @@ export default function TopicItem({className, messageId, name, last, value}: Pro
                 <span className='text-xs'>{topic}</span>
             </button>
             {content && typeof value !== 'string' && (
-                <MessageSwitcher messageId={messageId} name={name} content={value} />
+                <ElementItemSwitchControls messageId={messageId} name={name} content={value} />
             )}
             {content && (
                 <ElementItemControls

@@ -15,7 +15,7 @@ export default function SystemMessage({className, children, type}: Props): React
 
     return (
         <div className={twMerge('flex gap-2', className)}>
-            <AssistantIcon className='shrink-0 text-enonic-blue-light' />
+            <AssistantIcon className='shrink-0 text-enonic-blue-400' />
             <article className={twJoin('pt-1 text-sm leading-6')}>
                 {type === 'error' ? (
                     <div className={twMerge('flex flex-col gap-x-2 gap-y-1', className)}>

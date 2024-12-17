@@ -20,7 +20,7 @@ export default function SendButton({className, disabled, clickHandler}: Props): 
                 'text-white',
                 'border border-enonic-blue rounded-full',
                 'bg-enonic-blue',
-                'enabled:hover:bg-enonic-blue-light',
+                'enabled:hover:bg-enonic-blue-400',
                 'disabled:bg-enonic-gray-400 disabled:border-enonic-gray-400',
                 className,
             )}
