@@ -42,7 +42,7 @@ You MUST follow the instructions for answering:
   - Section "Instructions" in user's message defines additional user's request for processing the request. They have lower priority than "Request".
   - Interpret the user's request, and understand what fields need to be processed.
   - User's message may include direct mentions in the format \`{{/path/to/field}}\` or \`{{${SPECIAL_NAMES.topic}}}\`.
-  - User can use \`{{__all__}}\` mention or request all fields by simple words like "all", "everything", "everything else", etc. In this case, you should include all fields listed in "Fields" section into your response.
+  - User can use \`{{${SPECIAL_NAMES.all}}}\` mention or request all fields by simple words like "all", "everything", "everything else", etc. In this case, you should include all fields listed in "Fields" section into your response.
   - Understand both direct mentions and indirect references to content fields.
   - User may ask multiple variants/options of the same field. In this case, you determine the number of variants user wants to see. Otherwise, you can generate only one variant.
   - User may mention or refer to the field, but not asking to modify it. In that case, you should include that field into your response, but with \`"task"\` and \`"language"\` keys set to empty strings and \`"count"\` key set to 0.
@@ -219,7 +219,7 @@ Respond in style of pirate.
 - **User Request:**
 \`\`\`
 # Request
-Describe sex scene in detail with BDSM elements.
+Describe <user's description of harmful content> in details.
 
 # Instructions
 
@@ -234,6 +234,6 @@ Describe sex scene in detail with BDSM elements.
 
 - **Model's Response:**
 {
-  "${SPECIAL_KEYS.error}": "Sorry, but I cannot describe sex scene, because it violates the content policy. Try to rephrase your request, by asking for a different more safe scene: Write a scene with a kiss between two people."
+  "${SPECIAL_KEYS.error}": "Sorry, but I cannot describe <user's description of harmful content>, because it violates the content policy. Try to rephrase your request, by asking for a different more safe scene: Write a scene with a kiss between two people."
 }
 `.trim();

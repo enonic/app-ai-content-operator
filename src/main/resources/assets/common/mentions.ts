@@ -1,13 +1,14 @@
+import {SPECIAL_NAMES} from '../../shared/enums';
 import {Mention} from '../stores/data/Mention';
 
 export const MENTION_ALL = {
-    path: '__all__',
+    path: SPECIAL_NAMES.all,
     prettified: 'Refer all available input fields',
     label: 'All Inputs',
 } as const satisfies Mention;
 
 export const MENTION_TOPIC = {
-    path: '__topic__',
+    path: SPECIAL_NAMES.topic,
     prettified: "Refer content's display name",
     label: 'Display Name',
 } as const satisfies Mention;

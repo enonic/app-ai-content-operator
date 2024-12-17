@@ -1,11 +1,12 @@
 import {twMerge} from 'tailwind-merge';
 
-import LoadingIcon from '../../../base/LoadingIcon/LoadingIcon';
+import {DataEntryType} from '../../../../../../shared/data/DataEntry';
+import LoadingIcon from '../../../../base/LoadingIcon/LoadingIcon';
 
 type Props = {
     className?: string;
     content: Optional<string>;
-    type?: 'text' | 'html';
+    type?: DataEntryType;
 };
 
 export default function ElementItemContent({className, content, type = 'text'}: Props): React.ReactNode {

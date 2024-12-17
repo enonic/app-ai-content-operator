@@ -1,5 +1,6 @@
 import {twMerge} from 'tailwind-merge';
 
+import {DataEntryType} from '../../../../../../shared/data/DataEntry';
 import ApplyControl from '../ApplyControl/ApplyControl';
 import CopyControl from '../CopyControl/CopyControl';
 
@@ -7,7 +8,7 @@ type Props = {
     className?: string;
     name: string;
     content: string;
-    type?: 'text' | 'html';
+    type?: DataEntryType;
 };
 
 export default function ElementItemControls({className, name, content, type}: Props): React.ReactNode {

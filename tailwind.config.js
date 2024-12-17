@@ -18,7 +18,9 @@ export default {
                 },
                 'enonic-blue': {
                     DEFAULT: '#2c76e9',
-                    light: '#5a94ee',
+                    400: '#5a94ee',
+                    700: '#1a56b8',
+                    800: '#123d8a',
                 },
             },
             screens: {
@@ -45,6 +47,13 @@ export default {
             fontSize: {
                 '2xs': '.625rem',
                 'header-title': '1.725rem',
+            },
+            backgroundImage: {
+                'middle-gradient':
+                    'linear-gradient(90deg, var(--tw-gradient-from) 25%, var(--tw-gradient-to) 50%, var(--tw-gradient-from) 75%)',
+            },
+            backgroundSize: {
+                'text-gradient-size': '200% 100%',
             },
             flex: {
                 max: '1 0 100%',
@@ -74,9 +83,18 @@ export default {
                         'padding-top': '0',
                     },
                 },
+                'move-gradient': {
+                    '0%': {
+                        'background-position': '200% 0%',
+                    },
+                    '100%': {
+                        'background-position': '-200% 0%',
+                    },
+                },
             },
             animation: {
                 'slide-fade-in': 'slide-fade-in 300ms ease-in-out forwards',
+                'move-gradient': 'move-gradient 3000ms linear infinite',
             },
         },
     },

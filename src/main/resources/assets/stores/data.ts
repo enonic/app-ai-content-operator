@@ -1,19 +1,28 @@
+import {t} from 'i18next';
 import {computed, map} from 'nanostores';
 
 import type {DataEntry} from '../../shared/data/DataEntry';
 import {addGlobalUpdateDataHandler} from '../common/events';
 import {MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
-import {$config} from './config';
 import {$context} from './context';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {UpdateEventData} from './data/EventData';
+import {FieldDescriptor} from './data/FieldDescriptor';
 import {FormItemWithPath, InputWithPath} from './data/FormItemWithPath';
 import {Language} from './data/Language';
 import {Path} from './data/Path';
 import {Schema} from './data/Schema';
 import {getDataPathsToEditableItems, getPropertyArrayByPath, pathToMention} from './utils/data';
 import {getInputType} from './utils/input';
-import {isChildPath, isRootPath, pathFromString, pathsEqual, pathToString} from './utils/path';
+import {
+    getPathLabel,
+    isChildPath,
+    isRootPath,
+    pathFromString,
+    pathsEqual,
+    pathToPrettifiedString,
+    pathToString,
+} from './utils/path';
 import {getFormItemsWithPaths, isEditableInput, isOrContainsEditableInput} from './utils/schema';
 
 export type Data = {
@@ -120,42 +129,27 @@ export const $mentions = computed([$inputsInContext, $context], (inputs, context
 });
 
 //
-//* PROMPT
+//* FIELDS
 //
 
-export function createPrompt(text: string): string {
+export const $fieldDescriptors = computed($allFormItemsWithPaths, allFormItems => {
     return [
-        createPromptRequest(text),
-        createPromptInstructions(),
-        createPromptMetadata(),
-        createPromptFields(),
-        createPromptContent(),
-    ].join('\n\n');
-}
-
-function createPromptRequest(text: string): string {
-    return `#Request:\n${text}`;
-}
-
-function createPromptInstructions(): string {
-    return `#Instructions:\n${$config.get().instructions}`;
-}
-
-function createPromptMetadata(): string {
-    return [
-        '#Metadata',
-        `- Language: ${$data.get().language?.tag ?? navigator?.language ?? 'en'}`,
-        `- Content path: ${$data.get()?.persisted?.contentPath ?? ''}`,
-    ].join('\n');
-}
-
-function createPromptFields(): string {
-    return '#Fields:\n' + $inputsInContext.get().map(pathToString).join('\n');
-}
-
-function createPromptContent(): string {
-    return ['#Content', '```\n', JSON.stringify(createFields(), null, 2), '\n```'].join('\n');
-}
+        {
+            name: MENTION_TOPIC.path,
+            label: t('field.mentions.topic.label'),
+            displayName: t('field.mentions.topic.prettified'),
+            type: 'text',
+        },
+        ...allFormItems
+            .filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item))
+            .map(item => ({
+                name: pathToString(item),
+                label: getPathLabel(item),
+                displayName: pathToPrettifiedString(item),
+                type: getInputType(item),
+            })),
+    ] satisfies FieldDescriptor[];
+});
 
 export function createFields(): Record<string, DataEntry> {
     const result: Record<string, DataEntry> = {};
@@ -166,7 +160,7 @@ export function createFields(): Record<string, DataEntry> {
             value: $topic.get(),
             type: 'text',
             schemaType: 'text',
-            schemaLabel: 'Display Name',
+            schemaLabel: t('field.mentions.topic.label'),
         };
     }
 

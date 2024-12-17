@@ -1,9 +1,6 @@
-import {MENTION_ALL} from '../common/mentions';
-import {setContext} from './context';
-import {createPrompt, findValueByPath, setLanguage, setPersistedData, setSchema} from './data';
+import {findValueByPath, setLanguage, setPersistedData} from './data';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {Path} from './data/Path';
-import {Schema} from './data/Schema';
 import {setValueByPath} from './utils/data';
 
 beforeAll(() => {
@@ -104,86 +101,6 @@ describe('setValueByPath', () => {
     });
 });
 
-describe('createPrompt', () => {
-    it('should replace all macro with list of fields', () => {
-        setSchema(getRootTextItemsSchema());
-        setPersistedData(getRootTextItems());
-
-        const received = createPrompt('Generate lorem ipsum for {{' + MENTION_ALL.path + '}} items');
-        const expected =
-            '#Request:\n' +
-            'Generate lorem ipsum for {{__all__}} items\n\n' +
-            '#Instructions:\n\n\n' +
-            '#Metadata\n' +
-            '- Language: ak\n' +
-            '- Content path: /path\n\n' +
-            '#Fields:\n' +
-            '/myTextArea\n' +
-            '/myTextArea[1]\n' +
-            '/myTextLine\n\n' +
-            '#Content\n' +
-            '```\n\n' +
-            '{\n' +
-            '  "__topic__": {\n' +
-            '    "value": "all input types",\n' +
-            '    "type": "text",\n' +
-            '    "schemaType": "text",\n' +
-            '    "schemaLabel": "Display Name"\n' +
-            '  },\n' +
-            '  "/myTextArea": {\n' +
-            '    "value": "v1",\n' +
-            '    "type": "text",\n' +
-            '    "schemaType": "TextArea",\n' +
-            '    "schemaLabel": "My Text Area"\n' +
-            '  },\n' +
-            '  "/myTextArea[1]": {\n' +
-            '    "value": "v2",\n' +
-            '    "type": "text",\n' +
-            '    "schemaType": "TextArea",\n' +
-            '    "schemaLabel": "My Text Area"\n' +
-            '  },\n' +
-            '  "/myTextLine": {\n' +
-            '    "value": "",\n' +
-            '    "type": "text",\n' +
-            '    "schemaType": "TextLine",\n' +
-            '    "schemaLabel": "My Text Line"\n' +
-            '  }\n' +
-            '}\n\n' +
-            '```';
-
-        expect(received).toEqual(expected);
-    });
-
-    it('should keep only fields in context', () => {
-        setSchema(getRootTextItemsSchema());
-        setPersistedData(getRootTextItems());
-        setContext('/myTextLine');
-
-        const received = createPrompt('Generate lorem ipsum for all items');
-        const expected =
-            '#Request:\n' +
-            'Generate lorem ipsum for all items\n\n' +
-            '#Instructions:\n\n\n' +
-            '#Metadata\n' +
-            '- Language: ak\n' +
-            '- Content path: /path\n\n' +
-            '#Fields:\n' +
-            '/myTextLine\n\n' +
-            '#Content\n' +
-            '```\n\n' +
-            '{\n' +
-            '  "/myTextLine": {\n' +
-            '    "value": "",\n' +
-            '    "type": "text",\n' +
-            '    "schemaType": "TextLine",\n' +
-            '    "schemaLabel": "My Text Line"\n' +
-            '  }\n' +
-            '}\n\n' +
-            '```';
-
-        expect(received).toEqual(expected);
-    });
-});
 function getRootTextItems(): ContentData {
     return {
         contentId: '123',
@@ -203,6 +120,7 @@ function getRootTextItems(): ContentData {
         topic: 'all input types',
     };
 }
+
 function getFieldSetData(): ContentData {
     return {
         contentId: '123',
@@ -244,37 +162,5 @@ function getFieldSetData(): ContentData {
             },
         ],
         topic: 'all input types',
-    };
-}
-
-function getRootTextItemsSchema(): Schema {
-    return {
-        form: {
-            formItems: [
-                {
-                    Input: {
-                        name: 'myTextArea',
-                        label: 'My Text Area',
-                        occurrences: {
-                            maximum: 0,
-                            minimum: 1,
-                        },
-                        inputType: 'TextArea',
-                    },
-                },
-                {
-                    Input: {
-                        name: 'myTextLine',
-                        label: 'My Text Line',
-                        occurrences: {
-                            maximum: 0,
-                            minimum: 1,
-                        },
-                        inputType: 'TextLine',
-                    },
-                },
-            ],
-        },
-        name: 'Assistant',
     };
 }

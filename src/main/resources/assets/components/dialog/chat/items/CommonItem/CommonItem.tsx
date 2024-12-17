@@ -1,7 +1,7 @@
 import {twMerge} from 'tailwind-merge';
 
-import {combineValues} from '../../../../common/messages';
-import {MultipleValues} from '../../../../stores/data/MultipleContentValue';
+import {combineValues} from '../../../../../common/messages';
+import {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
 import CommonItemContent from '../CommonItemContent/CommonItemContent';
 
 type Props = {

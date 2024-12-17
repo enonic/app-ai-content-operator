@@ -179,7 +179,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                 <Editable
                     className={clsx(
                         'w-full max-h-[7.75rem]',
-                        'm-0 py-3.5 pr-11',
+                        'm-0 py-3 pr-11',
                         'bg-transparent placeholder-black/50',
                         'border-0 rounded-[1.5rem]',
                         'resize-none',

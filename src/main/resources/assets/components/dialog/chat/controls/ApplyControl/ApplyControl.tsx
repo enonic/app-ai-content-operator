@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {dispatchResultApplied} from '../../../../common/events';
-import {delay} from '../../../../common/func';
-import ActionButton from '../../../base/ActionButton/ActionButton';
+import {dispatchResultApplied} from '../../../../../common/events';
+import {delay} from '../../../../../common/func';
+import ActionButton from '../../../../base/ActionButton/ActionButton';
 
 type Props = {
     className?: string;
