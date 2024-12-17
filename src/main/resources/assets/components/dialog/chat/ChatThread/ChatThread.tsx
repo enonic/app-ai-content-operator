@@ -50,7 +50,7 @@ export default function ChatThread({className = ''}: Props): React.ReactNode {
     }, [count]);
 
     return (
-        <div ref={ref} className={twMerge('flex-1 overflow-y-auto scroll-smooth', className)}>
+        <div ref={ref} className={twMerge('flex-1 overflow-y-auto scroll-smooth relative', className)}>
             <div className={clsx('flex w-full h-full flex-col grow gap-6 px-3 pt-3')}>
                 {createMessages(history, isLoading)}
             </div>
