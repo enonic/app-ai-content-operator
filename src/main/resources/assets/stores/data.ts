@@ -23,7 +23,7 @@ import {
     pathToPrettifiedString,
     pathToString,
 } from './utils/path';
-import {getFormItemsWithPaths, isEditableInput, isOrContainsEditableInput} from './utils/schema';
+import {getFormItemsWithPaths, isEditableInput} from './utils/schema';
 
 export type Data = {
     language: Language;
@@ -82,20 +82,9 @@ export const $allFormItemsWithPaths = computed($data, ({schema, persisted}) => {
     return persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
 });
 
-export const $allPaths = computed($allFormItemsWithPaths, paths => paths.map(pathToString));
-
 //
 //* CONTEXT
 //
-export const $mentionInContext = computed([$context, $allFormItemsWithPaths], (context, allFormItems) => {
-    if (!context) {
-        return undefined;
-    }
-
-    const matchingPath = allFormItems.filter(isOrContainsEditableInput).find(path => pathToString(path) === context);
-    return matchingPath && pathToMention(matchingPath);
-});
-
 export const $inputsInContext = computed([$context, $allFormItemsWithPaths], (context, allFormItems) => {
     const contextPath = context && pathFromString(context);
 
@@ -118,11 +107,19 @@ export const $mentions = computed([$inputsInContext, $context], (inputs, context
     const mentions = inputs.map(pathToMention);
 
     if (context == null) {
-        mentions.unshift(MENTION_TOPIC);
+        mentions.unshift({
+            path: MENTION_TOPIC.path,
+            label: t('field.mentions.topic.label'),
+            prettified: t('field.mentions.topic.prettified'),
+        });
     }
 
     if (mentions.length > 1) {
-        mentions.unshift(MENTION_ALL);
+        mentions.unshift({
+            path: MENTION_ALL.path,
+            label: t('field.mentions.all.label'),
+            prettified: t('field.mentions.all.prettified'),
+        });
     }
 
     return mentions;
