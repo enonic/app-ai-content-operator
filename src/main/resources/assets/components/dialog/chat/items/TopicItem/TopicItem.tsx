@@ -21,7 +21,7 @@ type Props = {
 
 export default function TopicItem({className, messageId, name, last, value}: Props): React.ReactNode {
     const {t} = useTranslation();
-    const topic = t('field.mentions.topic.label');
+    const topic = t('field.mentions.__topic__.label');
     const content = value && pickValue(value);
 
     return (
