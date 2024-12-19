@@ -99,10 +99,11 @@ export default {
         },
     },
     safelist: ['animate-slide-fade-in'],
+    important: '.ai-content-operator', // isolate tailwind utility styles
     plugins: [
         require('@tailwindcss/typography'),
         scopedPreflightStyles({
-            isolationStrategy: isolateInsideOfContainer('.ai-content-operator'),
+            isolationStrategy: isolateInsideOfContainer('.ai-content-operator'), // isolate preflight styles
         }),
     ],
 };

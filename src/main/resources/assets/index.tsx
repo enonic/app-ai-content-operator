@@ -16,15 +16,16 @@ export function render(buttonContainer: HTMLElement, dialogContainer: HTMLElemen
         console.warn('[Enonic AI] Content Operator was rendered before configured.');
     }
 
+    buttonContainer.classList.add('ai-content-operator');
     const buttonRoot = createRoot(buttonContainer);
-    const dialogRoot = createRoot(dialogContainer);
-
     buttonRoot.render(
         <React.StrictMode>
             <LaunchButton />
         </React.StrictMode>,
     );
 
+    dialogContainer.classList.add('ai-content-operator');
+    const dialogRoot = createRoot(dialogContainer);
     dialogRoot.render(
         <React.StrictMode>
             <AssistantDialog />
