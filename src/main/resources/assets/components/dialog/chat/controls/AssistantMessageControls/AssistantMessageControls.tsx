@@ -7,7 +7,7 @@ import {messageContentToValues, pickValue} from '../../../../../common/messages'
 import {ApplyMessage} from '../../../../../stores/data/ApplyMessage';
 import {ModelChatMessageContent} from '../../../../../stores/data/ChatMessage';
 import {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
-import {$canChat, sendRetry} from '../../../../../stores/websocket';
+import {$isBusy, $isConnected, sendRetry} from '../../../../../stores/websocket';
 import ActionButton from '../../../../base/ActionButton/ActionButton';
 
 export interface Props {
@@ -30,8 +30,9 @@ export default function AssistantMessageControls({className, content, last, forI
     const {t} = useTranslation();
 
     const multiple = Object.keys(content).length > 1;
-    const canChat = useStore($canChat);
-    const lastAndAvailable = last && canChat;
+    const isConnected = useStore($isConnected);
+    const isBusy = useStore($isBusy);
+    const lastAndAvailable = last && isConnected && !isBusy;
 
     return (
         <div className={twMerge('empty:hidden', className)}>

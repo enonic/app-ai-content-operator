@@ -20,6 +20,32 @@ import {
     ServerMessage,
 } from '../../shared/websocket';
 
+//
+//* Active generation operations
+//
+
+const ACTIVE_OPERATIONS = __.newBean<Java.ConcurrentHashMap<string, boolean>>('java.util.concurrent.ConcurrentHashMap');
+
+function isActiveOperation(id: string): boolean {
+    return ACTIVE_OPERATIONS.get(id) != null;
+}
+
+function addActiveOperation(id: string): boolean {
+    if (isActiveOperation(id)) {
+        return false;
+    }
+    ACTIVE_OPERATIONS.put(id, true);
+    return isActiveOperation(id);
+}
+
+function removeActiveOperation(id: string): void {
+    ACTIVE_OPERATIONS.remove(id);
+}
+
+//
+//* WebSocket
+//
+
 export function get(request: Enonic.Request): Enonic.Response {
     if (!request.webSocket) {
         const error = ERRORS.REST_NOT_FOUND.withMsg('Trying to access WebSocket with "webSocket" set to "false"');
@@ -94,6 +120,9 @@ function handleMessage(event: Enonic.WebSocketEvent): void {
         case MessageType.GENERATE:
             analyzeAndGenerate(id, message);
             break;
+        case MessageType.STOP:
+            stopGeneration(message.payload.generationId);
+            break;
     }
 }
 
@@ -159,7 +188,20 @@ function sendFailedWarningMessage(socketId: string, text: string): void {
 
 function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
     try {
+        const {id} = message.metadata;
+
+        if (!addActiveOperation(id)) {
+            return sendFailedErrorMessage(
+                socketId,
+                ERRORS.WS_OPERATION_ALREADY_RUNNING.withMsg(`Generation id: ${id}`),
+            );
+        }
+
         const [analysis, err1] = analyze(message.payload);
+
+        if (!isActiveOperation(id)) {
+            return;
+        }
 
         if (err1) {
             return sendFailedErrorMessage(socketId, err1);
@@ -177,13 +219,23 @@ function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
             fields: message.payload.fields,
         });
 
+        if (!isActiveOperation(id)) {
+            return;
+        }
+
         if (err2) {
             return sendFailedErrorMessage(socketId, err2);
         }
 
         sendGeneratedMessage(socketId, generation);
+
+        removeActiveOperation(id);
     } catch (e) {
         sendFailedErrorMessage(socketId, ERRORS.WS_UNKNOWN_ERROR.withMsg('See server logs.'));
         logError(e);
     }
+}
+
+function stopGeneration(id: string): void {
+    removeActiveOperation(id);
 }

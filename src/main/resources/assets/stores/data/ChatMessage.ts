@@ -37,7 +37,9 @@ export type SystemChatMessage = {
 };
 
 export type SystemChatMessageContent = {
-    type: 'context' | 'error';
+    type: SystemMessageType;
     key: string;
     node: React.ReactNode;
 };
+
+export type SystemMessageType = 'context' | 'error' | 'stop';

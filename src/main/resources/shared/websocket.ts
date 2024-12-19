@@ -32,6 +32,7 @@ export enum MessageType {
 
     // Generation flow (client → server)
     GENERATE = 'generate',
+    STOP = 'stop',
 
     // Generation flow (server → client)
     ANALYZED = 'analyzed',
@@ -58,6 +59,11 @@ export type GenerateMessage = MessageWithPayload<
 >;
 
 export type GenerateMessagePayload = GenerateMessage['payload'];
+
+// Client requests stop generation
+export type StopMessage = MessageWithPayload<MessageType.STOP, {generationId: string}>;
+
+export type StopMessagePayload = StopMessage['payload'];
 
 // Server returns prompt for analysis and the result
 export type AnalyzedMessage = MessageWithPayload<
@@ -109,7 +115,7 @@ export type DisconnectedMessage = BaseMessage<MessageType.DISCONNECTED>;
 export type PingMessage = BaseMessage<MessageType.PING>;
 export type PongMessage = BaseMessage<MessageType.PONG>;
 
-export type ClientMessage = ConnectMessage | DisconnectMessage | PingMessage | GenerateMessage;
+export type ClientMessage = ConnectMessage | DisconnectMessage | PingMessage | GenerateMessage | StopMessage;
 
 export type ServerMessage =
     | ConnectedMessage

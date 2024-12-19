@@ -22,9 +22,9 @@ function parseMessage(message: unknown): string {
     } else if (message instanceof CustomAiError) {
         return String(message);
     } else if (message instanceof Error) {
-        return message.stack || message.message;
+        return message.stack || message.message || String(message);
     } else if (isNashornError(message)) {
-        return message.message;
+        return message.message || String(message);
     } else if (typeof message === 'object') {
         return stringifyCode(message);
     } else {

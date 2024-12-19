@@ -12,6 +12,7 @@ import {
     ModelChatMessage,
     SystemChatMessage,
     SystemChatMessageContent,
+    SystemMessageType,
     UserChatMessage,
     UserChatMessageContent,
 } from './data/ChatMessage';
@@ -232,10 +233,9 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
 //* Errors
 //
 
-export function addErrorMessage(payload: FailedMessagePayload | string, messageToReplaceId?: string): void {
-    const errorMessageText = getErrorMessageText(payload);
+function replaceWithSystemMessage(message: string, type: SystemMessageType, messageToReplaceId?: string): void {
     const messageToReplace = messageToReplaceId ? findMessageById(messageToReplaceId) : null;
-    const content = {key: messageToReplace ? messageToReplace.id : nanoid(), type: 'error', node: errorMessageText};
+    const content = {key: messageToReplace ? messageToReplace.id : nanoid(), type, node: message};
     const systemMessage = toSystemMessage(content as SystemChatMessageContent);
 
     if (messageToReplace) {
@@ -243,6 +243,16 @@ export function addErrorMessage(payload: FailedMessagePayload | string, messageT
     } else {
         addChatMessage(systemMessage);
     }
+}
+
+export function addErrorMessage(payload: FailedMessagePayload | string, messageToReplaceId?: string): void {
+    const errorMessageText = getErrorMessageText(payload);
+    replaceWithSystemMessage(errorMessageText, 'error', messageToReplaceId);
+}
+
+export function addStoppedMessage(role: Exclude<MessageRole, 'model'>, messageToReplaceId?: string): void {
+    const message = role === MessageRole.USER ? t('text.system.stopped.user') : t('text.system.stopped.system');
+    replaceWithSystemMessage(message, 'stop', messageToReplaceId);
 }
 
 function getErrorMessageText(payload: FailedMessagePayload | string): string {
@@ -280,6 +290,8 @@ function getErrorMessageByCode(code: number): string {
             return t('text.error.google.notFound');
         case ERRORS.GOOGLE_REQUEST_TIMEOUT.code:
             return t('text.error.google.requestTimeout');
+        case ERRORS.GOOGLE_TOO_MANY_REQUESTS.code:
+            return t('text.error.google.tooManyRequests');
         case ERRORS.GOOGLE_SERVER_ERROR.code:
             return t('text.error.google.serverError');
         case ERRORS.GOOGLE_SERVICE_UNAVAILABLE.code:

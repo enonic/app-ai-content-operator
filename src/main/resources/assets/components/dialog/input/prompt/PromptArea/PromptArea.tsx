@@ -12,10 +12,11 @@ import {useDeepMemo} from '../../../../../hooks/useDeepMemo';
 import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugins/withMentions';
 import {$mentions} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
+import {MessageRole} from '../../../../../stores/data/MessageType';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
-import {$canChat, sendPrompt} from '../../../../../stores/websocket';
-import SendButton from '../../SendButton/SendButton';
+import {$isBusy, $isConnected, sendPrompt, sendStop} from '../../../../../stores/websocket';
+import MainChatButton from '../../MainChatButton/MainChatButton';
 import MentionsList from '../MentionsList/MentionsList';
 import PromptAreaElement from '../PromptAreaElement/PromptAreaElement';
 
@@ -82,9 +83,11 @@ export default function PromptArea({className}: Props): React.ReactNode {
         }
     }, [hidden]);
 
-    const canChat = useStore($canChat);
+    const isBusy = useStore($isBusy);
+    const isConnected = useStore($isConnected);
     const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));
-    const isSendDisabled = !canChat || editorEmpty;
+    const canSend = isConnected && !editorEmpty && !isBusy;
+    const isMainChatButtonDisabled = !isConnected || (editorEmpty && !isBusy);
 
     useEffect(() => {
         if (target) {
@@ -129,7 +132,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                     event.preventDefault();
                     if (event.altKey || event.shiftKey) {
                         editor.insertBreak();
-                    } else if (!isSendDisabled) {
+                    } else if (canSend) {
                         sendPromptAndClear(editor);
                     }
                 }
@@ -160,7 +163,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                     break;
             }
         },
-        [mentionsToDisplay, editor, index, target, isSendDisabled],
+        [mentionsToDisplay, editor, index, target, canSend],
     );
 
     return (
@@ -202,10 +205,11 @@ export default function PromptArea({className}: Props): React.ReactNode {
                     />
                 )}
             </Slate>
-            <SendButton
+            <MainChatButton
                 className='absolute bottom-2 right-2'
-                disabled={isSendDisabled}
-                clickHandler={() => sendPromptAndClear(editor)}
+                disabled={isMainChatButtonDisabled}
+                type={isBusy ? 'stop' : 'send'}
+                clickHandler={isBusy ? () => sendStop(MessageRole.USER) : () => sendPromptAndClear(editor)}
             />
         </div>
     );

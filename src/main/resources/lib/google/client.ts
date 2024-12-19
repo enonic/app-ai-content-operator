@@ -114,6 +114,8 @@ function getErrorByCode(code: number): CustomAiError {
             return ERRORS.GOOGLE_NOT_FOUND;
         case 408:
             return ERRORS.GOOGLE_REQUEST_TIMEOUT;
+        case 429:
+            return ERRORS.GOOGLE_TOO_MANY_REQUESTS;
         case 500:
             return ERRORS.GOOGLE_SERVER_ERROR;
         case 503:

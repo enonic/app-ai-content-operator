@@ -59,6 +59,7 @@ You MUST follow these instructions for answering:
   - Use \`"value"\` property as a base to perform the task on.
   - Use "Common Information" section to get real-time and other information for \`"${SPECIAL_NAMES.common}"\` field.
   - Preserve links, URLs, and other external references in the result, unless task requires to modify them explicitly.
+  - Always escape any quotes in the generated text.
 
 ### Examples: ###
 

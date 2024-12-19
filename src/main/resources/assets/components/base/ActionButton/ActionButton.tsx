@@ -45,6 +45,7 @@ export default forwardRef(function ActionButton(
                     size === 'xs' ? 'rounded-sm' : 'rounded',
                     'enabled:hover:bg-gray-100',
                     'disabled:opacity-50',
+                    'bg-white',
                     className,
                 ),
             )}

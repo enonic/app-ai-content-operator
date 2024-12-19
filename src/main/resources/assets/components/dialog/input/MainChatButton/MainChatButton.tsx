@@ -6,10 +6,11 @@ import ActionButton from '../../../base/ActionButton/ActionButton';
 type Props = {
     className?: string;
     disabled?: boolean;
+    type: 'send' | 'stop';
     clickHandler: () => void;
 };
 
-export default function SendButton({className, disabled, clickHandler}: Props): React.ReactNode {
+export default function MainChatButton({className, disabled, type, clickHandler}: Props): React.ReactNode {
     const {t} = useTranslation();
 
     return (
@@ -26,7 +27,7 @@ export default function SendButton({className, disabled, clickHandler}: Props): 
             )}
             disabled={disabled}
             name={t('action.send')}
-            icon='send'
+            icon={type}
             mode='icon-with-title'
             size='md'
             clickHandler={clickHandler}
