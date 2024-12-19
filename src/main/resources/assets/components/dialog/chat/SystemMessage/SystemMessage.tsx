@@ -2,12 +2,13 @@ import {ReactNode} from 'react';
 import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
+import {SystemMessageType} from '../../../../stores/data/ChatMessage';
 import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
 
 type Props = {
     className?: string;
     children: ReactNode;
-    type: 'context' | 'error';
+    type: SystemMessageType;
 };
 
 export default function SystemMessage({className, children, type}: Props): React.ReactNode {

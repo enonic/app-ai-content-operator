@@ -28,7 +28,7 @@ export function AssistantMessageList({messageId, content, last}: Props): React.R
     }, [ref, last]);
 
     return (
-        <ul className='flex flex-col divide-y' ref={ref}>
+        <ul className='flex flex-col divide-y rounded overflow-hidden' ref={ref}>
             {Object.entries(messageContentToValues(content)).map(([key, value]) => {
                 if (key === SPECIAL_NAMES.common) {
                     return <CommonItem key={key} className={classNames} value={value} last={last} />;

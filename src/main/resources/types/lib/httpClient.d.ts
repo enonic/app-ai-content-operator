@@ -21,6 +21,7 @@ export interface HttpClientRequestOptions {
     disableHttps2?: boolean; // false
     connectionTimeout?: number; // 10000
     readTimeout?: number; // 10000
+    disableHttp2?: boolean; // false
     body?: string | Stream;
     contentType?: ContentType;
     followRedirects?: boolean;

@@ -21,11 +21,7 @@ export const ERRORS = {
     // REST Errors 0000
     REST_REQUEST_FAILED: err(0, 'REST request failed.'),
     RESPONSE_BODY_MISSING: err(1, 'REST response body is missing.'),
-    REST_REQUEST_PARAMS_MISSING: err(10, 'Request params are missing.'),
-    REST_REQUEST_BODY_MISSING: err(20, 'Request body is missing.'),
-    REST_REQUEST_BODY_INVALID: err(21, 'Request body is invalid.'),
-    REST_OPERATION_NOT_SUPPORTED: err(22, 'Operation not supported.'),
-    REST_WRONG_CONTENT_TYPE: err(23, 'Wrong content type.'),
+    REST_WRONG_CONTENT_TYPE: err(10, 'Wrong content type.'),
     REST_NOT_AUTHENTICATED: err(401, 'Not authenticated.'),
     REST_NOT_FOUND: err(404, 'Not found.'),
     REST_TIMEOUT: err(408, 'Request timeout.'),
@@ -33,6 +29,8 @@ export const ERRORS = {
     // WS Errors 0600
     WS_UNKNOWN_ERROR: err(600, 'Unknown WebSocket error.'),
     WS_INVALID_PROTOCOL: err(601, 'Invalid WebSocket protocol.'),
+    WS_OPERATION_NOT_FOUND: err(610, 'Operation not found.'),
+    WS_OPERATION_ALREADY_RUNNING: err(611, 'Operation already running.'),
     // Node Errors 1000
 
     // Query Errors 2000
@@ -72,6 +70,7 @@ export const ERRORS = {
     GOOGLE_FORBIDDEN: err(5403, 'Google API: Forbidden.'),
     GOOGLE_NOT_FOUND: err(5404, 'Google API: Not found.'),
     GOOGLE_REQUEST_TIMEOUT: err(5408, 'Request to Google API timed out.'),
+    GOOGLE_TOO_MANY_REQUESTS: err(5429, 'Google API: Resource exhausted, please try again later.'),
     GOOGLE_SERVER_ERROR: err(5500, 'Google server error.'),
     GOOGLE_SERVICE_UNAVAILABLE: err(5503, 'Google service unavailable.'),
 

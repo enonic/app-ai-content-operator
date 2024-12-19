@@ -17,6 +17,7 @@ import {parseNodes, parseText} from '../common/slate';
 import {
     addErrorMessage,
     addModelMessage,
+    addStoppedMessage,
     addUserMessage,
     createAnalysisHistory,
     createGenerationHistory,
@@ -26,6 +27,7 @@ import {
 } from './chat';
 import {$config} from './config';
 import {$contentPath, $language, createFields} from './data';
+import {MessageRole} from './data/MessageType';
 
 type WebSocketLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
 
@@ -48,6 +50,7 @@ export const $websocket = map<WebSocketStore>({
 });
 
 type Buffer = {
+    generationId?: string;
     userMessageId?: string;
     modelMessageId?: string;
 };
@@ -60,12 +63,12 @@ const $lastPayload = atom<Optional<Readonly<GenerateMessagePayload>>>(null);
 //* State
 //
 
-export const $busy = computed($buffer, ({userMessageId, modelMessageId}): boolean => {
-    return userMessageId != null || modelMessageId != null;
+export const $isBusy = computed($buffer, ({generationId, userMessageId, modelMessageId}): boolean => {
+    return generationId != null || userMessageId != null || modelMessageId != null;
 });
 
-export const $busyAnalyzing = computed($buffer, ({userMessageId, modelMessageId}): boolean => {
-    return userMessageId != null && modelMessageId == null;
+export const $busyAnalyzing = computed($buffer, ({generationId, userMessageId, modelMessageId}): boolean => {
+    return generationId != null && userMessageId != null && modelMessageId == null;
 });
 
 const $reconnectTimeout = computed($websocket, ({reconnectAttempts}) => Math.min(2 ** reconnectAttempts * 1000, 30000));
@@ -74,8 +77,8 @@ function incrementReconnectAttempts(): void {
     $websocket.setKey('reconnectAttempts', $websocket.get().reconnectAttempts + 1);
 }
 
-export const $canChat = computed([$websocket, $busy], ({connection, state, online}, busy) => {
-    return connection != null && connection.readyState === WebSocket.OPEN && state === 'connected' && online && !busy;
+export const $isConnected = computed($websocket, ({connection, state, online}) => {
+    return connection != null && connection.readyState === WebSocket.OPEN && state === 'connected' && online;
 });
 
 function isActiveConnection(connection: Optional<WebSocket>): connection is WebSocket {
@@ -89,7 +92,7 @@ function isActiveConnection(connection: Optional<WebSocket>): connection is WebS
 //* Lifecycle
 //
 
-const $needsUnmount = computed([$websocket, $busy], ({lifecycle}, busy) => lifecycle === 'unmounting' && !busy);
+const $needsUnmount = computed([$websocket, $isBusy], ({lifecycle}, isBusy) => lifecycle === 'unmounting' && !isBusy);
 
 let unsubscribeUnmount: Optional<() => void>;
 
@@ -138,10 +141,13 @@ const MAX_RECONNECT_ATTEMPTS = 5;
 const CONNECTION_TIMEOUT = 60000; // ms
 const PING_INTERVAL = 50000; // ms
 const PONG_TIMEOUT = 15000; // ms
+const STOP_ANALYSIS_TIMEOUT = 20000; // ms
+const STOP_GENERATION_TIMEOUT = 60000; // ms
 
 let pingInterval: number;
 let pongTimeout: number;
 let reconnectTimeout: number;
+let stopTimeout: number;
 
 function connect(): void {
     const {state, connection} = $websocket.get();
@@ -256,6 +262,7 @@ function cleanup(ws: WebSocket): void {
     clearInterval(pingInterval);
     clearTimeout(reconnectTimeout);
     clearTimeout(pongTimeout);
+    clearTimeout(stopTimeout);
 
     $websocket.setKey('state', 'disconnected');
     $websocket.setKey('connection', null);
@@ -289,7 +296,6 @@ function handleMessage(event: MessageEvent<string>): void {
 
         case MessageType.GENERATED: {
             handleGeneratedMessage(message.payload);
-            $buffer.set({});
             break;
         }
 
@@ -347,12 +353,37 @@ function sendMessage(message: ClientMessage): void {
 }
 
 function sendGenerateMessage(payload: GenerateMessagePayload): void {
-    sendMessage({type: MessageType.GENERATE, metadata: createMetadata(), payload});
+    const metadata = createMetadata();
+    sendMessage({type: MessageType.GENERATE, metadata, payload});
+
+    $buffer.setKey('generationId', metadata.id);
+
+    clearTimeout(stopTimeout);
+    stopTimeout = setTimeout(() => {
+        sendStop(MessageRole.SYSTEM);
+    }, STOP_ANALYSIS_TIMEOUT);
 }
 
 //
 //* Flow: Client → Server
 //
+
+export function sendStop(role: Exclude<MessageRole, 'model'>): void {
+    if (!$isConnected.get()) {
+        return;
+    }
+
+    const {generationId, modelMessageId} = $buffer.get();
+    if (!generationId) {
+        return;
+    }
+
+    sendMessage({type: MessageType.STOP, metadata: createMetadata(), payload: {generationId}});
+    addStoppedMessage(role, modelMessageId);
+
+    clearTimeout(stopTimeout);
+    $buffer.set({});
+}
 
 export function sendPrompt(nodes: Descendant[]): void {
     const node = parseNodes(nodes);
@@ -372,7 +403,7 @@ export function sendRetry(forId: string): void {
 }
 
 function send(node: React.ReactNode, prompt: string): void {
-    if (!$canChat.get()) {
+    if (!$isConnected.get()) {
         return;
     }
 
@@ -408,6 +439,11 @@ function handleAnalyzedMessage({request, result}: AnalyzedMessagePayload): void 
     }
 
     $buffer.setKey('modelMessageId', modelMessage.id);
+
+    clearTimeout(stopTimeout);
+    stopTimeout = setTimeout(() => {
+        sendStop(MessageRole.SYSTEM);
+    }, STOP_GENERATION_TIMEOUT);
 }
 
 function handleGeneratedMessage({request, result}: GeneratedMessagePayload): void {
@@ -419,10 +455,13 @@ function handleGeneratedMessage({request, result}: GeneratedMessagePayload): voi
     updateUserMessage(userMessageId, {generationPrompt: request});
     updateModelMessage(modelMessageId, result);
 
+    clearTimeout(stopTimeout);
     $buffer.set({});
 }
 
 function handleFailedMessage(payload: FailedMessagePayload): void {
     addErrorMessage(payload, $buffer.get().modelMessageId);
+
+    clearTimeout(stopTimeout);
     $buffer.set({});
 }
