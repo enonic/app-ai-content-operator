@@ -18,6 +18,7 @@
     "field.mentions.topic.prettified": "Refer content's Display Name",
     "field.mentions.all.label": "All Inputs",
     "field.mentions.all.prettified": "Refer all available input fields",
+    "field.message.assistant.placeholder.common": "Thinking on your request...",
     "field.message.assistant.placeholder.single": "Creating suggestion for {{name}}...",
     "field.message.assistant.placeholder.multiple": "Creating suggestions for {{name}} and {{count}} more...",
     "text.greeting.first": "Hi, I’m Juke, your AI assistant.",
