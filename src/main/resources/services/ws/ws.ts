@@ -1,10 +1,10 @@
-import * as taskLib from '/lib/xp/task';
 import * as websocketLib from '/lib/xp/websocket';
 
 import {analyze} from '../../lib/flow/analyze';
 import {generate} from '../../lib/flow/generate';
 import {logDebug, LogDebugGroups, logError} from '../../lib/logger';
 import {respondError} from '../../lib/requests';
+import {runAsyncTask} from '../../lib/utils/task';
 import {unsafeUUIDv4} from '../../lib/utils/uuid';
 import {WS_PROTOCOL} from '../../shared/constants';
 import {ERRORS} from '../../shared/errors';
@@ -119,7 +119,7 @@ function handleMessage(event: Enonic.WebSocketEvent): void {
             sendMessage(id, {type: MessageType.CONNECTED});
             break;
         case MessageType.GENERATE:
-            analyzeAndGenerate(id, message);
+            runAsyncTask('ws', () => analyzeAndGenerate(id, message));
             break;
         case MessageType.STOP:
             stopGeneration(message.payload.generationId);
@@ -188,15 +188,6 @@ function sendFailedWarningMessage(socketId: string, text: string): void {
 //
 
 function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
-    taskLib.executeFunction({
-        description: 'ai-operator-task-ws',
-        func: () => {
-            doAnalyzeAndGenerate(socketId, message);
-        },
-    });
-}
-
-function doAnalyzeAndGenerate(socketId: string, message: GenerateMessage): void {
     try {
         const {id} = message.metadata;
 
