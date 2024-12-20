@@ -10,7 +10,6 @@ export default function LaunchButton(): React.ReactNode {
     const {hidden} = useStore($dialog, {keys: ['hidden']});
 
     const classNames = twJoin([
-        'ai-content-operator',
         'w-full h-full flex items-center justify-center',
         'box-border',
         hidden && '[&:not(:hover)]:opacity-50 [&:not(:hover)]:grayscale-[50%]',
