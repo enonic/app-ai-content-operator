@@ -21,7 +21,11 @@ export default function AssistantDialog({className = ''}: Props): React.ReactNod
     const [dragging, setDragging] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
-    useEffect(() => mountWebSocket(), []);
+    useEffect(() => {
+        if (!hidden) {
+            return mountWebSocket();
+        }
+    }, [hidden]);
 
     useEffect(() => {
         const liveFrame = document.querySelector<HTMLElement>('.live-edit-frame');
