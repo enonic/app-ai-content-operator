@@ -1,3 +1,4 @@
+import * as taskLib from '/lib/xp/task';
 import * as websocketLib from '/lib/xp/websocket';
 
 import {analyze} from '../../lib/flow/analyze';
@@ -187,6 +188,15 @@ function sendFailedWarningMessage(socketId: string, text: string): void {
 //
 
 function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
+    taskLib.executeFunction({
+        description: 'ai-operator-task-ws',
+        func: () => {
+            doAnalyzeAndGenerate(socketId, message);
+        },
+    });
+}
+
+function doAnalyzeAndGenerate(socketId: string, message: GenerateMessage): void {
     try {
         const {id} = message.metadata;
 
