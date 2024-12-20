@@ -15,6 +15,17 @@ type Props = {
     content: Omit<ModelChatMessageContent, 'generationResult'>;
 };
 
+function getPlaceholderMessage(count: number): string {
+    switch (count) {
+        case 0:
+            return 'field.message.assistant.placeholder.common';
+        case 1:
+            return 'field.message.assistant.placeholder.single';
+        default:
+            return 'field.message.assistant.placeholder.multiple';
+    }
+}
+
 export default function AssistantMessagePlaceholder({content}: Props): React.ReactNode {
     const {t} = useTranslation();
     const fieldDescriptors = useStore($fieldDescriptors);
@@ -51,12 +62,10 @@ export default function AssistantMessagePlaceholder({content}: Props): React.Rea
                         'pl-1 text-sm text-left',
                     ])}
                 >
-                    {t(
-                        count > 1
-                            ? 'field.message.assistant.placeholder.multiple'
-                            : 'field.message.assistant.placeholder.single',
-                        {name: analyzedFieldsDescriptors.at(0)?.label, count: count - 1},
-                    )}
+                    {t(getPlaceholderMessage(count), {
+                        name: analyzedFieldsDescriptors.at(0)?.label,
+                        count: count - 1,
+                    })}
                 </span>
             </ActionButton>
             <ul className={twJoin('flex flex-col gap-1 pl-6 divide-y', !expanded && 'hidden')}>
