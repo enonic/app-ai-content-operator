@@ -45,63 +45,64 @@ export default function MentionsList({
 
     return (
         <Portal>
-            <div
-                ref={ref}
-                className={twMerge(
-                    'ai-content-operator',
-                    'EnonicAiMentionsList',
-                    'absolute',
-                    !targetRect && 'hidden',
-                    'box-content',
-                    'flex flex-col',
-                    'max-w-96 max-h-30',
-                    'p-1',
-                    'bg-white',
-                    'rounded',
-                    'shadow-md',
-                    'overflow-y-auto',
-                    'z-[2000]',
-                    'ai-content-operator-scroll',
-                    className,
-                )}
-                style={{
-                    ...(targetRect && {
-                        top: targetRect.top + window.scrollY + 20,
-                        left: targetRect.left + window.scrollX,
-                    }),
-                }}
-            >
-                {hasMentions ? (
-                    mentions.map((mention, i) => (
-                        <button
-                            key={mention.path}
-                            ref={el => {
-                                buttonRefs.current[i] = el;
-                            }}
-                            onClick={() => handleClick(mention)}
-                            title={mention.prettified !== mention.label ? mention.prettified : undefined}
-                            className={twJoin(
-                                'block',
-                                'flex-none',
-                                'h-6',
-                                'px-2 py-0.5',
-                                'truncate',
-                                'rounded-sm',
-                                'hover:bg-slate-50',
-                                i === selectedIndex && 'bg-slate-100 hover:bg-slate-200',
-                                i !== selectedIndex && 'hover:bg-slate-50',
-                                'text-left text-sm',
-                                mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
-                            )}
-                        >
-                            {mention.label}
-                        </button>
-                    ))
-                ) : (
-                    <div className='flex items-center h-6 px-2 text-sm text-enonic-gray-400 select-none'>
-                        {t('text.mentions.notFound')}
-                    </div>
-                )}
+            <div className='ai-content-operator'>
+                <div
+                    ref={ref}
+                    className={twMerge(
+                        'EnonicAiMentionsList',
+                        'absolute',
+                        !targetRect && 'hidden',
+                        'box-content',
+                        'flex flex-col',
+                        'max-w-96 max-h-30',
+                        'p-1',
+                        'bg-white',
+                        'rounded',
+                        'shadow-md',
+                        'overflow-y-auto',
+                        'z-[2000]',
+                        'ai-content-operator-scroll',
+                        className,
+                    )}
+                    style={{
+                        ...(targetRect && {
+                            top: targetRect.top + window.scrollY + 20,
+                            left: targetRect.left + window.scrollX,
+                        }),
+                    }}
+                >
+                    {hasMentions ? (
+                        mentions.map((mention, i) => (
+                            <button
+                                key={mention.path}
+                                ref={el => {
+                                    buttonRefs.current[i] = el;
+                                }}
+                                onClick={() => handleClick(mention)}
+                                title={mention.prettified !== mention.label ? mention.prettified : undefined}
+                                className={twJoin(
+                                    'block',
+                                    'flex-none',
+                                    'h-6',
+                                    'px-2 py-0.5',
+                                    'truncate',
+                                    'rounded-sm',
+                                    'hover:bg-slate-50',
+                                    i === selectedIndex && 'bg-slate-100 hover:bg-slate-200',
+                                    i !== selectedIndex && 'hover:bg-slate-50',
+                                    'text-left text-sm',
+                                    mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
+                                )}
+                            >
+                                {mention.label}
+                            </button>
+                        ))
+                    ) : (
+                        <div className='flex items-center h-6 px-2 text-sm text-enonic-gray-400 select-none'>
+                            {t('text.mentions.notFound')}
+                        </div>
+                    )}
+                </div>
             </div>
         </Portal>
     );
