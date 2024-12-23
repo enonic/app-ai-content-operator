@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@nanostores/react':
-        specifier: ^0.8.2
-        version: 0.8.2(nanostores@0.11.3)(react@18.3.1)
+        specifier: ^0.8.4
+        version: 0.8.4(nanostores@0.11.3)(react@18.3.1)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -721,12 +721,12 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
-  '@nanostores/react@0.8.2':
-    resolution: {integrity: sha512-DW4lIsDpdGqHvr9Ah/5InSsl9GFkIQOiA6FdKbordUT9BNNoAWcObwtCUyNfEhe6UEOC+Kw9rbdU8EcyoZjAGA==}
+  '@nanostores/react@0.8.4':
+    resolution: {integrity: sha512-EciHSzDXg7GmGODjegGG1VldPEinbAK+12/Uz5+MAdHmxf082Rl6eXqKFxAAu4pZAcr5dNTpv6wMfEe7XacjkQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
-      react: '>=18.0.0 || >=19.0.0-rc'
+      react: '>=18.0.0'
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -4056,7 +4056,7 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@nanostores/react@0.8.2(nanostores@0.11.3)(react@18.3.1)':
+  '@nanostores/react@0.8.4(nanostores@0.11.3)(react@18.3.1)':
     dependencies:
       nanostores: 0.11.3
       react: 18.3.1
