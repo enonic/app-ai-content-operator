@@ -19,7 +19,7 @@ export default function MainChatButton({className, disabled, type, clickHandler}
                 'w-8 h-8',
                 'p-0.5',
                 'text-white',
-                'border border-enonic-blue rounded-full',
+                'border border-enonic-blue rounded-xl',
                 'bg-enonic-blue',
                 'enabled:hover:bg-enonic-blue-400',
                 'disabled:bg-enonic-gray-400 disabled:border-enonic-gray-400',

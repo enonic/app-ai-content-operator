@@ -42,10 +42,18 @@ export default forwardRef(function ActionButton(
                         lg: hasText ? 'h-10 px-3' : 'h-10 p-2',
                         xl: hasText ? 'h-12 px-4' : 'h-12 p-2',
                     }[size],
+                    {
+                        xs: 'text-xs',
+                        sm: 'text-sm',
+                        md: 'text-base',
+                        lg: 'text-base',
+                        xl: 'text-lg',
+                    }[size],
                     size === 'xs' ? 'rounded-sm' : 'rounded',
                     'enabled:hover:bg-gray-100',
                     'disabled:opacity-50',
                     'bg-white',
+
                     className,
                 ),
             )}
@@ -69,24 +77,7 @@ export default forwardRef(function ActionButton(
                     )}
                 />
             )}
-            {name && (
-                <span
-                    className={clsx(
-                        'truncate',
-                        {'pl-1': !hasNoIcon},
-                        {'sr-only': !hasText},
-                        {
-                            xs: 'text-xs',
-                            sm: 'text-sm',
-                            md: 'text-base',
-                            lg: 'text-base',
-                            xl: 'text-lg',
-                        }[size],
-                    )}
-                >
-                    {name}
-                </span>
-            )}
+            {name && <span className={clsx('truncate', {'pl-1': !hasNoIcon}, {'sr-only': !hasText})}>{name}</span>}
             {children}
         </button>
     );

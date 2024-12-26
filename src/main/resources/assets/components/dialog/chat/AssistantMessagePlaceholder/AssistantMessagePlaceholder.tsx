@@ -57,7 +57,7 @@ export default function AssistantMessagePlaceholder({content}: Props): React.Rea
             >
                 <span
                     className={twJoin([
-                        'bg-middle-gradient bg-text-gradient-size from-black to-enonic-gray-400',
+                        'bg-gradient-middle bg-text-gradient-size from-black to-enonic-gray-400',
                         'text-transparent bg-clip-text animate-move-gradient',
                         'pl-1 text-sm text-left',
                     ])}

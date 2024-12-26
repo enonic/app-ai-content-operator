@@ -31,7 +31,12 @@ export default function ContextItem({className, path, last}: Props): React.React
 
     return (
         <ActionButton
-            className={twJoin('disabled:opacity-100', isEnabled && 'text-enonic-blue-400', className)}
+            className={twJoin(
+                'disabled:opacity-100 enabled:hover:bg-white text-xs rounded-lg',
+                isEnabled && 'text-enonic-blue-400 hover:text-enonic-blue-500',
+                last && 'font-medium',
+                className,
+            )}
             size='sm'
             mode='text-with-title'
             title={t('action.switchContextTo', {name})}
