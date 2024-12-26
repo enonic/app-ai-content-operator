@@ -1,21 +1,23 @@
 import {useStore} from '@nanostores/react';
-import clsx from 'clsx';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {createEditor, Descendant, Editor, Node, Transforms} from 'slate';
 import {withHistory} from 'slate-history';
 import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
-import {twMerge} from 'tailwind-merge';
+import {twJoin, twMerge} from 'tailwind-merge';
 
 import {findLooseMatch} from '../../../../../common/mentions';
 import {useDeepMemo} from '../../../../../hooks/useDeepMemo';
 import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugins/withMentions';
+import {$context} from '../../../../../stores/context';
 import {$mentions} from '../../../../../stores/data';
 import {Mention} from '../../../../../stores/data/Mention';
 import {MessageRole} from '../../../../../stores/data/MessageType';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
+import {getAllPathsFromString} from '../../../../../stores/utils/path';
 import {$isBusy, $isConnected, sendPrompt, sendStop} from '../../../../../stores/websocket';
+import ContextControl from '../../../context/ContextControls/ContextControls';
 import MainChatButton from '../../MainChatButton/MainChatButton';
 import MentionsList from '../MentionsList/MentionsList';
 import PromptAreaElement from '../PromptAreaElement/PromptAreaElement';
@@ -88,6 +90,10 @@ export default function PromptArea({className}: Props): React.ReactNode {
     const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));
     const canSend = isConnected && !editorEmpty && !isBusy;
     const isMainChatButtonDisabled = !isConnected || (editorEmpty && !isBusy);
+
+    const context = useStore($context);
+    const paths = context ? getAllPathsFromString(context) : [];
+    const hasContext = paths.length > 0;
 
     useEffect(() => {
         if (target) {
@@ -173,22 +179,27 @@ export default function PromptArea({className}: Props): React.ReactNode {
                 'flex flex-col flex-grow items-center',
                 'w-full',
                 'bg-enonic-gray-100',
-                'rounded-[1.5rem]',
+                'rounded-2xl',
                 'overflow-y-auto',
+                hasContext &&
+                    'before:content-[""] before:absolute before:inset-0 before:h-10 before:top-[1px] before:left-2 before:right-2 before:rounded-t-lg before:bg-gradient-fade-to-t before:from-transparent before:to-enonic-gray-100 before:z-10',
                 className,
             )}
         >
+            <ContextControl className='absolute top-2 left-2 w-[calc(100%-1rem)] z-20' />
             <Slate editor={editor} initialValue={INITIAL_VALUE} onChange={handleChange}>
                 <Editable
-                    className={clsx(
+                    className={twJoin(
                         'w-full max-h-[7.75rem]',
-                        'm-0 py-3 pr-11',
+                        'm-0 pb-3 pr-11',
+                        hasContext ? 'pt-12' : 'pt-3',
                         'bg-transparent placeholder-black/50',
-                        'border-0 rounded-[1.5rem]',
+                        'border-0 rounded-2xl',
                         'resize-none',
                         'text-sm leading-6',
                         'outline-none',
                         'overflow-x-hidden overflow-y-auto',
+                        'transition-padding duration-200 ease-in-out',
                         'ai-content-operator-compact-scroll',
                     )}
                     onKeyDown={handleKeyDown}
@@ -206,7 +217,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                 )}
             </Slate>
             <MainChatButton
-                className='absolute bottom-2 right-2'
+                className='absolute bottom-2 right-2 z-20'
                 disabled={isMainChatButtonDisabled}
                 type={isBusy ? 'stop' : 'send'}
                 clickHandler={isBusy ? () => sendStop(MessageRole.USER) : () => sendPromptAndClear(editor)}

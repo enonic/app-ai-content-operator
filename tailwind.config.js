@@ -19,6 +19,7 @@ export default {
                 'enonic-blue': {
                     DEFAULT: '#2c76e9',
                     400: '#5a94ee',
+                    500: '#4279d9',
                     700: '#1a56b8',
                     800: '#123d8a',
                 },
@@ -49,8 +50,9 @@ export default {
                 'header-title': '1.725rem',
             },
             backgroundImage: {
-                'middle-gradient':
+                'gradient-middle':
                     'linear-gradient(90deg, var(--tw-gradient-from) 25%, var(--tw-gradient-to) 50%, var(--tw-gradient-from) 75%)',
+                'gradient-fade-to-t': 'linear-gradient(0deg, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 15%)',
             },
             backgroundSize: {
                 'text-gradient-size': '200% 100%',
@@ -69,6 +71,9 @@ export default {
             gridTemplateRows: {
                 auto: 'auto',
                 'fit-1fr': 'minmax(auto, min-content) 1fr',
+            },
+            transitionProperty: {
+                padding: 'padding',
             },
             keyframes: {
                 'slide-fade-in': {

@@ -1,12 +1,16 @@
 import {useStore} from '@nanostores/react';
 import {t} from 'i18next';
-import {twJoin} from 'tailwind-merge';
+import {twMerge} from 'tailwind-merge';
 
 import {$context, resetContext} from '../../../../stores/context';
 import {Path} from '../../../../stores/data/Path';
 import {getAllPathsFromString, pathToString} from '../../../../stores/utils/path';
 import ActionButton from '../../../base/ActionButton/ActionButton';
 import ContextItem from '../ContextItem/ContextItem';
+
+type Props = {
+    className?: string;
+};
 
 function createItems(paths: Path[]): React.ReactNode[] {
     return paths.flatMap((path, i) => {
@@ -23,24 +27,26 @@ function createItems(paths: Path[]): React.ReactNode[] {
     });
 }
 
-export default function ContextControl(): React.ReactNode {
+export default function ContextControl({className}: Props): React.ReactNode {
     const context = useStore($context);
     const paths = context ? getAllPathsFromString(context) : [];
     const isEmpty = paths.length === 0;
 
     return (
         <div
-            className={twJoin(
+            className={twMerge(
                 'flex gap-0.5 justify-start items-center',
-                'box-content',
-                'ml-17 mr-6',
+                'bg-white rounded-lg',
                 'text-xs',
+                'overflow-hidden',
                 'transition-all duration-200 ease-in-out',
-                isEmpty ? 'h-0 -mb-2 opacity-0 pointer-events-none' : 'h-6 mb-0 opacity-100',
+                isEmpty ? 'h-0 opacity-0 pointer-events-none invisible' : 'h-7 opacity-100',
+                className,
             )}
         >
             <div className='flex items-center w-fit overflow-hidden'>{createItems(paths)}</div>
             <ActionButton
+                className='ml-auto w-8 text-enonic-gray-600 enabled:hover:text-black enabled:hover:bg-white rounded-lg'
                 name={t('action.resetContext')}
                 mode='icon-with-title'
                 size='sm'
