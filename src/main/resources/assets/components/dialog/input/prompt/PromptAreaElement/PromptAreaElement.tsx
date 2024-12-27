@@ -8,7 +8,7 @@ function isMentionProps(props: Props): props is MentionElementProps {
     return 'element' in props && props.element.type === 'mention';
 }
 
-export default function PromptAreaElement(props: Props): JSX.Element {
+export default function PromptAreaElement(props: Props): React.ReactElement {
     if (isMentionProps(props)) {
         return <MentionElement {...props} />;
     }

@@ -74,7 +74,8 @@ export default function AssistantDialog({className = ''}: Props): React.ReactNod
                 setDragging(false);
             }}
             handle='.drag-handle'
-            nodeRef={ref}
+            // ! To be removed asap, react-draggable is not working properly with react 19
+            nodeRef={ref as React.RefObject<HTMLElement>}
         >
             <Resizable
                 className={twJoin(
