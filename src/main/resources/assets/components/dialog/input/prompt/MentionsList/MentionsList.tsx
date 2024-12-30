@@ -34,14 +34,52 @@ export default function MentionsList({
 
     useEffect(() => {
         const list = ref.current;
-        if (list) {
+        if (list && targetRect) {
+            // Reset position, width, and children auto-fit to calculate proper dimensions
+            list.style.display = 'block';
             list.style.width = 'auto';
-            if (buttonRefs.current.length > 0 && mentions.length > 0) {
-                const widths = buttonRefs.current.map(button => button?.offsetWidth || 0);
-                list.style.width = `${Math.max(...widths) + 1}px`;
-            }
+            list.style.top = '';
+            list.style.left = '';
+
+            // Calculate dimensions AFTER the list has had a chance to layout its content
+            requestAnimationFrame(() => {
+                const listRect = list.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
+                const viewportWidth = window.innerWidth;
+
+                const spaceBelow = viewportHeight - (targetRect.bottom + window.scrollY);
+                const spaceAbove = targetRect.top - window.scrollY;
+                const spaceRight = viewportWidth - targetRect.left;
+
+                if (buttonRefs.current.length > 0 && mentions.length > 0) {
+                    const widths = buttonRefs.current.map(button => button?.offsetWidth ?? 0);
+                    const maxWidth = Math.max(...widths);
+                    list.style.width = `${maxWidth + 16}px`; // Adding padding
+                    list.style.display = '';
+                }
+
+                let top: number;
+                let left: number;
+
+                // Vertical positioning
+                if (spaceBelow >= listRect.height || spaceBelow >= spaceAbove) {
+                    top = targetRect.bottom + window.scrollY;
+                } else {
+                    top = targetRect.top + window.scrollY - listRect.height;
+                }
+
+                // Horizontal positioning
+                if (spaceRight >= listRect.width) {
+                    left = targetRect.left + window.scrollX;
+                } else {
+                    left = targetRect.right + window.scrollX - listRect.width;
+                }
+
+                list.style.top = `${top}px`;
+                list.style.left = `${left}px`;
+            });
         }
-    }, [mentions, buttonRefs, ref]);
+    }, [mentions, targetRect]);
 
     return (
         <Portal>
@@ -54,22 +92,16 @@ export default function MentionsList({
                         !targetRect && 'hidden',
                         'box-content',
                         'flex flex-col',
-                        'max-w-96 max-h-30',
+                        'max-w-96 max-h-30 min-w-24',
                         'p-1',
                         'bg-white',
                         'rounded',
                         'shadow-md',
-                        'overflow-y-auto',
+                        'overflow-y-auto overflow-x-hidden',
                         'z-[2000]',
                         'ai-content-operator-scroll',
                         className,
                     )}
-                    style={{
-                        ...(targetRect && {
-                            top: targetRect.top + window.scrollY + 20,
-                            left: targetRect.left + window.scrollX,
-                        }),
-                    }}
                 >
                     {hasMentions ? (
                         mentions.map((mention, i) => (
