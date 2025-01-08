@@ -8,6 +8,8 @@ export type UserChatMessage = {
     id: string;
     role: MessageRole.USER;
     content: UserChatMessageContent;
+    nextId?: string;
+    nextIds: string[];
 };
 
 export type UserChatMessageContent = {
@@ -19,9 +21,9 @@ export type UserChatMessageContent = {
 
 export type ModelChatMessage = {
     id: string;
-    for: string; // ID of the related user message
     role: MessageRole.MODEL;
     content: ModelChatMessageContent;
+    nextId?: string;
 };
 
 export type ModelChatMessageContent = {
@@ -34,6 +36,7 @@ export type SystemChatMessage = {
     id: string;
     role: MessageRole.SYSTEM;
     content: SystemChatMessageContent;
+    nextId?: string;
 };
 
 export type SystemChatMessageContent = {

@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import {useEffect, useRef} from 'react';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {$chat} from '../../../../stores/chat';
+import {$history} from '../../../../stores/chat';
 import {ChatMessage} from '../../../../stores/data/ChatMessage';
 import {$dialog} from '../../../../stores/dialog';
 import {$busyAnalyzing} from '../../../../stores/websocket';
@@ -38,7 +38,7 @@ export default function ChatThread({className = ''}: Props): React.ReactNode {
     const isBusyAnalyzing = useStore($busyAnalyzing);
     const isLoading = !isDialogInitialized || isBusyAnalyzing;
 
-    const {history} = useStore($chat, {keys: ['history']});
+    const history = useStore($history);
     const count = history.length;
 
     const ref = useRef<HTMLDivElement>(null);
