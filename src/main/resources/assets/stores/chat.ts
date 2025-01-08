@@ -1,12 +1,13 @@
 import {t} from 'i18next';
 import {nanoid} from 'nanoid';
-import {computed, map} from 'nanostores';
+import {atom, computed, map} from 'nanostores';
 
 import {ERRORS} from '../../shared/errors';
 import {Message} from '../../shared/model';
 import {AnalysisResult} from '../../shared/prompts/analysis';
 import {GenerationResult} from '../../shared/prompts/generation';
 import {FailedMessagePayload} from '../../shared/websocket';
+import {flattenGraph, pruneGraph} from '../common/graph';
 import {
     ChatMessage,
     ModelChatMessage,
@@ -18,21 +19,29 @@ import {
 } from './data/ChatMessage';
 import {MessageRole} from './data/MessageType';
 
-export type Chat = {
-    history: ChatMessage[];
-};
+//
+//* Graph
+//
 
-export const $chat = map<Chat>({history: []});
+const $startId = atom<Optional<string>>(undefined);
 
-export const $forIds = computed($chat, ({history}) =>
-    history.filter(message => message.role === MessageRole.MODEL).map(message => message.for),
-);
+const $messages = map<Record<string, ChatMessage>>({});
+
+export const $history = computed([$startId, $messages], (startId, messages): ChatMessage[] => {
+    return startId != null ? flattenGraph(messages, startId) : [];
+});
+
+const $lastMessage = computed($history, (history): Optional<ChatMessage> => history.at(-1));
 
 export function clearChat(): void {
-    const firstMessage = $chat.get().history.at(0);
-    if ($chat.get().history.length > 0) {
-        const hasFirstSystemMessage = firstMessage?.role === MessageRole.SYSTEM;
-        $chat.setKey('history', hasFirstSystemMessage ? [firstMessage] : []);
+    const startId = $startId.get();
+    const messages = $messages.get();
+    const firstMessage = startId ? messages[startId] : null;
+    if (startId != null && firstMessage?.role === MessageRole.SYSTEM) {
+        $messages.set({[startId]: firstMessage});
+    } else {
+        $messages.set({});
+        $startId.set(undefined);
     }
 }
 
@@ -41,41 +50,63 @@ export function clearChat(): void {
 //
 
 export function createAnalysisHistory(): Message[] {
-    return $chat
-        .get()
-        .history.filter(message => message.role !== MessageRole.SYSTEM)
-        .filter(message => message.role === MessageRole.MODEL || $forIds.get().includes(message.id))
-        .map((message): Message => {
-            if (message.role === MessageRole.MODEL) {
-                return {
-                    role: 'model',
-                    text: JSON.stringify(message.content.analysisResult, null, 2),
-                };
+    const history = $history.get();
+    const result: Message[] = [];
+    let currentUserMessage: Optional<UserChatMessage> = null;
+
+    for (const message of history) {
+        if (message.role === MessageRole.USER) {
+            currentUserMessage = message;
+        } else if (message.role === MessageRole.MODEL) {
+            const {analysisPrompt} = currentUserMessage?.content ?? {};
+            const {analysisResult} = message.content;
+            if (analysisPrompt && analysisResult) {
+                result.push(createUserMessage(analysisPrompt));
+                result.push(createModelMessage(analysisResult));
+                currentUserMessage = null;
             }
-            return {
-                role: 'user',
-                text: message.content.analysisPrompt ?? '',
-            };
-        });
+            currentUserMessage = null;
+        }
+    }
+
+    return result;
 }
 
 export function createGenerationHistory(): Message[] {
-    return $chat
-        .get()
-        .history.filter(message => message.role !== MessageRole.SYSTEM)
-        .filter(message => message.role === MessageRole.MODEL || $forIds.get().includes(message.id))
-        .map((message): Message => {
-            if (message.role === MessageRole.MODEL) {
-                return {
-                    role: 'model',
-                    text: JSON.stringify(message.content.generationResult, null, 2),
-                };
+    const history = $history.get();
+    const result: Message[] = [];
+    let currentUserMessage: Optional<UserChatMessage> = null;
+
+    for (const message of history) {
+        if (message.role === MessageRole.USER) {
+            currentUserMessage = message;
+        } else if (message.role === MessageRole.MODEL) {
+            const {generationPrompt} = currentUserMessage?.content ?? {};
+            const {generationResult} = message.content;
+            if (generationPrompt && generationResult) {
+                result.push(createUserMessage(generationPrompt));
+                result.push(createModelMessage(generationResult));
+                currentUserMessage = null;
             }
-            return {
-                role: 'user',
-                text: message.content.generationPrompt ?? '',
-            };
-        });
+            currentUserMessage = null;
+        }
+    }
+
+    return result;
+}
+
+function createModelMessage(result: AnalysisResult | GenerationResult): Message {
+    return {
+        role: 'model',
+        text: JSON.stringify(result, null, 2),
+    };
+}
+
+function createUserMessage(prompt: string | undefined): Message {
+    return {
+        role: 'user',
+        text: prompt ?? '',
+    };
 }
 
 //
@@ -83,60 +114,71 @@ export function createGenerationHistory(): Message[] {
 //
 
 function findMessageById(id: string): Optional<Readonly<ChatMessage>> {
-    return $chat.get().history.find(message => message.id === id);
+    return $messages.get()[id] ?? undefined;
+}
+
+function hasMessageById(id: string): boolean {
+    return findMessageById(id) != null;
 }
 
 function findModelMessageById(id: string): Optional<Readonly<ModelChatMessage>> {
     const message = findMessageById(id);
-    return message != null && message.role === MessageRole.MODEL ? message : null;
+    return message != null && message.role === MessageRole.MODEL ? message : undefined;
 }
 
 export function findUserMessageById(id: string): Optional<Readonly<UserChatMessage>> {
     const message = findMessageById(id);
-    return message != null && message.role === MessageRole.USER ? message : null;
+    return message != null && message.role === MessageRole.USER ? message : undefined;
 }
 
-function isChatMessageReplaceable(a: ChatMessage, b: ChatMessage): boolean {
-    if (a.role === MessageRole.USER && b.role === MessageRole.USER) {
-        return true;
+function updateChatMessage<T extends ChatMessage>(message: T): Optional<T> {
+    if (!hasMessageById(message.id)) {
+        return null;
     }
-    if (a.role === MessageRole.SYSTEM && b.role === MessageRole.SYSTEM) {
-        return a.id === b.id || a.content.type === b.content.type;
-    }
-    if (a.role === MessageRole.MODEL && b.role === MessageRole.MODEL) {
-        return a.id === b.id;
-    }
-    return false;
-}
 
-function replaceChatMessage<T extends ChatMessage>(message: T): Optional<T> {
-    const {history} = $chat.get();
-
-    const index = history.findIndex(m => m.id === message.id);
-    if (index >= 0) {
-        $chat.setKey('history', [...history.slice(0, index), message, ...history.slice(index + 1)]);
-        return message;
-    }
-}
-
-function addChatMessage<T extends ChatMessage>(message: T): T {
-    $chat.setKey('history', [...$chat.get().history, message]);
-    return message;
-}
-
-function addOrReplaceChatMessage<T extends ChatMessage>(message: T): T {
-    const {history} = $chat.get();
-    const lastMessage = history.at(-1);
-    const isLastMessageToBeReplaced = lastMessage && isChatMessageReplaceable(lastMessage, message);
-    const newHistory = isLastMessageToBeReplaced ? [...history.slice(0, -1), message] : [...history, message];
-
-    $chat.setKey('history', newHistory);
+    $messages.setKey(message.id, message);
 
     return message;
 }
 
-export function addUserMessage(content: UserChatMessageContent): Readonly<UserChatMessage> {
-    return addOrReplaceChatMessage({id: nanoid(), content, role: MessageRole.USER} satisfies UserChatMessage);
+function addChatMessage<T extends ChatMessage>(message: T): Optional<T> {
+    if (hasMessageById(message.id)) {
+        return null;
+    }
+
+    $messages.setKey(message.id, message);
+
+    const lastMessage = $lastMessage.get();
+    if (lastMessage == null) {
+        $startId.set(message.id);
+    } else {
+        const newLastMessage = {...lastMessage, nextId: message.id};
+        $messages.setKey(newLastMessage.id, newLastMessage);
+    }
+
+    return message;
+}
+
+function addForChatMessage<T extends ChatMessage>(message: T, forId: string): Optional<T> {
+    if (hasMessageById(message.id)) {
+        return null;
+    }
+
+    const forMessage = findMessageById(forId);
+    if (forMessage == null) {
+        return null;
+    }
+
+    $messages.setKey(message.id, message);
+
+    const newForMessage = {...forMessage, nextId: message.id};
+    $messages.setKey(newForMessage.id, newForMessage);
+
+    return message;
+}
+
+export function addUserMessage(content: UserChatMessageContent): Readonly<Optional<UserChatMessage>> {
+    return addChatMessage({id: nanoid(), content, role: MessageRole.USER, nextIds: []} satisfies UserChatMessage);
 }
 
 export function updateUserMessage(
@@ -148,28 +190,32 @@ export function updateUserMessage(
         return null;
     }
 
-    return replaceChatMessage({
+    return updateChatMessage({
         id: message.id,
         content: {...message.content, ...content},
         role: MessageRole.USER,
+        nextId: message.nextId,
+        nextIds: message.nextIds,
     } satisfies UserChatMessage);
 }
 
-export function addSystemMessage(content: SystemChatMessageContent): Readonly<SystemChatMessage> {
-    return addOrReplaceChatMessage(toSystemMessage(content));
+export function addSystemMessage(content: SystemChatMessageContent): Readonly<Optional<SystemChatMessage>> {
+    return addChatMessage(toSystemMessage(content));
 }
 
 function toSystemMessage(content: SystemChatMessageContent): SystemChatMessage {
     return {id: content.key, content, role: MessageRole.SYSTEM} satisfies SystemChatMessage;
 }
 
-export function addModelMessage(analysisResult: AnalysisResult, forId: string): Optional<Readonly<ModelChatMessage>> {
-    return addOrReplaceChatMessage({
-        id: nanoid(),
-        for: forId,
-        content: {analysisResult, selectedIndices: {}},
-        role: MessageRole.MODEL,
-    } satisfies ModelChatMessage);
+export function addModelMessage(analysisResult: AnalysisResult, forId: string): Readonly<Optional<ModelChatMessage>> {
+    return addForChatMessage(
+        {
+            id: nanoid(),
+            role: MessageRole.MODEL,
+            content: {analysisResult, selectedIndices: {}},
+        } satisfies ModelChatMessage,
+        forId,
+    );
 }
 
 export function updateModelMessage(
@@ -181,12 +227,23 @@ export function updateModelMessage(
         return null;
     }
 
-    return replaceChatMessage({
+    return updateChatMessage({
         id: message.id,
-        for: message.for,
-        content: {...message.content, generationResult: generationResult ?? message.content.generationResult},
         role: MessageRole.MODEL,
+        content: {...message.content, generationResult: generationResult ?? message.content.generationResult},
+        nextId: message.nextId,
     } satisfies ModelChatMessage);
+}
+
+export function removeChatMessage(id: string): void {
+    const startId = $startId.get();
+    if (!hasMessageById(id) || startId == null) {
+        return;
+    }
+
+    const newMessages = pruneGraph($messages.get(), startId, [id]);
+
+    $messages.set(newMessages);
 }
 
 //
@@ -194,9 +251,7 @@ export function updateModelMessage(
 //
 
 export function changeModelMessageSelectedIndex(id: string, key: string, index: number): void {
-    const {history} = $chat.get();
-    const messageIndex = history.findIndex(message => message.id === id);
-    const message = history[messageIndex];
+    const message = findModelMessageById(id);
 
     if (message == null || message.role !== MessageRole.MODEL) {
         return;
@@ -219,14 +274,12 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
 
     selectedIndices[key] = index;
 
-    const newMessage: ModelChatMessage = {
+    updateChatMessage({
         id: message.id,
-        for: message.for,
         content: {...message.content, selectedIndices},
         role: MessageRole.MODEL,
-    };
-
-    $chat.setKey('history', [...history.slice(0, messageIndex), newMessage, ...history.slice(messageIndex + 1)]);
+        nextId: message.nextId,
+    } satisfies ModelChatMessage);
 }
 
 //
@@ -239,7 +292,7 @@ function replaceWithSystemMessage(message: string, type: SystemMessageType, mess
     const systemMessage = toSystemMessage(content as SystemChatMessageContent);
 
     if (messageToReplace) {
-        replaceChatMessage(systemMessage);
+        updateChatMessage(systemMessage);
     } else {
         addChatMessage(systemMessage);
     }
