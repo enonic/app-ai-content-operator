@@ -2,4 +2,12 @@
     .ai-content-operator-html-based a {
         @apply underline text-blue-600 hover:text-blue-800 visited:text-purple-600;
     }
+
+    .ai-content-operator li {
+        list-style: initial;
+    }
+
+    .ai-content-operator ol li {
+        list-style: decimal;
+    }
 }

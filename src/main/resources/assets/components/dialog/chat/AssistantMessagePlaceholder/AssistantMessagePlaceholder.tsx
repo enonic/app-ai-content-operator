@@ -36,6 +36,8 @@ export default function AssistantMessagePlaceholder({content}: Props): React.Rea
 
     const count = analyzedFieldsDescriptors.length;
 
+    const hasFields = count > 0;
+
     const [expanded, setExpanded] = useState(false);
 
     const ref = useRef<HTMLButtonElement>(null);
@@ -49,9 +51,13 @@ export default function AssistantMessagePlaceholder({content}: Props): React.Rea
     return (
         <>
             <ActionButton
-                className='max-w-none justify-start min-h-8 h-auto px-2 py-1.5'
+                className={twJoin(
+                    'max-w-none justify-start min-h-8 h-auto px-2 py-1.5',
+                    !hasFields && 'enabled:hover:bg-white enabled:hover:cursor-default',
+                )}
                 icon={expanded ? 'expand' : 'right'}
                 size='sm'
+                mode={hasFields ? 'full' : 'text-only'}
                 clickHandler={() => setExpanded(!expanded)}
                 ref={ref}
             >

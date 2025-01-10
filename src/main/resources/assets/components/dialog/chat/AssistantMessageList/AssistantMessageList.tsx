@@ -1,5 +1,6 @@
 import {useStore} from '@nanostores/react';
 import {useEffect, useRef} from 'react';
+import {twJoin} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../shared/enums';
 import {messageContentToValues} from '../../../../common/messages';
@@ -15,8 +16,6 @@ type Props = {
 };
 
 export function AssistantMessageList({messageId, content, last}: Props): React.ReactNode {
-    const classNames = 'p-2 border-dashed last:!border-b';
-
     const fieldDescriptors = useStore($fieldDescriptors);
 
     const ref = useRef<HTMLUListElement>(null);
@@ -29,9 +28,17 @@ export function AssistantMessageList({messageId, content, last}: Props): React.R
 
     return (
         <ul className='flex flex-col divide-y rounded overflow-hidden' ref={ref}>
-            {Object.entries(messageContentToValues(content)).map(([key, value]) => {
+            {Object.entries(messageContentToValues(content)).map(([key, value], _, arr) => {
                 if (key === SPECIAL_NAMES.common) {
-                    return <CommonItem key={key} className={classNames} value={value} last={last} />;
+                    const hasOtherContent = arr.length > 1;
+                    return (
+                        <CommonItem
+                            key={key}
+                            className={twJoin('p-2 border-dashed', hasOtherContent && '!border-b')}
+                            value={value}
+                            last={last}
+                        />
+                    );
                 }
 
                 const descriptor = fieldDescriptors.find(descriptor => descriptor.name === key);
@@ -42,7 +49,7 @@ export function AssistantMessageList({messageId, content, last}: Props): React.R
                 return (
                     <ElementItem
                         key={key}
-                        className={classNames}
+                        className={'p-2 border-dashed last:!border-b'}
                         messageId={messageId}
                         descriptor={descriptor}
                         value={value}

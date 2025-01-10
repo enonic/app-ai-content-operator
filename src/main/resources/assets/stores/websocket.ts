@@ -21,7 +21,8 @@ import {
     addUserMessage,
     createAnalysisHistory,
     createGenerationHistory,
-    findUserMessageById,
+    getUserMessageById,
+    markAllNextMessagesInactive,
     updateModelMessage,
     updateUserMessage,
 } from './chat';
@@ -386,26 +387,12 @@ export function sendStop(role: Exclude<MessageRole, 'model'>): void {
 }
 
 export function sendPrompt(nodes: Descendant[]): void {
-    const node = parseNodes(nodes);
-    const prompt = parseText(nodes);
-    send(node, prompt);
-}
-
-export function sendRetry(forId: string): void {
-    const userMessage = findUserMessageById(forId);
-    if (!userMessage) {
-        addErrorMessage(t('text.error.message.repeat.notFound'));
-        return;
-    }
-
-    const {node, prompt} = userMessage.content;
-    send(node, prompt);
-}
-
-function send(node: React.ReactNode, prompt: string): void {
     if (!$isConnected.get()) {
         return;
     }
+
+    const node = parseNodes(nodes);
+    const prompt = parseText(nodes);
 
     const message = addUserMessage({node, prompt});
     if (!message) {
@@ -415,6 +402,25 @@ function send(node: React.ReactNode, prompt: string): void {
     $buffer.setKey('userMessageId', message.id);
 
     const payload = createGenerateMessagePayload(prompt);
+    sendGenerateMessage(payload);
+}
+
+export function sendRetry(userMessageId: string): void {
+    if (!$isConnected.get()) {
+        return;
+    }
+
+    const userMessage = getUserMessageById(userMessageId);
+    if (!userMessage) {
+        addErrorMessage(t('text.error.message.repeat.notFound'));
+        return;
+    }
+
+    markAllNextMessagesInactive(userMessage.id);
+
+    $buffer.setKey('userMessageId', userMessage.id);
+
+    const payload = createGenerateMessagePayload(userMessage.content.prompt);
     sendGenerateMessage(payload);
 }
 

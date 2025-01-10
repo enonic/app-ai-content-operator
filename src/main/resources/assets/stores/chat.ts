@@ -7,7 +7,7 @@ import {Message} from '../../shared/model';
 import {AnalysisResult} from '../../shared/prompts/analysis';
 import {GenerationResult} from '../../shared/prompts/generation';
 import {FailedMessagePayload} from '../../shared/websocket';
-import {flattenGraph, pruneGraph} from '../common/graph';
+import {flattenGraph, getNextActiveNode, pruneGraph} from '../common/graph';
 import {
     ChatMessage,
     ModelChatMessage,
@@ -19,13 +19,9 @@ import {
 } from './data/ChatMessage';
 import {MessageRole} from './data/MessageType';
 
-//
-//* Graph
-//
-
 const $startId = atom<Optional<string>>(undefined);
 
-const $messages = map<Record<string, ChatMessage>>({});
+export const $messages = map<Record<string, ChatMessage>>({});
 
 export const $history = computed([$startId, $messages], (startId, messages): ChatMessage[] => {
     return startId != null ? flattenGraph(messages, startId) : [];
@@ -36,9 +32,10 @@ const $lastMessage = computed($history, (history): Optional<ChatMessage> => hist
 export function clearChat(): void {
     const startId = $startId.get();
     const messages = $messages.get();
+
     const firstMessage = startId ? messages[startId] : null;
     if (startId != null && firstMessage?.role === MessageRole.SYSTEM) {
-        $messages.set({[startId]: firstMessage});
+        $messages.set({[startId]: {...firstMessage, nextIds: []} satisfies SystemChatMessage});
     } else {
         $messages.set({});
         $startId.set(undefined);
@@ -110,26 +107,92 @@ function createUserMessage(prompt: string | undefined): Message {
 }
 
 //
-//* Messages
+//* Message: GET & FIND
 //
 
-function findMessageById(id: string): Optional<Readonly<ChatMessage>> {
-    return $messages.get()[id] ?? undefined;
+function getMessageById(id: Optional<string>): Optional<Readonly<ChatMessage>> {
+    return id ? $messages.get()[id] : undefined;
 }
 
 function hasMessageById(id: string): boolean {
-    return findMessageById(id) != null;
+    return getMessageById(id) != null;
 }
 
-function findModelMessageById(id: string): Optional<Readonly<ModelChatMessage>> {
-    const message = findMessageById(id);
+function getModelMessageById(id: string): Optional<Readonly<ModelChatMessage>> {
+    const message = getMessageById(id);
     return message != null && message.role === MessageRole.MODEL ? message : undefined;
 }
 
-export function findUserMessageById(id: string): Optional<Readonly<UserChatMessage>> {
-    const message = findMessageById(id);
+export function getUserMessageById(id: string): Optional<Readonly<UserChatMessage>> {
+    const message = getMessageById(id);
     return message != null && message.role === MessageRole.USER ? message : undefined;
 }
+
+//
+//* Message: ADD
+//
+
+function addChatMessage<T extends ChatMessage>(message: T): Optional<T> {
+    if (hasMessageById(message.id)) {
+        return null;
+    }
+
+    const prevMessage = getMessageById(message.prevId);
+    const lastMessage = $lastMessage.get();
+    const forMessage = prevMessage ?? lastMessage;
+
+    if (forMessage == null) {
+        $startId.set(message.id);
+    } else {
+        updateChatMessage({
+            ...forMessage,
+            nextIds: [...forMessage.nextIds, message.id],
+        } satisfies ChatMessage);
+    }
+
+    const currentActiveMessage = message.active && forMessage && getNextActiveNode($messages.get(), forMessage.id);
+    if (currentActiveMessage) {
+        $messages.setKey(currentActiveMessage.id, {...currentActiveMessage, active: false});
+    }
+
+    const newMessage: T = {...message, prevId: forMessage?.id};
+    $messages.setKey(message.id, newMessage);
+
+    return newMessage;
+}
+
+export function addUserMessage(content: UserChatMessageContent): Readonly<Optional<UserChatMessage>> {
+    return addChatMessage({
+        id: nanoid(),
+        content,
+        role: MessageRole.USER,
+        nextIds: [],
+        active: true,
+    } satisfies UserChatMessage);
+}
+
+export function addModelMessage(analysisResult: AnalysisResult, forId?: string): Readonly<Optional<ModelChatMessage>> {
+    return addChatMessage({
+        id: nanoid(),
+        role: MessageRole.MODEL,
+        content: {analysisResult, selectedIndices: {}},
+        nextIds: [],
+        active: true,
+        prevId: forId,
+    } satisfies ModelChatMessage);
+}
+
+export function addSystemMessage(content: SystemChatMessageContent): Readonly<Optional<SystemChatMessage>> {
+    return addChatMessage(toSystemMessage(content));
+}
+
+function toSystemMessage(content: SystemChatMessageContent): SystemChatMessage {
+    return {id: content.key, content, role: MessageRole.SYSTEM, nextIds: [], active: true} satisfies SystemChatMessage;
+}
+
+//
+//* Message: UPDATE
+//
 
 function updateChatMessage<T extends ChatMessage>(message: T): Optional<T> {
     if (!hasMessageById(message.id)) {
@@ -141,99 +204,72 @@ function updateChatMessage<T extends ChatMessage>(message: T): Optional<T> {
     return message;
 }
 
-function addChatMessage<T extends ChatMessage>(message: T): Optional<T> {
-    if (hasMessageById(message.id)) {
-        return null;
-    }
-
-    $messages.setKey(message.id, message);
-
-    const lastMessage = $lastMessage.get();
-    if (lastMessage == null) {
-        $startId.set(message.id);
-    } else {
-        const newLastMessage = {...lastMessage, nextId: message.id};
-        $messages.setKey(newLastMessage.id, newLastMessage);
-    }
-
-    return message;
-}
-
-function addForChatMessage<T extends ChatMessage>(message: T, forId: string): Optional<T> {
-    if (hasMessageById(message.id)) {
-        return null;
-    }
-
-    const forMessage = findMessageById(forId);
-    if (forMessage == null) {
-        return null;
-    }
-
-    $messages.setKey(message.id, message);
-
-    const newForMessage = {...forMessage, nextId: message.id};
-    $messages.setKey(newForMessage.id, newForMessage);
-
-    return message;
-}
-
-export function addUserMessage(content: UserChatMessageContent): Readonly<Optional<UserChatMessage>> {
-    return addChatMessage({id: nanoid(), content, role: MessageRole.USER, nextIds: []} satisfies UserChatMessage);
-}
-
 export function updateUserMessage(
     id: string,
     content: Omit<UserChatMessageContent, 'node' | 'prompt'>,
 ): Optional<Readonly<UserChatMessage>> {
-    const message = findUserMessageById(id);
+    const message = getUserMessageById(id);
     if (message == null) {
         return null;
     }
 
     return updateChatMessage({
-        id: message.id,
+        ...message,
         content: {...message.content, ...content},
-        role: MessageRole.USER,
-        nextId: message.nextId,
-        nextIds: message.nextIds,
     } satisfies UserChatMessage);
-}
-
-export function addSystemMessage(content: SystemChatMessageContent): Readonly<Optional<SystemChatMessage>> {
-    return addChatMessage(toSystemMessage(content));
-}
-
-function toSystemMessage(content: SystemChatMessageContent): SystemChatMessage {
-    return {id: content.key, content, role: MessageRole.SYSTEM} satisfies SystemChatMessage;
-}
-
-export function addModelMessage(analysisResult: AnalysisResult, forId: string): Readonly<Optional<ModelChatMessage>> {
-    return addForChatMessage(
-        {
-            id: nanoid(),
-            role: MessageRole.MODEL,
-            content: {analysisResult, selectedIndices: {}},
-        } satisfies ModelChatMessage,
-        forId,
-    );
 }
 
 export function updateModelMessage(
     id: string,
     generationResult: GenerationResult,
 ): Optional<Readonly<ModelChatMessage>> {
-    const message = findModelMessageById(id);
+    const message = getModelMessageById(id);
     if (message == null || message.content.generationResult != null) {
         return null;
     }
 
     return updateChatMessage({
-        id: message.id,
-        role: MessageRole.MODEL,
+        ...message,
         content: {...message.content, generationResult: generationResult ?? message.content.generationResult},
-        nextId: message.nextId,
     } satisfies ModelChatMessage);
 }
+
+export function markMessageAsActive(id: Optional<string>): void {
+    const message = getMessageById(id);
+    if (message?.prevId == null || message.active) {
+        return;
+    }
+
+    const prevMessage = getMessageById(message.prevId);
+    if (prevMessage == null) {
+        return;
+    }
+
+    const activeSibling = getNextActiveNode($messages.get(), prevMessage.id);
+    if (activeSibling) {
+        updateChatMessage({...activeSibling, active: false});
+    }
+
+    updateChatMessage({...message, active: true});
+}
+
+export function markAllNextMessagesInactive(id: string): void {
+    const message = getMessageById(id);
+    if (message == null) {
+        return;
+    }
+
+    message.nextIds.forEach(nextId => {
+        const nextMessage = getMessageById(nextId);
+        if (nextMessage?.active) {
+            updateChatMessage({...nextMessage, active: false});
+        }
+    });
+}
+
+//
+//* Message: REMOVE
+//
 
 export function removeChatMessage(id: string): void {
     const startId = $startId.get();
@@ -251,7 +287,7 @@ export function removeChatMessage(id: string): void {
 //
 
 export function changeModelMessageSelectedIndex(id: string, key: string, index: number): void {
-    const message = findModelMessageById(id);
+    const message = getModelMessageById(id);
 
     if (message == null || message.role !== MessageRole.MODEL) {
         return;
@@ -275,10 +311,8 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
     selectedIndices[key] = index;
 
     updateChatMessage({
-        id: message.id,
+        ...message,
         content: {...message.content, selectedIndices},
-        role: MessageRole.MODEL,
-        nextId: message.nextId,
     } satisfies ModelChatMessage);
 }
 
@@ -287,9 +321,13 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
 //
 
 function replaceWithSystemMessage(message: string, type: SystemMessageType, messageToReplaceId?: string): void {
-    const messageToReplace = messageToReplaceId ? findMessageById(messageToReplaceId) : null;
-    const content = {key: messageToReplace ? messageToReplace.id : nanoid(), type, node: message};
-    const systemMessage = toSystemMessage(content as SystemChatMessageContent);
+    const messageToReplace = getMessageById(messageToReplaceId);
+    const content: SystemChatMessageContent = {
+        key: messageToReplace ? messageToReplace.id : nanoid(),
+        type,
+        node: message,
+    };
+    const systemMessage = toSystemMessage(content);
 
     if (messageToReplace) {
         updateChatMessage(systemMessage);
