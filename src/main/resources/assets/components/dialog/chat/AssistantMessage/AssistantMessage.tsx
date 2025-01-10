@@ -4,7 +4,7 @@ import {ModelChatMessage, ModelChatMessageContent} from '../../../../stores/data
 import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
 import {AssistantMessageList} from '../AssistantMessageList/AssistantMessageList';
 import AssistantMessagePlaceholder from '../AssistantMessagePlaceholder/AssistantMessagePlaceholder';
-import AssistantMessageControls from '../controls/AssistantMessageControls/AssistantMessageControls';
+import ResponseControls from '../controls/ResponseControls/ResponseControls';
 
 type Props = {
     className?: string;
@@ -17,7 +17,7 @@ const hasGenerationResult = (content: ModelChatMessageContent): content is Requi
 };
 
 export default function AssistantMessage({className, message, last}: Props): React.ReactNode {
-    const {id: messageId, for: forId, content} = message;
+    const {id: messageId, content} = message;
     const isGenerating = !hasGenerationResult(content);
 
     return (
@@ -29,7 +29,7 @@ export default function AssistantMessage({className, message, last}: Props): Rea
                 ) : (
                     <>
                         <AssistantMessageList messageId={messageId} content={content} last={last} />
-                        <AssistantMessageControls forId={forId} content={content} last={last} />
+                        <ResponseControls message={message} last={last} />
                     </>
                 )}
             </article>

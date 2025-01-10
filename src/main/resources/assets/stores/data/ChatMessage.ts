@@ -2,15 +2,18 @@ import {AnalysisResult} from '../../../shared/prompts/analysis';
 import {GenerationResult} from '../../../shared/prompts/generation';
 import {MessageRole} from './MessageType';
 
+type ChatNode<T extends MessageRole, Data extends Record<string, unknown>> = {
+    id: string;
+    prevId?: string;
+    nextIds: string[];
+    active: boolean;
+    role: T;
+    content: Data;
+};
+
 export type ChatMessage = UserChatMessage | ModelChatMessage | SystemChatMessage;
 
-export type UserChatMessage = {
-    id: string;
-    role: MessageRole.USER;
-    content: UserChatMessageContent;
-    nextId?: string;
-    nextIds: string[];
-};
+export type UserChatMessage = ChatNode<MessageRole.USER, UserChatMessageContent>;
 
 export type UserChatMessageContent = {
     node: React.ReactNode;
@@ -19,12 +22,7 @@ export type UserChatMessageContent = {
     generationPrompt?: string; // May be initialized later
 };
 
-export type ModelChatMessage = {
-    id: string;
-    role: MessageRole.MODEL;
-    content: ModelChatMessageContent;
-    nextId?: string;
-};
+export type ModelChatMessage = ChatNode<MessageRole.MODEL, ModelChatMessageContent>;
 
 export type ModelChatMessageContent = {
     analysisResult: AnalysisResult;
@@ -32,12 +30,7 @@ export type ModelChatMessageContent = {
     selectedIndices: Record<string, number>;
 };
 
-export type SystemChatMessage = {
-    id: string;
-    role: MessageRole.SYSTEM;
-    content: SystemChatMessageContent;
-    nextId?: string;
-};
+export type SystemChatMessage = ChatNode<MessageRole.SYSTEM, SystemChatMessageContent>;
 
 export type SystemChatMessageContent = {
     type: SystemMessageType;
