@@ -48,7 +48,7 @@
         "@google/generative-ai": "^0.21.0",
         "@swc/core": "^1.10.4",
         "@swc/jest": "^0.2.37",
-        "@tailwindcss/typography": "^0.5.15",
+        "@tailwindcss/typography": "^0.5.16",
         "@trivago/prettier-plugin-sort-imports": "^5.2.1",
         "@types/jest": "^29.5.14",
         "@types/lodash.clonedeep": "^4.5.9",
