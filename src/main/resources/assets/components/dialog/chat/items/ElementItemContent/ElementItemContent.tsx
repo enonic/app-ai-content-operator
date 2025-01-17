@@ -24,7 +24,8 @@ export default function ElementItemContent({className, content, type = 'text'}: 
                 <div
                     dangerouslySetInnerHTML={{__html: content}}
                     className={twMerge(
-                        'ai-content-operator-html-based prose prose-sm',
+                        'ai-content-operator-html-based',
+                        'prose prose-sm max-w-max',
                         'relative',
                         'col-span-2',
                         className,

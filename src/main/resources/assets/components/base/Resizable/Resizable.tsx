@@ -5,12 +5,13 @@ export type Props = {
     className?: string;
     style?: CSSProperties;
     onStart?: () => void;
+    onStop?: () => void;
 } & PropsWithChildren;
 
 const MIN_SIZE = 360;
 
 export default forwardRef(function Resizable(
-    {className, children, onStart, style = {}, ...props}: Props,
+    {className, children, onStart, onStop, style = {}, ...props}: Props,
     ref: ForwardedRef<HTMLDivElement>,
 ): React.ReactNode {
     const [width, setWidth] = useState<number | undefined>(undefined);
@@ -43,6 +44,7 @@ export default forwardRef(function Resizable(
             };
 
             const mouseUpHandler = (): void => {
+                onStop?.();
                 document.removeEventListener('mouseup', mouseUpHandler);
                 document.removeEventListener('mousemove', mouseMoveHandler);
             };

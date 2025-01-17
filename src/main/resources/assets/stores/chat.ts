@@ -393,6 +393,12 @@ function getErrorMessageByCode(code: number): string {
             return t('text.error.response.safety');
         case ERRORS.MODEL_UNEXPECTED.code:
             return t('text.error.response.unexpected');
+        case ERRORS.MODEL_ANALYSIS_PARSE_FAILED.code:
+        case ERRORS.MODEL_ANALYSIS_INCORRECT.code:
+            return t('text.error.analysis.incorrect');
+        case ERRORS.MODEL_GENERATION_PARSE_FAILED.code:
+        case ERRORS.MODEL_GENERATION_INCORRECT.code:
+            return t('text.error.generation.incorrect');
         default:
             return t('text.error.rest.unknown', {code});
     }

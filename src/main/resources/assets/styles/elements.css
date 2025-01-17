@@ -10,4 +10,8 @@
     .ai-content-operator ol li {
         list-style: decimal;
     }
+
+    .ai-content-operator ul li {
+        list-style: disc;
+    }
 }

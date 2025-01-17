@@ -93,7 +93,13 @@ export default function AssistantDialog({className = ''}: Props): React.ReactNod
                     className,
                 )}
                 ref={ref}
-                onStart={() => clearTarget()}
+                onStart={() => {
+                    document.body.classList.add('ai-content-operator-dragging');
+                    clearTarget();
+                }}
+                onStop={() => {
+                    document.body.classList.remove('ai-content-operator-dragging');
+                }}
             >
                 <AssistantHeader className={dragging ? 'cursor-grabbing' : 'cursor-grab'} />
                 <AssistantContent />
