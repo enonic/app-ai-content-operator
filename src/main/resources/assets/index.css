@@ -1,5 +1,6 @@
 @import './styles/elements.css';
 @import './styles/scroll.css';
+@import './styles/global.css';
 
 @tailwind base;
 @tailwind components;

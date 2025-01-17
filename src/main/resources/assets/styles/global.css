@@ -1,0 +1,4 @@
+/* Styles, that are not isolated and can be applied to body */
+body.ai-content-operator-dragging > *:not(.ai-content-operator) {
+    pointer-events: none !important;
+}
