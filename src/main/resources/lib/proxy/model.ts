@@ -1,6 +1,6 @@
 import type {Schema} from '@google/generative-ai';
 
-import type {Message} from '../../shared/model';
+import type {ModelMessage} from '../../shared/model';
 import {ModelParameters} from '../../shared/modes';
 
 export type ModelProxy = {
@@ -11,6 +11,6 @@ export type ModelProxyConfig = {
     url: string;
     instructions: string;
     modelParameters: ModelParameters;
-    messages: Message[];
+    messages: ModelMessage[];
     schema?: Schema;
 };

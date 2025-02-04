@@ -11,7 +11,7 @@ import {
 } from '../../../../../stores/data/ChatMessage';
 import {MessageRole} from '../../../../../stores/data/MessageType';
 import {$licenseState} from '../../../../../stores/license';
-import {$isBusy, $isConnected} from '../../../../../stores/websocket';
+import {$isBusy, $isConnected} from '../../../../../stores/worker';
 import ApplyAllControl from '../ApplyAllControl/ApplyAllControl';
 import MessageSwitchControls from '../MessageSwitchControls/MessageSwitchControls';
 import RetryControl from '../RetryControl/RetryControl';

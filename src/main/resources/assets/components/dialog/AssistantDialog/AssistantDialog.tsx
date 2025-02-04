@@ -6,7 +6,7 @@ import {twJoin} from 'tailwind-merge';
 
 import {$dialog} from '../../../stores/dialog';
 import {clearTarget} from '../../../stores/editor';
-import {mountWebSocket} from '../../../stores/websocket';
+import {mountWorker} from '../../../stores/worker';
 import Resizable from '../../base/Resizable/Resizable';
 import AssistantContent from '../AssistantContent/AssistantContent';
 import AssistantHeader from '../header/AssistantHeader/AssistantHeader';
@@ -23,7 +23,7 @@ export default function AssistantDialog({className = ''}: Props): React.ReactNod
 
     useEffect(() => {
         if (!hidden) {
-            return mountWebSocket();
+            return mountWorker();
         }
     }, [hidden]);
 

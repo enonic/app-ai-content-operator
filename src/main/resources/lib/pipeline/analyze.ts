@@ -1,7 +1,8 @@
 import {DataEntry} from '../../shared/data/DataEntry';
 import {SPECIAL_KEYS, SPECIAL_NAMES} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
-import {Message} from '../../shared/model';
+import {GenerateMessagePayload} from '../../shared/messages';
+import {ModelMessage} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
 import {
     AnalysisErrorResult,
@@ -12,7 +13,6 @@ import {
     createAnalysisInstructions,
     RawAnalysisResult,
 } from '../../shared/prompts/analysis';
-import {GenerateMessagePayload} from '../../shared/websocket';
 import {getOptions} from '../google/options';
 import {logError} from '../logger';
 import {GeminiProxy} from '../proxy/gemini';
@@ -161,7 +161,7 @@ export function getWarningMessage(result: AnalysisErrorResult | AnalysisUnclearR
 //* PROMPT
 //
 
-function createAnalysisMessages(prompt: string, messages: Message[]): Message[] {
+function createAnalysisMessages(prompt: string, messages: ModelMessage[]): ModelMessage[] {
     return [...messages, {role: 'user', text: prompt}];
 }
 
