@@ -6,7 +6,7 @@ import {twJoin, twMerge} from 'tailwind-merge';
 import {$history} from '../../../../stores/chat';
 import {ChatMessage} from '../../../../stores/data/ChatMessage';
 import {$dialog} from '../../../../stores/dialog';
-import {$busyAnalyzing} from '../../../../stores/websocket';
+import {$busyAnalyzing} from '../../../../stores/worker';
 import LoadingMessage from '../LoadingMessage/LoadingMessage';
 import Message from '../Message/Message';
 

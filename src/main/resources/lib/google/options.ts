@@ -23,6 +23,13 @@ export function getOptions(): Try<ClientOptions> {
     return [options, null];
 }
 
+export function checkOptions(): void {
+    const [, err] = parseOptions();
+    if (err) {
+        logError(err);
+    }
+}
+
 export function parseOptions(): Try<ClientOptions> {
     logDebug(LogDebugGroups.GOOGLE, 'options.getOptions()');
 

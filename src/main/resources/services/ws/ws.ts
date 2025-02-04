@@ -1,47 +1,12 @@
+import * as eventLib from '/lib/xp/event';
 import * as websocketLib from '/lib/xp/websocket';
 
-import {analyze} from '../../lib/flow/analyze';
-import {generate} from '../../lib/flow/generate';
 import {logDebug, LogDebugGroups, logError} from '../../lib/logger';
 import {respondError} from '../../lib/requests';
-import {runAsyncTask} from '../../lib/utils/task';
-import {unsafeUUIDv4} from '../../lib/utils/uuid';
 import {WS_PROTOCOL} from '../../shared/constants';
 import {ERRORS} from '../../shared/errors';
-import {
-    AnalyzedMessage,
-    AnalyzedMessagePayload,
-    ClientMessage,
-    FailedMessage,
-    GeneratedMessage,
-    GeneratedMessagePayload,
-    GenerateMessage,
-    MessageMetadata,
-    MessageType,
-    ServerMessage,
-} from '../../shared/websocket';
-
-//
-//* Active generation operations
-//
-
-const ACTIVE_OPERATIONS = __.newBean<Java.ConcurrentHashMap<string, boolean>>('java.util.concurrent.ConcurrentHashMap');
-
-function isActiveOperation(id: string): boolean {
-    return ACTIVE_OPERATIONS.get(id) != null;
-}
-
-function addActiveOperation(id: string): boolean {
-    if (isActiveOperation(id)) {
-        return false;
-    }
-    ACTIVE_OPERATIONS.put(id, true);
-    return isActiveOperation(id);
-}
-
-function removeActiveOperation(id: string): void {
-    ACTIVE_OPERATIONS.remove(id);
-}
+import {GenerateMessage, InMessage, MessageType, StopMessage} from '../../shared/messages';
+import {ClientMessage, WSMessageType} from '../../shared/websocket';
 
 //
 //* WebSocket
@@ -103,7 +68,7 @@ function handleError(event: Enonic.WebSocketEvent): void {
 //
 
 function handleMessage(event: Enonic.WebSocketEvent): void {
-    const {id} = event.session;
+    const {id: socketId} = event.session;
     const message = parseMessage(event.message);
     if (!message) {
         return;
@@ -112,17 +77,35 @@ function handleMessage(event: Enonic.WebSocketEvent): void {
     logDebug(LogDebugGroups.WS, `Received message: ${JSON.stringify(message)}`);
 
     switch (message.type) {
-        case MessageType.PING:
-            sendMessage(id, {type: MessageType.PONG});
+        case WSMessageType.PING:
+            websocketLib.send(socketId, JSON.stringify({type: WSMessageType.PONG}));
             break;
-        case MessageType.CONNECT:
-            sendMessage(id, {type: MessageType.CONNECTED});
+        case WSMessageType.CONNECT:
+            websocketLib.send(socketId, JSON.stringify({type: WSMessageType.CONNECTED}));
             break;
         case MessageType.GENERATE:
-            runAsyncTask('ws', () => analyzeAndGenerate(id, message));
+            sendEvent({
+                type: MessageType.GENERATE,
+                metadata: {
+                    id: message.metadata.id,
+                    sessionId: 'message.metadata.sessionId',
+                    clientId: 'message.metadata.clientId',
+                    socketId,
+                },
+                payload: message.payload,
+            } satisfies GenerateMessage);
             break;
         case MessageType.STOP:
-            stopGeneration(message.payload.generationId);
+            sendEvent({
+                type: MessageType.STOP,
+                metadata: {
+                    id: message.metadata.id,
+                    sessionId: 'message.metadata.sessionId',
+                    clientId: 'message.metadata.clientId',
+                    socketId,
+                },
+                payload: message.payload,
+            } satisfies StopMessage);
             break;
     }
 }
@@ -135,108 +118,10 @@ function parseMessage(message: Optional<string>): Optional<ClientMessage> {
     }
 }
 
-//
-//* Send
-//
-
-function createMetadata(): MessageMetadata {
-    return {
-        id: unsafeUUIDv4(),
-        timestamp: Date.now(),
-    };
-}
-
-function sendMessage(socketId: string, message: Omit<ServerMessage, 'metadata'>): void {
-    websocketLib.send(socketId, JSON.stringify({...message, metadata: createMetadata()}));
-}
-
-function sendAnalyzedMessage(socketId: string, payload: AnalyzedMessagePayload): void {
-    const message = {type: MessageType.ANALYZED, payload} satisfies Omit<AnalyzedMessage, 'metadata'>;
-    sendMessage(socketId, message);
-}
-
-function sendGeneratedMessage(socketId: string, payload: GeneratedMessagePayload): void {
-    const message = {type: MessageType.GENERATED, payload} satisfies Omit<GeneratedMessage, 'metadata'>;
-    sendMessage(socketId, message);
-}
-
-function sendFailedErrorMessage(socketId: string, error: AiError): void {
-    const message = {
-        type: MessageType.FAILED,
-        payload: {
-            type: 'error',
-            message: error.message,
-            code: error.code,
-        },
-    } satisfies Omit<FailedMessage, 'metadata'>;
-    sendMessage(socketId, message);
-}
-
-function sendFailedWarningMessage(socketId: string, text: string): void {
-    const message = {
-        type: MessageType.FAILED,
-        payload: {
-            type: 'warning',
-            message: text,
-        },
-    } satisfies Omit<FailedMessage, 'metadata'>;
-    sendMessage(socketId, message);
-}
-
-//
-//* Flow
-//
-
-function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
-    try {
-        const {id} = message.metadata;
-
-        if (!addActiveOperation(id)) {
-            return sendFailedErrorMessage(
-                socketId,
-                ERRORS.WS_OPERATION_ALREADY_RUNNING.withMsg(`Generation id: ${id}`),
-            );
-        }
-
-        const [analysis, err1] = analyze(message.payload);
-
-        if (!isActiveOperation(id)) {
-            return;
-        }
-
-        if (err1) {
-            return sendFailedErrorMessage(socketId, err1);
-        }
-
-        if (typeof analysis === 'string') {
-            return sendFailedWarningMessage(socketId, analysis);
-        }
-
-        sendAnalyzedMessage(socketId, analysis);
-
-        const [generation, err2] = generate({
-            prompt: analysis.result,
-            history: message.payload.history.generation,
-            fields: message.payload.fields,
-        });
-
-        if (!isActiveOperation(id)) {
-            return;
-        }
-
-        if (err2) {
-            return sendFailedErrorMessage(socketId, err2);
-        }
-
-        sendGeneratedMessage(socketId, generation);
-
-        removeActiveOperation(id);
-    } catch (e) {
-        sendFailedErrorMessage(socketId, ERRORS.WS_UNKNOWN_ERROR.withMsg('See server logs.'));
-        logError(e);
-    }
-}
-
-function stopGeneration(id: string): void {
-    removeActiveOperation(id);
+function sendEvent(data: InMessage): void {
+    eventLib.send({
+        type: data.type,
+        distributed: true,
+        data,
+    });
 }

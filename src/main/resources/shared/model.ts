@@ -7,7 +7,7 @@ type OperationData<T extends Operation> = {
     operation: T;
 };
 
-export type Message = {
+export type ModelMessage = {
     role: 'user' | 'model';
     text: string;
 };
@@ -29,7 +29,7 @@ export type FinishReason =
 export type ModelRequestData = ModelRequestGenerateData;
 export type ModelRequestGenerateData = OperationData<'generate'> & {
     instructions?: string;
-    messages: Message[];
+    messages: ModelMessage[];
 };
 
 // ------------------------------------

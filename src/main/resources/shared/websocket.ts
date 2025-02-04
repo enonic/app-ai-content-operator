@@ -1,5 +1,6 @@
 import {DataEntry} from './data/DataEntry';
-import {Message} from './model';
+import {MessageType} from './messages';
+import {ModelMessage} from './model';
 import {AnalysisResult} from './prompts/analysis';
 import {GenerationResult} from './prompts/generation';
 
@@ -8,16 +9,16 @@ export type MessageMetadata = {
     timestamp: number;
 };
 
-type BaseMessage<T extends MessageType> = {
+type BaseMessage<T extends WSMessageType | MessageType> = {
     type: T;
     metadata: MessageMetadata;
 };
 
-type MessageWithPayload<T extends MessageType, P = unknown> = BaseMessage<T> & {
+type MessageWithPayload<T extends WSMessageType | MessageType, P = unknown> = BaseMessage<T> & {
     payload: P;
 };
 
-export enum MessageType {
+export enum WSMessageType {
     // Connection lifecycle (client → server)
     CONNECT = 'connect',
     DISCONNECT = 'disconnect',
@@ -29,15 +30,6 @@ export enum MessageType {
     // Connection health
     PING = 'ping',
     PONG = 'pong',
-
-    // Generation flow (client → server)
-    GENERATE = 'generate',
-    STOP = 'stop',
-
-    // Generation flow (server → client)
-    ANALYZED = 'analyzed',
-    GENERATED = 'generated',
-    FAILED = 'failed',
 }
 
 // Client requests generate
@@ -47,8 +39,8 @@ export type GenerateMessage = MessageWithPayload<
         prompt: string;
         instructions?: string;
         history: {
-            analysis: Message[];
-            generation: Message[];
+            analysis: ModelMessage[];
+            generation: ModelMessage[];
         };
         meta: {
             language: string;
@@ -106,14 +98,14 @@ export type FailedMessageWarningPayload = {
 export type FailedMessagePayload = FailedMessageErrorPayload | FailedMessageWarningPayload;
 
 // Connection messages
-export type ConnectMessage = BaseMessage<MessageType.CONNECT>;
-export type ConnectedMessage = BaseMessage<MessageType.CONNECTED>;
-export type DisconnectMessage = BaseMessage<MessageType.DISCONNECT>;
-export type DisconnectedMessage = BaseMessage<MessageType.DISCONNECTED>;
+export type ConnectMessage = BaseMessage<WSMessageType.CONNECT>;
+export type ConnectedMessage = BaseMessage<WSMessageType.CONNECTED>;
+export type DisconnectMessage = BaseMessage<WSMessageType.DISCONNECT>;
+export type DisconnectedMessage = BaseMessage<WSMessageType.DISCONNECTED>;
 
 // Health check messages
-export type PingMessage = BaseMessage<MessageType.PING>;
-export type PongMessage = BaseMessage<MessageType.PONG>;
+export type PingMessage = BaseMessage<WSMessageType.PING>;
+export type PongMessage = BaseMessage<WSMessageType.PONG>;
 
 export type ClientMessage = ConnectMessage | DisconnectMessage | PingMessage | GenerateMessage | StopMessage;
 
