@@ -16,7 +16,7 @@ app {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -27,7 +27,7 @@ apply from: "$rootDir/gradle/node.gradle"
 dependencies {
     include "com.google.auth:google-auth-library-oauth2-http:1.34.0"
     include "com.enonic.xp:lib-auth:${xpVersion}"
-    include "com.enonic.xp:lib-websocket:${xpVersion}"
+    include "com.enonic.xp:lib-event:${xpVersion}"
     include "com.enonic.xp:lib-task:${xpVersion}"
     include "com.enonic.lib:lib-http-client:3.2.2"
     include "com.enonic.lib:lib-license:3.1.0"

@@ -3,10 +3,10 @@ import {nanoid} from 'nanoid';
 import {atom, computed, map} from 'nanostores';
 
 import {ERRORS} from '../../shared/errors';
-import {Message} from '../../shared/model';
+import {FailedMessagePayload} from '../../shared/messages';
+import {ModelMessage} from '../../shared/model';
 import {AnalysisResult} from '../../shared/prompts/analysis';
 import {GenerationResult} from '../../shared/prompts/generation';
-import {FailedMessagePayload} from '../../shared/websocket';
 import {flattenGraph, getNextActiveNode, pruneGraph} from '../common/graph';
 import {
     ChatMessage,
@@ -46,9 +46,9 @@ export function clearChat(): void {
 //* History
 //
 
-export function createAnalysisHistory(): Message[] {
+export function createAnalysisHistory(): ModelMessage[] {
     const history = $history.get();
-    const result: Message[] = [];
+    const result: ModelMessage[] = [];
     let currentUserMessage: Optional<UserChatMessage> = null;
 
     for (const message of history) {
@@ -69,9 +69,9 @@ export function createAnalysisHistory(): Message[] {
     return result;
 }
 
-export function createGenerationHistory(): Message[] {
+export function createGenerationHistory(): ModelMessage[] {
     const history = $history.get();
-    const result: Message[] = [];
+    const result: ModelMessage[] = [];
     let currentUserMessage: Optional<UserChatMessage> = null;
 
     for (const message of history) {
@@ -92,14 +92,14 @@ export function createGenerationHistory(): Message[] {
     return result;
 }
 
-function createModelMessage(result: AnalysisResult | GenerationResult): Message {
+function createModelMessage(result: AnalysisResult | GenerationResult): ModelMessage {
     return {
         role: 'model',
         text: JSON.stringify(result, null, 2),
     };
 }
 
-function createUserMessage(prompt: string | undefined): Message {
+function createUserMessage(prompt: string | undefined): ModelMessage {
     return {
         role: 'user',
         text: prompt ?? '',

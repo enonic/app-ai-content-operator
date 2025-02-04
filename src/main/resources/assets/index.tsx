@@ -5,14 +5,14 @@ import AssistantDialog from './components/dialog/AssistantDialog/AssistantDialog
 import LaunchButton from './components/LaunchButton/LaunchButton';
 import './i18n/i18n';
 import './index.css';
-import {$config, setWsServiceUrl} from './stores/config';
+import {$config, setSharedSocketUrl} from './stores/config';
 
 type SetupConfig = {
-    wsServiceUrl: string;
+    sharedSocketUrl: string;
 };
 
 export function render(buttonContainer: HTMLElement, dialogContainer: HTMLElement): void {
-    if ($config.get().wsServiceUrl === '') {
+    if ($config.get().sharedSocketUrl === '') {
         console.warn('[Enonic AI] Content Operator was rendered before configured.');
     }
 
@@ -33,6 +33,6 @@ export function render(buttonContainer: HTMLElement, dialogContainer: HTMLElemen
     );
 }
 
-export function setup({wsServiceUrl}: SetupConfig): void {
-    setWsServiceUrl(wsServiceUrl);
+export function setup({sharedSocketUrl}: SetupConfig): void {
+    setSharedSocketUrl(sharedSocketUrl);
 }

@@ -12,7 +12,7 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
         ecmaVersion: 2023,
-        project: './tsconfig.json',
+        project: ['./tsconfig.json', './worker/tsconfig.json'],
         tsconfigRootDir: __dirname,
     },
     rules: {

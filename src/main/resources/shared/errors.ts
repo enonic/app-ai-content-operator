@@ -26,11 +26,6 @@ export const ERRORS = {
     REST_NOT_FOUND: err(404, 'Not found.'),
     REST_TIMEOUT: err(408, 'Request timeout.'),
     REST_UNHANDLED_ERROR: err(500, 'Unhandled server error.'),
-    // WS Errors 0600
-    WS_UNKNOWN_ERROR: err(600, 'Unknown WebSocket error.'),
-    WS_INVALID_PROTOCOL: err(601, 'Invalid WebSocket protocol.'),
-    WS_OPERATION_NOT_FOUND: err(610, 'Operation not found.'),
-    WS_OPERATION_ALREADY_RUNNING: err(611, 'Operation already running.'),
     // Node Errors 1000
 
     // Query Errors 2000
@@ -54,6 +49,7 @@ export const ERRORS = {
     MODEL_GENERATION_WRONG_TYPE: err(4111, 'Generation result is not an object.'),
     MODEL_GENERATION_INCORRECT: err(4112, 'Generation result object has incorrect structure.'),
     MODEL_GENERATION_EMPTY: err(4113, 'Generation result is empty.'),
+    MODEL_OPERATION_ALREADY_RUNNING: err(4120, 'Operation already running.'),
 
     // Google Errors 5000
     GOOGLE_SAK_MISSING: err(5000, 'Google Service Account Key is missing or invalid.'),

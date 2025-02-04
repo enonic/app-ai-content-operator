@@ -1,7 +1,7 @@
 import {DataEntry, DataEntryType} from '../../shared/data/DataEntry';
 import {SPECIAL_KEYS, SPECIAL_NAMES} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
-import {Message} from '../../shared/model';
+import {ModelMessage} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
 import {AnalysisObjectEntry, AnalysisReferenceEntry, AnalysisResult} from '../../shared/prompts/analysis';
 import {createGenerationInstructions, GenerationResult} from '../../shared/prompts/generation';
@@ -14,7 +14,7 @@ import {isObject, isPrimitive, isString, isStringArray} from '../utils/objects';
 
 type GenerateParams = {
     prompt: AnalysisResult;
-    history: Message[];
+    history: ModelMessage[];
     fields: Record<string, DataEntry>;
 };
 
@@ -107,7 +107,7 @@ function cleanBackticks(input: string): string {
 //* PROMPT
 //
 
-function createGenerationMessages(prompt: string, messages: Message[]): Message[] {
+function createGenerationMessages(prompt: string, messages: ModelMessage[]): ModelMessage[] {
     return [...messages, {role: 'user', text: prompt}];
 }
 
