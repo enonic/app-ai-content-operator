@@ -41,6 +41,7 @@
         "@enonic-types/core": "^7.14.4",
         "@enonic-types/global": "^7.14.4",
         "@enonic-types/lib-auth": "^7.14.4",
+        "@enonic-types/lib-event": "^7.14.4",
         "@enonic-types/lib-websocket": "^7.14.4",
         "@enonic-types/lib-task": "^7.14.4",
         "@enonic/esbuild-plugin-copy-with-hash": "^0.2.0",
@@ -82,6 +83,7 @@
     "scripts": {
         "build": "pnpm run /^build:/",
         "build:client": "vite build",
+        "build:worker": "vite build --config vite.worker.config.js",
         "build:server": "tsup --config tsup.config.ts",
         "test": "jest --coverage --no-cache --verbose",
         "test:client": "jest --selectProjects browser --no-cache --verbose",
@@ -90,6 +92,7 @@
         "check": "pnpm run /^check:/",
         "check:types": "pnpm run /^check:types:/",
         "check:types:client": "tsc --noEmit --project src/main/resources/assets/tsconfig.json",
+        "check:types:worker": "tsc --noEmit --project src/main/resources/assets/worker/tsconfig.json",
         "check:types:server": "tsc --noEmit",
         "check:lint": "pnpm run /^check:lint:/",
         "check:lint:client": "eslint --cache --config src/main/resources/assets/.eslintrc.cjs src/main/resources/assets/",

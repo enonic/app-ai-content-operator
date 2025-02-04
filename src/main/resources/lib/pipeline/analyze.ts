@@ -1,7 +1,7 @@
 import {DataEntry} from '../../shared/data/DataEntry';
 import {SPECIAL_KEYS, SPECIAL_NAMES} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
-import {Message} from '../../shared/model';
+import {ModelMessage} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
 import {
     AnalysisErrorResult,
@@ -159,7 +159,7 @@ export function getWarningMessage(result: AnalysisErrorResult | AnalysisUnclearR
 //* PROMPT
 //
 
-function createAnalysisMessages(prompt: string, messages: Message[]): Message[] {
+function createAnalysisMessages(prompt: string, messages: ModelMessage[]): ModelMessage[] {
     return [...messages, {role: 'user', text: prompt}];
 }
 

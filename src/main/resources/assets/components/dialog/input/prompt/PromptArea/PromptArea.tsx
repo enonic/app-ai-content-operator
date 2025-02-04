@@ -16,7 +16,7 @@ import {MessageRole} from '../../../../../stores/data/MessageType';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
 import {getAllPathsFromString} from '../../../../../stores/utils/path';
-import {$isBusy, $isConnected, sendPrompt, sendStop} from '../../../../../stores/websocket';
+import {$isBusy, $isConnected, sendPrompt, sendStop} from '../../../../../stores/worker';
 import ContextControl from '../../../context/ContextControls/ContextControls';
 import MainChatButton from '../../MainChatButton/MainChatButton';
 import MentionsList from '../MentionsList/MentionsList';

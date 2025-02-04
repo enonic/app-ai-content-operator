@@ -20,6 +20,7 @@ export default defineConfig({
                 extend: true,
             },
         },
+        emptyOutDir: false,
         outDir: 'build/resources/main/assets',
         sourcemap: isDev ? 'inline' : false,
         minify: !isDev,

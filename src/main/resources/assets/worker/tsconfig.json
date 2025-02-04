@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "lib": ["WebWorker", "ESNext", "DOM"],
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
@@ -13,8 +13,6 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "noEmit": true,
-        "jsx": "react-jsx",
     },
-    "include": ["**/*.ts", "**/*.tsx", "../types/types.d.ts", "../shared/**/*.ts"],
-    "exclude": ["worker/**/*.ts"],
+    "include": ["**/*.ts", "../../types/types.d.ts", "../../shared/**/*.ts"],
 }
