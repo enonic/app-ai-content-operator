@@ -1,6 +1,9 @@
 # System
 .DS_Store
 
+# Enonic
+.enonic
+
 # IDEA
 *.iml
 *.ipr

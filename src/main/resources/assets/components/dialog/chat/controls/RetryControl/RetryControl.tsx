@@ -1,6 +1,6 @@
 import {useTranslation} from 'react-i18next';
 
-import {sendRetry} from '../../../../../stores/websocket';
+import {sendRetry} from '../../../../../stores/connection';
 import ActionButton from '../../../../base/ActionButton/ActionButton';
 
 type Props = {

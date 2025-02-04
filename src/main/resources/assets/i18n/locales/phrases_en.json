@@ -61,7 +61,7 @@
     "text.error.generation.wrongType": "Sorry, I couldn't create a proper response to your request. Please try again.",
     "text.error.generation.incorrect": "Sorry, I created a response in an unexpected format. Please try rephrasing your request.",
     "text.error.generation.empty": "Sorry, I couldn't generate content for the fields you mentioned. Please try rephrasing your request.",
-    "text.mentions.notFound": "No editable inputs found",
-    "text.error.license.missing": "No valid license found. Please contact your administrator",
+    "text.mentions.notFound": "No editable inputs found.",
+    "text.error.license.missing": "No valid license found. Please contact your administrator.",
     "text.error.license.expired": "License expired. Please contact your administrator."
 }
