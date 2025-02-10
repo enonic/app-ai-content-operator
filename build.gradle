@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.enonic.xp.app' version '3.5.2'
+    id 'com.enonic.xp.app' version '3.6.1'
     id 'com.github.node-gradle.node' version '7.1.0'
 }
 
