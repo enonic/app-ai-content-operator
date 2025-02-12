@@ -22,7 +22,7 @@ export enum MessageType {
 }
 
 //
-//* Incoming Messages
+//* Client -> Server
 //
 
 export type InMessageType = MessageType.GENERATE | MessageType.STOP;
@@ -31,9 +31,7 @@ type BaseInMessage<T extends InMessageType, P = unknown> = {
     type: T;
     metadata: {
         id: string;
-        sessionId: string;
-        clientId: string; // tab/port
-        socketId: string;
+        clientId: string;
     };
     payload: P;
 };
@@ -41,7 +39,7 @@ type BaseInMessage<T extends InMessageType, P = unknown> = {
 export type InMessage = GenerateMessage | StopMessage;
 
 //
-//* Outgoing Messages
+//* Server -> Client
 //
 
 export type OutMessageType = MessageType.ANALYZED | MessageType.GENERATED | MessageType.FAILED;
@@ -50,7 +48,6 @@ type BaseOutMessage<T extends OutMessageType, P = unknown> = {
     type: T;
     metadata: {
         id: string;
-        sessionId: string;
         clientId?: string;
     };
     payload: P;

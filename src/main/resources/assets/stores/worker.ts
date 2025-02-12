@@ -7,9 +7,10 @@ import {
     FailedMessagePayload,
     GeneratedMessagePayload,
     GenerateMessagePayload,
+    InMessage,
     MessageType,
 } from '../../shared/messages';
-import {ClientMessage, MessageMetadata, ServerMessage, WSMessageType} from '../../shared/websocket';
+import {ConnectedWorkerMessage, OutWorkerMessage, ReceivedWorkerMessage} from '../../shared/worker';
 import {parseNodes, parseText} from '../common/slate';
 import {
     addErrorMessage,
@@ -34,14 +35,18 @@ type WorkerState = 'connecting' | 'connected' | 'disconnecting' | 'disconnected'
 type WorkerStore = {
     lifecycle: WorkerLifecycle;
     state: WorkerState;
+    ready: boolean;
     connection: Optional<SharedWorker>;
+    clientId: Optional<string>;
     online: boolean;
 };
 
 const $worker = map<WorkerStore>({
     lifecycle: 'unmounted',
     state: 'disconnected',
+    ready: false,
     connection: null,
+    clientId: null,
     online: navigator.onLine,
 });
 
@@ -67,8 +72,8 @@ export const $busyAnalyzing = computed($buffer, ({generationId, userMessageId, m
     return generationId != null && userMessageId != null && modelMessageId == null;
 });
 
-export const $isConnected = computed($worker, ({connection, state, online}) => {
-    return connection != null && state === 'connected' && online;
+export const $isConnected = computed($worker, ({connection, state, online, ready}) => {
+    return connection != null && state === 'connected' && online && ready;
 });
 
 //
@@ -141,7 +146,7 @@ function connect(): void {
     $worker.setKey('state', 'connecting');
 
     worker.port.addEventListener('message', event => {
-        handleMessage(event as MessageEvent<ServerMessage>);
+        handleMessage(event as MessageEvent<OutWorkerMessage>);
     });
 
     worker.port.addEventListener('error', event => {
@@ -180,8 +185,14 @@ function cleanup(worker: Optional<SharedWorker>): void {
 
     $worker.setKey('state', 'disconnected');
     $worker.setKey('connection', null);
+    $worker.setKey('clientId', null);
     $worker.setKey('online', navigator.onLine);
     $buffer.set({});
+}
+
+function handleConnected(message: ConnectedWorkerMessage): void {
+    $worker.setKey('state', 'connected');
+    $worker.setKey('clientId', message.payload.clientId);
 }
 
 function handleDisconnected(): void {
@@ -189,6 +200,7 @@ function handleDisconnected(): void {
     if (state !== 'disconnected' && state !== 'disconnecting') {
         $worker.setKey('state', 'disconnected');
     }
+    $worker.setKey('clientId', null);
     $buffer.set({});
 }
 
@@ -196,31 +208,42 @@ function handleDisconnected(): void {
 //* Receive
 //
 
-function handleMessage(event: MessageEvent<ServerMessage>): void {
+function handleMessage(event: MessageEvent<OutWorkerMessage>): void {
     const message = event.data;
 
     switch (message.type) {
-        case WSMessageType.CONNECTED:
-            $worker.setKey('state', 'connected');
+        case 'connected':
+            handleConnected(message);
             break;
 
-        case MessageType.ANALYZED: {
-            handleAnalyzedMessage(message.payload);
+        case 'status':
+            $worker.setKey('ready', message.payload.ready);
             break;
-        }
 
-        case MessageType.GENERATED: {
-            handleGeneratedMessage(message.payload);
+        case 'received':
+            handleReceivedMessage(message);
             break;
-        }
 
-        case MessageType.FAILED: {
-            handleFailedMessage(message.payload);
-            break;
-        }
-
-        case WSMessageType.DISCONNECTED:
+        case 'disconnected':
             handleDisconnected();
+            break;
+    }
+}
+
+function handleReceivedMessage(message: ReceivedWorkerMessage): void {
+    const {type, payload} = message.payload;
+
+    switch (type) {
+        case MessageType.ANALYZED:
+            handleAnalyzedMessage(payload);
+            break;
+
+        case MessageType.GENERATED:
+            handleGeneratedMessage(payload);
+            break;
+
+        case MessageType.FAILED:
+            handleFailedMessage(payload);
             break;
     }
 }
@@ -229,10 +252,16 @@ function handleMessage(event: MessageEvent<ServerMessage>): void {
 //* Send
 //
 
-function createMetadata(): MessageMetadata {
+function createMetadata(): InMessage['metadata'] {
+    const {clientId} = $worker.get();
+
+    if (!clientId) {
+        throw new Error('Client ID is not set');
+    }
+
     return {
         id: crypto.randomUUID(),
-        timestamp: Date.now(),
+        clientId,
     };
 }
 
@@ -256,7 +285,7 @@ function createGenerateMessagePayload(prompt: string): GenerateMessagePayload {
     return payload;
 }
 
-function sendMessage(message: ClientMessage): void {
+function sendMessage(message: InMessage): void {
     const {connection} = $worker.get();
     connection?.port.postMessage({type: 'send', payload: message});
 }
@@ -287,7 +316,8 @@ export function sendStop(role: Exclude<MessageRole, 'model'>): void {
         return;
     }
 
-    sendMessage({type: MessageType.STOP, metadata: createMetadata(), payload: {generationId}});
+    const metadata = createMetadata();
+    sendMessage({type: MessageType.STOP, metadata, payload: {generationId}});
     addStoppedMessage(role, modelMessageId);
 
     clearTimeout(stopTimeout);
