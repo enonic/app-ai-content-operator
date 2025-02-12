@@ -1,1 +1,1 @@
-export const WS_PROTOCOL = 'ai.contentoperator';
+export const WS_PROTOCOL = 'json';

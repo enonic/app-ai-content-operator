@@ -83,7 +83,6 @@
     "scripts": {
         "build": "pnpm run /^build:/",
         "build:client": "vite build",
-        "build:worker": "vite build --config vite.worker.config.js",
         "build:server": "tsup --config tsup.config.ts",
         "test": "jest --coverage --no-cache --verbose",
         "test:client": "jest --selectProjects browser --no-cache --verbose",
@@ -92,7 +91,6 @@
         "check": "pnpm run /^check:/",
         "check:types": "pnpm run /^check:types:/",
         "check:types:client": "tsc --noEmit --project src/main/resources/assets/tsconfig.json",
-        "check:types:worker": "tsc --noEmit --project src/main/resources/assets/worker/tsconfig.json",
         "check:types:server": "tsc --noEmit",
         "check:lint": "pnpm run /^check:lint:/",
         "check:lint:client": "eslint --cache --config src/main/resources/assets/.eslintrc.cjs src/main/resources/assets/",

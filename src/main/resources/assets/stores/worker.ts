@@ -134,8 +134,8 @@ function connect(): void {
 
     cleanup(connection);
 
-    const workerUrl = new URL(/* @vite-ignore */ './worker/index.js', import.meta.url);
-    const worker = new SharedWorker(workerUrl, {type: 'module'});
+    const {sharedSocketUrl} = $config.get();
+    const worker = new SharedWorker(sharedSocketUrl, {type: 'module'});
 
     $worker.setKey('connection', worker);
     $worker.setKey('state', 'connecting');
@@ -258,7 +258,7 @@ function createGenerateMessagePayload(prompt: string): GenerateMessagePayload {
 
 function sendMessage(message: ClientMessage): void {
     const {connection} = $worker.get();
-    connection?.port.postMessage(message);
+    connection?.port.postMessage({type: 'send', payload: message});
 }
 
 function sendGenerateMessage(payload: GenerateMessagePayload): void {
