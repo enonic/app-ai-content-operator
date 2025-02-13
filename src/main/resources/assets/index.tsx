@@ -33,6 +33,6 @@ export function render(buttonContainer: HTMLElement, dialogContainer: HTMLElemen
     );
 }
 
-export function setup({sharedSocketUrl: wsServiceUrl}: SetupConfig): void {
-    setSharedSocketUrl(wsServiceUrl);
+export function setup({sharedSocketUrl}: SetupConfig): void {
+    setSharedSocketUrl(sharedSocketUrl);
 }

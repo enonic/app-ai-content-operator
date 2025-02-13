@@ -1,4 +1,4 @@
-import * as websocketLib from '/lib/xp/websocket';
+import * as eventLib from '/lib/xp/event';
 
 import {
     AnalyzedMessage,
@@ -15,39 +15,40 @@ import {unsafeUUIDv4} from '../utils/uuid';
 type Recipient = Omit<InMessage['metadata'], 'id'>;
 type Metadata = OutMessage['metadata'];
 
-function createMetadata({clientId, sessionId}: Recipient): Metadata {
+function createMetadata({clientId}: Recipient): Metadata {
     return {
         id: unsafeUUIDv4(),
         clientId,
-        sessionId,
     };
 }
 
-export function sendMessage(socketId: string, message: OutMessage): void {
-    log.info(`websocket.sendMessage(): ${message.type}`);
-    websocketLib.send(socketId, JSON.stringify(message));
+function sendMessageEvent(data: OutMessage): void {
+    log.info(`events.sendMessageEvent(): ${data.type}`);
+    eventLib.send({
+        type: data.type,
+        distributed: false,
+        data,
+    });
 }
 
 export function sendAnalyzedMessage(recipient: Recipient, payload: AnalyzedMessagePayload): void {
-    const message: AnalyzedMessage = {
+    sendMessageEvent({
         type: MessageType.ANALYZED,
         metadata: createMetadata(recipient),
         payload,
-    };
-    sendMessage(recipient.socketId, message);
+    } satisfies AnalyzedMessage);
 }
 
 export function sendGeneratedMessage(recipient: Recipient, payload: GeneratedMessagePayload): void {
-    const message: GeneratedMessage = {
+    sendMessageEvent({
         type: MessageType.GENERATED,
         metadata: createMetadata(recipient),
         payload,
-    };
-    sendMessage(recipient.socketId, message);
+    } satisfies GeneratedMessage);
 }
 
 export function sendFailedErrorMessage(recipient: Recipient, error: AiError): void {
-    const message: FailedMessage = {
+    sendMessageEvent({
         type: MessageType.FAILED,
         metadata: createMetadata(recipient),
         payload: {
@@ -55,18 +56,16 @@ export function sendFailedErrorMessage(recipient: Recipient, error: AiError): vo
             message: error.message,
             code: error.code,
         },
-    };
-    sendMessage(recipient.socketId, message);
+    } satisfies FailedMessage);
 }
 
 export function sendFailedWarningMessage(recipient: Recipient, text: string): void {
-    const message: FailedMessage = {
+    sendMessageEvent({
         type: MessageType.FAILED,
         metadata: createMetadata(recipient),
         payload: {
             type: 'warning',
             message: text,
         },
-    };
-    sendMessage(recipient.socketId, message);
+    } satisfies FailedMessage);
 }

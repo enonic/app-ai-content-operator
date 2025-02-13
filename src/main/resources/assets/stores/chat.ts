@@ -3,10 +3,10 @@ import {nanoid} from 'nanoid';
 import {atom, computed, map} from 'nanostores';
 
 import {ERRORS} from '../../shared/errors';
+import {FailedMessagePayload} from '../../shared/messages';
 import {ModelMessage} from '../../shared/model';
 import {AnalysisResult} from '../../shared/prompts/analysis';
 import {GenerationResult} from '../../shared/prompts/generation';
-import {FailedMessagePayload} from '../../shared/websocket';
 import {flattenGraph, getNextActiveNode, pruneGraph} from '../common/graph';
 import {
     ChatMessage,

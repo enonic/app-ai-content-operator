@@ -50,10 +50,6 @@ function handleContentOperatorEvent(event: ServerEvent): void {
     }
 }
 
-export function toCustom<T extends string>(eventType: T): CustomEventType<T> {
-    return `custom.${eventType}`;
-}
-
-export function fromCustom<T extends string>(eventType: CustomEventType<T> | T): T {
+function fromCustom<T extends string>(eventType: CustomEventType<T> | T): T {
     return eventType.replace(/^custom./, '') as T;
 }
