@@ -8,9 +8,16 @@ import {
     GeneratedMessagePayload,
     GenerateMessagePayload,
     InMessage,
+    MESSAGE_BASE,
     MessageType,
 } from '../../shared/messages';
-import {ConnectedWorkerMessage, OutWorkerMessage, ReceivedWorkerMessage} from '../../shared/worker';
+import {
+    ConnectedWorkerMessage,
+    OutWorkerMessage,
+    ReceivedWorkerMessage,
+    SendWorkerMessage,
+    SubscribeWorkerMessage,
+} from '../../shared/worker';
 import {parseNodes, parseText} from '../common/slate';
 import {
     addErrorMessage,
@@ -142,6 +149,16 @@ function connect(): void {
     const {sharedSocketUrl} = $config.get();
     const worker = new SharedWorker(sharedSocketUrl, {type: 'module'});
 
+    worker.onerror = event => {
+        // TODO: Handle error
+        console.error(event);
+    };
+
+    worker.port.onmessageerror = event => {
+        // TODO: Handle error
+        console.error(event);
+    };
+
     $worker.setKey('connection', worker);
     $worker.setKey('state', 'connecting');
 
@@ -193,6 +210,8 @@ function cleanup(worker: Optional<SharedWorker>): void {
 function handleConnected(message: ConnectedWorkerMessage): void {
     $worker.setKey('state', 'connected');
     $worker.setKey('clientId', message.payload.clientId);
+
+    subscribeTo(`${MESSAGE_BASE}.*`);
 }
 
 function handleDisconnected(): void {
@@ -285,9 +304,17 @@ function createGenerateMessagePayload(prompt: string): GenerateMessagePayload {
     return payload;
 }
 
+function subscribeTo(operation: string): void {
+    const {connection} = $worker.get();
+    connection?.port.postMessage({
+        type: 'subscribe',
+        payload: {operation},
+    } satisfies SubscribeWorkerMessage);
+}
+
 function sendMessage(message: InMessage): void {
     const {connection} = $worker.get();
-    connection?.port.postMessage({type: 'send', payload: message});
+    connection?.port.postMessage({type: 'send', payload: message} satisfies SendWorkerMessage);
 }
 
 function sendGenerateMessage(payload: GenerateMessagePayload): void {

@@ -1,14 +1,11 @@
-/*
-Message types are unified across the client and server.
-We use same message types and format across WebSocket and XP Events.
-*/
 import {DataEntry} from './data/DataEntry';
 import {ModelMessage} from './model';
 import {AnalysisResult} from './prompts/analysis';
 import {GenerationResult} from './prompts/generation';
 
-export const IN_BASE = 'ai.contentoperator.in';
-export const OUT_BASE = 'ai.contentoperator.out';
+export const MESSAGE_BASE = 'ai.contentoperator';
+export const IN_BASE = `${MESSAGE_BASE}.in`;
+export const OUT_BASE = `${MESSAGE_BASE}.out`;
 
 export enum MessageType {
     // client → server

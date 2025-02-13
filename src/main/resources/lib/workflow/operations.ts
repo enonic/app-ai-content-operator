@@ -3,7 +3,7 @@ import {GenerateMessage, StopMessage} from '../../shared/messages';
 import {logError} from '../logger';
 import {analyze} from '../pipeline/analyze';
 import {generate} from '../pipeline/generate';
-import {sendAnalyzedMessage, sendFailedErrorMessage, sendFailedWarningMessage, sendGeneratedMessage} from './websocket';
+import {sendAnalyzedMessage, sendFailedErrorMessage, sendFailedWarningMessage, sendGeneratedMessage} from './messages';
 
 const ACTIVE_OPERATIONS = __.newBean<Java.ConcurrentHashMap<string, boolean>>('java.util.concurrent.ConcurrentHashMap');
 
@@ -35,7 +35,7 @@ export function analyzeAndGenerate(message: GenerateMessage): void {
         if (!addActiveOperation(id)) {
             return sendFailedErrorMessage(
                 metadata,
-                ERRORS.WS_OPERATION_ALREADY_RUNNING.withMsg(`Generation id: ${id}`),
+                ERRORS.MODEL_OPERATION_ALREADY_RUNNING.withMsg(`Generation id: ${id}`),
             );
         }
 
@@ -73,7 +73,7 @@ export function analyzeAndGenerate(message: GenerateMessage): void {
 
         removeActiveOperation(id);
     } catch (e) {
-        sendFailedErrorMessage(metadata, ERRORS.WS_UNKNOWN_ERROR.withMsg('See server logs.'));
+        sendFailedErrorMessage(metadata, ERRORS.UNKNOWN_ERROR.withMsg('See server logs.'));
         logError(e);
     }
 }

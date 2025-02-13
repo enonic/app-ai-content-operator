@@ -42,7 +42,6 @@
         "@enonic-types/global": "^7.14.4",
         "@enonic-types/lib-auth": "^7.14.4",
         "@enonic-types/lib-event": "^7.14.4",
-        "@enonic-types/lib-websocket": "^7.14.4",
         "@enonic-types/lib-task": "^7.14.4",
         "@enonic/esbuild-plugin-copy-with-hash": "^0.2.0",
         "@enonic/eslint-config": "^1.2.1",
