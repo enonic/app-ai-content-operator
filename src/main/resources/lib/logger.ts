@@ -5,9 +5,6 @@ export enum LogDebugGroups {
     ALL = 'all',
     NONE = 'none',
     GOOGLE = 'google',
-    REST = 'rest',
-    NODE = 'node',
-    QUERY = 'query',
     FUNC = 'func',
     WS = 'ws',
 }
