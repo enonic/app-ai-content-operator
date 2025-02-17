@@ -7,11 +7,11 @@
         list-style: initial;
     }
 
-    .ai-content-operator ol li {
+    .ai-content-operator ol > li {
         list-style: decimal;
     }
 
-    .ai-content-operator ul li {
+    .ai-content-operator ul > li {
         list-style: disc;
     }
 }
