@@ -4,15 +4,9 @@ import {GOOGLE_GEMINI_FLASH_URL, GOOGLE_GEMINI_PRO_URL, GOOGLE_SAK_PATH} from '.
 import {APP_NAME} from '../constants';
 import {logDebug, LogDebugGroups, logError} from '../logger';
 
-export type ModelOptions = {
-    key: Model;
-    name: string;
-    url: string;
-};
-
 type ClientOptions = {
     accessToken: string;
-} & Record<Model, ModelOptions>;
+} & Record<Model, string>;
 
 export function getOptions(): Try<ClientOptions> {
     const [options, err] = parseOptions();
@@ -25,13 +19,6 @@ export function getOptions(): Try<ClientOptions> {
 
 export function parseOptions(): Try<ClientOptions> {
     logDebug(LogDebugGroups.GOOGLE, 'options.getOptions()');
-
-    if (!GOOGLE_GEMINI_FLASH_URL) {
-        return [null, ERRORS.GOOGLE_GEMINI_URL_MISSING.withMsg('(Flash type)')];
-    }
-    if (!GOOGLE_GEMINI_PRO_URL) {
-        return [null, ERRORS.GOOGLE_GEMINI_URL_MISSING.withMsg('(Pro type)')];
-    }
 
     if (!GOOGLE_SAK_PATH) {
         return [null, ERRORS.GOOGLE_SAK_MISSING];
@@ -50,15 +37,8 @@ export function parseOptions(): Try<ClientOptions> {
             return [null, ERRORS.GOOGLE_PROJECT_ID_MISSING];
         }
 
-        const [flash, flashValidationError] = validateUrl(GOOGLE_GEMINI_FLASH_URL, projectId, 'flash');
-        if (flashValidationError) {
-            return [null, flashValidationError];
-        }
-
-        const [pro, proValidationError] = validateUrl(GOOGLE_GEMINI_PRO_URL, projectId, 'pro');
-        if (proValidationError) {
-            return [null, proValidationError];
-        }
+        const flash = createModelGenerateUrl('flash', projectId);
+        const pro = createModelGenerateUrl('pro', projectId);
 
         return [
             {
@@ -73,29 +53,21 @@ export function parseOptions(): Try<ClientOptions> {
     }
 }
 
-function validateUrl(url: string, projectId: string, key: Model): Try<ModelOptions> {
-    const urlRegex = /projects\/([^/]+)\/locations\/[^/]+\/publishers\/google\/models\/([^/]+)/;
-    const match = url.match(urlRegex);
+function createModelGenerateUrl(model: Model, projectId: string): string {
+    return `${createModelBaseUrl(model, projectId)}:generateContent`;
+}
 
-    if (!match) {
-        return [null, ERRORS.GOOGLE_GEMINI_URL_INVALID.withMsg(url)];
+function createModelBaseUrl(model: Model, projectId: string): string {
+    switch (model) {
+        case 'flash':
+            return (
+                GOOGLE_GEMINI_FLASH_URL ||
+                `https://europe-west1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/europe-west1/publishers/google/models/gemini-2.0-flash-001`
+            );
+        case 'pro':
+            return (
+                GOOGLE_GEMINI_PRO_URL ||
+                `https://europe-west1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/europe-west1/publishers/google/models/gemini-2.0-flash-001`
+            );
     }
-
-    const [, urlProjectId, name] = match;
-    if (projectId !== urlProjectId) {
-        return [null, ERRORS.GOOGLE_PROJECT_ID_MISMATCH.withMsg(`${projectId} !== ${urlProjectId}`)];
-    }
-
-    if (!name || !name.startsWith('gemini')) {
-        return [null, ERRORS.GOOGLE_MODEL_NOT_SUPPORTED.withMsg(`Model "${name}" must be from Gemini family.`)];
-    }
-
-    return [
-        {
-            key,
-            name,
-            url: `${url}:generateContent`,
-        },
-        null,
-    ];
 }
