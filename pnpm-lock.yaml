@@ -85,8 +85,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.2))(eslint@8.57.1)(typescript@5.8.2))(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.2))(typescript@5.8.2)
       '@google/generative-ai':
-        specifier: ^0.21.0
-        version: 0.21.0
+        specifier: ^0.22.0
+        version: 0.22.0
       '@swc/core':
         specifier: ^1.11.5
         version: 1.11.5
@@ -415,9 +415,6 @@ packages:
 
   '@cjs-exporter/globby@13.1.3':
     resolution: {integrity: sha512-rxSVbUhNmIYTZKzrtb6cJIUfFk0PDxzeR4+dzi8edKYmmbqRBO/k7N+tW///QmtY6OznemXiLMSZ20E6DHegxQ==}
-
-  '@enonic-types/core@7.14.4':
-    resolution: {integrity: sha512-AzMe/DixiaNH8X3OEvy0AREwr3GcmmcQ5lQ3k8AQWK4rQVKmSVatuNslkQFvzakjc7BOcTHGSBxr5lhN9+qD8g==}
 
   '@enonic-types/core@7.15.0':
     resolution: {integrity: sha512-I0NG8tcb1vW5zBnzqBvF2B7uJExI9holuQrrREXI+qPiZ0e9HHNxDKRWMQ6+VY5p4X8ishxmbRhoBbHv5CUyeA==}
@@ -764,8 +761,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@google/generative-ai@0.21.0':
-    resolution: {integrity: sha512-7XhUbtnlkSEZK15kN3t+tzIMxsbKm/dSkKBFalj+20NvPKe1kBY7mR2P7vuijEn+f06z5+A8bVGKO0v39cr6Wg==}
+  '@google/generative-ai@0.22.0':
+    resolution: {integrity: sha512-mLR3PDWCk5O/BWNyDvFDIiwKeXQmFGZ+kJFd9m73QrUPCFREttJyVbBPTW4y9CwTbaltLMDaLDfroCrRv5Bl8Q==}
     engines: {node: '>=18.0.0'}
 
   '@humanwhocodes/config-array@0.13.0':
@@ -4187,8 +4184,6 @@ snapshots:
     dependencies:
       globby: 13.1.3
 
-  '@enonic-types/core@7.14.4': {}
-
   '@enonic-types/core@7.15.0': {}
 
   '@enonic-types/global@7.15.0':
@@ -4391,7 +4386,7 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@google/generative-ai@0.21.0': {}
+  '@google/generative-ai@0.22.0': {}
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:

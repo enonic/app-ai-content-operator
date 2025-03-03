@@ -45,7 +45,7 @@
         "@enonic-types/lib-task": "^7.15.0",
         "@enonic/esbuild-plugin-copy-with-hash": "^0.2.0",
         "@enonic/eslint-config": "^1.2.1",
-        "@google/generative-ai": "^0.21.0",
+        "@google/generative-ai": "^0.22.0",
         "@swc/core": "^1.11.5",
         "@swc/jest": "^0.2.37",
         "@tailwindcss/typography": "^0.5.16",
