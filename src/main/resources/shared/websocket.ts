@@ -1,4 +1,5 @@
 import {DataEntry} from './data/DataEntry';
+import {LicenseState} from './license';
 import {Message} from './model';
 import {AnalysisResult} from './prompts/analysis';
 import {GenerationResult} from './prompts/generation';
@@ -65,6 +66,12 @@ export type StopMessage = MessageWithPayload<MessageType.STOP, {generationId: st
 
 export type StopMessagePayload = StopMessage['payload'];
 
+// Server returns license state on connect
+export type LicenseStatePayload = {licenseState: LicenseState};
+export type LicenseErrorPayload = {code: number; message: string};
+export type LicensePayload = LicenseStatePayload | LicenseErrorPayload;
+export type ConnectedMessage = MessageWithPayload<MessageType.CONNECTED, LicensePayload>;
+
 // Server returns prompt for analysis and the result
 export type AnalyzedMessage = MessageWithPayload<
     MessageType.ANALYZED,
@@ -107,7 +114,6 @@ export type FailedMessagePayload = FailedMessageErrorPayload | FailedMessageWarn
 
 // Connection messages
 export type ConnectMessage = BaseMessage<MessageType.CONNECT>;
-export type ConnectedMessage = BaseMessage<MessageType.CONNECTED>;
 export type DisconnectMessage = BaseMessage<MessageType.DISCONNECT>;
 export type DisconnectedMessage = BaseMessage<MessageType.DISCONNECTED>;
 

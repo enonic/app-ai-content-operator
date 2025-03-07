@@ -1,8 +1,6 @@
 import {map} from 'nanostores';
 
 import {addGlobalOpenDialogHandler, AiEvents, dispatchDialogEvent} from '../common/events';
-import GreetingText from '../components/dialog/chat/GreetingText/GreetingText';
-import {addSystemMessage} from './chat';
 
 export type Dialog = {
     hidden: boolean;
@@ -17,10 +15,7 @@ export const $dialog = map<Dialog>({
 const unsubscribe = $dialog.listen(({hidden}, _, key) => {
     if (key === 'hidden' && !hidden) {
         unsubscribe();
-        setTimeout(() => {
-            $dialog.setKey('initialized', true);
-            addSystemMessage({type: 'context', key: 'greeting', node: <GreetingText />});
-        }, 800);
+        $dialog.setKey('initialized', true);
     }
 });
 

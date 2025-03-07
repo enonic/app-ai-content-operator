@@ -1,5 +1,6 @@
 import * as websocketLib from '/lib/xp/websocket';
 
+import * as licenseManager from '../../lib/license/license-manager';
 import {analyze} from '../../lib/flow/analyze';
 import {generate} from '../../lib/flow/generate';
 import {logDebug, LogDebugGroups, logError} from '../../lib/logger';
@@ -12,10 +13,12 @@ import {
     AnalyzedMessage,
     AnalyzedMessagePayload,
     ClientMessage,
+    ConnectedMessage,
     FailedMessage,
     GeneratedMessage,
     GeneratedMessagePayload,
     GenerateMessage,
+    LicensePayload,
     MessageMetadata,
     MessageType,
     ServerMessage,
@@ -116,10 +119,10 @@ function handleMessage(event: Enonic.WebSocketEvent): void {
             sendMessage(id, {type: MessageType.PONG});
             break;
         case MessageType.CONNECT:
-            sendMessage(id, {type: MessageType.CONNECTED});
+            handleConnect(id);
             break;
         case MessageType.GENERATE:
-            runAsyncTask('ws', () => analyzeAndGenerate(id, message));
+            handleGenerateMessage(id, message);
             break;
         case MessageType.STOP:
             stopGeneration(message.payload.generationId);
@@ -160,6 +163,11 @@ function sendGeneratedMessage(socketId: string, payload: GeneratedMessagePayload
     sendMessage(socketId, message);
 }
 
+function sendConnectedMessage(socketId: string, payload: LicensePayload): void {
+    const message = {type: MessageType.CONNECTED, payload} satisfies Omit<ConnectedMessage, 'metadata'>;
+    sendMessage(socketId, message);
+}
+
 function sendFailedErrorMessage(socketId: string, error: AiError): void {
     const message = {
         type: MessageType.FAILED,
@@ -186,6 +194,28 @@ function sendFailedWarningMessage(socketId: string, text: string): void {
 //
 //* Flow
 //
+
+function handleConnect(socketId: string): void {
+    const [licenseState, licenseError] = licenseManager.getLicenseState();
+    const payload = licenseError ? licenseError : {licenseState};
+
+    sendConnectedMessage(socketId, payload);
+}
+
+function handleGenerateMessage(socketId: string, message: GenerateMessage): void {
+    const [licenseState, licenseError] = licenseManager.getLicenseState();
+
+    if (licenseError) {
+        return sendFailedErrorMessage(socketId, licenseError);
+    }
+
+    if (licenseState !== 'OK') {
+        const error = licenseState === 'EXPIRED' ? ERRORS.LICENSE_ERROR_EXPIRED : ERRORS.LICENSE_ERROR_MISSING;
+        return sendFailedErrorMessage(socketId, error);
+    }
+
+    runAsyncTask('ws', () => analyzeAndGenerate(socketId, message));
+}
 
 function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
     try {

@@ -15,6 +15,7 @@ import {Mention} from '../../../../../stores/data/Mention';
 import {MessageRole} from '../../../../../stores/data/MessageType';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
+import {$licenseState} from '../../../../../stores/license';
 import {getAllPathsFromString} from '../../../../../stores/utils/path';
 import {$isBusy, $isConnected, sendPrompt, sendStop} from '../../../../../stores/websocket';
 import ContextControl from '../../../context/ContextControls/ContextControls';
@@ -77,16 +78,10 @@ export default function PromptArea({className}: Props): React.ReactNode {
     const allMentions = useStore($mentions);
     const mentionsToDisplay = useDeepMemo(findLooseMatch(allMentions, search));
 
-    useEffect(() => {
-        if (hidden) {
-            clearTarget();
-        } else {
-            ReactEditor.focus(editor);
-        }
-    }, [hidden]);
-
     const isBusy = useStore($isBusy);
     const isConnected = useStore($isConnected);
+    const licenseState = useStore($licenseState);
+    const isLicenseOk = licenseState === 'OK';
     const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));
     const canSend = isConnected && !editorEmpty && !isBusy;
     const isMainChatButtonDisabled = !isConnected || (editorEmpty && !isBusy);
@@ -94,6 +89,14 @@ export default function PromptArea({className}: Props): React.ReactNode {
     const context = useStore($context);
     const paths = context ? getAllPathsFromString(context) : [];
     const hasContext = paths.length > 0;
+
+    useEffect(() => {
+        if (hidden || licenseState !== 'OK') {
+            clearTarget();
+        } else {
+            ReactEditor.focus(editor);
+        }
+    }, [hidden, licenseState]);
 
     useEffect(() => {
         if (target) {
@@ -205,6 +208,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                     onKeyDown={handleKeyDown}
                     placeholder={t('text.input.placeholder')}
                     renderElement={PromptAreaElement}
+                    readOnly={!isLicenseOk}
                     ref={ref}
                 />
                 {target && (
