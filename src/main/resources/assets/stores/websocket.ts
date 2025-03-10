@@ -9,6 +9,8 @@ import {
     FailedMessagePayload,
     GeneratedMessagePayload,
     GenerateMessagePayload,
+    LicensePayload,
+    LicenseStatePayload,
     MessageMetadata,
     MessageType,
     ServerMessage,
@@ -29,6 +31,7 @@ import {
 import {$config} from './config';
 import {$contentPath, $language, createFields} from './data';
 import {MessageRole} from './data/MessageType';
+import {$licenseState} from './license';
 
 type WebSocketLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
 
@@ -290,6 +293,10 @@ function handleMessage(event: MessageEvent<string>): void {
             $websocket.setKey('state', 'connected');
             break;
 
+        case MessageType.LICENSE:
+            handleLicenseMessage(message.payload);
+            break;
+
         case MessageType.ANALYZED: {
             handleAnalyzedMessage(message.payload);
             break;
@@ -427,6 +434,21 @@ export function sendRetry(userMessageId: string): void {
 //
 //* Flow: Server → Client
 //
+
+function isLicenseStatePayload(payload: LicensePayload): payload is LicenseStatePayload {
+    return 'licenseState' in payload;
+}
+
+function handleLicenseMessage(payload: LicensePayload): void {
+    if (isLicenseStatePayload(payload)) {
+        $licenseState.set(payload.licenseState);
+    } else {
+        $licenseState.set('MISSING');
+        console.log('Error on fetching license state', payload);
+    }
+
+    $websocket.setKey('state', 'connected');
+}
 
 function handleAnalyzedMessage({request, result}: AnalyzedMessagePayload): void {
     const {userMessageId} = $buffer.get();

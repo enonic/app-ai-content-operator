@@ -54,5 +54,7 @@
     "text.error.response.unexpected": "Sorry, I couldn't generate the result correctly.",
     "text.error.analysis.incorrect": "Sorry, I couldn't analyze your request correctly.",
     "text.error.generation.incorrect": "Sorry, I couldn't generate result for your request correctly.",
-    "text.mentions.notFound": "No editable inputs found"
+    "text.mentions.notFound": "No editable inputs found",
+    "text.error.license.missing": "No valid license found. Please contact your administrator",
+    "text.error.license.expired": "License expired. Please contact your administrator."
 }

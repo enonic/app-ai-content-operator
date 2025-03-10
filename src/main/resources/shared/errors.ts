@@ -70,6 +70,11 @@ export const ERRORS = {
     GOOGLE_SERVER_ERROR: err(5500, 'Google server error.'),
     GOOGLE_SERVICE_UNAVAILABLE: err(5503, 'Google service unavailable.'),
 
+    // License errors
+    LICENSE_ERROR_MISSING: err(6000, 'AI Translator: No valid license found'),
+    LICENSE_ERROR_EXPIRED: err(6001, 'AI Translator: License expired'),
+    LICENSE_ERROR_UNKNOWN: err(6002, 'AI Translator: Error while fetching license state'),
+
     // Other Errors 9000
     UNKNOWN_ERROR: err(9000, 'Unknown error.'),
 } as const;

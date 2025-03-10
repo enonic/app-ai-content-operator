@@ -7,6 +7,7 @@
         "paths": {
             "/lib/http-client": ["src/main/resources/types/lib/httpClient"],
             "/lib/xp/core": ["node_modules/@enonic-types/core"],
+            "/lib/license": ["src/main/resources/types/lib/license"],
             "/lib/xp/*": ["node_modules/@enonic-types/lib-*"],
             "/tests/testUtils/*": ["tests/testUtils/*"],
         },
