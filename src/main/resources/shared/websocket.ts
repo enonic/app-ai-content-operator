@@ -1,4 +1,5 @@
 import {DataEntry} from './data/DataEntry';
+import {LicenseState} from './license';
 import {Message} from './model';
 import {AnalysisResult} from './prompts/analysis';
 import {GenerationResult} from './prompts/generation';
@@ -25,6 +26,9 @@ export enum MessageType {
     // Connection lifecycle (server → client)
     CONNECTED = 'connected',
     DISCONNECTED = 'disconnected',
+
+    // License state
+    LICENSE = 'license',
 
     // Connection health
     PING = 'ping',
@@ -64,6 +68,12 @@ export type GenerateMessagePayload = GenerateMessage['payload'];
 export type StopMessage = MessageWithPayload<MessageType.STOP, {generationId: string}>;
 
 export type StopMessagePayload = StopMessage['payload'];
+
+// Server returns license state on connect
+export type LicenseStatePayload = {licenseState: LicenseState};
+export type LicenseErrorPayload = {code: number; message: string};
+export type LicensePayload = LicenseStatePayload | LicenseErrorPayload;
+export type LicenseMessage = MessageWithPayload<MessageType.LICENSE, LicensePayload>;
 
 // Server returns prompt for analysis and the result
 export type AnalyzedMessage = MessageWithPayload<
@@ -119,6 +129,7 @@ export type ClientMessage = ConnectMessage | DisconnectMessage | PingMessage | G
 
 export type ServerMessage =
     | ConnectedMessage
+    | LicenseMessage
     | DisconnectedMessage
     | PongMessage
     | AnalyzedMessage

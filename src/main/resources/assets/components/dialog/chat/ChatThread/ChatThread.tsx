@@ -5,8 +5,8 @@ import {twJoin, twMerge} from 'tailwind-merge';
 
 import {$history} from '../../../../stores/chat';
 import {ChatMessage} from '../../../../stores/data/ChatMessage';
-import {$dialog} from '../../../../stores/dialog';
-import {$busyAnalyzing} from '../../../../stores/websocket';
+import {$initialized, $licenseState} from '../../../../stores/license';
+import {$busyAnalyzing, $websocket} from '../../../../stores/websocket';
 import LoadingMessage from '../LoadingMessage/LoadingMessage';
 import Message from '../Message/Message';
 
@@ -34,9 +34,11 @@ function createMessages(history: ChatMessage[], isLoading: boolean): React.React
 }
 
 export default function ChatThread({className = ''}: Props): React.ReactNode {
-    const isDialogInitialized = useStore($dialog, {keys: ['initialized']}).initialized;
+    const isInitialized = useStore($initialized);
+    const licenseStateValue = useStore($licenseState);
+    const isConnecting = useStore($websocket, {keys: ['state']}).state === 'connecting';
     const isBusyAnalyzing = useStore($busyAnalyzing);
-    const isLoading = !isDialogInitialized || isBusyAnalyzing;
+    const isLoading = !isInitialized || !licenseStateValue || isConnecting || isBusyAnalyzing;
 
     const history = useStore($history);
     const count = history.length;
