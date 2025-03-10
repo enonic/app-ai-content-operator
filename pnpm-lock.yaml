@@ -30,8 +30,8 @@ importers:
         specifier: ^4.6.2
         version: 4.6.2
       nanoid:
-        specifier: ^5.1.2
-        version: 5.1.2
+        specifier: ^5.1.3
+        version: 5.1.3
       nanostores:
         specifier: ^0.11.4
         version: 0.11.4
@@ -415,9 +415,6 @@ packages:
 
   '@cjs-exporter/globby@13.1.3':
     resolution: {integrity: sha512-rxSVbUhNmIYTZKzrtb6cJIUfFk0PDxzeR4+dzi8edKYmmbqRBO/k7N+tW///QmtY6OznemXiLMSZ20E6DHegxQ==}
-
-  '@enonic-types/core@7.14.4':
-    resolution: {integrity: sha512-AzMe/DixiaNH8X3OEvy0AREwr3GcmmcQ5lQ3k8AQWK4rQVKmSVatuNslkQFvzakjc7BOcTHGSBxr5lhN9+qD8g==}
 
   '@enonic-types/core@7.15.0':
     resolution: {integrity: sha512-I0NG8tcb1vW5zBnzqBvF2B7uJExI9holuQrrREXI+qPiZ0e9HHNxDKRWMQ6+VY5p4X8ishxmbRhoBbHv5CUyeA==}
@@ -2646,13 +2643,13 @@ packages:
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
 
-  nanoid@3.3.8:
-    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
+  nanoid@3.3.9:
+    resolution: {integrity: sha512-SppoicMGpZvbF1l3z4x7No3OlIjP7QJvC9XR7AhZr1kL133KHnKPztkKDc+Ir4aJ/1VhTySrtKhrsycmrMQfvg==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.2:
-    resolution: {integrity: sha512-b+CiXQCNMUGe0Ri64S9SXFcP9hogjAJ2Rd6GdVxhPLRm7mhGaM7VgOvCAJ1ZshfHbqVDI3uqTI5C8/GaKuLI7g==}
+  nanoid@5.1.3:
+    resolution: {integrity: sha512-zAbEOEr7u2CbxwoMRlz/pNSpRP0FdAU4pRaYunCdEezWohXFs+a0Xw7RfkKaezMsmSM1vttcLthJtwRnVtOfHQ==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -3931,8 +3928,6 @@ snapshots:
   '@cjs-exporter/globby@13.1.3':
     dependencies:
       globby: 13.1.3
-
-  '@enonic-types/core@7.14.4': {}
 
   '@enonic-types/core@7.15.0': {}
 
@@ -6635,9 +6630,9 @@ snapshots:
       object-assign: 4.1.1
       thenify-all: 1.6.0
 
-  nanoid@3.3.8: {}
+  nanoid@3.3.9: {}
 
-  nanoid@5.1.2: {}
+  nanoid@5.1.3: {}
 
   nanostores@0.11.4: {}
 
@@ -6856,7 +6851,7 @@ snapshots:
 
   postcss@8.5.3:
     dependencies:
-      nanoid: 3.3.8
+      nanoid: 3.3.9
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
