@@ -3,7 +3,7 @@ import {computed, map} from 'nanostores';
 
 import type {DataEntry} from '../../shared/data/DataEntry';
 import {addGlobalUpdateDataHandler} from '../common/events';
-import {MENTION_ALL, MENTION_TOPIC} from '../common/mentions';
+import {MENTION_ALL} from '../common/mentions';
 import {$context} from './context';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {UpdateEventData} from './data/EventData';
@@ -12,7 +12,13 @@ import {FormItemWithPath, InputWithPath} from './data/FormItemWithPath';
 import {Language} from './data/Language';
 import {Path} from './data/Path';
 import {Schema} from './data/Schema';
-import {getDataPathsToEditableItems, getPropertyArrayByPath, pathToMention} from './utils/data';
+import {
+    createDisplayNameInput,
+    getDataPathsToEditableItems,
+    getPropertyArrayByPath,
+    isTopicPath,
+    pathToMention,
+} from './utils/data';
 import {getInputType} from './utils/input';
 import {
     getPathLabel,
@@ -79,7 +85,10 @@ export const $topic = computed($data, data => data.persisted?.topic ?? '');
 
 export const $allFormItemsWithPaths = computed($data, ({schema, persisted}) => {
     const schemaPaths = schema ? getFormItemsWithPaths(schema.form.formItems) : [];
-    return persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
+    const result = persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
+    result.push(createDisplayNameInput());
+
+    return result;
 });
 
 //
@@ -103,16 +112,8 @@ export const $inputsInContext = computed([$context, $allFormItemsWithPaths], (co
     return items.filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item));
 });
 
-export const $mentions = computed([$inputsInContext, $context], (inputs, context) => {
+export const $mentions = computed([$inputsInContext], inputs => {
     const mentions = inputs.map(pathToMention);
-
-    if (context == null) {
-        mentions.unshift({
-            path: MENTION_TOPIC.path,
-            label: t('field.mentions.topic.label'),
-            prettified: t('field.mentions.topic.prettified'),
-        });
-    }
 
     if (mentions.length > 1) {
         mentions.unshift({
@@ -131,12 +132,6 @@ export const $mentions = computed([$inputsInContext, $context], (inputs, context
 
 export const $fieldDescriptors = computed($allFormItemsWithPaths, allFormItems => {
     return [
-        {
-            name: MENTION_TOPIC.path,
-            label: t('field.mentions.topic.label'),
-            displayName: t('field.mentions.topic.prettified'),
-            type: 'text',
-        },
         ...allFormItems
             .filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item))
             .map(item => ({
@@ -151,16 +146,6 @@ export const $fieldDescriptors = computed($allFormItemsWithPaths, allFormItems =
 export function createFields(): Record<string, DataEntry> {
     const result: Record<string, DataEntry> = {};
 
-    const isRootContext = $context.get() == null;
-    if (isRootContext) {
-        result[MENTION_TOPIC.path] = {
-            value: $topic.get(),
-            type: 'text',
-            schemaType: 'text',
-            schemaLabel: t('field.mentions.topic.label'),
-        };
-    }
-
     $inputsInContext.get().forEach((inputWithPath: InputWithPath) => {
         result[pathToString(inputWithPath)] = {
             value: findValueByPath(inputWithPath)?.v ?? '',
@@ -174,6 +159,10 @@ export function createFields(): Record<string, DataEntry> {
 }
 
 export function findValueByPath(path: Path): Optional<PropertyValue> {
+    if (isTopicPath(path)) {
+        return {v: $topic.get()};
+    }
+
     const fields = $data.get().persisted?.fields ?? [];
     const array = getPropertyArrayByPath(fields, path);
     return array?.values.at(path.elements.at(-1)?.index ?? 0);
