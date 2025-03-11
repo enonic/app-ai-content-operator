@@ -9,8 +9,8 @@ import {
     FailedMessagePayload,
     GeneratedMessagePayload,
     GenerateMessagePayload,
-    LicensePayload,
-    LicenseStatePayload,
+    LicenseUpdatedPayload,
+    LicenseUpdatedStatePayload,
     MessageMetadata,
     MessageType,
     ServerMessage,
@@ -293,8 +293,8 @@ function handleMessage(event: MessageEvent<string>): void {
             $websocket.setKey('state', 'connected');
             break;
 
-        case MessageType.LICENSE:
-            handleLicenseMessage(message.payload);
+        case MessageType.LICENSE_UPDATED:
+            handleLicenseUpdatedMessage(message.payload);
             break;
 
         case MessageType.ANALYZED: {
@@ -435,11 +435,11 @@ export function sendRetry(userMessageId: string): void {
 //* Flow: Server → Client
 //
 
-function isLicenseStatePayload(payload: LicensePayload): payload is LicenseStatePayload {
+function isLicenseStatePayload(payload: LicenseUpdatedPayload): payload is LicenseUpdatedStatePayload {
     return 'licenseState' in payload;
 }
 
-function handleLicenseMessage(payload: LicensePayload): void {
+function handleLicenseUpdatedMessage(payload: LicenseUpdatedPayload): void {
     if (isLicenseStatePayload(payload)) {
         $licenseState.set(payload.licenseState);
     } else {
@@ -447,7 +447,9 @@ function handleLicenseMessage(payload: LicensePayload): void {
         console.log('Error on fetching license state', payload);
     }
 
-    $websocket.setKey('state', 'connected');
+    // in case when attempt to analyze/generate was made and license was missing
+    clearTimeout(stopTimeout);
+    $buffer.set({});
 }
 
 function handleAnalyzedMessage({request, result}: AnalyzedMessagePayload): void {

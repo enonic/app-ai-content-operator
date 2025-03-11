@@ -323,7 +323,7 @@ export function changeModelMessageSelectedIndex(id: string, key: string, index: 
 function replaceWithSystemMessage(message: string, type: SystemMessageType, messageToReplaceId?: string): void {
     const messageToReplace = getMessageById(messageToReplaceId);
     const content: SystemChatMessageContent = {
-        key: messageToReplace ? messageToReplace.id : nanoid(),
+        key: messageToReplace ? messageToReplace.id : (messageToReplaceId ?? nanoid()),
         type,
         node: message,
     };

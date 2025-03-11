@@ -35,10 +35,10 @@ function createMessages(history: ChatMessage[], isLoading: boolean): React.React
 
 export default function ChatThread({className = ''}: Props): React.ReactNode {
     const isInitialized = useStore($initialized);
-    const licenseStateValue = useStore($licenseState);
+    const licenseState = useStore($licenseState);
     const isConnecting = useStore($websocket, {keys: ['state']}).state === 'connecting';
     const isBusyAnalyzing = useStore($busyAnalyzing);
-    const isLoading = !isInitialized || !licenseStateValue || isConnecting || isBusyAnalyzing;
+    const isLoading = !isInitialized || !licenseState || isConnecting || isBusyAnalyzing;
 
     const history = useStore($history);
     const count = history.length;

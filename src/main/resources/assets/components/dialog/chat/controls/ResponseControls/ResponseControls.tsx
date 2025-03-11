@@ -10,6 +10,7 @@ import {
     UserChatMessage,
 } from '../../../../../stores/data/ChatMessage';
 import {MessageRole} from '../../../../../stores/data/MessageType';
+import {$licenseState} from '../../../../../stores/license';
 import {$isBusy, $isConnected} from '../../../../../stores/websocket';
 import ApplyAllControl from '../ApplyAllControl/ApplyAllControl';
 import MessageSwitchControls from '../MessageSwitchControls/MessageSwitchControls';
@@ -48,8 +49,9 @@ export default function ResponseControls({className, message, last}: Props): Rea
     const isConnected = useStore($isConnected);
     const isBusy = useStore($isBusy);
     const isLastAndAvailable = last && !isBusy;
+    const licenseState = useStore($licenseState);
 
-    const isRetryAvailable = isLastAndAvailable && userMessageId;
+    const isRetryAvailable = isLastAndAvailable && userMessageId && licenseState === 'OK';
     const isApplyAllAvailable = isLastAndAvailable && canApplyAnyContent(message);
     const isSwitchAvailable = isLastAndAvailable && options != null && options.length > 1;
 

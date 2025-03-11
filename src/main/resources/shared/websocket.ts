@@ -28,7 +28,7 @@ export enum MessageType {
     DISCONNECTED = 'disconnected',
 
     // License state
-    LICENSE = 'license',
+    LICENSE_UPDATED = 'license_updated',
 
     // Connection health
     PING = 'ping',
@@ -70,10 +70,10 @@ export type StopMessage = MessageWithPayload<MessageType.STOP, {generationId: st
 export type StopMessagePayload = StopMessage['payload'];
 
 // Server returns license state on connect
-export type LicenseStatePayload = {licenseState: LicenseState};
-export type LicenseErrorPayload = {code: number; message: string};
-export type LicensePayload = LicenseStatePayload | LicenseErrorPayload;
-export type LicenseMessage = MessageWithPayload<MessageType.LICENSE, LicensePayload>;
+export type LicenseUpdatedStatePayload = {licenseState: LicenseState};
+export type LicenseUpdatedErrorPayload = {code: number; message: string};
+export type LicenseUpdatedPayload = LicenseUpdatedStatePayload | LicenseUpdatedErrorPayload;
+export type LicenseUpdatedMessage = MessageWithPayload<MessageType.LICENSE_UPDATED, LicenseUpdatedPayload>;
 
 // Server returns prompt for analysis and the result
 export type AnalyzedMessage = MessageWithPayload<
@@ -129,7 +129,7 @@ export type ClientMessage = ConnectMessage | DisconnectMessage | PingMessage | G
 
 export type ServerMessage =
     | ConnectedMessage
-    | LicenseMessage
+    | LicenseUpdatedMessage
     | DisconnectedMessage
     | PongMessage
     | AnalyzedMessage
