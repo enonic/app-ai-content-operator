@@ -33,6 +33,6 @@ export default function ElementItemContent({className, content, type = 'text'}: 
                 />
             );
         case 'text':
-            return <div className={twMerge('relative', 'col-span-2', className)}>{content}</div>;
+            return <div className={twMerge('relative prose prose-sm', 'col-span-2', className)}>{content}</div>;
     }
 }
