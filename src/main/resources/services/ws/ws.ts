@@ -9,6 +9,7 @@ import {runAsyncTask} from '../../lib/utils/task';
 import {unsafeUUIDv4} from '../../lib/utils/uuid';
 import {WS_PROTOCOL} from '../../shared/constants';
 import {ERRORS} from '../../shared/errors';
+import {LicenseState} from '../../shared/license';
 import {
     AnalyzedMessage,
     AnalyzedMessagePayload,
@@ -17,7 +18,7 @@ import {
     GeneratedMessage,
     GeneratedMessagePayload,
     GenerateMessage,
-    LicenseMessage,
+    LicenseUpdatedMessage,
     MessageMetadata,
     MessageType,
     ServerMessage,
@@ -166,10 +167,11 @@ function sendConnectedMessage(socketId: string): void {
     sendMessage(socketId, {type: MessageType.CONNECTED});
 }
 
-function sendLicenseMessage(socketId: string): void {
-    const [licenseState, licenseError] = licenseManager.getLicenseState();
+function sendLicenseUpdatedMessage(socketId: string, licenseStateOrError?: Try<LicenseState>): void {
+    const license = licenseStateOrError ?? licenseManager.getLicenseState();
+    const [licenseState, licenseError] = license;
     const payload = licenseError ? licenseError : {licenseState};
-    const message = {type: MessageType.LICENSE, payload} satisfies Omit<LicenseMessage, 'metadata'>;
+    const message = {type: MessageType.LICENSE_UPDATED, payload} satisfies Omit<LicenseUpdatedMessage, 'metadata'>;
 
     sendMessage(socketId, message);
 }
@@ -203,19 +205,15 @@ function sendFailedWarningMessage(socketId: string, text: string): void {
 
 function handleConnect(socketId: string): void {
     sendConnectedMessage(socketId);
-    sendLicenseMessage(socketId);
+    sendLicenseUpdatedMessage(socketId);
 }
 
 function handleGenerateMessage(socketId: string, message: GenerateMessage): void {
-    const [licenseState, licenseError] = licenseManager.getLicenseState();
-
-    if (licenseError) {
-        return sendFailedErrorMessage(socketId, licenseError);
-    }
+    const res = licenseManager.getLicenseState();
+    const [licenseState] = res;
 
     if (licenseState !== 'OK') {
-        const error = licenseState === 'EXPIRED' ? ERRORS.LICENSE_ERROR_EXPIRED : ERRORS.LICENSE_ERROR_MISSING;
-        return sendFailedErrorMessage(socketId, error);
+        return sendLicenseUpdatedMessage(socketId, res);
     }
 
     runAsyncTask('ws', () => analyzeAndGenerate(socketId, message));
