@@ -1,3 +1,6 @@
+import {t} from 'i18next';
+
+import {SPECIAL_NAMES} from '../../../shared/enums';
 import {ContentData, PropertyArray, PropertyValue} from '../data/ContentData';
 import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from '../data/FormItemWithPath';
 import {Mention} from '../data/Mention';
@@ -111,4 +114,23 @@ export function getDataPathsToEditableItems(schemaPaths: FormItemWithPath[], dat
             };
         });
     });
+}
+
+export function createDisplayNameInput(): InputWithPath {
+    return {
+        Input: {
+            inputType: 'TextLine',
+            label: t('field.mentions.topic.label'),
+            name: SPECIAL_NAMES.topic,
+            occurrences: {
+                maximum: 1,
+                minimum: 0,
+            },
+        },
+        elements: [{name: SPECIAL_NAMES.topic, label: t('field.mentions.topic.label')}],
+    };
+}
+
+export function isTopicPath(path: Path): boolean {
+    return pathToString(path) === `/${SPECIAL_NAMES.topic}`;
 }

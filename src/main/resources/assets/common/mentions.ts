@@ -7,18 +7,12 @@ export const MENTION_ALL = {
     label: 'All Inputs',
 } as const satisfies Mention;
 
-export const MENTION_TOPIC = {
-    path: SPECIAL_NAMES.topic,
-    prettified: "Refer content's display name",
-    label: 'Display Name',
-} as const satisfies Mention;
-
 const startsWith = (str: string, search: string): boolean => str.toLowerCase().startsWith(search.toLowerCase());
 const includes = (str: string, search: string): boolean => str.toLowerCase().includes(search.toLowerCase());
 
 const mentionsPriority: Record<string, number> = {
     [MENTION_ALL.path]: 1,
-    [MENTION_TOPIC.path]: 2,
+    [`/${SPECIAL_NAMES.topic}`]: 2,
 };
 
 const compare = (mA: Mention, mB: Mention): number => {

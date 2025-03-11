@@ -41,7 +41,7 @@ You MUST follow the instructions for answering:
   - Section "Request" in user's message defines the user's request, formulated in natural language.
   - Section "Instructions" in user's message defines additional user's request for processing the request. They have lower priority than "Request".
   - Interpret the user's request, and understand what fields need to be processed.
-  - User's message may include direct mentions in the format \`{{/path/to/field}}\` or \`{{${SPECIAL_NAMES.topic}}}\`.
+  - User's message may include direct mentions in the format \`{{/path/to/field}}\` or \`{{/${SPECIAL_NAMES.topic}}}\`.
   - User can use \`{{${SPECIAL_NAMES.all}}}\` mention or request all fields by simple words like "all", "everything", "everything else", etc. In this case, you should include all fields listed in "Fields" section into your response.
   - Understand both direct mentions and indirect references to content fields.
   - User may ask multiple variants/options of the same field. In this case, you determine the number of variants user wants to see. Otherwise, you can generate only one variant.
@@ -87,8 +87,8 @@ You MUST follow the instructions for answering:
   - For \`"${SPECIAL_KEYS.error}"\` you must give a detailed explanation why it cannot be fulfilled, and how can user fix it.
 
 ### Content Structure ###
-- The content is provided under "Content" section as a flat JSON object where each key is a path to a field or \`"${SPECIAL_NAMES.topic}"\`.
-- Root level of the Content JSON is an object where each key is a path to a field or \`"${SPECIAL_NAMES.topic}"\`, and each value is an object that contains:
+- The content is provided under "Content" section as a flat JSON object where each key is a path to a field or \`"/${SPECIAL_NAMES.topic}"\`.
+- Root level of the Content JSON is an object where each key is a path to a field or \`"/${SPECIAL_NAMES.topic}"\`, and each value is an object that contains:
   - \`"value"\`: The current text in the field.
   - \`"type"\`: Either \`"text"\` or \`"html"\`. If \`"html"\`, the field may contain Markdown-compatible HTML tags.
   - \`"schemaLabel"\`: The display name of the field, which may hint at its intended content.
@@ -112,14 +112,14 @@ Use uppercase for the titles.
 
 # Content
 {
-  "${SPECIAL_NAMES.topic}": "",
+  "/${SPECIAL_NAMES.topic}": "",
   "/body": {"value":"<p>Our pets are our best friends. They are loyal, loving, and always there for us.</p>","type":"html","schemaType":"TextArea","schemaLabel":"Body"}
 }
 \`\`\`
 
 - **Model's Response:**
 {
-  "${SPECIAL_NAMES.topic}": {"task": "Suggest a good title about cats and dogs. Use uppercase for the titles.", "count": 2, "language": "en"},
+  "/${SPECIAL_NAMES.topic}": {"task": "Suggest a good title about cats and dogs. Use uppercase for the titles.", "count": 2, "language": "en"},
   "/body": {"task": "Make text longer. Use uppercase for the titles.", "count": 1, "language": "en"}
 }
 
@@ -155,7 +155,7 @@ Move text from {{/article/intro}} to {{/article/main}}. Place a proper Latin quo
 
 # Content
 {
-  "${SPECIAL_NAMES.topic}": "Roman Empire",
+  "/${SPECIAL_NAMES.topic}": "Roman Empire",
   "/article/intro": {"value":"The Roman Empire was one of the most powerful in history, known for its vast territorial holdings.","type":"text","schemaType":"TextArea","schemaLabel":"Introduction"},
   "/article/main": {"value":"<p>The emperors and structures of <b>Rome</b> left a lasting impact on global architecture, politics, and culture.</p>","type":"html","schemaType":"TextArea","schemaLabel":"Main Part"}
 }
@@ -180,7 +180,7 @@ Move text from {{/article/intro}} to {{/article/main}}. Place a proper Latin quo
 
 # Content
 {
-  "${SPECIAL_NAMES.topic}": "Isaac Newton",
+  "/${SPECIAL_NAMES.topic}": "Isaac Newton",
   "/name": {"value":"Isaac Newton","type":"text","schemaType":"TextLine","schemaLabel":"Name"}
 }
 \`\`\`
@@ -204,14 +204,14 @@ Respond in style of pirate.
 
 # Content
 {
-  "${SPECIAL_NAMES.topic}": "",
+  "/${SPECIAL_NAMES.topic}": "",
   "/blog/ai": {"value":"AI is a technology that allows machines to learn and make decisions without being explicitly programmed.","type":"text","schemaType":"TextArea","schemaLabel":"AI Blog Post"}
 }
 \`\`\`
 
 - **Model's Response:**
 {
-  "${SPECIAL_NAMES.topic}": {"task": "Create a new title, summarizing the content of {{/blog/ai}}. Respond in style of pirate.", "count": 1, "language": "en"},
+  "/${SPECIAL_NAMES.topic}": {"task": "Create a new title, summarizing the content of {{/blog/ai}}. Respond in style of pirate.", "count": 1, "language": "en"},
   "/blog/ai": {"count": 0}
 }
 

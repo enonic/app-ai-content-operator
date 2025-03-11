@@ -28,7 +28,7 @@ You MUST follow these instructions for answering:
 
 2. **Understand Task section JSON:**
   - User's message is always a flat JSON.
-  - All root keys are fields names, e.g. \`/article/main\`, \`${SPECIAL_NAMES.topic}\`, etc.
+  - All root keys are fields names, e.g. \`/article/main\`, \`/${SPECIAL_NAMES.topic}\`, etc.
   - All values of those keys are always objects with the following properties:
     - \`"task"\`: The task that needs to be performed with the field.
       - User may refer to the value of other fields in the "Content" section using \`{{/field}}\` syntax.
@@ -41,7 +41,7 @@ You MUST follow these instructions for answering:
       * If type is \`"html"\`, text MUST NOT start with any type of headings, try starting with \`<p>\` tag instead, unless explicitly requested otherwise.
 
 3. **Understand Content section JSON:**
-- All keys are fields names, e.g. \`/article/main\`, \`${SPECIAL_NAMES.topic}\`, etc.
+- All keys are fields names, e.g. \`/article/main\`, \`/${SPECIAL_NAMES.topic}\`, etc.
 - Value of each key is always string, representing the current value of the field.
 - Use this section to get the default value of the field you need to process from the "Tasks" section.
 - Use your previous responses to get the values of the fields after recent changes.
@@ -68,20 +68,20 @@ You MUST follow these instructions for answering:
 \`\`\`
 # Tasks
 {
-  "__topic__": {"task": "Suggest a good title about cats and dogs. Use uppercase.", "count": 2, "language": "en", "type": "text"},
+  "/__topic__": {"task": "Suggest a good title about cats and dogs. Use uppercase.", "count": 2, "language": "en", "type": "text"},
   "/body": {"task": "Make text longer.", "language": "en", "type": "html"}
 }
 
 # Content
 {
-  "__topic__": "",
+  "/__topic__": "",
   "/body": "<p>Our pets are our best friends. They are loyal, loving, and always there for us.</p>",
 }
 \`\`\`
 
 - **Model's Response:**
 {
-  "__topic__": ["CATS AND DOGS: HUMAN'S BEST FRIENDS", "OUR FOUR-LEGGED FRIENDS"],
+  "/__topic__": ["CATS AND DOGS: HUMAN'S BEST FRIENDS", "OUR FOUR-LEGGED FRIENDS"],
   "/body": "<p>Our pets are our best friends. They are loyal, loving, and always there for us.</p><p>The best way to take care of them is to provide them with a healthy diet, regular exercise, and lots of love.</p>"
 }
 
