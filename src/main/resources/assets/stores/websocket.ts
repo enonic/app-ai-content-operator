@@ -29,9 +29,11 @@ import {
     updateUserMessage,
 } from './chat';
 import {$config} from './config';
-import {$contentPath, $language, createFields} from './data';
+import {$context} from './context';
+import {$contentPath, $fieldDescriptors, $language, createFields} from './data';
 import {MessageRole} from './data/MessageType';
 import {$licenseState} from './license';
+import {getAllPathsFromString, pathToString} from './utils/path';
 
 type WebSocketLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
 
@@ -400,8 +402,9 @@ export function sendPrompt(nodes: Descendant[]): void {
 
     const node = parseNodes(nodes);
     const prompt = parseText(nodes);
+    const contextData = makeContextData();
 
-    const message = addUserMessage({node, prompt});
+    const message = addUserMessage({node, prompt, contextData});
     if (!message) {
         return;
     }
@@ -494,4 +497,31 @@ function handleFailedMessage(payload: FailedMessagePayload): void {
 
     clearTimeout(stopTimeout);
     $buffer.set({});
+}
+
+function makeContextData(): {name: string; title: string; displayName: string} | undefined {
+    const context = $context.get();
+
+    if (!context) {
+        return;
+    }
+
+    const paths = context ? getAllPathsFromString(context) : [];
+    const contextItem = paths.pop();
+
+    if (!contextItem) {
+        return;
+    }
+
+    const key = pathToString(contextItem);
+    const fieldDescriptors = $fieldDescriptors.get();
+    const descriptor = fieldDescriptors.find(descriptor => descriptor.name === key);
+
+    return descriptor
+        ? {
+              name: descriptor.name,
+              title: descriptor.displayName,
+              displayName: descriptor.displayName.split('/').pop() as string,
+          }
+        : undefined;
 }

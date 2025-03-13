@@ -13,7 +13,7 @@ type Props = {
 export default function Message({className, message, last}: Props): React.ReactNode {
     switch (message.role) {
         case MessageRole.USER:
-            return <UserMessage className={className}>{message.content.node}</UserMessage>;
+            return <UserMessage className={className} message={message} />;
         case MessageRole.SYSTEM:
             return <SystemMessage className={className} message={message} last={last} />;
         default:

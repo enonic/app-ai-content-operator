@@ -18,6 +18,7 @@ export type UserChatMessage = ChatNode<MessageRole.USER, UserChatMessageContent>
 export type UserChatMessageContent = {
     node: React.ReactNode;
     prompt: string; // user text prompt
+    contextData?: {name: string; title: string; displayName: string};
     analysisPrompt?: string; // May be initialized later
     generationPrompt?: string; // May be initialized later
 };
