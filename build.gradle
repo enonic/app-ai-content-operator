@@ -14,6 +14,12 @@ app {
     systemVersion = "${xpVersion}"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 apply from: "$rootDir/gradle/ci.gradle"
 apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
