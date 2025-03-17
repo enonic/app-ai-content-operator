@@ -8,6 +8,9 @@
 .idea/
 .idea_modules/
 
+# Enonic
+.enonic
+
 # Build
 build/
 dist/
