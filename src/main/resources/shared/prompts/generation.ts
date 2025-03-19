@@ -60,6 +60,9 @@ You MUST follow these instructions for answering:
   - Use "Common Information" section to get real-time and other information for \`"${SPECIAL_NAMES.common}"\` field.
   - Preserve links, URLs, and other external references in the result, unless task requires to modify them explicitly.
   - Always escape any quotes in the generated text.
+  - For \`${SPECIAL_NAMES.common}\` fields use HTML formatting instead of Markdown. Ensure your responses include appropriate HTML Markdown-compatible tags for emphasis (\`<em>\`, \`<strong>\`, \`<i>\`), bullet lists (\`<ul>\`, \`<ol>\`, \`<li>\`), and any other necessary formatting. Do **not** use Markdown syntax in these fields, as they will be rendered as HTML directly.
+  - Prefer plain text without any HTML tags if \`${SPECIAL_NAMES.common}\` value is a monosyllabic answer, or answer, that does not require any formatting.
+
 
 ### Examples: ###
 
@@ -125,5 +128,24 @@ You MUST follow these instructions for answering:
 - **Model's Response:**
 {
   "/description": "AI in our daily lives.",
+}
+
+**Example 4:**
+- **User's request:**
+\`\`\`
+# Tasks
+{
+  "/__common__": {"task": "List top 3 largest planets in Solar System.", "count": 1, "language": "en", "type": "html"},
+}
+
+# Content
+{
+  "/main": "This content might be unrelated to user's request.",
+}
+\`\`\`
+
+- **Model's Response:**
+{
+  "__common__": "<p>The top 3 largest planets in our solar system, in order of size, are:</p><ul><li><strong>Jupiter:</strong> The largest planet.</li><li><strong>Saturn:</strong> The second-largest planet.</li><li><strong>Uranus:</strong> The third-largest planet.</li></ul>",
 }
 `.trim();
