@@ -22,8 +22,9 @@ export default function CommonItemContent({className, content, last}: Props): Re
                             REGULAR_SCREEN && !last && 'invisible group-hover/item:visible',
                         )}
                         content={content}
+                        type='html'
                     />
-                    <span>{content}</span>
+                    <article dangerouslySetInnerHTML={{__html: content}} className='prose prose-sm' />
                 </>
             ) : (
                 <LoadingIcon />

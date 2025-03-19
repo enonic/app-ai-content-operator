@@ -1,4 +1,5 @@
-import {DataEntry} from '../../shared/data/DataEntry';
+import {DataEntry, DataEntryType} from '../../shared/data/DataEntry';
+import {SPECIAL_NAMES} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
 import {Message} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
@@ -21,7 +22,7 @@ type GeneratePromptAndResult = {
 };
 
 type GenerationTasksEntry = AnalysisObjectEntry & {
-    type: DataEntry['type'];
+    type: DataEntryType;
 };
 
 export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
@@ -105,7 +106,7 @@ function createPromptTasks({prompt, fields}: GenerateParams): string {
         if (isAnalysisObjectEntry(entry)) {
             content[key] = {
                 ...entry,
-                type: fields[key]?.type ?? 'text',
+                type: fields[key]?.type ?? (key === SPECIAL_NAMES.common ? 'html' : 'text'),
             };
         }
     });
