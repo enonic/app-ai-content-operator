@@ -2,6 +2,7 @@ import {ApplyMessage} from '../stores/data/ApplyMessage';
 import {ConfigureEventData} from '../stores/data/ConfigureEventData';
 import {UpdateEventData} from '../stores/data/EventData';
 import {OpenDialogEventData} from '../stores/data/OpenDialogEventData';
+import {SetContextEventData} from '../stores/data/SetContextEventData';
 
 export enum AiEvents {
     // Content Operator
@@ -13,6 +14,7 @@ export enum AiEvents {
     CONTEXT_CHANGED = 'AiContentOperatorContextChangedEvent',
     //   Incoming
     OPEN_DIALOG = 'AiContentOperatorOpenDialogEvent',
+    SET_CONTEXT = 'AiContentOperatorSetContextEvent',
     CONFIGURE = 'AiContentOperatorConfigureEvent',
     // Common
     //   Incoming
@@ -58,6 +60,10 @@ export function addGlobalConfigureHandler(handler: CustomEventHandler<ConfigureE
 
 export function addGlobalOpenDialogHandler(handler: CustomEventHandler<OpenDialogEventData>): FnVoid {
     return addGlobalHandler(AiEvents.OPEN_DIALOG, handler);
+}
+
+export function addGlobalSetContextHandler(handler: CustomEventHandler<SetContextEventData>): FnVoid {
+    return addGlobalHandler(AiEvents.SET_CONTEXT, handler);
 }
 
 function addGlobalHandler<T>(eventType: AiEvents, handler: CustomEventHandler<T>): FnVoid {
