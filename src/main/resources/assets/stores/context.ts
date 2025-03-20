@@ -1,6 +1,7 @@
 import {atom} from 'nanostores';
 
-import {addGlobalOpenDialogHandler, dispatchContextChanged} from '../common/events';
+import {addGlobalOpenDialogHandler, addGlobalSetContextHandler, dispatchContextChanged} from '../common/events';
+import {$dialog} from './dialog';
 
 export const $context = atom<Optional<string>>(undefined);
 
@@ -12,6 +13,16 @@ addGlobalOpenDialogHandler(event => {
     const {sourceDataPath} = event.detail;
     if (sourceDataPath) {
         setContext(sourceDataPath);
+    }
+});
+
+addGlobalSetContextHandler(event => {
+    if (!$dialog.get().hidden) {
+        const {sourceDataPath} = event.detail;
+
+        if (sourceDataPath) {
+            setContext(sourceDataPath);
+        }
     }
 });
 
