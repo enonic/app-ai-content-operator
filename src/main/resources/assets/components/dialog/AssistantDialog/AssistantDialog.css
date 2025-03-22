@@ -10,10 +10,17 @@
     }
 }
 
-@media (max-width: 720px) {
+@media (min-width: 512px) and (max-width: 720px) {
     .AssistantDialog {
         width: 32rem;
         left: calc(50% - 16rem);
+    }
+}
+
+@media (max-width: 512px) {
+    .AssistantDialog {
+        width: 100svw;
+        left: 0;
     }
 }
 
@@ -24,9 +31,17 @@
     }
 }
 
-@media (max-height: 896px) {
+@media (min-height: 512px) and (max-height: 896px) {
     .AssistantDialog {
         height: 32rem;
         top: calc(50% - 16rem);
+    }
+}
+
+/* On small screens, display the dialog full screen */
+@media (max-height: 512px) or (max-width: 512px) {
+    .AssistantDialog {
+        height: 100svh;
+        top: 0;
     }
 }
