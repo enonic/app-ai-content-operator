@@ -41,9 +41,11 @@ export const ERRORS = {
     FUNC_UNKNOWN_MODE: err(3002, 'Unknown AI mode.'),
 
     // Model Errors 4000
-    MODEL_MAX_TOKENS: err(4000, 'Max tokens limit reached.'),
-    MODEL_SAFETY: err(4001, 'Generation was stopped due to safety reasons.'),
-    MODEL_UNEXPECTED: err(4002, 'Generation finished unexpectedly.'),
+    MODEL_UNEXPECTED: err(4000, 'Generation finished unexpectedly.'),
+    MODEL_MAX_TOKENS: err(4001, 'Max tokens limit reached.'),
+    MODEL_SAFETY: err(4002, 'Generation was stopped due to safety reasons.'),
+    MODEL_PROHIBITED_CONTENT: err(4003, 'Generation was stopped, because of prohibited content.'),
+    MODEL_SPII: err(4004, 'Generation was stopped, because of Sensitive Personally Identifiable Information.'),
     // Model (Flow) Errors 4100
     MODEL_ANALYSIS_PARSE_FAILED: err(4100, 'Failed to parse analysis result.'),
     MODEL_ANALYSIS_INCORRECT: err(4101, 'Analysis result has incorrect format.'),

@@ -13,13 +13,20 @@ export type Message = {
 };
 
 export type FinishReason =
-    | 'BLOCKED_REASON_UNSPECIFIED'
+    // Finish reasons
     | 'FINISH_REASON_UNSPECIFIED'
     | 'STOP'
     | 'MAX_TOKENS'
-    | 'SAFETY'
     | 'RECITATION'
     | 'LANGUAGE'
+    | 'BLOCKLIST'
+    | 'PROHIBITED_CONTENT'
+    | 'SPII'
+    | 'MALFORMED_FUNCTION_CALL'
+    // Blocked reasons
+    | 'BLOCKED_REASON_UNSPECIFIED'
+    // Both
+    | 'SAFETY'
     | 'OTHER'
     | undefined;
 

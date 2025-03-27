@@ -387,6 +387,10 @@ function getErrorMessageByCode(code: number): string {
             return t('text.error.response.maxTokens');
         case ERRORS.MODEL_SAFETY.code:
             return t('text.error.response.safety');
+        case ERRORS.MODEL_PROHIBITED_CONTENT.code:
+            return t('text.error.response.prohibitedContent');
+        case ERRORS.MODEL_SPII.code:
+            return t('text.error.response.spii');
         case ERRORS.MODEL_UNEXPECTED.code:
             return t('text.error.response.unexpected');
         case ERRORS.MODEL_ANALYSIS_PARSE_FAILED.code:
