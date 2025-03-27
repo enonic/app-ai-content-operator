@@ -17,7 +17,7 @@
     "field.chat": "KI dialog",
     "field.mentions.all.label": "Alle inndatafelt.",
     "field.mentions.all.prettified": "Henvis til alle tilgjengelige inndatafelt.",
-    "field.mentions.topic.label": "DisplayName",
+    "field.mentions.topic.label": "Visningsnavn",
     "field.mentions.topic.prettified": "Henvis til innholdets DisplayName.",
     "field.message.assistant.placeholder.common": "Tenker på din forespørsel.",
     "field.message.assistant.placeholder.multiple": "Lager forslag for {{name}} og {{count}} mer...",
