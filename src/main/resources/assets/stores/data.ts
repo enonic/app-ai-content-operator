@@ -86,9 +86,12 @@ export const $topic = computed($data, data => data.persisted?.topic ?? '');
 export const $allFormItemsWithPaths = computed($data, ({schema, persisted}) => {
     const schemaPaths = schema ? getFormItemsWithPaths(schema.form.formItems) : [];
     const result = persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
-    result.push(createDisplayNameInput());
 
-    return result;
+    return [createDisplayNameInput(), ...result];
+});
+
+export const $orderedPaths = computed($allFormItemsWithPaths, items => {
+    return items.map(item => pathToString(item));
 });
 
 //
