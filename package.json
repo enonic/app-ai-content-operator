@@ -28,7 +28,7 @@
         "nanoid": "^5.1.5",
         "nanostores": "^0.11.4",
         "react": "^19.1.0",
-        "react-dom": "^19.0.0",
+        "react-dom": "^19.1.0",
         "react-draggable": "^4.4.6",
         "react-i18next": "^15.4.1",
         "slate": "^0.112.0",
