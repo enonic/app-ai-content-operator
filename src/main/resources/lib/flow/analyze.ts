@@ -73,11 +73,11 @@ function parseAnalysisResult(textResult: string, allowedFields: string[]): Try<R
     try {
         const result: unknown = JSON.parse(cleanBackticks(textResult));
         if (!isObject(result)) {
-            return [null, ERRORS.MODEL_ANALYSIS_INCORRECT];
+            return [null, ERRORS.MODEL_ANALYSIS_WRONG_TYPE];
         }
         const cleaned = fixEntries(result, allowedFields);
         if (Object.keys(cleaned).length === 0) {
-            return [null, ERRORS.MODEL_ANALYSIS_INCORRECT.withMsg('No fields found in the analysis result.')];
+            return [null, ERRORS.MODEL_ANALYSIS_EMPTY];
         }
         return [cleaned, null];
     } catch (err) {

@@ -13,3 +13,24 @@ export function find<T>(
         }
     }
 }
+
+export function isObject(value: unknown): value is Record<string, unknown> {
+    return (
+        value !== null &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        Object.getPrototypeOf(value) === Object.prototype
+    );
+}
+
+export function isString(value: unknown): value is string {
+    return typeof value === 'string';
+}
+
+export function isPrimitive(value: unknown): value is string | number | boolean {
+    return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+}
+
+export function isStringArray(value: unknown): value is string[] {
+    return Array.isArray(value) && value.every(isString);
+}
