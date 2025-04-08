@@ -7,8 +7,9 @@ import {AnalysisObjectEntry, AnalysisReferenceEntry, AnalysisResult} from '../..
 import {createGenerationInstructions, GenerationResult} from '../../shared/prompts/generation';
 import {getOptions} from '../google/options';
 import {fieldsToSchema} from '../google/schema';
-import {logError} from '../logger';
+import {logError, logWarn} from '../logger';
 import {GeminiProxy} from '../proxy/gemini';
+import {isObject, isPrimitive, isString, isStringArray} from '../utils/objects';
 
 type GenerateParams = {
     prompt: AnalysisResult;
@@ -67,11 +68,27 @@ export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
 function parseGenerationResult(textResult: string): Try<GenerationResult> {
     try {
         const result: unknown = JSON.parse(cleanBackticks(textResult));
-        if (!isGenerationResult(result)) {
-            logError(ERRORS.MODEL_GENERATION_INCORRECT.withMsg('\n' + textResult));
-            return [null, ERRORS.MODEL_GENERATION_INCORRECT];
+        if (!isObject(result)) {
+            return [null, ERRORS.MODEL_GENERATION_WRONG_TYPE];
         }
-        return [result, null];
+
+        if (isGenerationResult(result)) {
+            return [result, null];
+        }
+
+        const normalizedResult = attemptResultNormalization(result);
+        if (isGenerationResult(normalizedResult)) {
+            logWarn(ERRORS.MODEL_GENERATION_WRONG_TYPE.withMsg('\n' + textResult));
+            return [normalizedResult, null];
+        }
+
+        if (Object.keys(normalizedResult).length === 0) {
+            logError(ERRORS.MODEL_GENERATION_EMPTY.withMsg('\n' + textResult));
+            return [null, ERRORS.MODEL_GENERATION_EMPTY];
+        }
+
+        logError(ERRORS.MODEL_GENERATION_INCORRECT.withMsg('\n' + textResult));
+        return [null, ERRORS.MODEL_GENERATION_INCORRECT];
     } catch (err) {
         logError(err);
         return [null, ERRORS.MODEL_GENERATION_PARSE_FAILED];
@@ -126,16 +143,74 @@ function createPromptContent({prompt, fields}: GenerateParams): string {
     return `# Content\n${JSON.stringify(content)}`;
 }
 
-export function isGenerationResult(result: unknown): result is GenerationResult {
+function isGenerationResult(result: Record<string, unknown>): result is GenerationResult {
+    const keys = Object.keys(result);
     return (
-        typeof result === 'object' &&
-        result !== null &&
-        Object.keys(result).every((key: string) => {
-            const value = (result as Record<string, unknown>)[key];
+        keys.length > 0 &&
+        keys.every(key => {
+            const value = result[key];
             return (
                 typeof value === 'string' ||
                 (Array.isArray(value) && value.every((item: unknown): item is string => typeof item === 'string'))
             );
         })
     );
+}
+
+function attemptResultNormalization(result: Record<string, unknown>): Record<string, unknown> {
+    const fixedResult: Record<string, unknown> = {};
+
+    Object.keys(result).forEach((key) => {
+        const newValue = parseEntryValue(result[key]);
+        if (newValue != null) {
+            fixedResult[key] = newValue;
+        }
+    });
+
+    return fixedResult;
+}
+
+export function parseEntryValue(value: unknown): Optional<string | string[]> {
+    if (isString(value)) {
+        return value;
+    }
+
+    if (isPrimitive(value)) {
+        return String(value);
+    }
+
+    if (Array.isArray(value)) {
+        return value.length > 0 ? value.map(v => (isString(v) ? v : JSON.stringify(v))) : null;
+    }
+
+    if (isObject(value)) {
+        const objValues = Object.keys(value).map(key => value[key]);
+
+        // {value: string}
+        if (isObjectWithValueProperty(value)) {
+            return value.value;
+        }
+
+        // {[key: string | number]: string}
+        if (objValues.length > 0 && objValues.every(isString)) {
+            return objValues;
+        }
+
+        // {[key: string | number]: string[]}
+        if (objValues.length > 0 && objValues.every(isStringArray)) {
+            return objValues.reduce((acc: string[], val: string[]) => acc.concat(val), []);
+        }
+
+        // {[key: string | number]: {value: string}}
+        const valueObjects = objValues.filter(isObjectWithValueProperty);
+        if (objValues.length > 0 && valueObjects.length === objValues.length) {
+            return valueObjects.map(v => v.value);
+        }
+    }
+
+    return null;
+}
+
+function isObjectWithValueProperty(value: unknown): value is {value: string} {
+    return isObject(value) && typeof value.value === 'string';
 }

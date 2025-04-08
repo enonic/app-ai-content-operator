@@ -30,8 +30,10 @@ export default function AssistantMessagePlaceholder({content}: Props): React.Rea
     const {t} = useTranslation();
     const fieldDescriptors = useStore($fieldDescriptors);
 
-    const analyzedFieldsDescriptors: FieldDescriptor[] = Object.keys(content.analysisResult)
-        .map(path => fieldDescriptors.find(descriptor => descriptor.name === path))
+    const analyzedFieldsDescriptors: FieldDescriptor[] = Object.entries(content.analysisResult)
+        .map(([path, value]) => {
+            return value.count > 0 ? fieldDescriptors.find(({name}) => name === path) : null;
+        })
         .filter(isNonOptional);
 
     const count = analyzedFieldsDescriptors.length;

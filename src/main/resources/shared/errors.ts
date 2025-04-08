@@ -48,9 +48,12 @@ export const ERRORS = {
     MODEL_SPII: err(4004, 'Generation was stopped, because of Sensitive Personally Identifiable Information.'),
     // Model (Flow) Errors 4100
     MODEL_ANALYSIS_PARSE_FAILED: err(4100, 'Failed to parse analysis result.'),
-    MODEL_ANALYSIS_INCORRECT: err(4101, 'Analysis result has incorrect format.'),
-    MODEL_GENERATION_PARSE_FAILED: err(4102, 'Failed to parse generation result.'),
-    MODEL_GENERATION_INCORRECT: err(4103, 'Generation result has incorrect format.'),
+    MODEL_ANALYSIS_WRONG_TYPE: err(4101, 'Analysis result is not an object.'),
+    MODEL_ANALYSIS_EMPTY: err(4102, 'Analysis result is empty.'),
+    MODEL_GENERATION_PARSE_FAILED: err(4110, 'Failed to parse generation result.'),
+    MODEL_GENERATION_WRONG_TYPE: err(4111, 'Generation result is not an object.'),
+    MODEL_GENERATION_INCORRECT: err(4112, 'Generation result object has incorrect structure.'),
+    MODEL_GENERATION_EMPTY: err(4113, 'Generation result is empty.'),
 
     // Google Errors 5000
     GOOGLE_SAK_MISSING: err(5000, 'Google Service Account Key is missing or invalid.'),
