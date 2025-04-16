@@ -160,7 +160,7 @@ function isGenerationResult(result: Record<string, unknown>): result is Generati
 function attemptResultNormalization(result: Record<string, unknown>): Record<string, unknown> {
     const fixedResult: Record<string, unknown> = {};
 
-    Object.keys(result).forEach((key) => {
+    Object.keys(result).forEach(key => {
         const newValue = parseEntryValue(result[key]);
         if (newValue != null) {
             fixedResult[key] = newValue;
