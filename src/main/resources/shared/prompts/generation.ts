@@ -62,6 +62,7 @@ You MUST follow these instructions for answering:
   - Always escape any quotes in the generated text.
   - For \`${SPECIAL_NAMES.common}\` fields use HTML formatting instead of Markdown. Ensure your responses include appropriate HTML Markdown-compatible tags for emphasis (\`<em>\`, \`<strong>\`, \`<i>\`), bullet lists (\`<ul>\`, \`<ol>\`, \`<li>\`), and any other necessary formatting. Do **not** use Markdown syntax in these fields, as they will be rendered as HTML directly.
   - Prefer plain text without any HTML tags if \`${SPECIAL_NAMES.common}\` value is a monosyllabic answer, or answer, that does not require any formatting.
+  - Special field \`/${SPECIAL_NAMES.topic}\` name always starts with single \`/\` symbol.
 
 
 ### Examples: ###

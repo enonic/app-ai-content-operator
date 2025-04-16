@@ -1,4 +1,5 @@
 import {useStore} from '@nanostores/react';
+import {t} from 'i18next';
 import {useEffect, useMemo, useRef} from 'react';
 import {twJoin} from 'tailwind-merge';
 
@@ -6,6 +7,7 @@ import {SPECIAL_NAMES} from '../../../../../shared/enums';
 import {messageContentToValues} from '../../../../common/messages';
 import {$fieldDescriptors, $orderedPaths} from '../../../../stores/data';
 import {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
+import {MessageItem} from '../../../../stores/data/MessageItems';
 import CommonItem from '../items/CommonItem/CommonItem';
 import ElementItem from '../items/ElementItem/ElementItem';
 
@@ -27,10 +29,12 @@ export function AssistantMessageList({messageId, content, last}: Props): React.R
         }
     }, [ref, last]);
 
-    const sortedEntries = useMemo(() => {
+    const sortedEntries = useMemo((): [string, MessageItem][] => {
+        const descriptorNames = fieldDescriptors.map(descriptor => descriptor.name);
+
         const entries = Object.entries(messageContentToValues(content));
         const commonEntries = entries.filter(([key]) => key === SPECIAL_NAMES.common);
-        const elementEntries = entries.filter(([key]) => key !== SPECIAL_NAMES.common);
+        const elementEntries = entries.filter(([key]) => descriptorNames.includes(key));
 
         elementEntries.sort((a, b) => {
             const indexA = orderedPaths.indexOf(a[0]);
@@ -47,7 +51,9 @@ export function AssistantMessageList({messageId, content, last}: Props): React.R
             return indexA - indexB;
         });
 
-        return [...commonEntries, ...elementEntries];
+        const sortedEntries = [...commonEntries, ...elementEntries];
+
+        return sortedEntries.length > 0 ? sortedEntries : [[SPECIAL_NAMES.common, t('field.error.entries.empty')]];
     }, [content, orderedPaths]);
 
     return (

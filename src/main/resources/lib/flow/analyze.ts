@@ -16,6 +16,7 @@ import {GenerateMessagePayload} from '../../shared/websocket';
 import {getOptions} from '../google/options';
 import {logError} from '../logger';
 import {GeminiProxy} from '../proxy/gemini';
+import {fixFieldKey, toFieldPath} from '../utils/fields';
 
 type AnalyzePromptAndResult = {
     request: string;
@@ -66,7 +67,7 @@ export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndRe
 //
 
 function createAllowedFields(fields: Record<string, DataEntry>): string[] {
-    return [...Object.keys(fields), SPECIAL_NAMES.topic, SPECIAL_NAMES.common];
+    return [...Object.keys(fields), toFieldPath(SPECIAL_NAMES.topic), SPECIAL_NAMES.common];
 }
 
 function parseAnalysisResult(textResult: string, allowedFields: string[]): Try<RawAnalysisResult> {
@@ -104,14 +105,15 @@ export function fixEntries(result: Record<string, unknown>, allowedFields: strin
             }
         }
 
-        if (allowedFields.indexOf(key) === -1) {
+        const validKey = fixFieldKey(key, allowedFields);
+        if (validKey == null) {
             continue;
         }
 
         if (isAnalysisReferenceEntry(value)) {
-            cleaned[key] = {count: 0} satisfies AnalysisReferenceEntry;
+            cleaned[validKey] = {count: 0} satisfies AnalysisReferenceEntry;
         } else if (isAnalysisObjectEntry(value)) {
-            cleaned[key] = {
+            cleaned[validKey] = {
                 task: value.task,
                 language: value.language,
                 count: Math.max(parseInt(String(value.count)) || 1, 1),

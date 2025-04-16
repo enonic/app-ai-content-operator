@@ -23,6 +23,7 @@
     "field.message.assistant.placeholder.common": "Thinking on your request...",
     "field.message.assistant.placeholder.single": "Creating suggestion for {{name}}...",
     "field.message.assistant.placeholder.multiple": "Creating suggestions for {{name}} and {{count}} more...",
+    "field.error.entries.empty": "Hmm, something doesn’t match up with your request. Could you rephrase and try again?",
     "text.greeting.first": "Hi, I’m Juke, your AI assistant.",
     "text.greeting.recurring.morning": "Good morning, {{name}}. How can I help you?",
     "text.greeting.recurring.afternoon": "Good afternoon, {{name}}. How can I help you?",
