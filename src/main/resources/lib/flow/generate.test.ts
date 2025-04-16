@@ -1,4 +1,5 @@
-import {parseEntryValue} from './generate';
+import {SPECIAL_NAMES} from '../../shared/enums';
+import {fixResultFields, parseEntryValue} from './generate';
 
 jest.mock('/lib/http-client', () => ({
     request: jest.fn(),
@@ -68,5 +69,30 @@ describe('parseEntryValue', () => {
     it('should return null for object with mixed valid/invalid array elements for string[] case', () => {
         const input = {key1: ['a', 1], key2: [true]};
         expect(parseEntryValue(input)).toBeNull();
+    });
+});
+
+describe('fixResultFields', () => {
+    const allowedFields = ['/field1', '/field2/subfield', '/field3', `/${SPECIAL_NAMES.common}`];
+
+    it('should fix keys and filter out invalid entries', () => {
+        const result = {
+            '/field1': 'value1',
+            '/field2/subfield': 'value2-1',
+            'field2/subfield': 'value2-2',
+            '/field3': ['value3'],
+            [`${SPECIAL_NAMES.common}`]: 'value6',
+            nullField: null,
+            emptyArrayField: [],
+        };
+
+        const expected = {
+            '/field1': 'value1',
+            '/field2/subfield': 'value2-2',
+            '/field3': ['value3'],
+            [`/${SPECIAL_NAMES.common}`]: 'value6',
+        };
+
+        expect(fixResultFields(result, allowedFields)).toEqual(expected);
     });
 });

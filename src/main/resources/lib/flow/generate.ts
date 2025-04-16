@@ -9,6 +9,7 @@ import {getOptions} from '../google/options';
 import {fieldsToSchema} from '../google/schema';
 import {logError, logWarn} from '../logger';
 import {GeminiProxy} from '../proxy/gemini';
+import {fixFieldKey} from '../utils/fields';
 import {isObject, isPrimitive, isString, isStringArray} from '../utils/objects';
 
 type GenerateParams = {
@@ -49,7 +50,8 @@ export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
             return [null, err2];
         }
 
-        const [result, err3] = parseGenerationResult(textResult);
+        const allowedFields = Object.keys(params.fields);
+        const [result, err3] = parseGenerationResult(textResult, allowedFields);
         if (err3) {
             return [null, err3];
         }
@@ -65,18 +67,19 @@ export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
 //* PARSE
 //
 
-function parseGenerationResult(textResult: string): Try<GenerationResult> {
+function parseGenerationResult(textResult: string, allowedFields: string[]): Try<GenerationResult> {
     try {
         const result: unknown = JSON.parse(cleanBackticks(textResult));
         if (!isObject(result)) {
             return [null, ERRORS.MODEL_GENERATION_WRONG_TYPE];
         }
 
-        if (isGenerationResult(result)) {
-            return [result, null];
+        const cleanedResult = fixResultFields(result, allowedFields);
+        if (isGenerationResult(cleanedResult)) {
+            return [cleanedResult, null];
         }
 
-        const normalizedResult = attemptResultNormalization(result);
+        const normalizedResult = attemptResultNormalization(cleanedResult);
         if (isGenerationResult(normalizedResult)) {
             logWarn(ERRORS.MODEL_GENERATION_WRONG_TYPE.withMsg('\n' + textResult));
             return [normalizedResult, null];
@@ -157,7 +160,20 @@ function isGenerationResult(result: Record<string, unknown>): result is Generati
     );
 }
 
-function attemptResultNormalization(result: Record<string, unknown>): Record<string, unknown> {
+export function fixResultFields(result: Record<string, unknown>, allowedFields: string[]): Record<string, unknown> {
+    const fixedResult: Record<string, unknown> = {};
+
+    Object.keys(result).forEach(key => {
+        const validKey = fixFieldKey(key, allowedFields);
+        if (validKey != null) {
+            fixedResult[validKey] = result[key];
+        }
+    });
+
+    return fixedResult;
+}
+
+export function attemptResultNormalization(result: Record<string, unknown>): Record<string, unknown> {
     const fixedResult: Record<string, unknown> = {};
 
     Object.keys(result).forEach(key => {

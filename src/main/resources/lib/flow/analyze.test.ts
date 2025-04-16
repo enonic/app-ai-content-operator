@@ -6,24 +6,24 @@ jest.mock('/lib/http-client', () => ({
 }));
 
 describe('fixEntries', () => {
-    const allowedFields = ['field1', 'field2', 'field3', SPECIAL_NAMES.topic, SPECIAL_NAMES.common];
+    const allowedFields = ['/field1', '/field2', '/field3', `/${SPECIAL_NAMES.topic}`, SPECIAL_NAMES.common];
 
     it('should return same object entries', () => {
         const input = {
-            field1: {
+            '/field1': {
                 task: 'some task',
                 count: 1,
                 language: 'en',
             },
-            field2: {
+            '/field2': {
                 task: 'another task',
                 count: 3,
                 language: 'es',
             },
-            field3: {
+            '/field3': {
                 count: 0,
             },
-            [SPECIAL_NAMES.topic]: {
+            [`/${SPECIAL_NAMES.topic}`]: {
                 task: 'some topic task',
                 count: 2,
                 language: 'en',
@@ -40,20 +40,20 @@ describe('fixEntries', () => {
 
     it('should fix reference fields', () => {
         const input = {
-            field1: {
+            '/field1': {
                 count: 1,
             },
-            field2: {
+            '/field2': {
                 count: 0,
                 language: 'en',
             },
         };
 
         const result = {
-            field1: {
+            '/field1': {
                 count: 0,
             },
-            field2: {
+            '/field2': {
                 count: 0,
             },
         };
@@ -63,24 +63,24 @@ describe('fixEntries', () => {
 
     it('should clean invalid fields', () => {
         const input = {
-            field1: {
+            '/field1': {
                 task: 'task',
                 count: 1,
                 language: 'en',
             },
-            fieldOfDifferentType: {
+            '/fieldOfDifferentType': {
                 value: 'value',
             },
-            fieldWithoutTask: {
+            '/fieldWithoutTask': {
                 language: 'en',
             },
-            [SPECIAL_NAMES.topic]: 'topic',
+            [`/${SPECIAL_NAMES.topic}`]: 'topic',
             [SPECIAL_KEYS.unclear]: {task: 'unclear task'},
             [SPECIAL_KEYS.error]: {count: 0},
         };
 
         const result = {
-            field1: {
+            '/field1': {
                 task: 'task',
                 count: 1,
                 language: 'en',
@@ -91,7 +91,7 @@ describe('fixEntries', () => {
 
     it('should return "error" special field only', () => {
         const input = {
-            field1: {
+            '/field1': {
                 task: 'some task',
                 count: 1,
                 language: 'en',
@@ -108,7 +108,7 @@ describe('fixEntries', () => {
 
     it('should return "unclear" special field only', () => {
         const input = {
-            field1: {
+            '/field1': {
                 task: 'some task',
                 count: 1,
                 language: 'en',
@@ -125,16 +125,16 @@ describe('fixEntries', () => {
 
     it('should fix count', () => {
         const input = {
-            field1: {
+            '/field1': {
                 task: 'some task',
                 count: '2',
                 language: 'no',
             },
-            field2: {
+            '/field2': {
                 task: 'another task',
                 language: 'es',
             },
-            field3: {
+            '/field3': {
                 task: 'yet another task',
                 count: 0,
                 language: 'ru',
@@ -142,17 +142,71 @@ describe('fixEntries', () => {
         };
 
         const result = {
-            field1: {
+            '/field1': {
                 task: 'some task',
                 count: 2,
                 language: 'no',
             },
-            field2: {
+            '/field2': {
                 task: 'another task',
                 count: 1,
                 language: 'es',
             },
-            field3: {
+            '/field3': {
+                task: 'yet another task',
+                count: 1,
+                language: 'ru',
+            },
+        };
+
+        expect(fixEntries(input, allowedFields)).toEqual(result);
+    });
+
+    it('should fix allowed fields and drop invalid fields', () => {
+        const input = {
+            field1: {
+                task: 'task 1',
+                count: '2',
+                language: 'en',
+            },
+            '/field2': {
+                task: 'task 2',
+                count: '2',
+                language: 'by',
+            },
+            '/wrong/field': {
+                task: 'some task',
+                count: '2',
+                language: 'no',
+            },
+            [SPECIAL_NAMES.topic]: {
+                task: 'another task',
+                language: 'es',
+            },
+            [SPECIAL_NAMES.common]: {
+                task: 'yet another task',
+                count: 1,
+                language: 'ru',
+            },
+        };
+
+        const result = {
+            '/field1': {
+                task: 'task 1',
+                count: 2,
+                language: 'en',
+            },
+            '/field2': {
+                task: 'task 2',
+                count: 2,
+                language: 'by',
+            },
+            [`/${SPECIAL_NAMES.topic}`]: {
+                task: 'another task',
+                count: 1,
+                language: 'es',
+            },
+            [SPECIAL_NAMES.common]: {
                 task: 'yet another task',
                 count: 1,
                 language: 'ru',
