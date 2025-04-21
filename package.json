@@ -32,7 +32,7 @@
         "react-draggable": "^4.4.6",
         "react-i18next": "^15.4.1",
         "slate": "^0.112.0",
-        "slate-history": "^0.110.3",
+        "slate-history": "^0.113.1",
         "slate-react": "^0.112.1",
         "tailwind-merge": "^3.2.0",
         "tailwindcss-scoped-preflight": "^3.4.12"
