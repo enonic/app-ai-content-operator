@@ -60,8 +60,8 @@ importers:
         specifier: ^3.2.0
         version: 3.2.0
       tailwindcss-scoped-preflight:
-        specifier: ^3.4.10
-        version: 3.4.10(postcss@8.5.3)(tailwindcss@3.4.17)
+        specifier: ^3.4.12
+        version: 3.4.12(postcss@8.5.3)(tailwindcss@3.4.17)
     devDependencies:
       '@enonic-types/core':
         specifier: ^7.15.1
@@ -3652,8 +3652,8 @@ packages:
   tailwind-merge@3.2.0:
     resolution: {integrity: sha512-FQT/OVqCD+7edmmJpsgCsY820RTD5AkBryuG5IUqR5YQZSdj5xlH5nLgH7YPths7WsLPSpSBNneJdM8aS8aeFA==}
 
-  tailwindcss-scoped-preflight@3.4.10:
-    resolution: {integrity: sha512-eYG6wGrcaA2nu+iUSUB1kLR+kyq99mYD6PQaFo5Yp287KHm2uN8FBi37k56f8jeblCbDXe1HeeFnLSCSRTko4Q==}
+  tailwindcss-scoped-preflight@3.4.12:
+    resolution: {integrity: sha512-iEk5Hk4N1C3TZpUlRHc1TiPY9+A/X+Ia21/i/hO0yjMy3A5tGDCZZJdREK8tWPzybgBYRBNpUxTWbL0Yj0zoSw==}
     peerDependencies:
       postcss: ^8
       tailwindcss: ^3
@@ -7957,7 +7957,7 @@ snapshots:
 
   tailwind-merge@3.2.0: {}
 
-  tailwindcss-scoped-preflight@3.4.10(postcss@8.5.3)(tailwindcss@3.4.17):
+  tailwindcss-scoped-preflight@3.4.12(postcss@8.5.3)(tailwindcss@3.4.17):
     dependencies:
       postcss: 8.5.3
       tailwindcss: 3.4.17
