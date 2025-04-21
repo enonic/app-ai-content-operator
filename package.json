@@ -35,7 +35,7 @@
         "slate-history": "^0.110.3",
         "slate-react": "^0.112.1",
         "tailwind-merge": "^3.2.0",
-        "tailwindcss-scoped-preflight": "^3.4.10"
+        "tailwindcss-scoped-preflight": "^3.4.12"
     },
     "devDependencies": {
         "@enonic-types/core": "^7.15.1",
