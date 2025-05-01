@@ -1,5 +1,5 @@
 import {DataEntry, DataEntryType} from '../../shared/data/DataEntry';
-import {SPECIAL_NAMES} from '../../shared/enums';
+import {SPECIAL_KEYS, SPECIAL_NAMES} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
 import {Message} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
@@ -50,7 +50,7 @@ export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
             return [null, err2];
         }
 
-        const allowedFields = Object.keys(params.fields);
+        const allowedFields = createAllowedFields(params.fields);
         const [result, err3] = parseGenerationResult(textResult, allowedFields);
         if (err3) {
             return [null, err3];
@@ -80,6 +80,7 @@ function parseGenerationResult(textResult: string, allowedFields: string[]): Try
         }
 
         const normalizedResult = attemptResultNormalization(cleanedResult);
+
         if (isGenerationResult(normalizedResult)) {
             logWarn(ERRORS.MODEL_GENERATION_WRONG_TYPE.withMsg('\n' + textResult));
             return [normalizedResult, null];
@@ -229,4 +230,8 @@ export function parseEntryValue(value: unknown): Optional<string | string[]> {
 
 function isObjectWithValueProperty(value: unknown): value is {value: string} {
     return isObject(value) && typeof value.value === 'string';
+}
+
+function createAllowedFields(entries: Record<string, DataEntry>): string[] {
+    return [SPECIAL_NAMES.common, ...Object.keys(SPECIAL_KEYS), ...Object.keys(entries)];
 }
