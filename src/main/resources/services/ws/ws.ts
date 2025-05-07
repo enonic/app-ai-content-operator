@@ -1,10 +1,10 @@
-import * as websocketLib from '/lib/xp/websocket';
+import {send} from '/lib/xp/websocket';
 
-import * as licenseManager from '../../lib/license/license-manager';
 import {analyze} from '../../lib/flow/analyze';
 import {generate} from '../../lib/flow/generate';
+import {respondError} from '../../lib/http/requests';
+import {getLicenseState} from '../../lib/license/license-manager';
 import {logDebug, LogDebugGroups, logError} from '../../lib/logger';
-import {respondError} from '../../lib/requests';
 import {runAsyncTask} from '../../lib/utils/task';
 import {unsafeUUIDv4} from '../../lib/utils/uuid';
 import {WS_PROTOCOL} from '../../shared/constants';
@@ -150,7 +150,7 @@ function createMetadata(): MessageMetadata {
 }
 
 function sendMessage(socketId: string, message: Omit<ServerMessage, 'metadata'>): void {
-    websocketLib.send(socketId, JSON.stringify({...message, metadata: createMetadata()}));
+    send(socketId, JSON.stringify({...message, metadata: createMetadata()}));
 }
 
 function sendAnalyzedMessage(socketId: string, payload: AnalyzedMessagePayload): void {
@@ -168,7 +168,7 @@ function sendConnectedMessage(socketId: string): void {
 }
 
 function sendLicenseUpdatedMessage(socketId: string, licenseStateOrError?: Try<LicenseState>): void {
-    const license = licenseStateOrError ?? licenseManager.getLicenseState();
+    const license = licenseStateOrError ?? getLicenseState();
     const [licenseState, licenseError] = license;
     const payload = licenseError ? licenseError : {licenseState};
     const message = {type: MessageType.LICENSE_UPDATED, payload} satisfies Omit<LicenseUpdatedMessage, 'metadata'>;
@@ -209,11 +209,11 @@ function handleConnect(socketId: string): void {
 }
 
 function handleGenerateMessage(socketId: string, message: GenerateMessage): void {
-    const res = licenseManager.getLicenseState();
-    const [licenseState] = res;
+    const result = getLicenseState();
+    const [licenseState] = getLicenseState();
 
     if (licenseState !== 'OK') {
-        return sendLicenseUpdatedMessage(socketId, res);
+        return sendLicenseUpdatedMessage(socketId, result);
     }
 
     runAsyncTask('ws', () => analyzeAndGenerate(socketId, message));
