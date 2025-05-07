@@ -12,9 +12,12 @@ export default {
             },
             testMatch: ['<rootDir>/src/**/*(*.)@(spec|test).ts?(x)'],
             testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '/src/main/resources/assets/'],
-            setupFilesAfterEnv: ['./tests/jest.node.setup.js'],
+            setupFilesAfterEnv: ['./tests/jest.node.setup.ts'],
             moduleNameMapper: {
+                // Can use {virtual: true} in jest.mock instead
+                '^/lib/cron$': '<rootDir>/src/main/resources/types/lib/cron.d.ts',
                 '^/lib/http-client$': '<rootDir>/src/main/resources/types/lib/httpClient.d.ts',
+                '^/lib/xp/(.+)$': '<rootDir>/node_modules/@enonic-types/lib-$1/$1.d.ts',
                 '^/tests/testUtils/(.+)$': '<rootDir>/tests/testUtils/$1',
             },
         },
