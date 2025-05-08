@@ -1,10 +1,6 @@
 import {SPECIAL_KEYS, SPECIAL_NAMES} from '../../shared/enums';
 import {fixEntries} from './analyze';
 
-jest.mock('/lib/http-client', () => ({
-    request: jest.fn(),
-}));
-
 describe('fixEntries', () => {
     const allowedFields = ['/field1', '/field2', '/field3', `/${SPECIAL_NAMES.topic}`, SPECIAL_NAMES.common];
 

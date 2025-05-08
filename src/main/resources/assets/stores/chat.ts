@@ -363,6 +363,8 @@ function getErrorMessageByCode(code: number): string {
             return t('text.error.configuration');
         case ERRORS.REST_TIMEOUT.code:
             return t('text.error.rest.timeout');
+        case ERRORS.REST_MAX_RETRIES_REACHED.code:
+            return t('text.error.rest.maxRetriesReached');
         case ERRORS.REST_WRONG_CONTENT_TYPE.code:
             return t('text.error.rest.wrongContentType');
         case ERRORS.GOOGLE_BLOCKED.code:

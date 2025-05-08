@@ -77,7 +77,9 @@ export const $busyAnalyzing = computed($buffer, ({generationId, userMessageId, m
     return generationId != null && userMessageId != null && modelMessageId == null;
 });
 
-const $reconnectTimeout = computed($websocket, ({reconnectAttempts}) => Math.min(2 ** reconnectAttempts * 1000, 30000));
+const $reconnectTimeout = computed($websocket, ({reconnectAttempts}) =>
+    Math.min(2 ** reconnectAttempts * 1000, 30_000),
+);
 
 function incrementReconnectAttempts(): void {
     $websocket.setKey('reconnectAttempts', $websocket.get().reconnectAttempts + 1);
@@ -144,11 +146,11 @@ export function mountWebSocket(): () => void {
 //
 
 const MAX_RECONNECT_ATTEMPTS = 5;
-const CONNECTION_TIMEOUT = 60000; // ms
-const PING_INTERVAL = 50000; // ms
-const PONG_TIMEOUT = 15000; // ms
-const STOP_ANALYSIS_TIMEOUT = 20000; // ms
-const STOP_GENERATION_TIMEOUT = 60000; // ms
+const CONNECTION_TIMEOUT = 60_000; // ms
+const PING_INTERVAL = 50_000; // ms
+const PONG_TIMEOUT = 15_000; // ms
+const STOP_ANALYSIS_TIMEOUT = 20_000; // ms
+const STOP_GENERATION_TIMEOUT = 60_000; // ms
 
 let pingInterval: number;
 let pongTimeout: number;

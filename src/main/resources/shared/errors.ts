@@ -22,6 +22,7 @@ export const ERRORS = {
     REST_REQUEST_FAILED: err(0, 'REST request failed.'),
     RESPONSE_BODY_MISSING: err(1, 'REST response body is missing.'),
     REST_WRONG_CONTENT_TYPE: err(10, 'Wrong content type.'),
+    REST_MAX_RETRIES_REACHED: err(11, 'Maximum number of retries reached.'),
     REST_NOT_AUTHENTICATED: err(401, 'Not authenticated.'),
     REST_NOT_FOUND: err(404, 'Not found.'),
     REST_TIMEOUT: err(408, 'Request timeout.'),

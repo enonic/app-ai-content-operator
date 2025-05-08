@@ -1,10 +1,6 @@
 import {SPECIAL_NAMES} from '../../shared/enums';
 import {fixResultFields, parseEntryValue} from './generate';
 
-jest.mock('/lib/http-client', () => ({
-    request: jest.fn(),
-}));
-
 describe('parseEntryValue', () => {
     it('should return string value as is', () => {
         expect(parseEntryValue('hello')).toEqual('hello');

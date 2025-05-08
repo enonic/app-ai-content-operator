@@ -12,6 +12,11 @@ export type ContentType = LiteralUnion<
     'application/json' | 'application/x-www-form-urlencoded' | 'multipart/form-data'
 >;
 
+export type ResponseHeaders = {
+    'content-type'?: string;
+    'retry-after'?: string;
+} & Record<string, string>;
+
 export interface HttpClientRequestOptions {
     url: string;
     method?: HttpMethod;
@@ -48,7 +53,7 @@ export interface HttpClientRequestOptions {
 export interface HttpClientResponse {
     status: number;
     message: string;
-    headers: Record<string, string>;
+    headers: ResponseHeaders;
     cookies: Record<string, string>;
     contentType: string;
     body: string | null;

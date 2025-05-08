@@ -1,8 +1,8 @@
 import type {HttpClientResponse} from '/lib/http-client';
 
 import {CustomAiError, ERRORS} from '../../shared/errors';
+import {request, RequestParams} from '../http/requests';
 import {logDebug, LogDebugGroups, logError} from '../logger';
-import {request, RequestParams} from '../requests';
 import {parseOptions} from './options';
 
 type GoogleRequestOptions = RequestParams & {
@@ -43,10 +43,8 @@ function sendRequest(params: GoogleRequestOptions): Try<HttpClientResponse> {
     if (requestErr) {
         return [null, requestErr];
     }
-    if (!response) {
-        return [null, ERRORS.RESPONSE_BODY_MISSING];
-    }
-    const isJson = response.headers?.['contentType']?.indexOf('application/json') !== -1;
+
+    const isJson = response.contentType.indexOf('application/json') !== -1;
     if (!isJson) {
         return [null, ERRORS.REST_WRONG_CONTENT_TYPE];
     }
