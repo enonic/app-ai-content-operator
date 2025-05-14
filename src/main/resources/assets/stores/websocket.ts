@@ -2,26 +2,16 @@ import {t} from 'i18next';
 import {atom, computed, map} from 'nanostores';
 import {Descendant} from 'slate';
 
+import {WS_PROTOCOL} from '../../shared/constants';
 import {
     AnalyzedMessagePayload,
     FailedMessagePayload,
-    FetchLicenseMessage,
     GeneratedMessagePayload,
     GenerateMessagePayload,
-    InMessage,
     LicenseUpdatedPayload,
     LicenseUpdatedStatePayload,
-    MESSAGE_BASE,
-    MessageType,
-    StopMessagePayload,
 } from '../../shared/messages';
-import {
-    ConnectedWorkerMessage,
-    OutWorkerMessage,
-    ReceivedWorkerMessage,
-    SendWorkerMessage,
-    SubscribeWorkerMessage,
-} from '../../shared/worker';
+import {ClientMessage, MessageMetadata, MessageType, ServerMessage} from '../../shared/websocket';
 import {parseNodes, parseText} from '../common/slate';
 import {
     addErrorMessage,
@@ -42,26 +32,24 @@ import {MessageRole} from './data/MessageType';
 import {$licenseState} from './license';
 import {getAllPathsFromString, pathToString} from './utils/path';
 
-type WorkerLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
+type WebSocketLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
 
-type WorkerState = 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
+type WebSocketState = 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
 
-type WorkerStore = {
-    lifecycle: WorkerLifecycle;
-    state: WorkerState;
-    ready: boolean;
-    connection: Optional<SharedWorker>;
-    clientId: Optional<string>;
+type WebSocketStore = {
+    lifecycle: WebSocketLifecycle;
+    state: WebSocketState;
+    connection: Optional<WebSocket>;
     online: boolean;
+    reconnectAttempts: number;
 };
 
-const $worker = map<WorkerStore>({
+const $websocket = map<WebSocketStore>({
     lifecycle: 'unmounted',
     state: 'disconnected',
-    ready: false,
     connection: null,
-    clientId: null,
     online: navigator.onLine,
+    reconnectAttempts: 0,
 });
 
 type Buffer = {
@@ -86,37 +74,50 @@ export const $busyAnalyzing = computed($buffer, ({generationId, userMessageId, m
     return generationId != null && userMessageId != null && modelMessageId == null;
 });
 
-export const $isConnected = computed($worker, ({connection, state, online, ready}) => {
-    return connection != null && state === 'connected' && online && ready;
+const $reconnectTimeout = computed($websocket, ({reconnectAttempts}) => Math.min(2 ** reconnectAttempts * 1000, 30000));
+
+function incrementReconnectAttempts(): void {
+    $websocket.setKey('reconnectAttempts', $websocket.get().reconnectAttempts + 1);
+}
+
+export const $isConnected = computed($websocket, ({connection, state, online}) => {
+    return connection != null && connection.readyState === WebSocket.OPEN && state === 'connected' && online;
 });
+
+function isActiveConnection(connection: Optional<WebSocket>): connection is WebSocket {
+    return (
+        connection != null &&
+        (connection.readyState === WebSocket.OPEN || connection.readyState === WebSocket.CONNECTING)
+    );
+}
 
 //
 //* Lifecycle
 //
 
-const $needsUnmount = computed([$worker, $isBusy], ({lifecycle}, isBusy) => lifecycle === 'unmounting' && !isBusy);
+const $needsUnmount = computed([$websocket, $isBusy], ({lifecycle}, isBusy) => lifecycle === 'unmounting' && !isBusy);
 
 let unsubscribeUnmount: Optional<() => void>;
 
-export function mountWorker(): () => void {
-    const {lifecycle} = $worker.get();
+export function mountWebSocket(): () => void {
+    const {lifecycle} = $websocket.get();
 
     if (lifecycle === 'unmounting' || lifecycle === 'unmounted') {
         unsubscribeUnmount?.();
 
-        $worker.setKey('lifecycle', 'mounting');
-        $worker.setKey('online', navigator.onLine);
+        $websocket.setKey('lifecycle', 'mounting');
+        $websocket.setKey('online', navigator.onLine);
 
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
 
         connect();
 
-        $worker.setKey('lifecycle', 'mounted');
+        $websocket.setKey('lifecycle', 'mounted');
     }
 
     return () => {
-        $worker.setKey('lifecycle', 'unmounting');
+        $websocket.setKey('lifecycle', 'unmounting');
         unsubscribeUnmount = $needsUnmount.subscribe(needsUnmount => {
             if (!needsUnmount) {
                 return;
@@ -130,150 +131,192 @@ export function mountWorker(): () => void {
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
 
-            $worker.setKey('lifecycle', 'unmounted');
+            $websocket.setKey('lifecycle', 'unmounted');
         });
     };
 }
-
-$isConnected.subscribe(isConnected => {
-    if (isConnected && $licenseState.get() !== 'OK') {
-        sendFetchLicenseMessage();
-    }
-});
 
 //
 //* Connection
 //
 
+const MAX_RECONNECT_ATTEMPTS = 5;
+const CONNECTION_TIMEOUT = 60000; // ms
+const PING_INTERVAL = 50000; // ms
+const PONG_TIMEOUT = 15000; // ms
 const STOP_ANALYSIS_TIMEOUT = 20000; // ms
 const STOP_GENERATION_TIMEOUT = 60000; // ms
 
+let pingInterval: number;
+let pongTimeout: number;
+let reconnectTimeout: number;
 let stopTimeout: number;
 
 function connect(): void {
-    const {state, connection} = $worker.get();
+    const {state, connection} = $websocket.get();
 
     if (state === 'connecting' || state === 'connected') {
         return;
     }
 
-    cleanup(connection);
+    if (isActiveConnection(connection)) {
+        cleanup(connection);
+    }
 
-    const {sharedSocketUrl} = $config.get();
-    const worker = new SharedWorker(sharedSocketUrl, {type: 'module', name: 'shared-socket-worker'});
+    const {wsServiceUrl} = $config.get();
+    const ws = new WebSocket(wsServiceUrl, [WS_PROTOCOL]);
+    $websocket.setKey('connection', ws);
 
-    worker.onerror = event => {
-        console.error('SharedWorker global error:', event);
+    $websocket.setKey('state', 'connecting');
+    const connectionTimeout = setTimeout(() => {
+        if ($websocket.get().state === 'connecting') {
+            ws.close();
+        }
+    }, CONNECTION_TIMEOUT);
+
+    ws.onopen = () => {
+        clearTimeout(connectionTimeout);
+
+        $websocket.setKey('reconnectAttempts', 0);
+
+        sendMessage({
+            type: MessageType.CONNECT,
+            metadata: createMetadata(),
+        });
+
+        pingInterval = window.setInterval(() => {
+            sendMessage({
+                type: MessageType.PING,
+                metadata: createMetadata(),
+            });
+            clearTimeout(pongTimeout);
+            pongTimeout = setTimeout(() => {
+                disconnect();
+            }, PONG_TIMEOUT);
+        }, PING_INTERVAL);
     };
 
-    worker.port.onmessageerror = event => {
-        console.error('Failed to deserialize message from SharedWorker:', event);
+    ws.onmessage = handleMessage;
+
+    ws.onclose = () => {
+        clearTimeout(connectionTimeout);
+        cleanup(ws);
+        scheduleReconnect();
     };
 
-    $worker.setKey('connection', worker);
-    $worker.setKey('state', 'connecting');
-
-    worker.port.addEventListener('message', event => {
-        handleMessage(event as MessageEvent<OutWorkerMessage>);
-    });
-
-    worker.port.start();
+    ws.onerror = e => {
+        console.error(e);
+    };
 }
 
 function disconnect(): void {
-    const {state, connection} = $worker.get();
+    const {state, connection} = $websocket.get();
     if (state !== 'disconnected' && state !== 'disconnecting') {
-        $worker.setKey('state', 'disconnecting');
+        $websocket.setKey('state', 'disconnecting');
+        sendMessage({
+            type: MessageType.DISCONNECT,
+            metadata: createMetadata(),
+        });
     }
 
-    cleanup(connection);
+    if (isActiveConnection(connection)) {
+        connection.onerror = null;
+        connection.close();
+    }
 }
 
 function handleOnline(): void {
-    $worker.setKey('online', true);
+    $websocket.setKey('online', true);
 }
 
 function handleOffline(): void {
-    $worker.setKey('online', false);
+    $websocket.setKey('online', false);
+    $websocket.setKey('reconnectAttempts', 0);
+    disconnect();
 }
 
-function cleanup(worker: Optional<SharedWorker>): void {
-    worker?.port.close();
-
-    const {connection} = $worker.get();
-    if (worker !== connection) {
+function scheduleReconnect(): void {
+    const {lifecycle, reconnectAttempts} = $websocket.get();
+    if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+        console.warn(`Max reconnect attempts reached: ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}`);
         return;
     }
 
-    clearTimeout(stopTimeout);
+    if (lifecycle === 'unmounting' || lifecycle === 'unmounted') {
+        return;
+    }
 
-    $worker.setKey('state', 'disconnected');
-    $worker.setKey('connection', null);
-    $worker.setKey('clientId', null);
-    $worker.setKey('online', navigator.onLine);
-    $buffer.set({});
+    incrementReconnectAttempts();
+    reconnectTimeout = window.setTimeout(() => {
+        connect();
+    }, $reconnectTimeout.get());
 }
 
-function handleConnected(message: ConnectedWorkerMessage): void {
-    $worker.setKey('clientId', message.payload.clientId);
-    $worker.setKey('state', 'connected');
+function cleanup(ws: WebSocket): void {
+    if (isActiveConnection(ws)) {
+        ws.close();
+    }
 
-    subscribeTo(`${MESSAGE_BASE}.*`);
+    const {connection} = $websocket.get();
+    if (ws !== connection) {
+        return;
+    }
+
+    clearInterval(pingInterval);
+    clearTimeout(reconnectTimeout);
+    clearTimeout(pongTimeout);
+    clearTimeout(stopTimeout);
+
+    $websocket.setKey('state', 'disconnected');
+    $websocket.setKey('connection', null);
+    $websocket.setKey('online', navigator.onLine);
+    $buffer.set({});
 }
 
 function handleDisconnected(): void {
-    const {state} = $worker.get();
-    if (state !== 'disconnected' && state !== 'disconnecting') {
-        $worker.setKey('state', 'disconnected');
+    const {connection} = $websocket.get();
+    if (isActiveConnection(connection)) {
+        connection.close();
     }
-    $worker.setKey('clientId', null);
-    $buffer.set({});
 }
 
 //
 //* Receive
 //
 
-function handleMessage(event: MessageEvent<OutWorkerMessage>): void {
-    const message = event.data;
+function handleMessage(event: MessageEvent<string>): void {
+    const message = JSON.parse(event.data) as ServerMessage;
 
     switch (message.type) {
-        case 'connected':
-            handleConnected(message);
+        case MessageType.CONNECTED:
+            $websocket.setKey('state', 'connected');
             break;
 
-        case 'status':
-            $worker.setKey('ready', message.payload.ready);
+        case MessageType.LICENSE_UPDATED:
+            handleLicenseUpdatedMessage(message.payload);
             break;
 
-        case 'received':
-            handleReceivedMessage(message);
+        case MessageType.ANALYZED: {
+            handleAnalyzedMessage(message.payload);
             break;
+        }
 
-        case 'disconnected':
+        case MessageType.GENERATED: {
+            handleGeneratedMessage(message.payload);
+            break;
+        }
+
+        case MessageType.FAILED: {
+            handleFailedMessage(message.payload);
+            break;
+        }
+
+        case MessageType.DISCONNECTED:
             handleDisconnected();
             break;
-    }
-}
 
-function handleReceivedMessage(message: ReceivedWorkerMessage): void {
-    const {type, payload} = message.payload;
-
-    switch (type) {
-        case MessageType.LICENSE_UPDATED:
-            handleLicenseUpdatedMessage(payload);
-            break;
-
-        case MessageType.ANALYZED:
-            handleAnalyzedMessage(payload);
-            break;
-
-        case MessageType.GENERATED:
-            handleGeneratedMessage(payload);
-            break;
-
-        case MessageType.FAILED:
-            handleFailedMessage(payload);
+        case MessageType.PONG:
+            clearTimeout(pongTimeout);
             break;
     }
 }
@@ -282,16 +325,10 @@ function handleReceivedMessage(message: ReceivedWorkerMessage): void {
 //* Send
 //
 
-function createMetadata(): InMessage['metadata'] {
-    const {clientId} = $worker.get();
-
-    if (!clientId) {
-        throw new Error('Client ID is not set');
-    }
-
+function createMetadata(): MessageMetadata {
     return {
         id: crypto.randomUUID(),
-        clientId,
+        timestamp: Date.now(),
     };
 }
 
@@ -315,22 +352,12 @@ function createGenerateMessagePayload(prompt: string): GenerateMessagePayload {
     return payload;
 }
 
-function subscribeTo(operation: string): void {
-    const {connection} = $worker.get();
-    connection?.port.postMessage({
-        type: 'subscribe',
-        payload: {operation},
-    } satisfies SubscribeWorkerMessage);
+function sendMessage(message: ClientMessage): void {
+    const {connection} = $websocket.get();
+    if (connection?.readyState === WebSocket.OPEN) {
+        connection.send(JSON.stringify(message));
+    }
 }
-
-function sendMessage(message: InMessage): void {
-    const {connection} = $worker.get();
-    connection?.port.postMessage({type: 'send', payload: message} satisfies SendWorkerMessage);
-}
-
-//
-//* Flow: Client → Server
-//
 
 function sendGenerateMessage(payload: GenerateMessagePayload): void {
     const metadata = createMetadata();
@@ -344,6 +371,10 @@ function sendGenerateMessage(payload: GenerateMessagePayload): void {
     }, STOP_ANALYSIS_TIMEOUT);
 }
 
+//
+//* Flow: Client → Server
+//
+
 export function sendStop(role: Exclude<MessageRole, 'model'>): void {
     if (!$isConnected.get()) {
         return;
@@ -354,9 +385,7 @@ export function sendStop(role: Exclude<MessageRole, 'model'>): void {
         return;
     }
 
-    const metadata = createMetadata();
-    const payload: StopMessagePayload = {generationId};
-    sendMessage({type: MessageType.STOP, metadata, payload});
+    sendMessage({type: MessageType.STOP, metadata: createMetadata(), payload: {generationId}});
     addStoppedMessage(role, modelMessageId);
 
     clearTimeout(stopTimeout);
@@ -400,11 +429,6 @@ export function sendRetry(userMessageId: string): void {
 
     const payload = createGenerateMessagePayload(userMessage.content.prompt);
     sendGenerateMessage(payload);
-}
-
-function sendFetchLicenseMessage(): void {
-    const metadata = createMetadata();
-    sendMessage({type: MessageType.FETCH_LICENSE, metadata} satisfies FetchLicenseMessage);
 }
 
 //

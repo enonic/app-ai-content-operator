@@ -3,6 +3,7 @@ import {twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../../shared/enums';
 import {$messages} from '../../../../../stores/chat';
+import {$isBusy, $isConnected} from '../../../../../stores/connection';
 import {
     ChatMessage,
     ModelChatMessage,
@@ -11,7 +12,6 @@ import {
 } from '../../../../../stores/data/ChatMessage';
 import {MessageRole} from '../../../../../stores/data/MessageType';
 import {$licenseState} from '../../../../../stores/license';
-import {$isBusy, $isConnected} from '../../../../../stores/worker';
 import ApplyAllControl from '../ApplyAllControl/ApplyAllControl';
 import MessageSwitchControls from '../MessageSwitchControls/MessageSwitchControls';
 import RetryControl from '../RetryControl/RetryControl';

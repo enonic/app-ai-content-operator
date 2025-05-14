@@ -4,9 +4,9 @@ import {useEffect, useRef} from 'react';
 import {twJoin, twMerge} from 'tailwind-merge';
 
 import {$history} from '../../../../stores/chat';
+import {$busyAnalyzing, $isConnected} from '../../../../stores/connection';
 import {ChatMessage} from '../../../../stores/data/ChatMessage';
 import {$initialized, $licenseState} from '../../../../stores/license';
-import {$busyAnalyzing, $isConnected} from '../../../../stores/worker';
 import LoadingMessage from '../LoadingMessage/LoadingMessage';
 import Message from '../Message/Message';
 

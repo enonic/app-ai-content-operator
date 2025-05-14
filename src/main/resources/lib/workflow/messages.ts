@@ -17,10 +17,11 @@ import {unsafeUUIDv4} from '../utils/uuid';
 type Recipient = Omit<InMessage['metadata'], 'id'>;
 type Metadata = OutMessage['metadata'];
 
-function createMetadata({clientId}: Recipient): Metadata {
+function createMetadata({clientId, useWebSocket}: Recipient): Metadata {
     return {
         id: unsafeUUIDv4(),
         clientId,
+        useWebSocket,
     };
 }
 

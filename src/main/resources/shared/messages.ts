@@ -32,6 +32,7 @@ type BaseInMessage<T extends InMessageType> = {
     metadata: {
         id: string;
         clientId: string;
+        useWebSocket?: boolean;
     };
 };
 
@@ -56,6 +57,7 @@ type BaseOutMessage<T extends OutMessageType, P = unknown> = {
     metadata: {
         id: string;
         clientId?: string;
+        useWebSocket?: boolean;
     };
     payload: P;
 };
