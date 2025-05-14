@@ -39,19 +39,11 @@ export const isFormOptionSetOptionWithPath = (item: FormItemWithPath): item is F
     isFormOptionSetOption(item) && isPath(item);
 
 export function getFormItemsWithPaths(formItems: FormItem[]): FormItemWithPath[] {
-    const result: FormItemWithPath[] = [];
-    result.push(...getPathsOfMentionableItems(formItems, {elements: []}));
-    return result;
+    return getPathsOfMentionableItems(formItems, {elements: []});
 }
 
 function getPathsOfMentionableItems(formItems: FormItem[], path: Path): FormItemWithPath[] {
-    const result: FormItemWithPath[] = [];
-
-    formItems.forEach(item => {
-        result.push(...fetchFormItemPath(item, path));
-    });
-
-    return result;
+    return formItems.flatMap(item => fetchFormItemPath(item, path));
 }
 
 function fetchFormItemPath(item: FormItem, path: Path): FormItemWithPath[] {

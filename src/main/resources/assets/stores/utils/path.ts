@@ -46,12 +46,20 @@ export function pathToString(path: Path): string {
 
 function pathElementToString(element: PathElement): string {
     const text = element.name;
-    return element.index == undefined || element.index === 0 ? text : `${text}[${element.index}]`;
+    return element.index == null ? text : `${text}[${element.index}]`;
 }
 
-export function getPathLabel(path: Path): string {
+export function pathToPrettifiedLabel(path: Path): string {
+    const [label = '', index] = pathToLabelAndIndex(path) ?? [];
+    return index == null ? label : `${label} [${index}]`;
+}
+
+export function pathToLabelAndIndex(path: Path): Optional<[string, Optional<number>]> {
     const lastElement = path.elements.at(-1);
-    return lastElement?.label ?? lastElement?.name ?? '';
+    if (lastElement) {
+        const index = lastElement.index != null ? lastElement.index + 1 : null;
+        return [lastElement.label ?? lastElement.name, index];
+    }
 }
 
 export function clonePath(path: Path): Path {
@@ -72,7 +80,7 @@ export function pathToPrettifiedString(path: Path): string {
 
 function pathElementToPrettifiedString(element: PathElement): string {
     const text = element.label || element.name;
-    return element.index == undefined || element.index === 0 ? text : `${text}[${element.index}]`;
+    return element.index == null ? text : `${text}[${element.index}]`;
 }
 
 export function isChildPath(child: Path, parent: Path): boolean {

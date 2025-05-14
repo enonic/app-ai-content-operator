@@ -6,7 +6,13 @@ import {setContext} from '../../../../stores/context';
 import {$allFormItemsWithPaths} from '../../../../stores/data';
 import {FormItemWithPath} from '../../../../stores/data/FormItemWithPath';
 import {Path} from '../../../../stores/data/Path';
-import {getPathLabel, isChildPath, pathsEqual, pathToString} from '../../../../stores/utils/path';
+import {
+    isChildPath,
+    pathsEqual,
+    pathToLabelAndIndex,
+    pathToPrettifiedLabel,
+    pathToString,
+} from '../../../../stores/utils/path';
 import {isInput} from '../../../../stores/utils/schema';
 import ActionButton from '../../../base/ActionButton/ActionButton';
 
@@ -25,7 +31,9 @@ export default function ContextItem({className, path, last}: Props): React.React
     const formItem = allFormItemsWithPaths.find(p => pathsEqual(p, path));
     const isEnabled = hasChildrenInputs(allFormItemsWithPaths, path) && !last && formItem != null;
 
-    const name = formItem ? getPathLabel(formItem) : '';
+    const [name, index] = (formItem && pathToLabelAndIndex(formItem)) ?? ['', undefined];
+    const titleText = (formItem && pathToPrettifiedLabel(formItem)) ?? '';
+    const title = isEnabled ? t('action.switchContextTo', {name: titleText}) : titleText;
 
     const clickHandler = isEnabled ? () => setContext(pathToString(path)) : undefined;
 
@@ -35,14 +43,17 @@ export default function ContextItem({className, path, last}: Props): React.React
                 'max-w-none min-w-0',
                 'disabled:opacity-100 enabled:hover:bg-white text-xs rounded-lg',
                 isEnabled && 'text-enonic-blue-400 hover:text-enonic-blue-500',
-                last && 'font-medium flex-shrink-0',
+                last && 'font-medium max-w-none flex-shrink-0',
                 className,
             )}
             size='sm'
             mode='text-with-title'
-            title={t('action.switchContextTo', {name})}
+            forceTitle={true}
+            title={title}
             name={name}
             clickHandler={clickHandler}
-        />
+        >
+            {index != null && <span>[{index}]</span>}
+        </ActionButton>
     );
 }
