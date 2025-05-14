@@ -5,14 +5,14 @@ import {ContentData, PropertyArray, PropertyValue} from '../data/ContentData';
 import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from '../data/FormItemWithPath';
 import {Mention} from '../data/Mention';
 import {Path, PathElement} from '../data/Path';
-import {clonePath, getPathLabel, pathToPrettifiedString, pathToString} from './path';
+import {clonePath, pathToPrettifiedLabel, pathToPrettifiedString, pathToString} from './path';
 import {isFormItemSet, isFormOptionSet, isInput} from './schema';
 
 export function pathToMention(item: FormItemWithPath): Mention {
     return {
         path: pathToString(item),
         prettified: pathToPrettifiedString(item),
-        label: getPathLabel(item),
+        label: pathToPrettifiedLabel(item),
     };
 }
 
@@ -63,11 +63,11 @@ function createPropertyPaths(
 
     const thisIterationResult: Path[] = [];
 
-    propertyArray.values.forEach((value: PropertyValue, index) => {
+    propertyArray.values.forEach((value, index, array) => {
         const newPathElement: PathElement = {
             name: propertyArray.name,
             label: pathElement.label,
-            index: index,
+            index: array.length > 1 ? index : undefined,
         };
 
         const newPath = previousIterationResult.length > 0 ? clonePath(previousIterationResult[0]) : {elements: []};

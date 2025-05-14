@@ -21,11 +21,11 @@ import {
 } from './utils/data';
 import {getInputType} from './utils/input';
 import {
-    getPathLabel,
     isChildPath,
     isRootPath,
     pathFromString,
     pathsEqual,
+    pathToPrettifiedLabel,
     pathToPrettifiedString,
     pathToString,
 } from './utils/path';
@@ -153,7 +153,7 @@ export const $fieldDescriptors = computed($allFormItemsWithPaths, allFormItems =
             .filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item))
             .map(item => ({
                 name: pathToString(item),
-                label: getPathLabel(item),
+                label: pathToPrettifiedLabel(item),
                 displayName: pathToPrettifiedString(item),
                 type: getInputType(item),
             })),

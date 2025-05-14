@@ -10,6 +10,7 @@ type Props = {
     name?: string;
     children?: React.ReactNode;
     title?: string;
+    forceTitle?: boolean;
     icon?: IconName;
     mode?: 'icon-only' | 'icon-with-title' | 'full' | 'text-only' | 'text-with-title';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -18,14 +19,14 @@ type Props = {
 };
 
 export default forwardRef(function ActionButton(
-    {className, disabled, name, title, icon, mode = 'full', size = 'sm', clickHandler, children}: Props,
+    {className, disabled, name, title, forceTitle, icon, mode = 'full', size = 'sm', clickHandler, children}: Props,
     ref: React.Ref<HTMLButtonElement>,
 ): React.ReactNode {
     const isEnabled = !disabled && !!clickHandler;
     const isFull = mode === 'full';
     const hasText = isFull || mode === 'text-only' || mode === 'text-with-title';
     const hasNoIcon = mode === 'text-only' || mode === 'text-with-title';
-    const hasTitle = isEnabled && (mode === 'icon-with-title' || mode === 'text-with-title');
+    const hasTitle = (isEnabled || forceTitle) && (mode === 'icon-with-title' || mode === 'text-with-title');
 
     return (
         <button
