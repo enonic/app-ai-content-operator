@@ -4,7 +4,7 @@ import {computed, map} from 'nanostores';
 import type {DataEntry} from '../../shared/data/DataEntry';
 import {addGlobalUpdateDataHandler} from '../common/events';
 import {MENTION_ALL} from '../common/mentions';
-import {$context} from './context';
+import {$context, resetContext} from './context';
 import {ContentData, PropertyValue} from './data/ContentData';
 import {UpdateEventData} from './data/EventData';
 import {FieldDescriptor} from './data/FieldDescriptor';
@@ -127,6 +127,20 @@ export const $mentions = computed([$inputsInContext], inputs => {
     }
 
     return mentions;
+});
+
+$allFormItemsWithPaths.listen(allFormItemsWithPaths => {
+    const context = $context.get();
+    if (!context) {
+        return;
+    }
+
+    const path = pathFromString(context);
+    const isValidContext = allFormItemsWithPaths.some(p => pathsEqual(p, path));
+
+    if (!isValidContext) {
+        resetContext();
+    }
 });
 
 //
