@@ -43,7 +43,7 @@ export default function ContextItem({className, path, last}: Props): React.React
                 'max-w-none min-w-0',
                 'disabled:opacity-100 enabled:hover:bg-white text-xs rounded-lg',
                 isEnabled && 'text-enonic-blue-400 hover:text-enonic-blue-500',
-                last && 'font-medium max-w-none flex-shrink-0',
+                last && 'max-w-none flex-shrink-0',
                 className,
             )}
             size='sm'
@@ -53,7 +53,11 @@ export default function ContextItem({className, path, last}: Props): React.React
             name={name}
             clickHandler={clickHandler}
         >
-            {index != null && <span>[{index}]</span>}
+            {index != null && (
+                <span className={twJoin('pl-0.5', isEnabled ? 'text-enonic-gray-400' : 'text-enonic-gray-600')}>
+                    [{index}]
+                </span>
+            )}
         </ActionButton>
     );
 }
