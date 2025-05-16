@@ -41,12 +41,8 @@ export const pathFromString = (pathAsString: string): Path => {
 };
 
 export function pathToString(path: Path): string {
-    return '/' + path.elements.map(pathElementToString).join('/');
-}
-
-function pathElementToString(element: PathElement): string {
-    const text = element.name;
-    return element.index == null ? text : `${text}[${element.index}]`;
+    const elements = path.elements.map(({index, name}) => (!index ? name : `${name}[${index}]`));
+    return '/' + elements.join('/');
 }
 
 export function pathToPrettifiedLabel(path: Path): string {
@@ -75,12 +71,12 @@ export function clonePath(path: Path): Path {
 }
 
 export function pathToPrettifiedString(path: Path): string {
-    return path.elements.map(pathElementToPrettifiedString).join('/');
+    return path.elements.map(pathElementToPrettifiedString).join(' / ');
 }
 
 function pathElementToPrettifiedString(element: PathElement): string {
     const text = element.label || element.name;
-    return element.index == null ? text : `${text}[${element.index}]`;
+    return element.index == null ? text : `${text} [${element.index + 1}]`;
 }
 
 export function isChildPath(child: Path, parent: Path): boolean {
