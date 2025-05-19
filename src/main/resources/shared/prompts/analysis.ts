@@ -67,6 +67,7 @@ You MUST follow the instructions for answering:
       - DO NOT apply apply user's request to the task text, make it a part of the task instead.
       - Include any related instructions from "Instructions" section into the task.
       - DO NOT include information about variants to this value of this key, use it in \`"count"\` key instead.
+      - When formulating the task, you MUST incorporate contextual information from the field's \`schemaHelpText\` and any relevant \`parentHelpTexts\` (from the "Content" JSON). For example, if \`schemaHelpText\` for a field indicates "This is a product tagline," and the user requests "make it punchier," your task should be something like: "Rewrite the product tagline to be punchier."
     - \`"count"\`: The number of variants that needs to be generated for the field.
       - If user did not ask to modify this field, set this value to 0.
       - If user asked to modify this field, but did not specified number of variants, set this value to 1.
@@ -92,6 +93,8 @@ You MUST follow the instructions for answering:
   - \`"value"\`: The current text in the field.
   - \`"type"\`: Either \`"text"\` or \`"html"\`. If \`"html"\`, the field may contain Markdown-compatible HTML tags.
   - \`"schemaLabel"\`: The display name of the field, which may hint at its intended content.
+  - \`"schemaHelpText"\`: Optional help text written by the user to understand purpose of the field.
+  - \`"parentHelpTexts"\`: Optional help texts for a better understanding of the nesting of the field and its purpose in the content. May include unrelated information.
 
 ### Examples ###
 
@@ -156,14 +159,14 @@ Move text from {{/article/intro}} to {{/article/main}}. Place a proper Latin quo
 # Content
 {
   "/${SPECIAL_NAMES.topic}": "Roman Empire",
-  "/article/intro": {"value":"The Roman Empire was one of the most powerful in history, known for its vast territorial holdings.","type":"text","schemaType":"TextArea","schemaLabel":"Introduction"},
+  "/article/intro": {"value":"The Roman Empire was one of the most powerful in history, known for its vast territorial holdings.","type":"text","schemaType":"TextArea","schemaLabel":"Introduction", "schemaHelpText": "Quote from the Roman poet Horace."},
   "/article/main": {"value":"<p>The emperors and structures of <b>Rome</b> left a lasting impact on global architecture, politics, and culture.</p>","type":"html","schemaType":"TextArea","schemaLabel":"Main Part"}
 }
 \`\`\`
 
 - **Model's Response:**
 {
-  "/article/intro": {"task": "Replace text with a quote in Latin.", "count": 1, "language": "la"},
+  "/article/intro": {"task": "Replace text with a quote in Latin by Horace.", "count": 1, "language": "la"},
   "/article/main": {"task": "Keep the current text and copy the value of {{/article/intro}} to beginning.", "count": 1, "language": "en-US"}
 }
 
