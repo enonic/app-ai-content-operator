@@ -23,7 +23,7 @@ export type FormOptionSet = {
     FormOptionSet: FormOptionSetData;
 };
 
-export type FormOptionSetOption = FormItemNameAndLabel & FormItems;
+export type FormOptionSetOption = FormItemNameAndLabel & FormItemHelpText & FormItems;
 
 export type FormItemNameAndLabel = {
     name: string;
@@ -43,14 +43,18 @@ export type FormItemOccurrences = {
 
 export type FieldSetData = FormItemNameAndLabel & FormItems;
 
-export type FormItemSetData = FormItemNameAndLabel & FormItems & FormItemOccurrences;
+export type FormSetData = FormItemNameAndLabel & FormItemHelpText & FormItemOccurrences;
 
-export type InputData = FormItemNameAndLabel &
-    FormItemOccurrences & {
-        inputType: string;
-    };
+export type FormItemSetData = FormSetData & FormItems;
 
-export type FormOptionSetData = FormItemNameAndLabel &
-    FormItemOccurrences & {
-        options: FormOptionSetOption[];
-    };
+export type InputData = FormSetData & {
+    inputType: string;
+};
+
+export type FormItemHelpText = {
+    helpText?: string;
+};
+
+export type FormOptionSetData = FormSetData & {
+    options: FormOptionSetOption[];
+};

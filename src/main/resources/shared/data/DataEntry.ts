@@ -4,6 +4,7 @@ export type DataEntry = {
     schemaType: string;
     schemaLabel: string;
     schemaHelpText?: string;
+    parentHelpTexts?: string[];
 };
 
 export type DataEntryType = 'text' | 'html';

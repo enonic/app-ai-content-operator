@@ -5,7 +5,8 @@ import {ContentData, PropertyArray, PropertyValue} from '../data/ContentData';
 import {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from '../data/FormItemWithPath';
 import {Mention} from '../data/Mention';
 import {Path, PathElement} from '../data/Path';
-import {clonePath, pathToPrettifiedLabel, pathToPrettifiedString, pathToString} from './path';
+import {FormItem} from '../data/Schema';
+import {clonePath, getParentPath, pathToPrettifiedLabel, pathToPrettifiedString, pathToString} from './path';
 import {isFormItemSet, isFormOptionSet, isInput} from './schema';
 
 export function pathToMention(item: FormItemWithPath): Mention {
@@ -133,4 +134,32 @@ export function createDisplayNameInput(): InputWithPath {
 
 export function isTopicPath(path: Path): boolean {
     return pathToString(path) === `/${SPECIAL_NAMES.topic}`;
+}
+
+export function getHelpText(item: FormItem): Optional<string> {
+    if (isInput(item)) {
+        return item.Input.helpText;
+    } else if (isFormItemSet(item)) {
+        return item.FormItemSet.helpText;
+    } else if (isFormOptionSet(item)) {
+        return item.FormOptionSet.helpText;
+    }
+
+    return undefined;
+}
+
+export function getParentHelpTexts(path: Path, helpTextMap: Record<string, string>): string[] | undefined {
+    const texts: string[] = [];
+
+    let parentPath = getParentPath(path);
+    while (parentPath) {
+        const helpText = helpTextMap[pathToString(parentPath)];
+        if (helpText) {
+            texts.push(helpText);
+        }
+
+        parentPath = getParentPath(parentPath);
+    }
+
+    return texts.length > 0 ? texts : undefined;
 }

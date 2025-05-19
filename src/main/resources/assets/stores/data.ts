@@ -15,6 +15,8 @@ import {Schema} from './data/Schema';
 import {
     createDisplayNameInput,
     getDataPathsToEditableItems,
+    getHelpText,
+    getParentHelpTexts,
     getPropertyArrayByPath,
     isTopicPath,
     pathToMention,
@@ -94,6 +96,22 @@ export const $orderedPaths = computed($allFormItemsWithPaths, items => {
     return items.map(item => pathToString(item));
 });
 
+const $helpTextMap = computed($allFormItemsWithPaths, items => {
+    return items.reduce(
+        (acc, item) => {
+            const path = pathToString(item);
+            const helpText = getHelpText(item);
+
+            if (helpText) {
+                acc[path] = helpText;
+            }
+
+            return acc;
+        },
+        {} as Record<string, string>,
+    );
+});
+
 //
 //* CONTEXT
 //
@@ -169,6 +187,8 @@ export function createFields(): Record<string, DataEntry> {
             type: getInputType(inputWithPath),
             schemaType: inputWithPath.Input.inputType,
             schemaLabel: inputWithPath.Input.label,
+            schemaHelpText: inputWithPath.Input.helpText,
+            parentHelpTexts: getParentHelpTexts(inputWithPath, $helpTextMap.get()),
         };
     });
 
