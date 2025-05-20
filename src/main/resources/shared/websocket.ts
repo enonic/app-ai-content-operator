@@ -1,6 +1,6 @@
 import {DataEntry} from './data/DataEntry';
 import {LicenseState} from './license';
-import {Message} from './model';
+import {ModelMessage} from './model';
 import {AnalysisResult} from './prompts/analysis';
 import {GenerationResult} from './prompts/generation';
 
@@ -51,8 +51,8 @@ export type GenerateMessage = MessageWithPayload<
         prompt: string;
         instructions?: string;
         history: {
-            analysis: Message[];
-            generation: Message[];
+            analysis: ModelMessage[];
+            generation: ModelMessage[];
         };
         meta: {
             language: string;
