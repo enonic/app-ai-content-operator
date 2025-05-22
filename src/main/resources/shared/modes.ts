@@ -14,25 +14,25 @@ export const MODES_DATA: Record<Mode, ModeData> = {
     precise: {
         gemini: {
             temperature: 0.2,
-            topP: 0.1,
+            topP: 1.0,
         },
     },
     focused: {
         gemini: {
             temperature: 0.3,
-            topP: 0.5,
+            topP: 0.95,
         },
     },
     balanced: {
         gemini: {
-            temperature: 0.5,
-            topP: 0.9,
+            temperature: 0.6,
+            topP: 0.95,
         },
     },
     creative: {
         gemini: {
             temperature: 0.8,
-            topP: 0.95,
+            topP: 0.98,
         },
     },
 };
