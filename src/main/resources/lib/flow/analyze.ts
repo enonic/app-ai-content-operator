@@ -166,10 +166,11 @@ function createAnalysisMessages(prompt: string, messages: Message[]): Message[] 
 }
 
 function createAnalysisPrompt({prompt, instructions, meta, fields}: GenerateMessagePayload): string {
+    const topic = fields[toFieldPath(SPECIAL_NAMES.topic)]?.value;
     return [
         createPromptRequest(prompt),
         createPromptInstructions(instructions ?? ''),
-        createPromptMetadata(meta.language, meta.contentPath),
+        createPromptMetadata(meta.language, meta.contentPath, topic ? String(topic) : undefined),
         createPromptFields(fields),
         createPromptContent(fields),
     ].join('\n\n');
@@ -183,8 +184,8 @@ function createPromptInstructions(instructions: string): string {
     return `# Instructions\n${instructions}`;
 }
 
-function createPromptMetadata(language: string, contentPath: string): string {
-    return `# Metadata\n- Language: ${language}\n- Content path: ${contentPath}`;
+function createPromptMetadata(language: string, contentPath: string, topic: Optional<string>): string {
+    return `# Metadata\n- Language: ${language}\n- Content path: ${contentPath}${topic ? `\n- Topic: ${topic}` : ''}`;
 }
 
 function createPromptFields(fields: Record<string, DataEntry>): string {
