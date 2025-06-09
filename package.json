@@ -31,7 +31,7 @@
         "react-dom": "^19.1.0",
         "react-draggable": "^4.4.6",
         "react-i18next": "^15.5.1",
-        "slate": "^0.114.0",
+        "slate": "^0.115.1",
         "slate-history": "^0.113.1",
         "slate-react": "^0.114.2",
         "tailwind-merge": "^3.3.0",
