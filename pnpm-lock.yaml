@@ -73,8 +73,8 @@ importers:
         specifier: ^7.15.2
         version: 7.15.2
       '@enonic-types/lib-task':
-        specifier: ^7.15.1
-        version: 7.15.1
+        specifier: ^7.15.2
+        version: 7.15.2
       '@enonic-types/lib-websocket':
         specifier: ^7.15.1
         version: 7.15.1
@@ -463,8 +463,8 @@ packages:
   '@enonic-types/lib-auth@7.15.2':
     resolution: {integrity: sha512-45EU3x7yPv1B5gPny57J3ISoj8ipTrGyxrfqICgHJ7jSd6a0eRkm6BIViMj+EC3dh/zYjeJvgwvDcnri7iVDCw==}
 
-  '@enonic-types/lib-task@7.15.1':
-    resolution: {integrity: sha512-tcVICVX+1GoQJTX3F8oSqA7O4xA/i9myxrIL7GALVX+COzQQozLK7y5yZL41UBgn1KgJARU6qMD56CNEvms+lQ==}
+  '@enonic-types/lib-task@7.15.2':
+    resolution: {integrity: sha512-fJTdid6l47iIUPS7I928ai0iDxCQ1BUrVNXrpmvV5KvrvvCYVieISbHXIsdYrNuRH6fQLbdcSj1pkvgDxkS+gg==}
 
   '@enonic-types/lib-websocket@7.15.1':
     resolution: {integrity: sha512-1wxyDS2V6pOQ2FnLXIYI7GmCrA/JsgbsLTLpT8YAgo3kj+5go+xA0WVt8rmfFhTdDzwa671qS+5RrcJvBSiwIg==}
@@ -4499,9 +4499,9 @@ snapshots:
     dependencies:
       '@enonic-types/core': 7.15.2
 
-  '@enonic-types/lib-task@7.15.1':
+  '@enonic-types/lib-task@7.15.2':
     dependencies:
-      '@enonic-types/core': 7.15.1
+      '@enonic-types/core': 7.15.2
 
   '@enonic-types/lib-websocket@7.15.1': {}
 
