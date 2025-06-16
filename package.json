@@ -46,7 +46,7 @@
         "@enonic/esbuild-plugin-copy-with-hash": "^0.2.0",
         "@enonic/eslint-config": "^1.2.1",
         "@google/generative-ai": "^0.24.1",
-        "@swc/core": "^1.11.31",
+        "@swc/core": "^1.12.1",
         "@swc/jest": "^0.2.38",
         "@tailwindcss/typography": "^0.5.16",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
