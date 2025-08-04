@@ -29,7 +29,7 @@
         "nanostores": "^1.0.1",
         "react": "^19.1.1",
         "react-dom": "^19.1.0",
-        "react-draggable": "^4.4.6",
+        "react-draggable": "^4.5.0",
         "react-i18next": "^15.6.1",
         "slate": "^0.117.0",
         "slate-history": "^0.113.1",
