@@ -20,7 +20,7 @@
     "dependencies": {
         "@nanostores/react": "^1.0.0",
         "clsx": "^2.1.1",
-        "i18next": "^25.3.2",
+        "i18next": "^25.3.4",
         "i18next-http-backend": "^3.0.2",
         "lodash.debounce": "^4.0.8",
         "lodash.isequal": "^4.5.0",
