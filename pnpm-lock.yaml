@@ -70,8 +70,8 @@ importers:
         specifier: ^7.15.3
         version: 7.15.3
       '@enonic-types/lib-auth':
-        specifier: ^7.15.3
-        version: 7.15.3
+        specifier: ^7.15.4
+        version: 7.15.4
       '@enonic-types/lib-task':
         specifier: ^7.15.3
         version: 7.15.3
@@ -485,8 +485,8 @@ packages:
   '@enonic-types/global@7.15.3':
     resolution: {integrity: sha512-uNwf385MBsHopmdXpiyZiZF5u26shaeyQA9feOJ48GBwR1Lh2lu6A4mGC6NUGxaloOgZdQHOgZtPkMb505Km9g==}
 
-  '@enonic-types/lib-auth@7.15.3':
-    resolution: {integrity: sha512-42zyLf7ZFvmyOelwhGbDg5n1IroEN4cfFwEBopiv/X5FxbGowFFHCOLoCF47AZ6qO7OdWlv5eq4fH3hmJyQjrw==}
+  '@enonic-types/lib-auth@7.15.4':
+    resolution: {integrity: sha512-Ct5ovpbB4Kk6CN4Ya+kZyKdeHMGvoqbImCifLa0ShX6Oe9vOW+yAVpya9PO6BDInbfXExnsKA5YhtdyZHhG2uQ==}
 
   '@enonic-types/lib-task@7.15.3':
     resolution: {integrity: sha512-tbe0AiVQyUkJVVMHdlWTcVqEzxHAHU2NV3EwfV6LBMIZtWqDYdm7HdCBVYEepeOrR/1sNYRuPT5u4Y0jb4gBnw==}
@@ -4542,9 +4542,9 @@ snapshots:
     dependencies:
       '@enonic-types/core': 7.15.3
 
-  '@enonic-types/lib-auth@7.15.3':
+  '@enonic-types/lib-auth@7.15.4':
     dependencies:
-      '@enonic-types/core': 7.15.3
+      '@enonic-types/core': 7.15.4
 
   '@enonic-types/lib-task@7.15.3':
     dependencies:
