@@ -73,8 +73,8 @@ importers:
         specifier: ^7.15.3
         version: 7.15.3
       '@enonic-types/lib-task':
-        specifier: ^7.15.3
-        version: 7.15.3
+        specifier: ^7.15.4
+        version: 7.15.4
       '@enonic-types/lib-websocket':
         specifier: ^7.15.4
         version: 7.15.4
@@ -488,8 +488,8 @@ packages:
   '@enonic-types/lib-auth@7.15.3':
     resolution: {integrity: sha512-42zyLf7ZFvmyOelwhGbDg5n1IroEN4cfFwEBopiv/X5FxbGowFFHCOLoCF47AZ6qO7OdWlv5eq4fH3hmJyQjrw==}
 
-  '@enonic-types/lib-task@7.15.3':
-    resolution: {integrity: sha512-tbe0AiVQyUkJVVMHdlWTcVqEzxHAHU2NV3EwfV6LBMIZtWqDYdm7HdCBVYEepeOrR/1sNYRuPT5u4Y0jb4gBnw==}
+  '@enonic-types/lib-task@7.15.4':
+    resolution: {integrity: sha512-grbvVIz5AUndMjgA8ymXcZPpFU0sZrEIq7cTZrG+KlSn7WcEr5DMDGh/WJWgLyFY4OBom/dSynmXeC4Ea4N89A==}
 
   '@enonic-types/lib-websocket@7.15.4':
     resolution: {integrity: sha512-5esfAGNRsvVDh4ByCwMVf2o+ik5Aook6PEB/oMa0Ai/zPaQyxU8FrOE8ObRMYo14IhmHZuTZL2flpSfLgXbM0g==}
@@ -4531,9 +4531,9 @@ snapshots:
     dependencies:
       '@enonic-types/core': 7.15.3
 
-  '@enonic-types/lib-task@7.15.3':
+  '@enonic-types/lib-task@7.15.4':
     dependencies:
-      '@enonic-types/core': 7.15.3
+      '@enonic-types/core': 7.15.4
 
   '@enonic-types/lib-websocket@7.15.4': {}
 
