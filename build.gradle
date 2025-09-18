@@ -25,7 +25,7 @@ apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
 
 dependencies {
-    include "com.google.auth:google-auth-library-oauth2-http:1.39.0"
+    include "com.google.auth:google-auth-library-oauth2-http:1.39.1"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-websocket:${xpVersion}"
     include "com.enonic.xp:lib-task:${xpVersion}"
