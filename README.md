@@ -1,30 +1,56 @@
 # Juke AI: Content Operator
 
-Content Operator, one of the Enonic Juke AI skills, is crafted to optimize and elevate your daily workflows using cutting-edge Large Language Models. Whether you're looking for assistance with content creation, data analysis, or digital task management, Juke AI offers comprehensive support to enhance your efficiency and productivity.
+Content Operator is the main application for providing access to Enonic's AI universe. It is crafted to optimize and elevate your daily workflows using cutting-edge Large Language Models. Juke AI offers comprehensive support to enhance your efficiency and productivity.
 
 ## Installation
 
 ```shell
-./gradlew deploy
+enonic project deploy
 ```
+
+## Requirements
+
+This applications relies on access to the Google Cloud Vertex API which provides a range of different AI models. 
+
+> [!NOTE]
+> Enonic will provision access to AI services for subscription customers without any additional charge, please get in touch. [Create a support ticket](https://support.enonic.com)
+
 
 ## Configuration
 
-### 1. Google Service Account Key (SAK)
+### Create Google Cloud Service Account
 
-In order to use this application, you need to obtain a Google Service Account Key (SAK) in JSON format and have it accessible in your file system. [Contact us](https://www.enonic.com/company/contact-us) if you need assistance with this step.
+You will need a valid Google Service Account Key (SAK) in JSON format and store it in your XP configuration. 
 
-### 2. Application Configuration
 
-1. **Create the Configuration File**
+1. **Activate Vertex API**
 
-    Create a configuration file in the `$XP_HOME/config` directory named `com.enonic.app.ai.contentoperator.cfg`.
+    In Google Cloud console. Search for and activate the Google Vertex API
 
-2. **Add the Following Properties**
+2. **Create Service Account**
 
-  - `google.api.sak.path`: Path to the Google Service Account Key (SAK) file on your system. Use Unix-style paths or properly escape backslashes.
+    From the Google cloud IAM. Create a service account and make sure it has the role `Vertex AI User (roles/aiplatform.user)` 
 
-## Configuration File
+3. **Create a Service Account Key (SAK)**
+
+    Using your Service Account, create a new Service Account Key. The key will download automatically to your local machine.
+
+
+### Configure the application
+
+1. **Upload SAK**
+
+    Place it in your `$XP_HOME/config` directory, or a subdirectory 
+
+2. **Create an app configuration file**
+
+    Place the file `com.enonic.app.ai.contentoperator.cfg` in your `$XP_HOME/config` directory.
+    Add a configuration value `google.api.sak.path : <Path to the Google Service Account Key (SAK) file>` within the config file
+
+    > Use Unix-style paths or properly escape backslashes for windows system
+
+
+## Example config file
 
 `com.enonic.app.ai.contentoperator.cfg (sample)`
 ```properties
