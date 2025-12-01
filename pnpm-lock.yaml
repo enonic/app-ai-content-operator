@@ -131,7 +131,7 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.9.3)
       '@vitejs/plugin-react':
         specifier: ^5.1.1
-        version: 5.1.1(vite@7.2.4(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0))
+        version: 5.1.1(vite@7.2.6(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0))
       autoprefixer:
         specifier: ^10.4.22
         version: 10.4.22(postcss@8.5.6)
@@ -178,11 +178,11 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.2.4
-        version: 7.2.4(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0)
+        specifier: ^7.2.6
+        version: 7.2.6(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0)
       vite-plugin-environment:
         specifier: ^1.1.3
-        version: 1.1.3(vite@7.2.4(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0))
+        version: 1.1.3(vite@7.2.6(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0))
 
 packages:
 
@@ -3824,8 +3824,8 @@ packages:
     peerDependencies:
       vite: '>= 2.7'
 
-  vite@7.2.4:
-    resolution: {integrity: sha512-NL8jTlbo0Tn4dUEXEsUg8KeyG/Lkmc4Fnzb8JXN/Ykm9G4HNImjtABMJgkQoVjOBN/j2WAwDTRytdqJbZsah7w==}
+  vite@7.2.6:
+    resolution: {integrity: sha512-tI2l/nFHC5rLh7+5+o7QjKjSR04ivXDF4jcgV0f/bTQ+OJiITy5S6gaynVsEM+7RqzufMnVbIon6Sr5x1SDYaQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -5176,7 +5176,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vitejs/plugin-react@5.1.1(vite@7.2.4(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0))':
+  '@vitejs/plugin-react@5.1.1(vite@7.2.6(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -5184,7 +5184,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.47
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.2.4(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0)
+      vite: 7.2.6(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -8219,11 +8219,11 @@ snapshots:
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
 
-  vite-plugin-environment@1.1.3(vite@7.2.4(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0)):
+  vite-plugin-environment@1.1.3(vite@7.2.6(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0)):
     dependencies:
-      vite: 7.2.4(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0)
+      vite: 7.2.6(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0)
 
-  vite@7.2.4(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0):
+  vite@7.2.6(@types/node@24.6.0)(jiti@1.21.7)(yaml@2.5.0):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
