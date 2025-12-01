@@ -76,8 +76,8 @@ importers:
         specifier: ^7.15.4
         version: 7.15.4
       '@enonic-types/lib-websocket':
-        specifier: ^7.15.4
-        version: 7.15.4
+        specifier: ^7.16.0
+        version: 7.16.0
       '@enonic/esbuild-plugin-copy-with-hash':
         specifier: ^0.2.0
         version: 0.2.0(esbuild@0.27.0)
@@ -426,8 +426,8 @@ packages:
   '@enonic-types/lib-task@7.15.4':
     resolution: {integrity: sha512-grbvVIz5AUndMjgA8ymXcZPpFU0sZrEIq7cTZrG+KlSn7WcEr5DMDGh/WJWgLyFY4OBom/dSynmXeC4Ea4N89A==}
 
-  '@enonic-types/lib-websocket@7.15.4':
-    resolution: {integrity: sha512-5esfAGNRsvVDh4ByCwMVf2o+ik5Aook6PEB/oMa0Ai/zPaQyxU8FrOE8ObRMYo14IhmHZuTZL2flpSfLgXbM0g==}
+  '@enonic-types/lib-websocket@7.16.0':
+    resolution: {integrity: sha512-s9awtuWOvvSsdDn9q7y6uOEAbt1I7A8dhpIMixr7hZBffNH0y1hPE3csHD+E0wYH4EiKbx3jtVz38+qF4uRlqg==}
 
   '@enonic/esbuild-plugin-copy-with-hash@0.2.0':
     resolution: {integrity: sha512-2KX60dKlPx5Q7d3Jz+23hekbHrCTZzvlZC4U+rLZiP3GMbumEq5lmocw5XKLNTvHtRwNlUze+3TwiXSCD46EeA==}
@@ -4254,7 +4254,7 @@ snapshots:
     dependencies:
       '@enonic-types/core': 7.15.4
 
-  '@enonic-types/lib-websocket@7.15.4': {}
+  '@enonic-types/lib-websocket@7.16.0': {}
 
   '@enonic/esbuild-plugin-copy-with-hash@0.2.0(esbuild@0.27.0)':
     dependencies:
