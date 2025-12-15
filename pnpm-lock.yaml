@@ -67,8 +67,8 @@ importers:
         specifier: ^7.16.1
         version: 7.16.1
       '@enonic-types/global':
-        specifier: ^7.16.0
-        version: 7.16.0
+        specifier: ^7.16.1
+        version: 7.16.1
       '@enonic-types/lib-auth':
         specifier: ^7.16.1
         version: 7.16.1
@@ -414,14 +414,11 @@ packages:
   '@emnapi/wasi-threads@1.0.4':
     resolution: {integrity: sha512-PJR+bOmMOPH8AtcTGAyYNiuJ3/Fcoj2XN/gBEWzDIKh254XO+mM9XoXHk5GNEhodxeMznbg7BlRojVbKN+gC6g==}
 
-  '@enonic-types/core@7.16.0':
-    resolution: {integrity: sha512-TuuXP8vT3mlCAScuevpagzRwyt4DnygaJ1v3bF0mZY/OdO/U5YpaRukmjINyLIsgCwtC+ztwwy+TnOabhYFHPQ==}
-
   '@enonic-types/core@7.16.1':
     resolution: {integrity: sha512-wd5St7YUVZnsl062JpMZ7Jh7j/HleiwUAaAwx+6BmuRRL9ff1XKU00c50HG6JyqEM5FGFENCgdxC1I75vgGrPQ==}
 
-  '@enonic-types/global@7.16.0':
-    resolution: {integrity: sha512-qW31TGeHhT57ZvUHhpUsZpIII7KzTH4/nzLSzmZH01elQkaRuXBBKhXyb3zwd8dqkJePnM8snFtil/rqZNoPhg==}
+  '@enonic-types/global@7.16.1':
+    resolution: {integrity: sha512-oXutWvnZDLeZ6yMNOQ4WKyqeoyNwJmaKWnX510+kROKfrgPzzt0rj96Kx7AQ6J89FAcFL5PBfBODkuFmiTtBng==}
 
   '@enonic-types/lib-auth@7.16.1':
     resolution: {integrity: sha512-lUGmVbdLI8vfPzCCZ6YqURHqQKt5JbgV8cG01+pZyZToiJfREYWCFQkgVArAIYpkONHmZIFpB/B8IZAhxm0CNQ==}
@@ -4228,13 +4225,11 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@enonic-types/core@7.16.0': {}
-
   '@enonic-types/core@7.16.1': {}
 
-  '@enonic-types/global@7.16.0':
+  '@enonic-types/global@7.16.1':
     dependencies:
-      '@enonic-types/core': 7.16.0
+      '@enonic-types/core': 7.16.1
 
   '@enonic-types/lib-auth@7.16.1':
     dependencies:
