@@ -64,8 +64,8 @@ importers:
         version: 3.5.4(postcss@8.5.6)(tailwindcss@3.4.18(yaml@2.5.0))
     devDependencies:
       '@enonic-types/core':
-        specifier: ^7.16.0
-        version: 7.16.0
+        specifier: ^7.16.1
+        version: 7.16.1
       '@enonic-types/global':
         specifier: ^7.16.0
         version: 7.16.0
@@ -416,6 +416,9 @@ packages:
 
   '@enonic-types/core@7.16.0':
     resolution: {integrity: sha512-TuuXP8vT3mlCAScuevpagzRwyt4DnygaJ1v3bF0mZY/OdO/U5YpaRukmjINyLIsgCwtC+ztwwy+TnOabhYFHPQ==}
+
+  '@enonic-types/core@7.16.1':
+    resolution: {integrity: sha512-wd5St7YUVZnsl062JpMZ7Jh7j/HleiwUAaAwx+6BmuRRL9ff1XKU00c50HG6JyqEM5FGFENCgdxC1I75vgGrPQ==}
 
   '@enonic-types/global@7.16.0':
     resolution: {integrity: sha512-qW31TGeHhT57ZvUHhpUsZpIII7KzTH4/nzLSzmZH01elQkaRuXBBKhXyb3zwd8dqkJePnM8snFtil/rqZNoPhg==}
@@ -4256,6 +4259,8 @@ snapshots:
     optional: true
 
   '@enonic-types/core@7.16.0': {}
+
+  '@enonic-types/core@7.16.1': {}
 
   '@enonic-types/global@7.16.0':
     dependencies:
