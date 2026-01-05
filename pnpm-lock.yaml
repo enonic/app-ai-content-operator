@@ -60,8 +60,8 @@ importers:
         specifier: ^3.4.0
         version: 3.4.0
       tailwindcss-scoped-preflight:
-        specifier: ^3.5.4
-        version: 3.5.4(postcss@8.5.6)(tailwindcss@3.4.19(yaml@2.5.0))
+        specifier: ^3.5.7
+        version: 3.5.7(postcss@8.5.6)(tailwindcss@3.4.19(yaml@2.5.0))
     devDependencies:
       '@enonic-types/core':
         specifier: ^7.16.1
@@ -3721,8 +3721,8 @@ packages:
   tailwind-merge@3.4.0:
     resolution: {integrity: sha512-uSaO4gnW+b3Y2aWoWfFpX62vn2sR3skfhbjsEnaBI81WD1wBLlHZe5sWf0AqjksNdYTbGBEd0UasQMT3SNV15g==}
 
-  tailwindcss-scoped-preflight@3.5.4:
-    resolution: {integrity: sha512-fTb000/8BxNBuu6/jlws+pDbLfjVABR53BzhZovlYwBBCyzbgefeEAv7311WEpWrbJENv1LsdY3iWWVu2Bb7Vw==}
+  tailwindcss-scoped-preflight@3.5.7:
+    resolution: {integrity: sha512-+TXhksi7Ac6aCH0w9fk5eEHRvAwOaVP57JwkMSvIhhxTggFu5rdMIy83xImJ+jQYPE9nbQQEl34G2Ka8g+zrDg==}
     peerDependencies:
       postcss: ^8
       tailwindcss: ^3
@@ -3982,6 +3982,7 @@ packages:
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
@@ -8113,7 +8114,7 @@ snapshots:
 
   tailwind-merge@3.4.0: {}
 
-  tailwindcss-scoped-preflight@3.5.4(postcss@8.5.6)(tailwindcss@3.4.19(yaml@2.5.0)):
+  tailwindcss-scoped-preflight@3.5.7(postcss@8.5.6)(tailwindcss@3.4.19(yaml@2.5.0)):
     dependencies:
       postcss: 8.5.6
       tailwindcss: 3.4.19(yaml@2.5.0)
