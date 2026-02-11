@@ -28,3 +28,7 @@ package-lock.json
 .gradle/
 
 tmp.*
+
+# AI Assistant
+.claude/plans/
+settings.local.json
