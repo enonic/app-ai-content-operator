@@ -1,12 +1,9 @@
-import type {Content, GenerateContentRequest, POSSIBLE_ROLES} from '@google/generative-ai';
-
 import {HarmBlockThreshold, HarmCategory} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
 import {generateCandidate} from '../google/api/generate';
+import type {Content, GenerateContentRequest, Role} from '../google/types';
 import {logDebug, LogDebugGroups} from '../logger';
 import {ModelProxy, ModelProxyConfig} from './model';
-
-type Role = (typeof POSSIBLE_ROLES)[number];
 
 export class GeminiProxy implements ModelProxy {
     private readonly config: ModelProxyConfig;

@@ -1,9 +1,8 @@
-import type {GenerateContentRequest, GenerateContentResponse, ResponseSchema} from '@google/generative-ai';
-
 import {ERRORS} from '../../../shared/errors';
 import {ModelResponseGenerateData} from '../../../shared/model';
 import {logDebug, LogDebugGroups} from '../../logger';
 import {parseResponse, sendPostRequest} from '../client';
+import type {GenerateContentRequest, GenerateContentResponse, ResponseSchema} from '../types';
 
 export type GenerationMeta = {
     instructions: string;
@@ -40,7 +39,7 @@ export function generateCandidate(url: string, params: GenerateContentRequest): 
         return [null, ERRORS.GOOGLE_CANDIDATES_EMPTY];
     }
 
-    const text = content.content?.parts.map(({text}) => text).join('') ?? '';
+    const text = content.content?.parts?.map(({text}) => text).join('') ?? '';
     const data: ModelResponseGenerateData = {
         content: text,
         finishReason: content.finishReason,

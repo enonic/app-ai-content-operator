@@ -9,7 +9,7 @@ export const SPECIAL_KEYS = {
     error: '__error__',
 } as const;
 
-// Due to inability to import enums from @google/generative-ai (since non type imports are not compatible to ), we need to define them manually.
+// Due to inability to import enums from @google/genai (since non type imports are not compatible), we need to define them manually.
 export enum HarmBlockThreshold {
     HARM_BLOCK_THRESHOLD_UNSPECIFIED = 'HARM_BLOCK_THRESHOLD_UNSPECIFIED',
     BLOCK_LOW_AND_ABOVE = 'BLOCK_LOW_AND_ABOVE',
@@ -24,6 +24,7 @@ export enum HarmCategory {
     HARM_CATEGORY_SEXUALLY_EXPLICIT = 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
     HARM_CATEGORY_HARASSMENT = 'HARM_CATEGORY_HARASSMENT',
     HARM_CATEGORY_DANGEROUS_CONTENT = 'HARM_CATEGORY_DANGEROUS_CONTENT',
+    HARM_CATEGORY_CIVIC_INTEGRITY = 'HARM_CATEGORY_CIVIC_INTEGRITY',
 }
 
 export enum HarmProbability {
