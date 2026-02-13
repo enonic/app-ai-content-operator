@@ -16,7 +16,6 @@ declare interface ServiceAccountKeyHandler {
     getProjectId(serviceAccountKeyPath: string): string;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 interface XpBeans {
     'com.enonic.app.ai.contentoperator.google.ServiceAccountKeyHandler': ServiceAccountKeyHandler;
 }

@@ -17,7 +17,7 @@ export function pathToMention(item: FormItemWithPath): Mention {
     };
 }
 
-export function getPropertyArrayByPath(properties: ReadonlyArray<PropertyArray>, path: Path): Optional<PropertyArray> {
+export function getPropertyArrayByPath(properties: readonly PropertyArray[], path: Path): Optional<PropertyArray> {
     const pathElements = [...path.elements];
     const pathElement = pathElements.shift();
 

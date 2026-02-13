@@ -95,7 +95,7 @@ function parseErrorMessage(response: HttpClientResponse): Optional<string> {
         }
         const {error} = (JSON.parse(response.body) ?? {error: {message: ''}}) as GoogleErrorResponseBody;
         return error.message;
-    } catch (e) {
+    } catch (_e) {
         return null;
     }
 }

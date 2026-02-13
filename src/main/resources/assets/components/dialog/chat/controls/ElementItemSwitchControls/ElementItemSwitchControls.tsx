@@ -5,12 +5,12 @@ import {changeModelMessageSelectedIndex} from '../../../../../stores/chat';
 import {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
 import ActionButton from '../../../../base/ActionButton/ActionButton';
 
-export interface Props {
+export type Props = {
     className?: string;
     messageId: string;
     name: string;
     content: MultipleValues;
-}
+};
 
 export default function ElementItemSwitchControls({className, messageId, name, content}: Props): React.ReactNode {
     const {t} = useTranslation();
