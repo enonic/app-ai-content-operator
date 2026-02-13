@@ -15,7 +15,7 @@ function mapLocale(locale: string): Optional<string> {
             return language;
         }
         return language === 'nb' ? 'no' : language;
-    } catch (e) {
+    } catch (_e) {
         return undefined;
     }
 }

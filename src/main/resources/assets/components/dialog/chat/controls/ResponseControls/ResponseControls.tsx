@@ -16,11 +16,11 @@ import ApplyAllControl from '../ApplyAllControl/ApplyAllControl';
 import MessageSwitchControls from '../MessageSwitchControls/MessageSwitchControls';
 import RetryControl from '../RetryControl/RetryControl';
 
-export interface Props {
+export type Props = {
     className?: string;
     message: ModelChatMessage | SystemChatMessage;
     last: boolean;
-}
+};
 
 function canApplyAnyContent(message: ModelChatMessage | SystemChatMessage): message is ModelChatMessage {
     if (message.role !== MessageRole.MODEL || message.content.generationResult == null) {

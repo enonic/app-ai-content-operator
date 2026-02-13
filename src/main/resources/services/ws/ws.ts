@@ -133,7 +133,7 @@ function handleMessage(event: Enonic.WebSocketEvent): void {
 function parseMessage(message: Optional<string>): Optional<ClientMessage> {
     try {
         return message != null ? (JSON.parse(message) as ClientMessage) : undefined;
-    } catch (e) {
+    } catch (_e) {
         return undefined;
     }
 }

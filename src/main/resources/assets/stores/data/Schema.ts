@@ -1,9 +1,9 @@
-export interface Schema {
+export type Schema = {
     name: string;
     form: {
         formItems: FormItem[];
     };
-}
+};
 
 export type FormItem = FieldSet | FormItemSet | FormOptionSet | Input | FormOptionSetOption;
 

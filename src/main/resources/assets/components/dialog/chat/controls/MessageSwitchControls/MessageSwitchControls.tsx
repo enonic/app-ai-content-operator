@@ -4,11 +4,11 @@ import {twJoin, twMerge} from 'tailwind-merge';
 import {markMessageAsActive} from '../../../../../stores/chat';
 import ActionButton from '../../../../base/ActionButton/ActionButton';
 
-export interface Props {
+export type Props = {
     className?: string;
     ids: string[];
     selectedId: string;
-}
+};
 
 export default function MessageSwitchControls({className, ids, selectedId}: Props): React.ReactNode {
     const {t} = useTranslation();
