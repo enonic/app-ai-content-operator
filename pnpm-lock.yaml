@@ -57,8 +57,8 @@ importers:
         specifier: ^0.114.2
         version: 0.114.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(slate-dom@0.111.0(slate@0.123.0))(slate@0.123.0)
       tailwind-merge:
-        specifier: ^3.4.0
-        version: 3.4.0
+        specifier: ^3.4.1
+        version: 3.4.1
       tailwindcss-scoped-preflight:
         specifier: ^3.5.7
         version: 3.5.7(postcss@8.5.6)(tailwindcss@3.4.19(yaml@2.5.0))
@@ -3869,8 +3869,8 @@ packages:
     resolution: {integrity: sha512-MeQTA1r0litLUf0Rp/iisCaL8761lKAZHaimlbGK4j0HysC4PLfqygQj9srcs0m2RdtDYnF8UuYyKpbjHYp7Jw==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  tailwind-merge@3.4.0:
-    resolution: {integrity: sha512-uSaO4gnW+b3Y2aWoWfFpX62vn2sR3skfhbjsEnaBI81WD1wBLlHZe5sWf0AqjksNdYTbGBEd0UasQMT3SNV15g==}
+  tailwind-merge@3.4.1:
+    resolution: {integrity: sha512-2OA0rFqWOkITEAOFWSBSApYkDeH9t2B3XSJuI4YztKBzK3mX0737A2qtxDZ7xkw9Zfh0bWl+r34sF3HXV+Ig7Q==}
 
   tailwindcss-scoped-preflight@3.5.7:
     resolution: {integrity: sha512-+TXhksi7Ac6aCH0w9fk5eEHRvAwOaVP57JwkMSvIhhxTggFu5rdMIy83xImJ+jQYPE9nbQQEl34G2Ka8g+zrDg==}
@@ -8452,7 +8452,7 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.2.9
 
-  tailwind-merge@3.4.0: {}
+  tailwind-merge@3.4.1: {}
 
   tailwindcss-scoped-preflight@3.5.7(postcss@8.5.6)(tailwindcss@3.4.19(yaml@2.5.0)):
     dependencies:
