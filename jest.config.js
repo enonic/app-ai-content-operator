@@ -11,6 +11,7 @@ export default {
                 '^.+\\.m?[tj]s?$': '@swc/jest',
             },
             testMatch: ['<rootDir>/src/**/*(*.)@(spec|test).ts?(x)'],
+            transformIgnorePatterns: ['node_modules/.pnpm/(?!(p-retry|is-network-error))'],
             testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '/src/main/resources/assets/'],
             setupFilesAfterEnv: ['./tests/jest.node.setup.ts'],
             moduleNameMapper: {
