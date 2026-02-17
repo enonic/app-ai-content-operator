@@ -112,7 +112,6 @@ tasks.register('pnpmBuild', PnpmTask ) {
 processResources {
     include '**/*'
     exclude '**/tsconfig*.json'
-    exclude '**/.eslintrc.cjs'
     exclude '**/*.ts'
     exclude '**/*.tsx'
     exclude '**/assets/styles/**/*'
