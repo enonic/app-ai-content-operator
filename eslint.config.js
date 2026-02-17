@@ -20,6 +20,7 @@ export default tseslint.config(
     // === Server TS overrides ===
     {
         files: ['**/*.ts', '**/*.tsx'],
+        ignores: CLIENT_FILES,
         languageOptions: {
             parserOptions: {project: './tsconfig.json'},
         },
