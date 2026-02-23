@@ -67,8 +67,8 @@ importers:
         specifier: ^7.16.2
         version: 7.16.2
       '@enonic-types/global':
-        specifier: ^7.16.1
-        version: 7.16.1
+        specifier: ^7.16.2
+        version: 7.16.2
       '@enonic-types/lib-auth':
         specifier: ^7.16.1
         version: 7.16.1
@@ -447,8 +447,8 @@ packages:
   '@enonic-types/core@7.16.2':
     resolution: {integrity: sha512-rOhH1Xh2u7Nt/4SYsQbPn8uc/GxM5tciYNYTN8+Grn/YMM71abaBiC/zb9c2KY37lZOoLRWbelZrLp/SpaDtHw==}
 
-  '@enonic-types/global@7.16.1':
-    resolution: {integrity: sha512-oXutWvnZDLeZ6yMNOQ4WKyqeoyNwJmaKWnX510+kROKfrgPzzt0rj96Kx7AQ6J89FAcFL5PBfBODkuFmiTtBng==}
+  '@enonic-types/global@7.16.2':
+    resolution: {integrity: sha512-0re7HPPYw/PduCMt/WkgUBVqx9W2gDwwOWyoeM5nrl5GmKRxZLiXu9spWSRz5TAk6wDp2HUBRxbdna9frWueuQ==}
 
   '@enonic-types/lib-auth@7.16.1':
     resolution: {integrity: sha512-lUGmVbdLI8vfPzCCZ6YqURHqQKt5JbgV8cG01+pZyZToiJfREYWCFQkgVArAIYpkONHmZIFpB/B8IZAhxm0CNQ==}
@@ -4591,9 +4591,9 @@ snapshots:
 
   '@enonic-types/core@7.16.2': {}
 
-  '@enonic-types/global@7.16.1':
+  '@enonic-types/global@7.16.2':
     dependencies:
-      '@enonic-types/core': 7.16.1
+      '@enonic-types/core': 7.16.2
 
   '@enonic-types/lib-auth@7.16.1':
     dependencies:
