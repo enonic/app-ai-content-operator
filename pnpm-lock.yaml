@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@nanostores/react':
         specifier: ^1.0.0
-        version: 1.0.0(nanostores@1.1.0)(react@19.2.4)
+        version: 1.0.0(nanostores@1.1.1)(react@19.2.4)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -33,8 +33,8 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6
       nanostores:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.1.1
+        version: 1.1.1
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -3258,8 +3258,8 @@ packages:
     engines: {node: ^18 || >=20}
     hasBin: true
 
-  nanostores@1.1.0:
-    resolution: {integrity: sha512-yJBmDJr18xy47dbNVlHcgdPrulSn1nhSE6Ns9vTG+Nx9VPT6iV1MD6aQFp/t52zpf82FhLLTXAXr30NuCnxvwA==}
+  nanostores@1.1.1:
+    resolution: {integrity: sha512-EYJqS25r2iBeTtGQCHidXl1VfZ1jXM7Q04zXJOrMlxVVmD0ptxJaNux92n1mJ7c5lN3zTq12MhH/8x59nP+qmg==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   napi-postinstall@0.3.2:
@@ -5094,9 +5094,9 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@nanostores/react@1.0.0(nanostores@1.1.0)(react@19.2.4)':
+  '@nanostores/react@1.0.0(nanostores@1.1.1)(react@19.2.4)':
     dependencies:
-      nanostores: 1.1.0
+      nanostores: 1.1.1
       react: 19.2.4
 
   '@napi-rs/wasm-runtime@0.2.12':
@@ -7803,7 +7803,7 @@ snapshots:
 
   nanoid@5.1.6: {}
 
-  nanostores@1.1.0: {}
+  nanostores@1.1.1: {}
 
   napi-postinstall@0.3.2: {}
 
