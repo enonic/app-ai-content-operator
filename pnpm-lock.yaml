@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@nanostores/react':
-        specifier: ^1.0.0
-        version: 1.0.0(nanostores@1.2.0)(react@19.2.4)
+        specifier: ^1.1.0
+        version: 1.1.0(nanostores@1.2.0)(react@19.2.4)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -998,11 +998,11 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
-  '@nanostores/react@1.0.0':
-    resolution: {integrity: sha512-eDduyNy+lbQJMg6XxZ/YssQqF6b4OXMFEZMYKPJCCmBevp1lg0g+4ZRi94qGHirMtsNfAWKNwsjOhC+q1gvC+A==}
+  '@nanostores/react@1.1.0':
+    resolution: {integrity: sha512-MbH35fjhcf7LAubYX5vhOChYUfTLzNLqH/mBGLVsHkcvjy0F8crO1WQwdmQ2xKbAmtpalDa2zBt3Hlg5kqr8iw==}
     engines: {node: ^20.0.0 || >=22.0.0}
     peerDependencies:
-      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
+      nanostores: ^1.2.0
       react: '>=18.0.0'
 
   '@napi-rs/wasm-runtime@0.2.12':
@@ -5139,7 +5139,7 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@nanostores/react@1.0.0(nanostores@1.2.0)(react@19.2.4)':
+  '@nanostores/react@1.1.0(nanostores@1.2.0)(react@19.2.4)':
     dependencies:
       nanostores: 1.2.0
       react: 19.2.4
