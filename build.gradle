@@ -2,21 +2,13 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.6'
-    id 'com.enonic.xp.app' version '3.6.2'
+    id 'com.enonic.xp.app'
     id 'com.github.node-gradle.node' version '7.1.0'
-}
-
-app {
-    name = "${appName}"
-    displayName = "${appDisplayName}"
-    vendorName = "${vendorName}"
-    vendorUrl = "${vendorUrl}"
-    systemVersion = "${xpVersion}"
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -25,13 +17,15 @@ apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
 
 dependencies {
-    include "com.google.auth:google-auth-library-oauth2-http:1.46.0"
-    include "com.enonic.xp:lib-auth:${xpVersion}"
-    include "com.enonic.xp:lib-websocket:${xpVersion}"
-    include "com.enonic.xp:lib-task:${xpVersion}"
-    include "com.enonic.lib:lib-cron:1.1.4"
-    include "com.enonic.lib:lib-http-client:3.2.2"
-    include "com.enonic.lib:lib-license:3.1.0"
+    include libs.google.auth.oauth2
+    include xplibs.auth
+    include xplibs.websocket
+    include xplibs.task
+    include( libs.lib.cron ) {
+        exclude group: 'com.enonic.xp', module: 'lib-common'
+    }
+    include libs.lib.http.client
+    include libs.lib.license
 }
 
 repositories {
