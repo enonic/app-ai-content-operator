@@ -21,9 +21,7 @@ dependencies {
     include xplibs.auth
     include xplibs.websocket
     include xplibs.task
-    include( libs.lib.cron ) {
-        exclude group: 'com.enonic.xp', module: 'lib-common'
-    }
+    include libs.lib.cron
     include libs.lib.http.client
     include libs.lib.license
 }
@@ -32,6 +30,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     xp.enonicRepo()
+    xp.enonicRepo('dev')
 }
 
 tasks.register('pnpmTest', PnpmTask ) {
