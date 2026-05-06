@@ -6,12 +6,6 @@ plugins {
     id 'com.github.node-gradle.node' version '7.1.0'
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
 apply from: "$rootDir/gradle/ci.gradle"
 apply from: "$rootDir/gradle/env.gradle"
 apply from: "$rootDir/gradle/node.gradle"
@@ -21,9 +15,7 @@ dependencies {
     include xplibs.auth
     include xplibs.websocket
     include xplibs.task
-    include( libs.lib.cron ) {
-        exclude group: 'com.enonic.xp', module: 'lib-common'
-    }
+    include libs.lib.cron
     include libs.lib.http.client
     include libs.lib.license
 }
@@ -31,7 +23,7 @@ dependencies {
 repositories {
     mavenLocal()
     mavenCentral()
-    xp.enonicRepo()
+    xp.enonicRepo('dev')
 }
 
 tasks.register('pnpmTest', PnpmTask ) {
