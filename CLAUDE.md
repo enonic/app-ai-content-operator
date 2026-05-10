@@ -1,35 +1,37 @@
-# AI Content Operator
+Enonic XP application. Gradle project: TypeScript, React 19, Tailwind CSS v3.
 
-Enonic XP application. Gradle project: TypeScript, React, Tailwind CSS v3.
+## Scripts
 
-## Commands
+After making changes, run `pnpm run check` to verify nothing is broken.
 
-pnpm scripts (preferred for TS/JS work):
+- **Verify changes**: `pnpm run check`
+- **Lint-fix**: `pnpm run fix`
+- **Run tests**: `pnpm run test`
+- **Build + deploy**: `./gradlew deploy -x test -Penv=dev`
 
-    pnpm run check         # typecheck + lint
-    pnpm run fix           # lint with auto-fix
-    pnpm run format        # format code
-    pnpm run test          # run all tests with coverage
-    pnpm run test:client   # run client (browser) tests only
-    pnpm run test:server   # run server (node) tests only
+Only run Gradle when the task specifically requires it. For most changes, `pnpm run check` is sufficient.
 
-Gradle (full build cycle, or when Java/Gradle config changes):
+## Git & GitHub
 
-    ./gradlew build          # Full build with tests
-    ./gradlew build -x test  # Build without tests
+No conventional commit prefixes. Plain descriptive language throughout.
 
-## Critical Constraints
+### Issues
 
-- React 19 (not Preact)
-- Target: ESNext
-- TypeScript required for all code
-- Client code: `src/main/resources/assets/`
-- Server code: `src/main/resources/lib/`
-- Shared code: `src/main/resources/shared/`
-- Localization: `src/main/resources/assets/i18n/locales/`
-- Build: Vite (client) + tsup (server), orchestrated by Gradle
-- Tailwind CSS scoped under `.ai-content-operator` class
+- **Title**: plain descriptive text — e.g. `Add schedule button to PublishDialog`, `Fix Gemini timeout on large prompts`
+- **Body**: concisely explain what and why, skip trivial details
 
-## External Docs
+### Commits
 
-Use Context7 MCP for React, Tailwind CSS v3, Gradle documentation.
+- **With issue**: `<Issue Title> #<number>` — e.g. `Migrate to ESLint 9 #623`
+- **Without issue**: capitalized plain-English description — e.g. `Fix genai dependencies Jest incompatibility`
+- **Body** (optional): past tense, one line per change, 2–6 lines, backticks for code refs
+
+### Pull Requests
+
+- **Title**: `<Issue Title> #<number>` — matches the commit title
+- **Body**: concisely explain what and why, skip trivial details. No emojis. Separate sections with one blank line.
+  ```
+  <summary of changes>
+
+  Closes #<number>
+  ```
