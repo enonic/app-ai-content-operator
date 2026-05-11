@@ -57,8 +57,8 @@ importers:
         specifier: ^0.114.2
         version: 0.114.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(slate-dom@0.111.0(slate@0.124.1))(slate@0.124.1)
       tailwind-merge:
-        specifier: ^3.5.0
-        version: 3.5.0
+        specifier: ^3.6.0
+        version: 3.6.0
       tailwindcss-scoped-preflight:
         specifier: ^3.5.9
         version: 3.5.9(postcss@8.5.14)(tailwindcss@3.4.19(yaml@2.5.0))
@@ -1636,6 +1636,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
     resolution: {integrity: sha512-ppLRUgHVaGRWUx0R0Ut06Mjo9gBaBkg3v/8AxusGLhsIotbBLuRk51rAzqLC8gq6NyyAojEXglNjzf6R948DNw==}
@@ -4048,8 +4049,8 @@ packages:
     resolution: {integrity: sha512-Bh7QjT8/SuKUIfObSXNHNSK6WHo6J1tHCqJsuaFDP7gP0fkzSfTxI8y85JrppZ0h8l0maIgc2tfuZQ6/t3GtnQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  tailwind-merge@3.5.0:
-    resolution: {integrity: sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A==}
+  tailwind-merge@3.6.0:
+    resolution: {integrity: sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==}
 
   tailwindcss-scoped-preflight@3.5.9:
     resolution: {integrity: sha512-Q1lJssrJ2K96bCj8tocF/HCMy1NwMpFE30is3F4qFAAGfS9XYj6pz8JqfATSEnFhr7D6VAGLMn9apr/yqbSgTQ==}
@@ -8794,7 +8795,7 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.2.9
 
-  tailwind-merge@3.5.0: {}
+  tailwind-merge@3.6.0: {}
 
   tailwindcss-scoped-preflight@3.5.9(postcss@8.5.14)(tailwindcss@3.4.19(yaml@2.5.0)):
     dependencies:
