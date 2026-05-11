@@ -1,6 +1,7 @@
-import {BaseEditor, BasePoint, Editor, Element, Range, Transforms} from 'slate';
+import type {BaseEditor, BasePoint, Element} from 'slate';
+import { Editor, Range, Transforms} from 'slate';
 
-import {Mention} from '../stores/data/Mention';
+import type {Mention} from '../stores/data/Mention';
 
 type MentionSpec = {
     target: Range;
@@ -76,7 +77,7 @@ function getBeforeCharRange(editor: Editor, start: BasePoint): Range | null {
 
     const before = charBefore ? Editor.before(editor, charBefore) : null;
     const rangeBefore = before ? Editor.range(editor, before, charBefore) : null;
-    const hasValidBefore = rangeBefore == null || Editor.string(editor, rangeBefore) == ' ';
+    const hasValidBefore = rangeBefore == null || Editor.string(editor, rangeBefore) === ' ';
 
     return charBefore && hasValidBefore ? Editor.range(editor, charBefore, start) : null;
 }

@@ -5,9 +5,9 @@ import {useTranslation} from 'react-i18next';
 import {dispatchResultApplied} from '../../../../../common/events';
 import {delay} from '../../../../../common/func';
 import {messageContentToValues, pickValue} from '../../../../../common/messages';
-import {ApplyMessage} from '../../../../../stores/data/ApplyMessage';
-import {ModelChatMessageContent} from '../../../../../stores/data/ChatMessage';
-import {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
+import type {ApplyMessage} from '../../../../../stores/data/ApplyMessage';
+import type {ModelChatMessageContent} from '../../../../../stores/data/ChatMessage';
+import type {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
 import ActionButton from '../../../../base/ActionButton/ActionButton';
 
 type Props = {

@@ -5,13 +5,13 @@ import type {DataEntry} from '../../shared/data/DataEntry';
 import {addGlobalUpdateDataHandler} from '../common/events';
 import {MENTION_ALL} from '../common/mentions';
 import {$context, resetContext} from './context';
-import {ContentData, PropertyValue} from './data/ContentData';
-import {UpdateEventData} from './data/EventData';
-import {FieldDescriptor} from './data/FieldDescriptor';
-import {FormItemWithPath, InputWithPath} from './data/FormItemWithPath';
-import {Language} from './data/Language';
-import {Path} from './data/Path';
-import {Schema} from './data/Schema';
+import type {ContentData, PropertyValue} from './data/ContentData';
+import type {UpdateEventData} from './data/EventData';
+import type {FieldDescriptor} from './data/FieldDescriptor';
+import type {FormItemWithPath, InputWithPath} from './data/FormItemWithPath';
+import type {Language} from './data/Language';
+import type {Path} from './data/Path';
+import type {Schema} from './data/Schema';
 import {
     createDisplayNameInput,
     getDataPathsToEditableItems,
@@ -166,16 +166,14 @@ $allFormItemsWithPaths.listen(allFormItemsWithPaths => {
 //
 
 export const $fieldDescriptors = computed($allFormItemsWithPaths, allFormItems => {
-    return [
-        ...allFormItems
+    return allFormItems
             .filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item))
             .map(item => ({
                 name: pathToString(item),
                 label: pathToPrettifiedLabel(item),
                 displayName: pathToPrettifiedString(item),
                 type: getInputType(item),
-            })),
-    ] satisfies FieldDescriptor[];
+            })) satisfies FieldDescriptor[];
 });
 
 export function createFields(): Record<string, DataEntry> {

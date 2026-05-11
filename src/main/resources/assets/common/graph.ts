@@ -53,8 +53,11 @@ export function getReachableNodeIds<T extends GraphNode>(
 
         visited.add(currentId);
 
-        const unvisitedNextIds = new Set(currentNode.nextIds).difference(visited);
-        unvisitedNextIds.forEach(id => stack.push(id));
+        for (const id of currentNode.nextIds) {
+            if (!visited.has(id)) {
+                stack.push(id);
+            }
+        }
     }
 
     return visited;

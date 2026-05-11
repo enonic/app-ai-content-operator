@@ -1,6 +1,6 @@
 import {twMerge} from 'tailwind-merge';
 
-import {DataEntryType} from '../../../../../../shared/data/DataEntry';
+import type {DataEntryType} from '../../../../../../shared/data/DataEntry';
 import LoadingIcon from '../../../../base/LoadingIcon/LoadingIcon';
 
 type Props = {

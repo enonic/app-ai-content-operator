@@ -23,9 +23,13 @@ node_modules/
 
 # Configs
 .eslintcache
+.oxlintcache
 tsconfig.tsbuildinfo
 package-lock.json
 .gradle/
+.vite/
+.vite-cache/
+.vite-hooks/_
 
 tmp.*
 

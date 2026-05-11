@@ -1,8 +1,8 @@
-import {DataEntry} from './data/DataEntry';
-import {LicenseState} from './license';
-import {Message} from './model';
-import {AnalysisResult} from './prompts/analysis';
-import {GenerationResult} from './prompts/generation';
+import type {DataEntry} from './data/DataEntry';
+import type {LicenseState} from './license';
+import type {Message} from './model';
+import type {AnalysisResult} from './prompts/analysis';
+import type {GenerationResult} from './prompts/generation';
 
 export type MessageMetadata = {
     id: string;

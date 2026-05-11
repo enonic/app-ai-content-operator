@@ -3,7 +3,7 @@ import {ERRORS} from '../../shared/errors';
 import {generateCandidate} from '../google/api/generate';
 import type {Content, GenerateContentRequest, Role} from '../google/types';
 import {logDebug, LogDebugGroups} from '../logger';
-import {ModelProxy, ModelProxyConfig} from './model';
+import type {ModelProxy, ModelProxyConfig} from './model';
 
 export class GeminiProxy implements ModelProxy {
     private readonly config: ModelProxyConfig;

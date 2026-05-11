@@ -1,6 +1,9 @@
+// @vitest-environment jsdom
+import {beforeAll, describe, expect, it} from 'vitest';
+
 import {findValueByPath, setLanguage, setPersistedData} from './data';
-import {ContentData, PropertyValue} from './data/ContentData';
-import {Path} from './data/Path';
+import type {ContentData, PropertyValue} from './data/ContentData';
+import type {Path} from './data/Path';
 import {setValueByPath} from './utils/data';
 
 beforeAll(() => {

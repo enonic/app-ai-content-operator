@@ -3,12 +3,12 @@ import {nanoid} from 'nanoid';
 import {atom, computed, map} from 'nanostores';
 
 import {ERRORS} from '../../shared/errors';
-import {Message} from '../../shared/model';
-import {AnalysisResult} from '../../shared/prompts/analysis';
-import {GenerationResult} from '../../shared/prompts/generation';
-import {FailedMessagePayload} from '../../shared/websocket';
+import type {Message} from '../../shared/model';
+import type {AnalysisResult} from '../../shared/prompts/analysis';
+import type {GenerationResult} from '../../shared/prompts/generation';
+import type {FailedMessagePayload} from '../../shared/websocket';
 import {flattenGraph, getNextActiveNode, pruneGraph} from '../common/graph';
-import {
+import type {
     ChatMessage,
     ModelChatMessage,
     SystemChatMessage,

@@ -2,7 +2,8 @@ import clsx from 'clsx';
 import {forwardRef} from 'react';
 import {twMerge} from 'tailwind-merge';
 
-import Icon, {IconName} from '../Icon/Icon';
+import type {IconName} from '../Icon/Icon';
+import Icon from '../Icon/Icon';
 
 type Props = {
     className?: string;
@@ -14,7 +15,7 @@ type Props = {
     icon?: IconName;
     mode?: 'icon-only' | 'icon-with-title' | 'full' | 'text-only' | 'text-with-title';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-    clickHandler?: React.MouseEventHandler;
+    clickHandler?: React.MouseEventHandler<HTMLButtonElement>;
     ref?: React.RefObject<HTMLButtonElement>;
 };
 

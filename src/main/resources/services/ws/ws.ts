@@ -9,8 +9,8 @@ import {runAsyncTask} from '../../lib/utils/task';
 import {unsafeUUIDv4} from '../../lib/utils/uuid';
 import {WS_PROTOCOL} from '../../shared/constants';
 import {ERRORS} from '../../shared/errors';
-import {LicenseState} from '../../shared/license';
-import {
+import type {LicenseState} from '../../shared/license';
+import type {
     AnalyzedMessage,
     AnalyzedMessagePayload,
     ClientMessage,
@@ -20,8 +20,9 @@ import {
     GenerateMessage,
     LicenseUpdatedMessage,
     MessageMetadata,
-    MessageType,
-    ServerMessage,
+    ServerMessage} from '../../shared/websocket';
+import {
+    MessageType
 } from '../../shared/websocket';
 
 //

@@ -1,9 +1,9 @@
 import {t} from 'i18next';
 import {atom, computed, map} from 'nanostores';
-import {Descendant} from 'slate';
+import type {Descendant} from 'slate';
 
 import {WS_PROTOCOL} from '../../shared/constants';
-import {
+import type {
     AnalyzedMessagePayload,
     ClientMessage,
     FailedMessagePayload,
@@ -12,8 +12,9 @@ import {
     LicenseUpdatedPayload,
     LicenseUpdatedStatePayload,
     MessageMetadata,
-    MessageType,
-    ServerMessage,
+    ServerMessage} from '../../shared/websocket';
+import {
+    MessageType
 } from '../../shared/websocket';
 import {parseNodes, parseText} from '../common/slate';
 import {

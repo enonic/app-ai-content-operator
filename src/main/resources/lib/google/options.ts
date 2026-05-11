@@ -1,5 +1,5 @@
 import {ERRORS} from '../../shared/errors';
-import {Model} from '../../shared/models';
+import type {Model} from '../../shared/models';
 import {GOOGLE_GEMINI_FLASH_URL, GOOGLE_GEMINI_PRO_URL, GOOGLE_SAK_PATH} from '../config';
 import {APP_NAME} from '../constants';
 import {logDebug, LogDebugGroups, logError} from '../logger';

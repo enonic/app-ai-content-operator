@@ -3,7 +3,7 @@ import {twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../../shared/enums';
 import {$messages} from '../../../../../stores/chat';
-import {
+import type {
     ChatMessage,
     ModelChatMessage,
     SystemChatMessage,

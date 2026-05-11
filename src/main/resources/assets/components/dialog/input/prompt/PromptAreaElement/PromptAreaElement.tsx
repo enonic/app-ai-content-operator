@@ -1,6 +1,7 @@
-import {RenderElementProps} from 'slate-react';
+import type {RenderElementProps} from 'slate-react';
 
-import MentionElement, {Props as MentionElementProps} from '../MentionElement/MentionElement';
+import type {Props as MentionElementProps} from '../MentionElement/MentionElement';
+import MentionElement from '../MentionElement/MentionElement';
 
 type Props = MentionElementProps | RenderElementProps;
 

@@ -1,7 +1,7 @@
 import {twMerge} from 'tailwind-merge';
 
 import {dispatchInteracted} from '../../../../common/events';
-import {UserChatMessage} from '../../../../stores/data/ChatMessage';
+import type {UserChatMessage} from '../../../../stores/data/ChatMessage';
 
 type Props = {
     className?: string;

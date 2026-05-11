@@ -1,6 +1,6 @@
-import {ContentData} from './ContentData';
-import {Language} from './Language';
-import {Schema} from './Schema';
+import type {ContentData} from './ContentData';
+import type {Language} from './Language';
+import type {Schema} from './Schema';
 
 export type UpdateEventData = {
     payload: {

@@ -1,7 +1,9 @@
 import type {HttpClientResponse} from '/lib/http-client';
 
-import {CustomAiError, ERRORS} from '../../shared/errors';
-import {request, RequestParams} from '../http/requests';
+import type {CustomAiError} from '../../shared/errors';
+import { ERRORS} from '../../shared/errors';
+import type { RequestParams} from '../http/requests';
+import {request} from '../http/requests';
 import {logDebug, LogDebugGroups, logError} from '../logger';
 import {parseOptions} from './options';
 
@@ -31,7 +33,7 @@ function sendRequest(params: GoogleRequestOptions): Try<HttpClientResponse> {
     logDebug(LogDebugGroups.GOOGLE, `client.sendRequest(${params?.method}}) url: ${params.url}`);
 
     const headers: GoogleHeaders = {
-        ...(params.headers ?? {}),
+        ...params.headers,
         Authorization: `Bearer ${accessToken}`,
         'content-type': 'application/json',
     };

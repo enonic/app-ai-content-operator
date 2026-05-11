@@ -1,18 +1,19 @@
-import {DataEntry} from '../../shared/data/DataEntry';
+import type {DataEntry} from '../../shared/data/DataEntry';
 import {SPECIAL_KEYS, SPECIAL_NAMES} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
-import {Message} from '../../shared/model';
+import type {Message} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
-import {
+import type {
     AnalysisErrorResult,
     AnalysisObjectEntry,
     AnalysisReferenceEntry,
     AnalysisResult,
     AnalysisUnclearResult,
-    createAnalysisInstructions,
-    RawAnalysisResult,
+    RawAnalysisResult} from '../../shared/prompts/analysis';
+import {
+    createAnalysisInstructions
 } from '../../shared/prompts/analysis';
-import {GenerateMessagePayload} from '../../shared/websocket';
+import type {GenerateMessagePayload} from '../../shared/websocket';
 import {getOptions} from '../google/options';
 import {logError} from '../logger';
 import {GeminiProxy} from '../proxy/gemini';

@@ -1,6 +1,35 @@
+allowBuilds:
+  '@google/genai': false
+  esbuild: false
+  protobufjs: false
+
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@^0.1.20
+  vite-plus: ^0.1.20
+  vitest: npm:@voidzero-dev/vite-plus-test@~0.1.20
+
 ignoredBuiltDependencies:
-    - esbuild
-    - protobufjs
+  - esbuild
+  - unrs-resolver
+
+minimumReleaseAge: 1440
+
+minimumReleaseAgeExclude:
+  - "@enonic/ui"
+  - "@enonic-types/*"
+  - "@typescript/native-preview*"
 
 onlyBuiltDependencies:
-    - '@swc/core'
+  - esbuild
+
+overrides:
+  vite: "catalog:"
+  vitest: "catalog:"
+
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"

@@ -22,7 +22,7 @@ export default function ApplyControl({className, name, content}: Props): React.R
         void delay(500).then(() => {
             setApplying(false);
         });
-    }, [content]);
+    }, [name, content]);
 
     return (
         <ActionButton

@@ -1,12 +1,12 @@
-import {
+import type {
     FormItemSetWithPath,
     FormItemWithPath,
     FormOptionSetOptionWithPath,
     FormOptionSetWithPath,
     InputWithPath,
 } from '../data/FormItemWithPath';
-import {Path} from '../data/Path';
-import {FieldSet, FormItem, FormItemSet, FormOptionSet, FormOptionSetOption, Input} from '../data/Schema';
+import type {Path} from '../data/Path';
+import type {FieldSet, FormItem, FormItemSet, FormOptionSet, FormOptionSetOption, Input} from '../data/Schema';
 
 export const isPath = (item: Path): item is Path => 'elements' in item;
 

@@ -1,4 +1,6 @@
-import {Schema} from '../data/Schema';
+import {describe, expect, it} from 'vitest';
+
+import type {Schema} from '../data/Schema';
 import {getFormItemsWithPaths} from './schema';
 
 describe('schemaUtil', () => {

@@ -6,8 +6,8 @@ import {twJoin} from 'tailwind-merge';
 import {isNonOptional} from '../../../../common/data';
 import {dispatchInteracted} from '../../../../common/events';
 import {$fieldDescriptors} from '../../../../stores/data';
-import {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
-import {FieldDescriptor} from '../../../../stores/data/FieldDescriptor';
+import type {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
+import type {FieldDescriptor} from '../../../../stores/data/FieldDescriptor';
 import ActionButton from '../../../base/ActionButton/ActionButton';
 import LoadingIcon from '../../../base/LoadingIcon/LoadingIcon';
 

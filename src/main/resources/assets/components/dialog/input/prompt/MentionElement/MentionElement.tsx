@@ -5,7 +5,7 @@ import {dispatchInteracted} from '../../../../../common/events';
 import {MENTION_ALL} from '../../../../../common/mentions';
 
 export type Props = {
-    attributes?: React.Attributes;
+    attributes?: Record<string, unknown>;
     className?: string;
     children?: React.ReactNode;
     element: Slate.MentionElement;

@@ -3,7 +3,7 @@ import {t} from 'i18next';
 import {twMerge} from 'tailwind-merge';
 
 import {$context, resetContext} from '../../../../stores/context';
-import {Path} from '../../../../stores/data/Path';
+import type {Path} from '../../../../stores/data/Path';
 import {getAllPathsFromString, pathToString} from '../../../../stores/utils/path';
 import ActionButton from '../../../base/ActionButton/ActionButton';
 import ContextItem from '../ContextItem/ContextItem';

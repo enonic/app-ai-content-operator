@@ -1,4 +1,7 @@
-import {getReachableNodeIds, GraphNode, GraphNodes, pruneGraph} from './graph';
+import {describe, expect, it} from 'vitest';
+
+import type { GraphNode, GraphNodes} from './graph';
+import {getReachableNodeIds, pruneGraph} from './graph';
 
 describe('getReachableNodeIds', () => {
     it('should return only the start node if it has no next nodes', () => {

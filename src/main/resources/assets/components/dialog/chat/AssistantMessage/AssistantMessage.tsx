@@ -1,6 +1,6 @@
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {ModelChatMessage, ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
+import type {ModelChatMessage, ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
 import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
 import {AssistantMessageList} from '../AssistantMessageList/AssistantMessageList';
 import AssistantMessagePlaceholder from '../AssistantMessagePlaceholder/AssistantMessagePlaceholder';

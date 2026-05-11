@@ -6,7 +6,7 @@ import {SPECIAL_NAMES} from '../../../../../../shared/enums';
 import {REGULAR_SCREEN} from '../../../../../common/device';
 import {dispatchInteracted} from '../../../../../common/events';
 import {pickValue} from '../../../../../common/messages';
-import {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
+import type {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
 import ElementItemControls from '../../controls/ElementItemControls/ElementItemControls';
 import ElementItemSwitchControls from '../../controls/ElementItemSwitchControls/ElementItemSwitchControls';
 import ElementItemContent from '../ElementItemContent/ElementItemContent';

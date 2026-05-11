@@ -1,5 +1,5 @@
 import merge from 'lodash.merge';
-import {BaseDeepMap, DeepMapStore, MapStore} from 'nanostores';
+import type {BaseDeepMap, DeepMapStore, MapStore} from 'nanostores';
 
 type SyncStore<T extends BaseDeepMap> = MapStore<T> | DeepMapStore<T>;
 

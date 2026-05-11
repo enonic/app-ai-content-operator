@@ -1,7 +1,7 @@
 import {t} from 'i18next';
 import {atom} from 'nanostores';
 
-import {LicenseState} from '../../shared/license';
+import type {LicenseState} from '../../shared/license';
 import GreetingText from '../components/dialog/chat/GreetingText/GreetingText';
 import {addErrorMessage, addSystemMessage, removeChatMessage} from './chat';
 

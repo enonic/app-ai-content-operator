@@ -1,3 +1,5 @@
+import {describe, expect, it} from 'vitest';
+
 import {SPECIAL_NAMES} from '../../shared/enums';
 import {fixResultFields, parseEntryValue} from './generate';
 

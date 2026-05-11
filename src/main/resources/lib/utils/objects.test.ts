@@ -1,3 +1,5 @@
+import {describe, expect, it} from 'vitest';
+
 import {emptyToUndefined, find} from './objects';
 
 describe('emptyToUndefined', () => {

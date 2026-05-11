@@ -1,5 +1,5 @@
 import {ERRORS} from '../../../shared/errors';
-import {ModelResponseGenerateData} from '../../../shared/model';
+import type {ModelResponseGenerateData} from '../../../shared/model';
 import {logDebug, LogDebugGroups} from '../../logger';
 import {parseResponse, sendPostRequest} from '../client';
 import type {GenerateContentRequest, GenerateContentResponse, ResponseSchema} from '../types';

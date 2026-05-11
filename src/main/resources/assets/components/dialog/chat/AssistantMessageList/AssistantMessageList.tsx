@@ -6,8 +6,8 @@ import {twJoin} from 'tailwind-merge';
 import {SPECIAL_NAMES} from '../../../../../shared/enums';
 import {messageContentToValues} from '../../../../common/messages';
 import {$fieldDescriptors, $orderedPaths} from '../../../../stores/data';
-import {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
-import {MessageItem} from '../../../../stores/data/MessageItems';
+import type {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
+import type {MessageItem} from '../../../../stores/data/MessageItems';
 import CommonItem from '../items/CommonItem/CommonItem';
 import ElementItem from '../items/ElementItem/ElementItem';
 
@@ -54,7 +54,7 @@ export function AssistantMessageList({messageId, content, last}: Props): React.R
         const sortedEntries = [...commonEntries, ...elementEntries];
 
         return sortedEntries.length > 0 ? sortedEntries : [[SPECIAL_NAMES.common, t('field.error.entries.empty')]];
-    }, [content, orderedPaths]);
+    }, [content, fieldDescriptors, orderedPaths]);
 
     return (
         <ul className='flex flex-col divide-y rounded overflow-hidden' ref={ref}>

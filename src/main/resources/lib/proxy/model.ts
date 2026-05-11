@@ -1,5 +1,5 @@
 import type {Message} from '../../shared/model';
-import {ModelParameters} from '../../shared/modes';
+import type {ModelParameters} from '../../shared/modes';
 import type {Schema} from '../google/types';
 
 export type ModelProxy = {

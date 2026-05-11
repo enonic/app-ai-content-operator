@@ -1,4 +1,4 @@
-import {Path, PathElement} from '../data/Path';
+import type {Path, PathElement} from '../data/Path';
 
 export const pathElementEqual = (element1: PathElement, element2: PathElement, compareLabel?: boolean): boolean => {
     const index1 = element1.index ?? 0;
@@ -42,7 +42,7 @@ export const pathFromString = (pathAsString: string): Path => {
 
 export function pathToString(path: Path): string {
     const elements = path.elements.map(({index, name}) => (!index ? name : `${name}[${index}]`));
-    return '/' + elements.join('/');
+    return `/${  elements.join('/')}`;
 }
 
 export function pathToPrettifiedLabel(path: Path): string {

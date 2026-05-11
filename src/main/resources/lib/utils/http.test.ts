@@ -1,4 +1,6 @@
-import {calcBackoffDelay, calcFullJitterWindow, parseRetryAfterMs} from './http';
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
+
+import { calcBackoffDelay, calcFullJitterWindow, parseRetryAfterMs } from './http';
 
 describe('parseRetryAfter', () => {
     it('should return null if the header is not a string or number', () => {
@@ -82,10 +84,10 @@ describe('calcRetryDelay', () => {
 });
 
 describe('calcFullJitterWindow', () => {
-    let mathRandomSpy: jest.SpyInstance;
+    let mathRandomSpy: MockInstance<typeof Math.random>;
 
     beforeEach(() => {
-        mathRandomSpy = jest.spyOn(Math, 'random');
+        mathRandomSpy = vi.spyOn(Math, 'random');
     });
 
     afterEach(() => {

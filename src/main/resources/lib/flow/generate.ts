@@ -1,10 +1,11 @@
-import {DataEntry, DataEntryType} from '../../shared/data/DataEntry';
+import type {DataEntry, DataEntryType} from '../../shared/data/DataEntry';
 import {SPECIAL_KEYS, SPECIAL_NAMES} from '../../shared/enums';
 import {ERRORS} from '../../shared/errors';
-import {Message} from '../../shared/model';
+import type {Message} from '../../shared/model';
 import {MODES_DATA} from '../../shared/modes';
-import {AnalysisObjectEntry, AnalysisReferenceEntry, AnalysisResult} from '../../shared/prompts/analysis';
-import {createGenerationInstructions, GenerationResult} from '../../shared/prompts/generation';
+import type {AnalysisObjectEntry, AnalysisReferenceEntry, AnalysisResult} from '../../shared/prompts/analysis';
+import type { GenerationResult} from '../../shared/prompts/generation';
+import {createGenerationInstructions} from '../../shared/prompts/generation';
 import {getOptions} from '../google/options';
 import {fieldsToSchema} from '../google/schema';
 import {logError, logWarn} from '../logger';
@@ -82,16 +83,16 @@ function parseGenerationResult(textResult: string, allowedFields: string[]): Try
         const normalizedResult = attemptResultNormalization(cleanedResult);
 
         if (isGenerationResult(normalizedResult)) {
-            logWarn(ERRORS.MODEL_GENERATION_WRONG_TYPE.withMsg('\n' + textResult));
+            logWarn(ERRORS.MODEL_GENERATION_WRONG_TYPE.withMsg(`\n${  textResult}`));
             return [normalizedResult, null];
         }
 
         if (Object.keys(normalizedResult).length === 0) {
-            logError(ERRORS.MODEL_GENERATION_EMPTY.withMsg('\n' + textResult));
+            logError(ERRORS.MODEL_GENERATION_EMPTY.withMsg(`\n${  textResult}`));
             return [null, ERRORS.MODEL_GENERATION_EMPTY];
         }
 
-        logError(ERRORS.MODEL_GENERATION_INCORRECT.withMsg('\n' + textResult));
+        logError(ERRORS.MODEL_GENERATION_INCORRECT.withMsg(`\n${  textResult}`));
         return [null, ERRORS.MODEL_GENERATION_INCORRECT];
     } catch (err) {
         logError(err);

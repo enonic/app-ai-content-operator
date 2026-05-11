@@ -4,8 +4,8 @@ import {twJoin} from 'tailwind-merge';
 
 import {setContext} from '../../../../stores/context';
 import {$allFormItemsWithPaths} from '../../../../stores/data';
-import {FormItemWithPath} from '../../../../stores/data/FormItemWithPath';
-import {Path} from '../../../../stores/data/Path';
+import type {FormItemWithPath} from '../../../../stores/data/FormItemWithPath';
+import type {Path} from '../../../../stores/data/Path';
 import {
     isChildPath,
     pathsEqual,

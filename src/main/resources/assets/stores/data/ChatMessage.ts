@@ -1,6 +1,6 @@
-import {AnalysisResult} from '../../../shared/prompts/analysis';
-import {GenerationResult} from '../../../shared/prompts/generation';
-import {MessageRole} from './MessageType';
+import type {AnalysisResult} from '../../../shared/prompts/analysis';
+import type {GenerationResult} from '../../../shared/prompts/generation';
+import type {MessageRole} from './MessageType';
 
 type ChatNode<T extends MessageRole, Data extends Record<string, unknown>> = {
     id: string;

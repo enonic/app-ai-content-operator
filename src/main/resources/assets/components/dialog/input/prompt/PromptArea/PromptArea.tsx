@@ -1,7 +1,8 @@
 import {useStore} from '@nanostores/react';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {createEditor, Descendant, Editor, Node, Transforms} from 'slate';
+import type { Descendant} from 'slate';
+import {createEditor, Editor, Node, Transforms} from 'slate';
 import {withHistory} from 'slate-history';
 import {Editable, ReactEditor, Slate, withReact} from 'slate-react';
 import {twJoin, twMerge} from 'tailwind-merge';
@@ -11,7 +12,7 @@ import {useDeepMemo} from '../../../../../hooks/useDeepMemo';
 import {calcMentionSpec, insertMention, withMentions} from '../../../../../plugins/withMentions';
 import {$context} from '../../../../../stores/context';
 import {$mentions} from '../../../../../stores/data';
-import {Mention} from '../../../../../stores/data/Mention';
+import type {Mention} from '../../../../../stores/data/Mention';
 import {MessageRole} from '../../../../../stores/data/MessageType';
 import {$dialog} from '../../../../../stores/dialog';
 import {$target, clearTarget, setTarget} from '../../../../../stores/editor';
@@ -95,7 +96,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
         } else {
             ReactEditor.focus(editor);
         }
-    }, [hidden, licenseState]);
+    }, [editor, hidden, licenseState]);
 
     useEffect(() => {
         if (target) {
@@ -130,11 +131,11 @@ export default function PromptArea({className}: Props): React.ReactNode {
                 ReactEditor.focus(editor);
             }
         },
-        [editor, target],
+        [editor, mentionsToDisplay.length, target],
     );
 
     const handleKeyDown = useCallback(
-        (event: React.KeyboardEvent): void => {
+        (event: React.KeyboardEvent<HTMLElement>): void => {
             if (!target) {
                 if (event.key === 'Enter') {
                     event.preventDefault();
@@ -171,7 +172,7 @@ export default function PromptArea({className}: Props): React.ReactNode {
                     break;
             }
         },
-        [mentionsToDisplay, editor, index, target, canSend],
+        [mentionsToDisplay, editor, handleMentionSelected, index, target, canSend],
     );
 
     return (

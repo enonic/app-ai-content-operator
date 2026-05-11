@@ -1,9 +1,9 @@
-import {isValidElement} from 'react';
-import {Descendant} from 'slate';
+import {isValidElement, type ReactElement, type ReactNode} from 'react';
+import type {Descendant} from 'slate';
 
 import MentionElement from '../components/dialog/input/prompt/MentionElement/MentionElement';
 
-type ElementEntry = React.ReactNode | string;
+type ElementEntry = ReactNode | string;
 
 const isCustomText = (node: Descendant): node is Slate.CustomText => 'text' in node;
 
@@ -15,15 +15,14 @@ const isEmptyEntry = (element: ElementEntry): boolean => {
     if (typeof element === 'string' && element.trim() === '') {
         return true;
     }
-    return (
-        isValidElement(element) &&
-        typeof element.props === 'object' &&
-        element.props != null &&
-        'data-empty' in element.props
-    );
+    if (!isValidElement(element)) {
+        return false;
+    }
+    const {props} = element as ReactElement<Record<string, unknown>>;
+    return typeof props === 'object' && props != null && 'data-empty' in props;
 };
 
-export function parseNodes(nodes: Descendant[]): React.ReactNode {
+export function parseNodes(nodes: Descendant[]): ReactNode {
     const elements = nodes.map((node, index): ElementEntry => {
         if (isCustomText(node)) {
             return node.text;
@@ -33,11 +32,10 @@ export function parseNodes(nodes: Descendant[]): React.ReactNode {
             return <MentionElement key={index} element={node} />;
         }
         const paragraph = node.children ? parseNodes(node.children) : null;
-        return paragraph ? <p key={index}>{paragraph}</p> : <p data-empty></p>;
+        return paragraph ? <p key={index}>{paragraph}</p> : <p key={index} data-empty />;
     });
 
-    const trimmedElements = trimElements(elements);
-    return <>{trimmedElements}</>;
+    return trimElements(elements);
 }
 
 function trimElements(elements: ElementEntry[]): ElementEntry[] {

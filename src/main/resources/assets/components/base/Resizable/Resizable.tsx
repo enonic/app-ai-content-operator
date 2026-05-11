@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import {CSSProperties, ForwardedRef, forwardRef, PropsWithChildren, useCallback, useState} from 'react';
+import type {CSSProperties, ForwardedRef, PropsWithChildren} from 'react';
+import { forwardRef, useCallback, useState} from 'react';
 
 import useIsTouchDevice from '../../../hooks/useIsTouchDevice';
 
@@ -32,7 +33,7 @@ export default forwardRef(function Resizable(
     const [height, setHeight] = useState<number | undefined>(undefined);
 
     const handleResizeStart = useCallback(
-        (event: React.MouseEvent | React.TouchEvent): void => {
+        (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>): void => {
             if (!ref || !('current' in ref) || !ref.current) {
                 return;
             }
@@ -98,7 +99,7 @@ export default forwardRef(function Resizable(
                     'flex justify-end',
                     'bottom-0 right-0',
                     'w-5 h-6 pr-1',
-                    'text-3xl/3.5 text-enonic-gray-400',
+                    'text-3xl/[0.875rem] text-enonic-gray-400',
                     'border-0 bg-transparent select-none outline-none focus:outline-none',
                     !isTouchDevice && 'opacity-0',
                     'cursor-nwse-resize',

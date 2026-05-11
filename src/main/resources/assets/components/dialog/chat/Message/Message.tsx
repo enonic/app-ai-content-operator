@@ -1,4 +1,4 @@
-import {ChatMessage} from '../../../../stores/data/ChatMessage';
+import type {ChatMessage} from '../../../../stores/data/ChatMessage';
 import {MessageRole} from '../../../../stores/data/MessageType';
 import AssistantMessage from '../AssistantMessage/AssistantMessage';
 import SystemMessage from '../SystemMessage/SystemMessage';
