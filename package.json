@@ -34,7 +34,9 @@
         "check:types": "tsgo --noEmit -p src/main/resources/tsconfig.json && tsgo --noEmit",
         "test": "vp test --run",
         "fix": "vp lint --fix",
-        "prepare": "vp config"
+        "prepare": "vp config",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
     },
     "dependencies": {
         "@nanostores/react": "~1.1.0",
@@ -62,8 +64,12 @@
         "@enonic-types/lib-auth": "8.0.0-B4",
         "@enonic-types/lib-task": "8.0.0-B4",
         "@enonic-types/lib-websocket": "8.0.0-B4",
+        "@enonic/ui": "~0.50.1",
         "@google/genai": "~2.0.1",
         "@preact/preset-vite": "~2.10.5",
+        "@storybook/addon-docs": "~10.3.6",
+        "@storybook/addon-themes": "~10.3.6",
+        "@storybook/preact-vite": "~10.3.6",
         "@tailwindcss/typography": "~0.5.19",
         "@tailwindcss/vite": "~4.3.0",
         "@testing-library/jest-dom": "~6.9.1",
@@ -76,6 +82,7 @@
         "@typescript/native-preview": "7.0.0-dev.20260510.1",
         "esbuild": "~0.28.0",
         "jsdom": "~29.1.1",
+        "storybook": "~10.3.6",
         "tailwindcss": "~4.3.0",
         "typescript": "^6.0.3",
         "vite": "catalog:",
