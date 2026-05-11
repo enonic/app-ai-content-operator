@@ -1,6 +1,6 @@
 import {map} from 'nanostores';
 
-import {addGlobalConfigureHandler} from '../common/events';
+import {addGlobalConfigureHandler} from '@/common/events';
 
 export type Config = {
     wsServiceUrl: string;

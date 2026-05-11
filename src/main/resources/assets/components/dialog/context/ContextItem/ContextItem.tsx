@@ -2,19 +2,19 @@ import {useStore} from '@nanostores/react';
 import {t} from 'i18next';
 import {twJoin} from 'tailwind-merge';
 
-import {setContext} from '../../../../stores/context';
-import {$allFormItemsWithPaths} from '../../../../stores/data';
-import type {FormItemWithPath} from '../../../../stores/data/FormItemWithPath';
-import type {Path} from '../../../../stores/data/Path';
+import {setContext} from '@/store/context/context.store';
+import {$allFormItemsWithPaths} from '@/store/content/content.store';
+import type {FormItemWithPath} from '@/store/content/FormItemWithPath';
+import type {Path} from '@/store/content/Path';
 import {
     isChildPath,
     pathsEqual,
     pathToLabelAndIndex,
     pathToPrettifiedLabel,
     pathToString,
-} from '../../../../stores/utils/path';
-import {isInput} from '../../../../stores/utils/schema';
-import ActionButton from '../../../base/ActionButton/ActionButton';
+} from '@/store/utils/path';
+import {isInput} from '@/store/utils/schema';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 type Props = {
     className?: string;

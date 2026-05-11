@@ -1,7 +1,7 @@
 import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
-import ActionButton from '../../../base/ActionButton/ActionButton';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 type Props = {
     className?: string;

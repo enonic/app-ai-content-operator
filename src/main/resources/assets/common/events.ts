@@ -1,8 +1,8 @@
-import type {ApplyMessage} from '../stores/data/ApplyMessage';
-import type {ConfigureEventData} from '../stores/data/ConfigureEventData';
-import type {UpdateEventData} from '../stores/data/EventData';
-import type {OpenDialogEventData} from '../stores/data/OpenDialogEventData';
-import type {SetContextEventData} from '../stores/data/SetContextEventData';
+import type {ApplyMessage} from '@/store/content/ApplyMessage';
+import type {ConfigureEventData} from '@/store/content/ConfigureEventData';
+import type {UpdateEventData} from '@/store/content/EventData';
+import type {OpenDialogEventData} from '@/store/content/OpenDialogEventData';
+import type {SetContextEventData} from '@/store/content/SetContextEventData';
 
 export enum AiEvents {
     // Content Operator

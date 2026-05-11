@@ -1,6 +1,6 @@
 import {map} from 'nanostores';
 
-import {addGlobalOpenDialogHandler, AiEvents, dispatchDialogEvent} from '../common/events';
+import {addGlobalOpenDialogHandler, AiEvents, dispatchDialogEvent} from '@/common/events';
 
 export type Dialog = {
     hidden: boolean;

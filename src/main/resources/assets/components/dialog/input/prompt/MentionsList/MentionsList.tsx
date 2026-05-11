@@ -4,7 +4,7 @@ import {twJoin, twMerge} from 'tailwind-merge';
 
 import {Portal} from '../../../../../common/components';
 import {MENTION_ALL} from '../../../../../common/mentions';
-import type {Mention} from '../../../../../stores/data/Mention';
+import type {Mention} from '@/store/content/Mention';
 
 type Props = {
     className?: string;

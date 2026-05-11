@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next';
 
 import {dispatchResultApplied} from '../../../../../common/events';
 import {delay} from '../../../../../common/func';
-import ActionButton from '../../../../base/ActionButton/ActionButton';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 type Props = {
     className?: string;

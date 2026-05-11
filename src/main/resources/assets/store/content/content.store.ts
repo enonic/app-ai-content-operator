@@ -1,17 +1,17 @@
 import {t} from 'i18next';
 import {computed, map} from 'nanostores';
 
-import type {DataEntry} from '../../shared/data/DataEntry';
-import {addGlobalUpdateDataHandler} from '../common/events';
-import {MENTION_ALL} from '../common/mentions';
-import {$context, resetContext} from './context';
-import type {ContentData, PropertyValue} from './data/ContentData';
-import type {UpdateEventData} from './data/EventData';
-import type {FieldDescriptor} from './data/FieldDescriptor';
-import type {FormItemWithPath, InputWithPath} from './data/FormItemWithPath';
-import type {Language} from './data/Language';
-import type {Path} from './data/Path';
-import type {Schema} from './data/Schema';
+import type {DataEntry} from '@shared/data/DataEntry';
+import {addGlobalUpdateDataHandler} from '@/common/events';
+import {MENTION_ALL} from '@/common/mentions';
+import {$context, resetContext} from '@/store/context/context.store';
+import type {ContentData, PropertyValue} from './ContentData';
+import type {UpdateEventData} from './EventData';
+import type {FieldDescriptor} from './FieldDescriptor';
+import type {FormItemWithPath, InputWithPath} from './FormItemWithPath';
+import type {Language} from './Language';
+import type {Path} from './Path';
+import type {Schema} from './Schema';
 import {
     createDisplayNameInput,
     getDataPathsToEditableItems,
@@ -20,8 +20,8 @@ import {
     getPropertyArrayByPath,
     isTopicPath,
     pathToMention,
-} from './utils/data';
-import {getInputType} from './utils/input';
+} from '@/store/utils/data';
+import {getInputType} from '@/store/utils/input';
 import {
     isChildPath,
     isRootPath,
@@ -30,8 +30,8 @@ import {
     pathToPrettifiedLabel,
     pathToPrettifiedString,
     pathToString,
-} from './utils/path';
-import {getFormItemsWithPaths, isEditableInput} from './utils/schema';
+} from '@/store/utils/path';
+import {getFormItemsWithPaths, isEditableInput} from '@/store/utils/schema';
 
 export type Data = {
     language: Language;
@@ -39,7 +39,7 @@ export type Data = {
     schema: Optional<Schema>;
 };
 
-export const $data = map<Data>({
+export const $content = map<Data>({
     language: {
         tag: navigator?.language ?? 'en',
         name: 'English',
@@ -48,20 +48,20 @@ export const $data = map<Data>({
     schema: null,
 });
 
-export const $language = computed($data, ({language}) => language?.tag ?? navigator?.language ?? 'en');
-export const $contentPath = computed($data, ({persisted}) => persisted?.contentPath ?? '');
+export const $language = computed($content, ({language}) => language?.tag ?? navigator?.language ?? 'en');
+export const $contentPath = computed($content, ({persisted}) => persisted?.contentPath ?? '');
 
 addGlobalUpdateDataHandler(event => {
     putEventDataToStore(event.detail);
 });
 
-export const setLanguage = (language: Language): void => $data.setKey('language', language);
+export const setLanguage = (language: Language): void => $content.setKey('language', language);
 
-export const getPersistedData = (): Optional<Readonly<ContentData>> => $data.get().persisted;
+export const getPersistedData = (): Optional<Readonly<ContentData>> => $content.get().persisted;
 
-export const setPersistedData = (data: ContentData): void => $data.setKey('persisted', data);
+export const setPersistedData = (data: ContentData): void => $content.setKey('persisted', data);
 
-export const setSchema = (schema: Schema): void => $data.setKey('schema', schema);
+export const setSchema = (schema: Schema): void => $content.setKey('schema', schema);
 
 function putEventDataToStore(eventData: UpdateEventData): void {
     if (!eventData.payload) {
@@ -83,9 +83,9 @@ function putEventDataToStore(eventData: UpdateEventData): void {
     }
 }
 
-export const $topic = computed($data, data => data.persisted?.topic ?? '');
+export const $topic = computed($content, data => data.persisted?.topic ?? '');
 
-export const $allFormItemsWithPaths = computed($data, ({schema, persisted}) => {
+export const $allFormItemsWithPaths = computed($content, ({schema, persisted}) => {
     const schemaPaths = schema ? getFormItemsWithPaths(schema.form.formItems) : [];
     const result = persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
 
@@ -198,7 +198,7 @@ export function findValueByPath(path: Path): Optional<PropertyValue> {
         return {v: $topic.get()};
     }
 
-    const fields = $data.get().persisted?.fields ?? [];
+    const fields = $content.get().persisted?.fields ?? [];
     const array = getPropertyArrayByPath(fields, path);
     return array?.values.at(path.elements.at(-1)?.index ?? 0);
 }

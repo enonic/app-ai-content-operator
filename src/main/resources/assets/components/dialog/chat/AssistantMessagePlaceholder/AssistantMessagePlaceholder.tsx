@@ -3,13 +3,13 @@ import {useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
 
-import {isNonOptional} from '../../../../common/data';
+import {isNonOptional} from '../../../../common/utils/data';
 import {dispatchInteracted} from '../../../../common/events';
-import {$fieldDescriptors} from '../../../../stores/data';
-import type {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
-import type {FieldDescriptor} from '../../../../stores/data/FieldDescriptor';
-import ActionButton from '../../../base/ActionButton/ActionButton';
-import LoadingIcon from '../../../base/LoadingIcon/LoadingIcon';
+import {$fieldDescriptors} from '@/store/content/content.store';
+import type {ModelChatMessageContent} from '@/store/content/ChatMessage';
+import type {FieldDescriptor} from '@/store/content/FieldDescriptor';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
+import LoadingIcon from '@/ui/primitives/LoadingIcon/LoadingIcon';
 
 type Props = {
     content: Omit<ModelChatMessageContent, 'generationResult'>;

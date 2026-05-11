@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {delay} from '../../../../../common/func';
-import ActionButton from '../../../../base/ActionButton/ActionButton';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 type CopyType = 'text' | 'html';
 

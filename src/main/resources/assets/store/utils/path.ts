@@ -1,4 +1,4 @@
-import type {Path, PathElement} from '../data/Path';
+import type {Path, PathElement} from '../content/Path';
 
 export const pathElementEqual = (element1: PathElement, element2: PathElement, compareLabel?: boolean): boolean => {
     const index1 = element1.index ?? 0;

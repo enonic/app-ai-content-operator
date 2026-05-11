@@ -1,7 +1,7 @@
 import {twMerge} from 'tailwind-merge';
 
 import type {DataEntryType} from '../../../../../../shared/data/DataEntry';
-import LoadingIcon from '../../../../base/LoadingIcon/LoadingIcon';
+import LoadingIcon from '@/ui/primitives/LoadingIcon/LoadingIcon';
 
 type Props = {
     className?: string;

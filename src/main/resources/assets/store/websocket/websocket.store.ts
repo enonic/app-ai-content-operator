@@ -2,7 +2,7 @@ import {t} from 'i18next';
 import {atom, computed, map} from 'nanostores';
 import type {Descendant} from 'slate';
 
-import {WS_PROTOCOL} from '../../shared/constants';
+import {WS_PROTOCOL} from '@shared/constants';
 import type {
     AnalyzedMessagePayload,
     ClientMessage,
@@ -12,11 +12,11 @@ import type {
     LicenseUpdatedPayload,
     LicenseUpdatedStatePayload,
     MessageMetadata,
-    ServerMessage} from '../../shared/websocket';
+    ServerMessage} from '@shared/websocket';
 import {
     MessageType
-} from '../../shared/websocket';
-import {parseNodes, parseText} from '../common/slate';
+} from '@shared/websocket';
+import {parseNodes, parseText} from '@/common/slate';
 import {
     addErrorMessage,
     addModelMessage,
@@ -28,13 +28,13 @@ import {
     markAllNextMessagesInactive,
     updateModelMessage,
     updateUserMessage,
-} from './chat';
-import {$config} from './config';
-import {$context} from './context';
-import {$contentPath, $fieldDescriptors, $language, createFields} from './data';
-import {MessageRole} from './data/MessageType';
-import {$licenseState} from './license';
-import {getAllPathsFromString, pathToString} from './utils/path';
+} from '@/store/chat/chat.store';
+import {$config} from '@/store/config/config.store';
+import {$context} from '@/store/context/context.store';
+import {$contentPath, $fieldDescriptors, $language, createFields} from '@/store/content/content.store';
+import {MessageRole} from '@/store/content/MessageType';
+import {$licenseState} from '@/store/license/license.store';
+import {getAllPathsFromString, pathToString} from '@/store/utils/path';
 
 type WebSocketLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
 

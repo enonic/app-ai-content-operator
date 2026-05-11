@@ -5,7 +5,7 @@ import AssistantDialog from './components/dialog/AssistantDialog/AssistantDialog
 import LaunchButton from './components/LaunchButton/LaunchButton';
 import './i18n/i18n';
 import './index.css';
-import {$config, setWsServiceUrl} from './stores/config';
+import {$config, setWsServiceUrl} from '@/store/config/config.store';
 
 type SetupConfig = {
     wsServiceUrl: string;

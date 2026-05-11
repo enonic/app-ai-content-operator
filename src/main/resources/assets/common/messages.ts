@@ -1,6 +1,6 @@
-import type {ModelChatMessageContent} from '../stores/data/ChatMessage';
-import type {MessageItems} from '../stores/data/MessageItems';
-import type {MultipleValues} from '../stores/data/MultipleContentValue';
+import type {ModelChatMessageContent} from '@/store/content/ChatMessage';
+import type {MessageItems} from '@/store/content/MessageItems';
+import type {MultipleValues} from '@/store/content/MultipleContentValue';
 
 export function pickValue(value: string | MultipleValues): string {
     return typeof value === 'string' ? value : value.values[value.selectedIndex];

@@ -4,9 +4,9 @@ import type {
     FormOptionSetOptionWithPath,
     FormOptionSetWithPath,
     InputWithPath,
-} from '../data/FormItemWithPath';
-import type {Path} from '../data/Path';
-import type {FieldSet, FormItem, FormItemSet, FormOptionSet, FormOptionSetOption, Input} from '../data/Schema';
+} from '../content/FormItemWithPath';
+import type {Path} from '../content/Path';
+import type {FieldSet, FormItem, FormItemSet, FormOptionSet, FormOptionSetOption, Input} from '../content/Schema';
 
 export const isPath = (item: Path): item is Path => 'elements' in item;
 

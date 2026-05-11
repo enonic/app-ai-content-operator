@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/preact-vite';
 
-import ActionButton from '../../src/main/resources/assets/components/base/ActionButton/ActionButton';
+import ActionButton from '../../src/main/resources/assets/ui/primitives/ActionButton/ActionButton';
 
 const meta = {
     title: 'ContentOperator/ActionButton',

@@ -2,7 +2,7 @@ import {useStore} from '@nanostores/react';
 import clsx from 'clsx';
 import {twMerge} from 'tailwind-merge';
 
-import {$config} from '../../../stores/config';
+import {$config} from '@/store/config/config.store';
 
 type Props = {
     className?: string;

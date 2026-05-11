@@ -1,11 +1,11 @@
 import {t} from 'i18next';
 
 import {SPECIAL_NAMES} from '../../../shared/enums';
-import type {ContentData, PropertyArray, PropertyValue} from '../data/ContentData';
-import type {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from '../data/FormItemWithPath';
-import type {Mention} from '../data/Mention';
-import type {Path, PathElement} from '../data/Path';
-import type {FormItem} from '../data/Schema';
+import type {ContentData, PropertyArray, PropertyValue} from '../content/ContentData';
+import type {FormItemSetWithPath, FormItemWithPath, FormOptionSetWithPath, InputWithPath} from '../content/FormItemWithPath';
+import type {Mention} from '../content/Mention';
+import type {Path, PathElement} from '../content/Path';
+import type {FormItem} from '../content/Schema';
 import {clonePath, getParentPath, pathToPrettifiedLabel, pathToPrettifiedString, pathToString} from './path';
 import {isFormItemSet, isFormOptionSet, isInput} from './schema';
 

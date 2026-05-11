@@ -1,9 +1,9 @@
 import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {changeModelMessageSelectedIndex} from '../../../../../stores/chat';
-import type {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
-import ActionButton from '../../../../base/ActionButton/ActionButton';
+import {changeModelMessageSelectedIndex} from '@/store/chat/chat.store';
+import type {MultipleValues} from '@/store/content/MultipleContentValue';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 export type Props = {
     className?: string;

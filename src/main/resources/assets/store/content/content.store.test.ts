@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 import {beforeAll, describe, expect, it} from 'vitest';
 
-import {findValueByPath, setLanguage, setPersistedData} from './data';
-import type {ContentData, PropertyValue} from './data/ContentData';
-import type {Path} from './data/Path';
-import {setValueByPath} from './utils/data';
+import {findValueByPath, setLanguage, setPersistedData} from './content.store';
+import type {ContentData, PropertyValue} from './ContentData';
+import type {Path} from './Path';
+import {setValueByPath} from '@/store/utils/data';
 
 beforeAll(() => {
     setLanguage({tag: 'ak', name: 'Akkadian'});

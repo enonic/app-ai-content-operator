@@ -1,7 +1,7 @@
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import type {ModelChatMessage, ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
-import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
+import type {ModelChatMessage, ModelChatMessageContent} from '@/store/content/ChatMessage';
+import AssistantIcon from '@/ui/primitives/AssistantIcon/AssistantIcon';
 import {AssistantMessageList} from '../AssistantMessageList/AssistantMessageList';
 import AssistantMessagePlaceholder from '../AssistantMessagePlaceholder/AssistantMessagePlaceholder';
 import ResponseControls from '../controls/ResponseControls/ResponseControls';

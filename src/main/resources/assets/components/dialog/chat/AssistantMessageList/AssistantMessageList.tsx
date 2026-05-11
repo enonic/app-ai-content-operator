@@ -5,9 +5,9 @@ import {twJoin} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../shared/enums';
 import {messageContentToValues} from '../../../../common/messages';
-import {$fieldDescriptors, $orderedPaths} from '../../../../stores/data';
-import type {ModelChatMessageContent} from '../../../../stores/data/ChatMessage';
-import type {MessageItem} from '../../../../stores/data/MessageItems';
+import {$fieldDescriptors, $orderedPaths} from '@/store/content/content.store';
+import type {ModelChatMessageContent} from '@/store/content/ChatMessage';
+import type {MessageItem} from '@/store/content/MessageItems';
 import CommonItem from '../items/CommonItem/CommonItem';
 import ElementItem from '../items/ElementItem/ElementItem';
 

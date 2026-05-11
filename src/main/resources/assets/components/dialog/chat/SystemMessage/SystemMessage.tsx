@@ -1,8 +1,8 @@
 import {useTranslation} from 'react-i18next';
 import {twMerge} from 'tailwind-merge';
 
-import type {SystemChatMessage} from '../../../../stores/data/ChatMessage';
-import AssistantIcon from '../../../base/AssistantIcon/AssistantIcon';
+import type {SystemChatMessage} from '@/store/content/ChatMessage';
+import AssistantIcon from '@/ui/primitives/AssistantIcon/AssistantIcon';
 import ResponseControls from '../controls/ResponseControls/ResponseControls';
 
 type Props = {

@@ -1,7 +1,7 @@
 import {atom} from 'nanostores';
 
-import {addGlobalOpenDialogHandler, addGlobalSetContextHandler, dispatchContextChanged} from '../common/events';
-import {$dialog} from './dialog';
+import {addGlobalOpenDialogHandler, addGlobalSetContextHandler, dispatchContextChanged} from '@/common/events';
+import {$dialog} from '@/store/dialog/dialog.store';
 
 export const $context = atom<Optional<string>>(undefined);
 

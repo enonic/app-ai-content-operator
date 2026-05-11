@@ -2,16 +2,16 @@ import {useStore} from '@nanostores/react';
 import {twMerge} from 'tailwind-merge';
 
 import {SPECIAL_NAMES} from '../../../../../../shared/enums';
-import {$messages} from '../../../../../stores/chat';
+import {$messages} from '@/store/chat/chat.store';
 import type {
     ChatMessage,
     ModelChatMessage,
     SystemChatMessage,
     UserChatMessage,
-} from '../../../../../stores/data/ChatMessage';
-import {MessageRole} from '../../../../../stores/data/MessageType';
-import {$licenseState} from '../../../../../stores/license';
-import {$isBusy, $isConnected} from '../../../../../stores/websocket';
+} from '@/store/content/ChatMessage';
+import {MessageRole} from '@/store/content/MessageType';
+import {$licenseState} from '@/store/license/license.store';
+import {$isBusy, $isConnected} from '@/store/websocket/websocket.store';
 import ApplyAllControl from '../ApplyAllControl/ApplyAllControl';
 import MessageSwitchControls from '../MessageSwitchControls/MessageSwitchControls';
 import RetryControl from '../RetryControl/RetryControl';

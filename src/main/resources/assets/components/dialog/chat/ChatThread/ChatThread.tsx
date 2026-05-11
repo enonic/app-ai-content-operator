@@ -3,10 +3,10 @@ import clsx from 'clsx';
 import {useEffect, useRef} from 'react';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {$history} from '../../../../stores/chat';
-import type {ChatMessage} from '../../../../stores/data/ChatMessage';
-import {$initialized, $licenseState} from '../../../../stores/license';
-import {$busyAnalyzing, $websocket} from '../../../../stores/websocket';
+import {$history} from '@/store/chat/chat.store';
+import type {ChatMessage} from '@/store/content/ChatMessage';
+import {$initialized, $licenseState} from '@/store/license/license.store';
+import {$busyAnalyzing, $websocket} from '@/store/websocket/websocket.store';
 import LoadingMessage from '../LoadingMessage/LoadingMessage';
 import Message from '../Message/Message';
 

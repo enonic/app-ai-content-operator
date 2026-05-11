@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
 
-import {clearChat} from '../../../../stores/chat';
-import {resetContext} from '../../../../stores/context';
-import ActionButton from '../../../base/ActionButton/ActionButton';
+import {clearChat} from '@/store/chat/chat.store';
+import {resetContext} from '@/store/context/context.store';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 type Props = {
     className?: string;

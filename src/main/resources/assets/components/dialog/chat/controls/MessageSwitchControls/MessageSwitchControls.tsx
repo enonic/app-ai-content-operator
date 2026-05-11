@@ -1,8 +1,8 @@
 import {useTranslation} from 'react-i18next';
 import {twJoin, twMerge} from 'tailwind-merge';
 
-import {markMessageAsActive} from '../../../../../stores/chat';
-import ActionButton from '../../../../base/ActionButton/ActionButton';
+import {markMessageAsActive} from '@/store/chat/chat.store';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 export type Props = {
     className?: string;

@@ -2,8 +2,8 @@ import {useStore} from '@nanostores/react';
 import {useTranslation} from 'react-i18next';
 import {twJoin} from 'tailwind-merge';
 
-import {$dialog, toggleDialog} from '../../stores/dialog';
-import AssistantIcon from '../base/AssistantIcon/AssistantIcon';
+import {$dialog, toggleDialog} from '@/store/dialog/dialog.store';
+import AssistantIcon from '@/ui/primitives/AssistantIcon/AssistantIcon';
 
 export default function LaunchButton(): React.ReactNode {
     const {t} = useTranslation();

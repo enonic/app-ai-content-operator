@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import {useTranslation} from 'react-i18next';
 
-import {setDialogHidden} from '../../../../stores/dialog';
-import ActionButton from '../../../base/ActionButton/ActionButton';
+import {setDialogHidden} from '@/store/dialog/dialog.store';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 type Props = {
     className?: string;

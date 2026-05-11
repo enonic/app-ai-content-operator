@@ -5,10 +5,10 @@ import {useTranslation} from 'react-i18next';
 import {dispatchResultApplied} from '../../../../../common/events';
 import {delay} from '../../../../../common/func';
 import {messageContentToValues, pickValue} from '../../../../../common/messages';
-import type {ApplyMessage} from '../../../../../stores/data/ApplyMessage';
-import type {ModelChatMessageContent} from '../../../../../stores/data/ChatMessage';
-import type {MultipleValues} from '../../../../../stores/data/MultipleContentValue';
-import ActionButton from '../../../../base/ActionButton/ActionButton';
+import type {ApplyMessage} from '@/store/content/ApplyMessage';
+import type {ModelChatMessageContent} from '@/store/content/ChatMessage';
+import type {MultipleValues} from '@/store/content/MultipleContentValue';
+import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 type Props = {
     className?: string;

@@ -1,7 +1,7 @@
 import {twJoin, twMerge} from 'tailwind-merge';
 
 import {REGULAR_SCREEN} from '../../../../../common/device';
-import LoadingIcon from '../../../../base/LoadingIcon/LoadingIcon';
+import LoadingIcon from '@/ui/primitives/LoadingIcon/LoadingIcon';
 import CopyControl from '../../controls/CopyControl/CopyControl';
 
 type Props = {

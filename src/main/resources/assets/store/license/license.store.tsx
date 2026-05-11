@@ -1,9 +1,9 @@
 import {t} from 'i18next';
 import {atom} from 'nanostores';
 
-import type {LicenseState} from '../../shared/license';
-import GreetingText from '../components/dialog/chat/GreetingText/GreetingText';
-import {addErrorMessage, addSystemMessage, removeChatMessage} from './chat';
+import type {LicenseState} from '@shared/license';
+import GreetingText from '@/components/dialog/chat/GreetingText/GreetingText';
+import {addErrorMessage, addSystemMessage, removeChatMessage} from '@/store/chat/chat.store';
 
 export const $licenseState = atom<Optional<LicenseState>>(null);
 export const $initialized = atom<boolean>(false);

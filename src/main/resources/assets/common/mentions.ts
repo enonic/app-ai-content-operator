@@ -1,5 +1,5 @@
 import {SPECIAL_NAMES} from '../../shared/enums';
-import type {Mention} from '../stores/data/Mention';
+import type {Mention} from '@/store/content/Mention';
 
 export const MENTION_ALL = {
     path: SPECIAL_NAMES.all,

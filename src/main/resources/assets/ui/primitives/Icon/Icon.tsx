@@ -27,7 +27,7 @@ import {
     SvgIconGemini,
     SvgIconGeminiFlash,
     SvgIconGeminiPro,
-} from '../icons';
+} from './icons';
 
 const outlineIcons = {
     copy: HeroIconClipboardDocument,

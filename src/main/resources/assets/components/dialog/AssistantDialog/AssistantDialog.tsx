@@ -4,10 +4,10 @@ import {useEffect, useRef, useState} from 'react';
 import Draggable from 'react-draggable';
 import {twJoin} from 'tailwind-merge';
 
-import {$dialog} from '../../../stores/dialog';
-import {clearTarget} from '../../../stores/editor';
-import {mountWebSocket} from '../../../stores/websocket';
-import Resizable from '../../base/Resizable/Resizable';
+import {$dialog} from '@/store/dialog/dialog.store';
+import {clearTarget} from '@/store/editor/editor.store';
+import {mountWebSocket} from '@/store/websocket/websocket.store';
+import Resizable from '@/ui/primitives/Resizable/Resizable';
 import AssistantContent from '../AssistantContent/AssistantContent';
 import AssistantHeader from '../header/AssistantHeader/AssistantHeader';
 import './AssistantDialog.css';
