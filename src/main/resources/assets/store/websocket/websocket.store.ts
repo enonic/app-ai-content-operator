@@ -214,7 +214,7 @@ function connect(): void {
         metadata: createMetadata(),
       });
       clearTimeout(pongTimeout);
-      pongTimeout = setTimeout(() => {
+      pongTimeout = window.setTimeout(() => {
         disconnect();
       }, PONG_TIMEOUT);
     }, PING_INTERVAL);
@@ -390,7 +390,7 @@ function sendGenerateMessage(payload: GenerateMessagePayload): void {
   $buffer.setKey('generationId', metadata.id);
 
   clearTimeout(stopTimeout);
-  stopTimeout = setTimeout(() => {
+  stopTimeout = window.setTimeout(() => {
     sendStop(MessageRole.SYSTEM);
   }, STOP_ANALYSIS_TIMEOUT);
 }
@@ -497,7 +497,7 @@ function handleAnalyzedMessage({ request, result }: AnalyzedMessagePayload): voi
   $buffer.setKey('modelMessageId', modelMessage.id);
 
   clearTimeout(stopTimeout);
-  stopTimeout = setTimeout(() => {
+  stopTimeout = window.setTimeout(() => {
     sendStop(MessageRole.SYSTEM);
   }, STOP_GENERATION_TIMEOUT);
 }
