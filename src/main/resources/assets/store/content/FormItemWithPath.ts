@@ -1,5 +1,5 @@
-import type {Path} from './Path';
-import type {FormItem, FormItemSet, FormOptionSet, FormOptionSetOption, Input} from './Schema';
+import type { Path } from './Path';
+import type { FormItem, FormItemSet, FormOptionSet, FormOptionSetOption, Input } from './Schema';
 
 export type FormItemWithPath = FormItem & Path;
 

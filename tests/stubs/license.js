@@ -1,8 +1,8 @@
 // Runtime stub for `/lib/license` used by vitest.
 const stub = {
-    installLicense: () => undefined,
-    uninstallLicense: () => undefined,
-    validateLicense: () => null,
+  installLicense: () => undefined,
+  uninstallLicense: () => undefined,
+  validateLicense: () => null,
 };
 
 export default stub;

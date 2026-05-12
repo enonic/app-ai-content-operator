@@ -1,92 +1,94 @@
-import {useStore} from '@nanostores/react';
-import {t} from 'i18next';
-import {useEffect, useMemo, useRef} from 'react';
-import {twJoin} from 'tailwind-merge';
+import { useStore } from '@nanostores/react';
+import { t } from 'i18next';
+import { useEffect, useMemo, useRef } from 'react';
+import { twJoin } from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../shared/enums';
-import {messageContentToValues} from '../../../../common/messages';
-import {$fieldDescriptors, $orderedPaths} from '@/store/content/content.store';
-import type {ModelChatMessageContent} from '@/store/content/ChatMessage';
-import type {MessageItem} from '@/store/content/MessageItems';
+import { SPECIAL_NAMES } from '../../../../../shared/enums';
+import { messageContentToValues } from '../../../../common/messages';
+import { $fieldDescriptors, $orderedPaths } from '@/store/content/content.store';
+import type { ModelChatMessageContent } from '@/store/content/ChatMessage';
+import type { MessageItem } from '@/store/content/MessageItems';
 import CommonItem from '../items/CommonItem/CommonItem';
 import ElementItem from '../items/ElementItem/ElementItem';
 
 type Props = {
-    messageId: string;
-    content: Required<ModelChatMessageContent>;
-    last: boolean;
+  messageId: string;
+  content: Required<ModelChatMessageContent>;
+  last: boolean;
 };
 
-export function AssistantMessageList({messageId, content, last}: Props): React.ReactNode {
-    const fieldDescriptors = useStore($fieldDescriptors);
-    const orderedPaths = useStore($orderedPaths);
+export function AssistantMessageList({ messageId, content, last }: Props): React.ReactNode {
+  const fieldDescriptors = useStore($fieldDescriptors);
+  const orderedPaths = useStore($orderedPaths);
 
-    const ref = useRef<HTMLUListElement>(null);
+  const ref = useRef<HTMLUListElement>(null);
 
-    useEffect(() => {
-        if (last && ref.current) {
-            ref.current.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+  useEffect(() => {
+    if (last && ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+    }
+  }, [ref, last]);
+
+  const sortedEntries = useMemo((): [string, MessageItem][] => {
+    const descriptorNames = fieldDescriptors.map((descriptor) => descriptor.name);
+
+    const entries = Object.entries(messageContentToValues(content));
+    const commonEntries = entries.filter(([key]) => key === SPECIAL_NAMES.common);
+    const elementEntries = entries.filter(([key]) => descriptorNames.includes(key));
+
+    elementEntries.sort((a, b) => {
+      const indexA = orderedPaths.indexOf(a[0]);
+      const indexB = orderedPaths.indexOf(b[0]);
+
+      // If path not found in orderedPaths, place at the end
+      if (indexA === -1) {
+        return 1;
+      }
+      if (indexB === -1) {
+        return -1;
+      }
+
+      return indexA - indexB;
+    });
+
+    const sortedEntries = [...commonEntries, ...elementEntries];
+
+    return sortedEntries.length > 0
+      ? sortedEntries
+      : [[SPECIAL_NAMES.common, t('field.error.entries.empty')]];
+  }, [content, fieldDescriptors, orderedPaths]);
+
+  return (
+    <ul className="flex flex-col divide-y overflow-hidden rounded" ref={ref}>
+      {sortedEntries.map(([key, value], _, arr) => {
+        if (key === SPECIAL_NAMES.common) {
+          const hasOtherContent = arr.length > 1;
+          return (
+            <CommonItem
+              key={key}
+              className={twJoin('p-2 border-dashed', hasOtherContent && '!border-b')}
+              value={value}
+              last={last}
+            />
+          );
         }
-    }, [ref, last]);
 
-    const sortedEntries = useMemo((): [string, MessageItem][] => {
-        const descriptorNames = fieldDescriptors.map(descriptor => descriptor.name);
+        const descriptor = fieldDescriptors.find((descriptor) => descriptor.name === key);
+        if (!descriptor) {
+          return undefined;
+        }
 
-        const entries = Object.entries(messageContentToValues(content));
-        const commonEntries = entries.filter(([key]) => key === SPECIAL_NAMES.common);
-        const elementEntries = entries.filter(([key]) => descriptorNames.includes(key));
-
-        elementEntries.sort((a, b) => {
-            const indexA = orderedPaths.indexOf(a[0]);
-            const indexB = orderedPaths.indexOf(b[0]);
-
-            // If path not found in orderedPaths, place at the end
-            if (indexA === -1) {
-                return 1;
-            }
-            if (indexB === -1) {
-                return -1;
-            }
-
-            return indexA - indexB;
-        });
-
-        const sortedEntries = [...commonEntries, ...elementEntries];
-
-        return sortedEntries.length > 0 ? sortedEntries : [[SPECIAL_NAMES.common, t('field.error.entries.empty')]];
-    }, [content, fieldDescriptors, orderedPaths]);
-
-    return (
-        <ul className='flex flex-col divide-y rounded overflow-hidden' ref={ref}>
-            {sortedEntries.map(([key, value], _, arr) => {
-                if (key === SPECIAL_NAMES.common) {
-                    const hasOtherContent = arr.length > 1;
-                    return (
-                        <CommonItem
-                            key={key}
-                            className={twJoin('p-2 border-dashed', hasOtherContent && '!border-b')}
-                            value={value}
-                            last={last}
-                        />
-                    );
-                }
-
-                const descriptor = fieldDescriptors.find(descriptor => descriptor.name === key);
-                if (!descriptor) {
-                    return undefined;
-                }
-
-                return (
-                    <ElementItem
-                        key={key}
-                        className={'p-2 border-dashed last:!border-b'}
-                        messageId={messageId}
-                        descriptor={descriptor}
-                        value={value}
-                        last={last}
-                    />
-                );
-            })}
-        </ul>
-    );
+        return (
+          <ElementItem
+            key={key}
+            className={'border-dashed p-2 last:!border-b'}
+            messageId={messageId}
+            descriptor={descriptor}
+            value={value}
+            last={last}
+          />
+        );
+      })}
+    </ul>
+  );
 }

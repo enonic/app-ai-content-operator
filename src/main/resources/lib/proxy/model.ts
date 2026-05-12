@@ -1,15 +1,15 @@
-import type {Message} from '../../shared/model';
-import type {ModelParameters} from '../../shared/modes';
-import type {Schema} from '../google/types';
+import type { Message } from '../../shared/model';
+import type { ModelParameters } from '../../shared/modes';
+import type { Schema } from '../google/types';
 
 export type ModelProxy = {
-    generate(): Try<string>;
+  generate(): Try<string>;
 };
 
 export type ModelProxyConfig = {
-    url: string;
-    instructions: string;
-    modelParameters: ModelParameters;
-    messages: Message[];
-    schema?: Schema;
+  url: string;
+  instructions: string;
+  modelParameters: ModelParameters;
+  messages: Message[];
+  schema?: Schema;
 };

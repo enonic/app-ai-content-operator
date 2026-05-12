@@ -1,21 +1,21 @@
-import type {RenderElementProps} from 'slate-react';
+import type { RenderElementProps } from 'slate-react';
 
-import type {Props as MentionElementProps} from '../MentionElement/MentionElement';
+import type { Props as MentionElementProps } from '../MentionElement/MentionElement';
 import MentionElement from '../MentionElement/MentionElement';
 
 type Props = MentionElementProps | RenderElementProps;
 
 function isMentionProps(props: Props): props is MentionElementProps {
-    return 'element' in props && props.element.type === 'mention';
+  return 'element' in props && props.element.type === 'mention';
 }
 
 export default function PromptAreaElement(props: Props): React.ReactElement {
-    if (isMentionProps(props)) {
-        return <MentionElement {...props} />;
-    }
-    return (
-        <p {...props.attributes} className='relative min-h-6 pl-4 leading-6'>
-            {props.children as React.ReactNode}
-        </p>
-    );
+  if (isMentionProps(props)) {
+    return <MentionElement {...props} />;
+  }
+  return (
+    <p {...props.attributes} className="relative min-h-6 pl-4 leading-6">
+      {props.children as React.ReactNode}
+    </p>
+  );
 }

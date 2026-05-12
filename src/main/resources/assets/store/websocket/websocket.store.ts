@@ -1,65 +1,69 @@
-import {t} from 'i18next';
-import {atom, computed, map} from 'nanostores';
-import type {Descendant} from 'slate';
+import { t } from 'i18next';
+import { atom, computed, map } from 'nanostores';
+import type { Descendant } from 'slate';
 
-import {WS_PROTOCOL} from '@shared/constants';
+import { WS_PROTOCOL } from '@shared/constants';
 import type {
-    AnalyzedMessagePayload,
-    ClientMessage,
-    FailedMessagePayload,
-    GeneratedMessagePayload,
-    GenerateMessagePayload,
-    LicenseUpdatedPayload,
-    LicenseUpdatedStatePayload,
-    MessageMetadata,
-    ServerMessage} from '@shared/websocket';
-import {
-    MessageType
+  AnalyzedMessagePayload,
+  ClientMessage,
+  FailedMessagePayload,
+  GeneratedMessagePayload,
+  GenerateMessagePayload,
+  LicenseUpdatedPayload,
+  LicenseUpdatedStatePayload,
+  MessageMetadata,
+  ServerMessage,
 } from '@shared/websocket';
-import {parseNodes, parseText} from '@/common/slate';
+import { MessageType } from '@shared/websocket';
+import { parseNodes, parseText } from '@/common/slate';
 import {
-    addErrorMessage,
-    addModelMessage,
-    addStoppedMessage,
-    addUserMessage,
-    createAnalysisHistory,
-    createGenerationHistory,
-    getUserMessageById,
-    markAllNextMessagesInactive,
-    updateModelMessage,
-    updateUserMessage,
+  addErrorMessage,
+  addModelMessage,
+  addStoppedMessage,
+  addUserMessage,
+  createAnalysisHistory,
+  createGenerationHistory,
+  getUserMessageById,
+  markAllNextMessagesInactive,
+  updateModelMessage,
+  updateUserMessage,
 } from '@/store/chat/chat.store';
-import {$config} from '@/store/config/config.store';
-import {$context} from '@/store/context/context.store';
-import {$contentPath, $fieldDescriptors, $language, createFields} from '@/store/content/content.store';
-import {MessageRole} from '@/store/content/MessageType';
-import {$licenseState} from '@/store/license/license.store';
-import {getAllPathsFromString, pathToString} from '@/store/utils/path';
+import { $config } from '@/store/config/config.store';
+import { $context } from '@/store/context/context.store';
+import {
+  $contentPath,
+  $fieldDescriptors,
+  $language,
+  createFields,
+} from '@/store/content/content.store';
+import { MessageRole } from '@/store/content/MessageType';
+import { $licenseState } from '@/store/license/license.store';
+import { getAllPathsFromString, pathToString } from '@/store/utils/path';
 
 type WebSocketLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
 
 type WebSocketState = 'connecting' | 'connected' | 'disconnecting' | 'disconnected';
 
 type WebSocketStore = {
-    lifecycle: WebSocketLifecycle;
-    state: WebSocketState;
-    connection: Optional<WebSocket>;
-    online: boolean;
-    reconnectAttempts: number;
+  lifecycle: WebSocketLifecycle;
+  state: WebSocketState;
+  connection: Optional<WebSocket>;
+  online: boolean;
+  reconnectAttempts: number;
 };
 
 export const $websocket = map<WebSocketStore>({
-    lifecycle: 'unmounted',
-    state: 'disconnected',
-    connection: null,
-    online: navigator.onLine,
-    reconnectAttempts: 0,
+  lifecycle: 'unmounted',
+  state: 'disconnected',
+  connection: null,
+  online: navigator.onLine,
+  reconnectAttempts: 0,
 });
 
 type Buffer = {
-    generationId?: string;
-    userMessageId?: string;
-    modelMessageId?: string;
+  generationId?: string;
+  userMessageId?: string;
+  modelMessageId?: string;
 };
 
 const $buffer = map<Buffer>({});
@@ -70,76 +74,90 @@ const $lastPayload = atom<Optional<Readonly<GenerateMessagePayload>>>(null);
 //* State
 //
 
-export const $isBusy = computed($buffer, ({generationId, userMessageId, modelMessageId}): boolean => {
+export const $isBusy = computed(
+  $buffer,
+  ({ generationId, userMessageId, modelMessageId }): boolean => {
     return generationId != null || userMessageId != null || modelMessageId != null;
-});
+  },
+);
 
-export const $busyAnalyzing = computed($buffer, ({generationId, userMessageId, modelMessageId}): boolean => {
+export const $busyAnalyzing = computed(
+  $buffer,
+  ({ generationId, userMessageId, modelMessageId }): boolean => {
     return generationId != null && userMessageId != null && modelMessageId == null;
-});
+  },
+);
 
-const $reconnectTimeout = computed($websocket, ({reconnectAttempts}) =>
-    Math.min(2 ** reconnectAttempts * 1000, 30_000),
+const $reconnectTimeout = computed($websocket, ({ reconnectAttempts }) =>
+  Math.min(2 ** reconnectAttempts * 1000, 30_000),
 );
 
 function incrementReconnectAttempts(): void {
-    $websocket.setKey('reconnectAttempts', $websocket.get().reconnectAttempts + 1);
+  $websocket.setKey('reconnectAttempts', $websocket.get().reconnectAttempts + 1);
 }
 
-export const $isConnected = computed($websocket, ({connection, state, online}) => {
-    return connection != null && connection.readyState === WebSocket.OPEN && state === 'connected' && online;
+export const $isConnected = computed($websocket, ({ connection, state, online }) => {
+  return (
+    connection != null &&
+    connection.readyState === WebSocket.OPEN &&
+    state === 'connected' &&
+    online
+  );
 });
 
 function isActiveConnection(connection: Optional<WebSocket>): connection is WebSocket {
-    return (
-        connection != null &&
-        (connection.readyState === WebSocket.OPEN || connection.readyState === WebSocket.CONNECTING)
-    );
+  return (
+    connection != null &&
+    (connection.readyState === WebSocket.OPEN || connection.readyState === WebSocket.CONNECTING)
+  );
 }
 
 //
 //* Lifecycle
 //
 
-const $needsUnmount = computed([$websocket, $isBusy], ({lifecycle}, isBusy) => lifecycle === 'unmounting' && !isBusy);
+const $needsUnmount = computed(
+  [$websocket, $isBusy],
+  ({ lifecycle }, isBusy) => lifecycle === 'unmounting' && !isBusy,
+);
 
 let unsubscribeUnmount: Optional<() => void>;
 
 export function mountWebSocket(): () => void {
-    const {lifecycle} = $websocket.get();
+  const { lifecycle } = $websocket.get();
 
-    if (lifecycle === 'unmounting' || lifecycle === 'unmounted') {
-        unsubscribeUnmount?.();
+  if (lifecycle === 'unmounting' || lifecycle === 'unmounted') {
+    unsubscribeUnmount?.();
 
-        $websocket.setKey('lifecycle', 'mounting');
-        $websocket.setKey('online', navigator.onLine);
+    $websocket.setKey('lifecycle', 'mounting');
+    $websocket.setKey('online', navigator.onLine);
 
-        window.addEventListener('online', handleOnline);
-        window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
-        connect();
+    connect();
 
-        $websocket.setKey('lifecycle', 'mounted');
-    }
+    $websocket.setKey('lifecycle', 'mounted');
+  }
 
-    return () => {
-        $websocket.setKey('lifecycle', 'unmounting');
-        unsubscribeUnmount = $needsUnmount.subscribe(needsUnmount => {
-            if (!needsUnmount) {
-                return;
-            }
+  return () => {
+    $websocket.setKey('lifecycle', 'unmounting');
+    unsubscribeUnmount = $needsUnmount.subscribe((needsUnmount) => {
+      if (!needsUnmount) {
+        return;
+      }
 
-            // `subscribe` may be undefined if handler is called instantly
-            setTimeout(() => unsubscribeUnmount?.(), 0);
+      // `subscribe` may be undefined if handler is called instantly
+      setTimeout(() => unsubscribeUnmount?.(), 0);
 
-            disconnect();
+      disconnect();
 
-            window.removeEventListener('online', handleOnline);
-            window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
 
-            $websocket.setKey('lifecycle', 'unmounted');
-        });
-    };
+      $websocket.setKey('lifecycle', 'unmounted');
+    });
+  };
 }
 
 //
@@ -159,131 +177,131 @@ let reconnectTimeout: number;
 let stopTimeout: number;
 
 function connect(): void {
-    const {state, connection} = $websocket.get();
+  const { state, connection } = $websocket.get();
 
-    if (state === 'connecting' || state === 'connected') {
-        return;
+  if (state === 'connecting' || state === 'connected') {
+    return;
+  }
+
+  if (isActiveConnection(connection)) {
+    cleanup(connection);
+  }
+
+  const { wsServiceUrl } = $config.get();
+  const ws = new WebSocket(wsServiceUrl, [WS_PROTOCOL]);
+  $websocket.setKey('connection', ws);
+
+  $websocket.setKey('state', 'connecting');
+  const connectionTimeout = setTimeout(() => {
+    if ($websocket.get().state === 'connecting') {
+      ws.close();
     }
+  }, CONNECTION_TIMEOUT);
 
-    if (isActiveConnection(connection)) {
-        cleanup(connection);
-    }
+  ws.onopen = () => {
+    clearTimeout(connectionTimeout);
 
-    const {wsServiceUrl} = $config.get();
-    const ws = new WebSocket(wsServiceUrl, [WS_PROTOCOL]);
-    $websocket.setKey('connection', ws);
+    $websocket.setKey('reconnectAttempts', 0);
 
-    $websocket.setKey('state', 'connecting');
-    const connectionTimeout = setTimeout(() => {
-        if ($websocket.get().state === 'connecting') {
-            ws.close();
-        }
-    }, CONNECTION_TIMEOUT);
+    sendMessage({
+      type: MessageType.CONNECT,
+      metadata: createMetadata(),
+    });
 
-    ws.onopen = () => {
-        clearTimeout(connectionTimeout);
+    pingInterval = window.setInterval(() => {
+      sendMessage({
+        type: MessageType.PING,
+        metadata: createMetadata(),
+      });
+      clearTimeout(pongTimeout);
+      pongTimeout = setTimeout(() => {
+        disconnect();
+      }, PONG_TIMEOUT);
+    }, PING_INTERVAL);
+  };
 
-        $websocket.setKey('reconnectAttempts', 0);
+  ws.onmessage = handleMessage;
 
-        sendMessage({
-            type: MessageType.CONNECT,
-            metadata: createMetadata(),
-        });
+  ws.onclose = () => {
+    clearTimeout(connectionTimeout);
+    cleanup(ws);
+    scheduleReconnect();
+  };
 
-        pingInterval = window.setInterval(() => {
-            sendMessage({
-                type: MessageType.PING,
-                metadata: createMetadata(),
-            });
-            clearTimeout(pongTimeout);
-            pongTimeout = setTimeout(() => {
-                disconnect();
-            }, PONG_TIMEOUT);
-        }, PING_INTERVAL);
-    };
-
-    ws.onmessage = handleMessage;
-
-    ws.onclose = () => {
-        clearTimeout(connectionTimeout);
-        cleanup(ws);
-        scheduleReconnect();
-    };
-
-    ws.onerror = e => {
-        console.error(e);
-    };
+  ws.onerror = (e) => {
+    console.error(e);
+  };
 }
 
 function disconnect(): void {
-    const {state, connection} = $websocket.get();
-    if (state !== 'disconnected' && state !== 'disconnecting') {
-        $websocket.setKey('state', 'disconnecting');
-        sendMessage({
-            type: MessageType.DISCONNECT,
-            metadata: createMetadata(),
-        });
-    }
+  const { state, connection } = $websocket.get();
+  if (state !== 'disconnected' && state !== 'disconnecting') {
+    $websocket.setKey('state', 'disconnecting');
+    sendMessage({
+      type: MessageType.DISCONNECT,
+      metadata: createMetadata(),
+    });
+  }
 
-    if (isActiveConnection(connection)) {
-        connection.onerror = null;
-        connection.close();
-    }
+  if (isActiveConnection(connection)) {
+    connection.onerror = null;
+    connection.close();
+  }
 }
 
 function handleOnline(): void {
-    $websocket.setKey('online', true);
+  $websocket.setKey('online', true);
 }
 
 function handleOffline(): void {
-    $websocket.setKey('online', false);
-    $websocket.setKey('reconnectAttempts', 0);
-    disconnect();
+  $websocket.setKey('online', false);
+  $websocket.setKey('reconnectAttempts', 0);
+  disconnect();
 }
 
 function scheduleReconnect(): void {
-    const {lifecycle, reconnectAttempts} = $websocket.get();
-    if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
-        console.warn(`Max reconnect attempts reached: ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}`);
-        return;
-    }
+  const { lifecycle, reconnectAttempts } = $websocket.get();
+  if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+    console.warn(`Max reconnect attempts reached: ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}`);
+    return;
+  }
 
-    if (lifecycle === 'unmounting' || lifecycle === 'unmounted') {
-        return;
-    }
+  if (lifecycle === 'unmounting' || lifecycle === 'unmounted') {
+    return;
+  }
 
-    incrementReconnectAttempts();
-    reconnectTimeout = window.setTimeout(() => {
-        connect();
-    }, $reconnectTimeout.get());
+  incrementReconnectAttempts();
+  reconnectTimeout = window.setTimeout(() => {
+    connect();
+  }, $reconnectTimeout.get());
 }
 
 function cleanup(ws: WebSocket): void {
-    if (isActiveConnection(ws)) {
-        ws.close();
-    }
+  if (isActiveConnection(ws)) {
+    ws.close();
+  }
 
-    const {connection} = $websocket.get();
-    if (ws !== connection) {
-        return;
-    }
+  const { connection } = $websocket.get();
+  if (ws !== connection) {
+    return;
+  }
 
-    clearInterval(pingInterval);
-    clearTimeout(reconnectTimeout);
-    clearTimeout(pongTimeout);
-    clearTimeout(stopTimeout);
+  clearInterval(pingInterval);
+  clearTimeout(reconnectTimeout);
+  clearTimeout(pongTimeout);
+  clearTimeout(stopTimeout);
 
-    $websocket.setKey('state', 'disconnected');
-    $websocket.setKey('connection', null);
-    $websocket.setKey('online', navigator.onLine);
-    $buffer.set({});
+  $websocket.setKey('state', 'disconnected');
+  $websocket.setKey('connection', null);
+  $websocket.setKey('online', navigator.onLine);
+  $buffer.set({});
 }
 
 function handleDisconnected(): void {
-    const {connection} = $websocket.get();
-    if (isActiveConnection(connection)) {
-        connection.close();
-    }
+  const { connection } = $websocket.get();
+  if (isActiveConnection(connection)) {
+    connection.close();
+  }
 }
 
 //
@@ -291,40 +309,40 @@ function handleDisconnected(): void {
 //
 
 function handleMessage(event: MessageEvent<string>): void {
-    const message = JSON.parse(event.data) as ServerMessage;
+  const message = JSON.parse(event.data) as ServerMessage;
 
-    switch (message.type) {
-        case MessageType.CONNECTED:
-            $websocket.setKey('state', 'connected');
-            break;
+  switch (message.type) {
+    case MessageType.CONNECTED:
+      $websocket.setKey('state', 'connected');
+      break;
 
-        case MessageType.LICENSE_UPDATED:
-            handleLicenseUpdatedMessage(message.payload);
-            break;
+    case MessageType.LICENSE_UPDATED:
+      handleLicenseUpdatedMessage(message.payload);
+      break;
 
-        case MessageType.ANALYZED: {
-            handleAnalyzedMessage(message.payload);
-            break;
-        }
-
-        case MessageType.GENERATED: {
-            handleGeneratedMessage(message.payload);
-            break;
-        }
-
-        case MessageType.FAILED: {
-            handleFailedMessage(message.payload);
-            break;
-        }
-
-        case MessageType.DISCONNECTED:
-            handleDisconnected();
-            break;
-
-        case MessageType.PONG:
-            clearTimeout(pongTimeout);
-            break;
+    case MessageType.ANALYZED: {
+      handleAnalyzedMessage(message.payload);
+      break;
     }
+
+    case MessageType.GENERATED: {
+      handleGeneratedMessage(message.payload);
+      break;
+    }
+
+    case MessageType.FAILED: {
+      handleFailedMessage(message.payload);
+      break;
+    }
+
+    case MessageType.DISCONNECTED:
+      handleDisconnected();
+      break;
+
+    case MessageType.PONG:
+      clearTimeout(pongTimeout);
+      break;
+  }
 }
 
 //
@@ -332,49 +350,49 @@ function handleMessage(event: MessageEvent<string>): void {
 //
 
 function createMetadata(): MessageMetadata {
-    return {
-        id: crypto.randomUUID(),
-        timestamp: Date.now(),
-    };
+  return {
+    id: crypto.randomUUID(),
+    timestamp: Date.now(),
+  };
 }
 
 function createGenerateMessagePayload(prompt: string): GenerateMessagePayload {
-    const payload: GenerateMessagePayload = {
-        prompt,
-        instructions: $config.get().instructions,
-        history: {
-            analysis: createAnalysisHistory(),
-            generation: createGenerationHistory(),
-        },
-        meta: {
-            language: $language.get(),
-            contentPath: $contentPath.get(),
-        },
-        fields: createFields(),
-    };
+  const payload: GenerateMessagePayload = {
+    prompt,
+    instructions: $config.get().instructions,
+    history: {
+      analysis: createAnalysisHistory(),
+      generation: createGenerationHistory(),
+    },
+    meta: {
+      language: $language.get(),
+      contentPath: $contentPath.get(),
+    },
+    fields: createFields(),
+  };
 
-    $lastPayload.set(structuredClone(payload));
+  $lastPayload.set(structuredClone(payload));
 
-    return payload;
+  return payload;
 }
 
 function sendMessage(message: ClientMessage): void {
-    const {connection} = $websocket.get();
-    if (connection?.readyState === WebSocket.OPEN) {
-        connection.send(JSON.stringify(message));
-    }
+  const { connection } = $websocket.get();
+  if (connection?.readyState === WebSocket.OPEN) {
+    connection.send(JSON.stringify(message));
+  }
 }
 
 function sendGenerateMessage(payload: GenerateMessagePayload): void {
-    const metadata = createMetadata();
-    sendMessage({type: MessageType.GENERATE, metadata, payload});
+  const metadata = createMetadata();
+  sendMessage({ type: MessageType.GENERATE, metadata, payload });
 
-    $buffer.setKey('generationId', metadata.id);
+  $buffer.setKey('generationId', metadata.id);
 
-    clearTimeout(stopTimeout);
-    stopTimeout = setTimeout(() => {
-        sendStop(MessageRole.SYSTEM);
-    }, STOP_ANALYSIS_TIMEOUT);
+  clearTimeout(stopTimeout);
+  stopTimeout = setTimeout(() => {
+    sendStop(MessageRole.SYSTEM);
+  }, STOP_ANALYSIS_TIMEOUT);
 }
 
 //
@@ -382,149 +400,151 @@ function sendGenerateMessage(payload: GenerateMessagePayload): void {
 //
 
 export function sendStop(role: Exclude<MessageRole, 'model'>): void {
-    if (!$isConnected.get()) {
-        return;
-    }
+  if (!$isConnected.get()) {
+    return;
+  }
 
-    const {generationId, modelMessageId} = $buffer.get();
-    if (!generationId) {
-        return;
-    }
+  const { generationId, modelMessageId } = $buffer.get();
+  if (!generationId) {
+    return;
+  }
 
-    sendMessage({type: MessageType.STOP, metadata: createMetadata(), payload: {generationId}});
-    addStoppedMessage(role, modelMessageId);
+  sendMessage({ type: MessageType.STOP, metadata: createMetadata(), payload: { generationId } });
+  addStoppedMessage(role, modelMessageId);
 
-    clearTimeout(stopTimeout);
-    $buffer.set({});
+  clearTimeout(stopTimeout);
+  $buffer.set({});
 }
 
 export function sendPrompt(nodes: Descendant[]): void {
-    if (!$isConnected.get()) {
-        return;
-    }
+  if (!$isConnected.get()) {
+    return;
+  }
 
-    const node = parseNodes(nodes);
-    const prompt = parseText(nodes);
-    const contextData = makeContextData();
+  const node = parseNodes(nodes);
+  const prompt = parseText(nodes);
+  const contextData = makeContextData();
 
-    const message = addUserMessage({node, prompt, contextData});
-    if (!message) {
-        return;
-    }
+  const message = addUserMessage({ node, prompt, contextData });
+  if (!message) {
+    return;
+  }
 
-    $buffer.setKey('userMessageId', message.id);
+  $buffer.setKey('userMessageId', message.id);
 
-    const payload = createGenerateMessagePayload(prompt);
-    sendGenerateMessage(payload);
+  const payload = createGenerateMessagePayload(prompt);
+  sendGenerateMessage(payload);
 }
 
 export function sendRetry(userMessageId: string): void {
-    if (!$isConnected.get()) {
-        return;
-    }
+  if (!$isConnected.get()) {
+    return;
+  }
 
-    const userMessage = getUserMessageById(userMessageId);
-    if (!userMessage) {
-        addErrorMessage(t('text.error.message.repeat.notFound'));
-        return;
-    }
+  const userMessage = getUserMessageById(userMessageId);
+  if (!userMessage) {
+    addErrorMessage(t('text.error.message.repeat.notFound'));
+    return;
+  }
 
-    markAllNextMessagesInactive(userMessage.id);
+  markAllNextMessagesInactive(userMessage.id);
 
-    $buffer.setKey('userMessageId', userMessage.id);
+  $buffer.setKey('userMessageId', userMessage.id);
 
-    const payload = createGenerateMessagePayload(userMessage.content.prompt);
-    sendGenerateMessage(payload);
+  const payload = createGenerateMessagePayload(userMessage.content.prompt);
+  sendGenerateMessage(payload);
 }
 
 //
 //* Flow: Server → Client
 //
 
-function isLicenseStatePayload(payload: LicenseUpdatedPayload): payload is LicenseUpdatedStatePayload {
-    return 'licenseState' in payload;
+function isLicenseStatePayload(
+  payload: LicenseUpdatedPayload,
+): payload is LicenseUpdatedStatePayload {
+  return 'licenseState' in payload;
 }
 
 function handleLicenseUpdatedMessage(payload: LicenseUpdatedPayload): void {
-    if (isLicenseStatePayload(payload)) {
-        $licenseState.set(payload.licenseState);
-    } else {
-        $licenseState.set('MISSING');
-        console.log('Error on fetching license state', payload);
-    }
+  if (isLicenseStatePayload(payload)) {
+    $licenseState.set(payload.licenseState);
+  } else {
+    $licenseState.set('MISSING');
+    console.log('Error on fetching license state', payload);
+  }
 
-    // in case when attempt to analyze/generate was made and license was missing
-    clearTimeout(stopTimeout);
-    $buffer.set({});
+  // in case when attempt to analyze/generate was made and license was missing
+  clearTimeout(stopTimeout);
+  $buffer.set({});
 }
 
-function handleAnalyzedMessage({request, result}: AnalyzedMessagePayload): void {
-    const {userMessageId} = $buffer.get();
-    if (!userMessageId) {
-        return;
-    }
+function handleAnalyzedMessage({ request, result }: AnalyzedMessagePayload): void {
+  const { userMessageId } = $buffer.get();
+  if (!userMessageId) {
+    return;
+  }
 
-    const userMessage = updateUserMessage(userMessageId, {analysisPrompt: request});
-    if (!userMessage) {
-        return;
-    }
+  const userMessage = updateUserMessage(userMessageId, { analysisPrompt: request });
+  if (!userMessage) {
+    return;
+  }
 
-    const modelMessage = addModelMessage(result, userMessage.id);
-    if (!modelMessage) {
-        return;
-    }
+  const modelMessage = addModelMessage(result, userMessage.id);
+  if (!modelMessage) {
+    return;
+  }
 
-    $buffer.setKey('modelMessageId', modelMessage.id);
+  $buffer.setKey('modelMessageId', modelMessage.id);
 
-    clearTimeout(stopTimeout);
-    stopTimeout = setTimeout(() => {
-        sendStop(MessageRole.SYSTEM);
-    }, STOP_GENERATION_TIMEOUT);
+  clearTimeout(stopTimeout);
+  stopTimeout = setTimeout(() => {
+    sendStop(MessageRole.SYSTEM);
+  }, STOP_GENERATION_TIMEOUT);
 }
 
-function handleGeneratedMessage({request, result}: GeneratedMessagePayload): void {
-    const {userMessageId, modelMessageId} = $buffer.get();
-    if (!userMessageId || !modelMessageId) {
-        return;
-    }
+function handleGeneratedMessage({ request, result }: GeneratedMessagePayload): void {
+  const { userMessageId, modelMessageId } = $buffer.get();
+  if (!userMessageId || !modelMessageId) {
+    return;
+  }
 
-    updateUserMessage(userMessageId, {generationPrompt: request});
-    updateModelMessage(modelMessageId, result);
+  updateUserMessage(userMessageId, { generationPrompt: request });
+  updateModelMessage(modelMessageId, result);
 
-    clearTimeout(stopTimeout);
-    $buffer.set({});
+  clearTimeout(stopTimeout);
+  $buffer.set({});
 }
 
 function handleFailedMessage(payload: FailedMessagePayload): void {
-    addErrorMessage(payload, $buffer.get().modelMessageId);
+  addErrorMessage(payload, $buffer.get().modelMessageId);
 
-    clearTimeout(stopTimeout);
-    $buffer.set({});
+  clearTimeout(stopTimeout);
+  $buffer.set({});
 }
 
-function makeContextData(): {name: string; title: string; displayName: string} | undefined {
-    const context = $context.get();
+function makeContextData(): { name: string; title: string; displayName: string } | undefined {
+  const context = $context.get();
 
-    if (!context) {
-        return;
-    }
+  if (!context) {
+    return;
+  }
 
-    const paths = context ? getAllPathsFromString(context) : [];
-    const contextItem = paths.pop();
+  const paths = context ? getAllPathsFromString(context) : [];
+  const contextItem = paths.pop();
 
-    if (!contextItem) {
-        return;
-    }
+  if (!contextItem) {
+    return;
+  }
 
-    const key = pathToString(contextItem);
-    const fieldDescriptors = $fieldDescriptors.get();
-    const descriptor = fieldDescriptors.find(descriptor => descriptor.name === key);
+  const key = pathToString(contextItem);
+  const fieldDescriptors = $fieldDescriptors.get();
+  const descriptor = fieldDescriptors.find((descriptor) => descriptor.name === key);
 
-    return descriptor
-        ? {
-              name: descriptor.name,
-              title: descriptor.displayName,
-              displayName: descriptor.displayName.split('/').pop() as string,
-          }
-        : undefined;
+  return descriptor
+    ? {
+        name: descriptor.name,
+        title: descriptor.displayName,
+        displayName: descriptor.displayName.split('/').pop() as string,
+      }
+    : undefined;
 }

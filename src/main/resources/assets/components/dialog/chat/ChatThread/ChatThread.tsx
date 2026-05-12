@@ -1,61 +1,61 @@
-import {useStore} from '@nanostores/react';
+import { useStore } from '@nanostores/react';
 import clsx from 'clsx';
-import {useEffect, useRef} from 'react';
-import {twJoin, twMerge} from 'tailwind-merge';
+import { useEffect, useRef } from 'react';
+import { twJoin, twMerge } from 'tailwind-merge';
 
-import {$history} from '@/store/chat/chat.store';
-import type {ChatMessage} from '@/store/content/ChatMessage';
-import {$initialized, $licenseState} from '@/store/license/license.store';
-import {$busyAnalyzing, $websocket} from '@/store/websocket/websocket.store';
+import { $history } from '@/store/chat/chat.store';
+import type { ChatMessage } from '@/store/content/ChatMessage';
+import { $initialized, $licenseState } from '@/store/license/license.store';
+import { $busyAnalyzing, $websocket } from '@/store/websocket/websocket.store';
 import LoadingMessage from '../LoadingMessage/LoadingMessage';
 import Message from '../Message/Message';
 
 export type Props = {
-    className?: string;
+  className?: string;
 };
 
 function scrollBottom(element: HTMLDivElement): void {
-    element.scrollTop = element.scrollHeight;
+  element.scrollTop = element.scrollHeight;
 }
 
 function createMessages(history: ChatMessage[], isLoading: boolean): React.ReactNode[] {
-    const messages = history.map((message, index) => {
-        const isLast = index === history.length - 1;
-        const animate = isLast && !isLoading;
-        const classNames = twJoin('first:mt-auto', animate && 'animate-slide-fade-in');
-        return <Message key={message.id} className={classNames} message={message} last={isLast} />;
-    });
+  const messages = history.map((message, index) => {
+    const isLast = index === history.length - 1;
+    const animate = isLast && !isLoading;
+    const classNames = twJoin('first:mt-auto', animate && 'animate-slide-fade-in');
+    return <Message key={message.id} className={classNames} message={message} last={isLast} />;
+  });
 
-    if (isLoading) {
-        messages.push(<LoadingMessage className='first:mt-auto animate-slide-fade-in' key='loading' />);
-    }
+  if (isLoading) {
+    messages.push(<LoadingMessage className="animate-slide-fade-in first:mt-auto" key="loading" />);
+  }
 
-    return messages;
+  return messages;
 }
 
-export default function ChatThread({className = ''}: Props): React.ReactNode {
-    const isInitialized = useStore($initialized);
-    const licenseState = useStore($licenseState);
-    const isConnecting = useStore($websocket, {keys: ['state']}).state === 'connecting';
-    const isBusyAnalyzing = useStore($busyAnalyzing);
-    const isLoading = !isInitialized || !licenseState || isConnecting || isBusyAnalyzing;
+export default function ChatThread({ className = '' }: Props): React.ReactNode {
+  const isInitialized = useStore($initialized);
+  const licenseState = useStore($licenseState);
+  const isConnecting = useStore($websocket, { keys: ['state'] }).state === 'connecting';
+  const isBusyAnalyzing = useStore($busyAnalyzing);
+  const isLoading = !isInitialized || !licenseState || isConnecting || isBusyAnalyzing;
 
-    const history = useStore($history);
-    const count = history.length;
+  const history = useStore($history);
+  const count = history.length;
 
-    const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (ref.current) {
-            scrollBottom(ref.current);
-        }
-    }, [count]);
+  useEffect(() => {
+    if (ref.current) {
+      scrollBottom(ref.current);
+    }
+  }, [count]);
 
-    return (
-        <div ref={ref} className={twMerge('flex-1 overflow-y-auto scroll-smooth relative', className)}>
-            <div className={clsx('flex w-full h-full flex-col grow gap-6 px-3 pt-3')}>
-                {createMessages(history, isLoading)}
-            </div>
-        </div>
-    );
+  return (
+    <div ref={ref} className={twMerge('flex-1 overflow-y-auto scroll-smooth relative', className)}>
+      <div className={clsx('flex w-full h-full flex-col grow gap-6 px-3 pt-3')}>
+        {createMessages(history, isLoading)}
+      </div>
+    </div>
+  );
 }

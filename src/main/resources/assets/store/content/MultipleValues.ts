@@ -1,4 +1,4 @@
 export type MultipleValues = {
-    values: string[];
-    selectedIndex: number;
+  values: string[];
+  selectedIndex: number;
 };

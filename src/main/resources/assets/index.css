@@ -1,147 +1,147 @@
 @import 'tailwindcss' important;
 
-@plugin "@tailwindcss/typography";
-@plugin "tailwindcss-scoped-preflight" {
-    isolation-strategy: inside;
-    selector: .ai-content-operator;
+@plugin '@tailwindcss/typography';
+@plugin 'tailwindcss-scoped-preflight' {
+  isolation-strategy: inside;
+  selector: .ai-content-operator;
 }
 
 @theme {
-    --color-enonic-gray-100: #f7f7f7;
-    --color-enonic-gray-400: #acacac;
-    --color-enonic-gray-500: #999999;
-    --color-enonic-gray-600: #777777;
-    --color-enonic-gray-700: #333333;
+  --color-enonic-gray-100: #f7f7f7;
+  --color-enonic-gray-400: #acacac;
+  --color-enonic-gray-500: #999999;
+  --color-enonic-gray-600: #777777;
+  --color-enonic-gray-700: #333333;
 
-    --color-enonic-green: #609e24;
+  --color-enonic-green: #609e24;
 
-    --color-enonic-blue: #2c76e9;
-    --color-enonic-blue-400: #5a94ee;
-    --color-enonic-blue-500: #4279d9;
-    --color-enonic-blue-700: #1a56b8;
-    --color-enonic-blue-800: #123d8a;
+  --color-enonic-blue: #2c76e9;
+  --color-enonic-blue-400: #5a94ee;
+  --color-enonic-blue-500: #4279d9;
+  --color-enonic-blue-700: #1a56b8;
+  --color-enonic-blue-800: #123d8a;
 
-    --breakpoint-sm2: 720px;
+  --breakpoint-sm2: 720px;
 
-    --text-2xs: 0.625rem;
-    --text-header-title: 1.725rem;
+  --text-2xs: 0.625rem;
+  --text-header-title: 1.725rem;
 
-    --leading-initial: initial;
-    --leading-header-title: 2rem;
+  --leading-initial: initial;
+  --leading-header-title: 2rem;
 
-    --animate-slide-fade-in: slide-fade-in 300ms ease-in-out forwards;
-    --animate-move-gradient: move-gradient 3000ms linear infinite;
+  --animate-slide-fade-in: slide-fade-in 300ms ease-in-out forwards;
+  --animate-move-gradient: move-gradient 3000ms linear infinite;
 }
 
 @keyframes slide-fade-in {
-    0% {
-        opacity: 0;
-        padding-bottom: 0;
-        padding-top: 0.5rem;
-    }
-    100% {
-        opacity: 1;
-        padding-bottom: 0.5rem;
-        padding-top: 0;
-    }
+  0% {
+    opacity: 0;
+    padding-bottom: 0;
+    padding-top: 0.5rem;
+  }
+  100% {
+    opacity: 1;
+    padding-bottom: 0.5rem;
+    padding-top: 0;
+  }
 }
 
 @keyframes move-gradient {
-    0% {
-        background-position: 200% 0%;
-    }
-    100% {
-        background-position: -200% 0%;
-    }
+  0% {
+    background-position: 200% 0%;
+  }
+  100% {
+    background-position: -200% 0%;
+  }
 }
 
 @utility bg-gradient-middle {
-    background-image: linear-gradient(
-        90deg,
-        var(--tw-gradient-from) 25%,
-        var(--tw-gradient-to) 50%,
-        var(--tw-gradient-from) 75%
-    );
+  background-image: linear-gradient(
+    90deg,
+    var(--tw-gradient-from) 25%,
+    var(--tw-gradient-to) 50%,
+    var(--tw-gradient-from) 75%
+  );
 }
 
 @utility bg-gradient-fade-to-t {
-    background-image: linear-gradient(0deg, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 15%);
+  background-image: linear-gradient(0deg, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 15%);
 }
 
 @utility bg-text-gradient-size {
-    background-size: 200% 100%;
+  background-size: 200% 100%;
 }
 
 @utility grid-cols-mid-3 {
-    grid-template-columns: minmax(auto, min-content) 1fr minmax(auto, min-content);
+  grid-template-columns: minmax(auto, min-content) 1fr minmax(auto, min-content);
 }
 
 @utility grid-cols-fit-fit-1fr {
-    grid-template-columns: minmax(auto, min-content) minmax(auto, min-content) 1fr;
+  grid-template-columns: minmax(auto, min-content) minmax(auto, min-content) 1fr;
 }
 
 @utility transition-padding {
-    transition-property: padding;
-    transition-timing-function: var(--default-transition-timing-function, ease);
-    transition-duration: var(--default-transition-duration, 150ms);
+  transition-property: padding;
+  transition-timing-function: var(--default-transition-timing-function, ease);
+  transition-duration: var(--default-transition-duration, 150ms);
 }
 
 body.ai-content-operator-dragging > *:not(.ai-content-operator) {
-    pointer-events: none !important;
+  pointer-events: none !important;
 }
 
 @layer utilities {
-    .ai-content-operator-html-based a {
-        @apply underline text-blue-600 hover:text-blue-800 visited:text-purple-600;
-    }
+  .ai-content-operator-html-based a {
+    @apply text-blue-600 underline visited:text-purple-600 hover:text-blue-800;
+  }
 
-    .ai-content-operator li {
-        list-style: initial;
-    }
+  .ai-content-operator li {
+    list-style: initial;
+  }
 
-    .ai-content-operator ol > li {
-        list-style: decimal;
-    }
+  .ai-content-operator ol > li {
+    list-style: decimal;
+  }
 
-    .ai-content-operator ul > li {
-        list-style: disc;
-    }
+  .ai-content-operator ul > li {
+    list-style: disc;
+  }
 }
 
 @supports selector(::-webkit-scrollbar) {
-    .ai-content-operator-compact-scroll::-webkit-scrollbar {
-        width: 8px;
-        box-sizing: content-box;
-    }
+  .ai-content-operator-compact-scroll::-webkit-scrollbar {
+    width: 8px;
+    box-sizing: content-box;
+  }
 
-    .ai-content-operator-compact-scroll::-webkit-scrollbar-thumb {
-        background-color: var(--color-neutral-200);
-        border-radius: 2px;
-        border: 2px solid transparent;
-        background-clip: content-box;
-    }
+  .ai-content-operator-compact-scroll::-webkit-scrollbar-thumb {
+    background-color: var(--color-neutral-200);
+    border-radius: 2px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
 
-    .ai-content-operator-compact-scroll:-webkit-scrollbar-track {
-        background-color: rgba(0, 0, 0, 0);
-    }
+  .ai-content-operator-compact-scroll:-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+  }
 
-    .ai-content-operator-scroll::-webkit-scrollbar {
-        width: 14px;
-        box-sizing: content-box;
-    }
+  .ai-content-operator-scroll::-webkit-scrollbar {
+    width: 14px;
+    box-sizing: content-box;
+  }
 
-    .ai-content-operator-scroll::-webkit-scrollbar-thumb {
-        background-color: var(--color-enonic-gray-400);
-        border-radius: 7px;
-        border: 3px solid transparent;
-        background-clip: content-box;
-    }
+  .ai-content-operator-scroll::-webkit-scrollbar-thumb {
+    background-color: var(--color-enonic-gray-400);
+    border-radius: 7px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
 
-    .ai-content-operator-scroll::-webkit-scrollbar-track {
-        background-color: var(--color-neutral-50);
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
-        box-sizing: content-box;
-        background-clip: content-box;
-    }
+  .ai-content-operator-scroll::-webkit-scrollbar-track {
+    background-color: var(--color-neutral-50);
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-sizing: content-box;
+    background-clip: content-box;
+  }
 }

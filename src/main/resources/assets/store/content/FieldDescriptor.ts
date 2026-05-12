@@ -1,8 +1,8 @@
-import type {DataEntryType} from '../../../shared/data/DataEntry';
+import type { DataEntryType } from '../../../shared/data/DataEntry';
 
 export type FieldDescriptor = {
-    name: string;
-    label: string;
-    displayName: string;
-    type: DataEntryType;
+  name: string;
+  label: string;
+  displayName: string;
+  type: DataEntryType;
 };

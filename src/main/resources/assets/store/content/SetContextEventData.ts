@@ -1,3 +1,3 @@
 export type SetContextEventData = {
-    sourceDataPath: string;
+  sourceDataPath: string;
 };

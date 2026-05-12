@@ -15,21 +15,21 @@ ignoredBuiltDependencies:
 minimumReleaseAge: 1440
 
 minimumReleaseAgeExclude:
-  - "@enonic/ui"
-  - "@enonic-types/*"
-  - "@typescript/native-preview*"
+  - '@enonic/ui'
+  - '@enonic-types/*'
+  - '@typescript/native-preview*'
 
 onlyBuiltDependencies:
   - esbuild
 
 overrides:
-  vite: "catalog:"
-  vitest: "catalog:"
+  vite: 'catalog:'
+  vitest: 'catalog:'
 
 peerDependencyRules:
   allowAny:
     - vite
     - vitest
   allowedVersions:
-    vite: "*"
-    vitest: "*"
+    vite: '*'
+    vitest: '*'

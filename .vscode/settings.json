@@ -1,12 +1,39 @@
 {
-    "oxc.path.oxlint": "./node_modules/vite-plus/bin/oxlint",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.oxc": "explicit"
-    },
-    "editor.tabSize": 4,
-    "js/ts.experimental.useTsgo": true,
-    "files.associations": {
-        "*.css": "tailwindcss"
-    },
-    "cSpell.words": ["clsx", "contentoperator", "Dispatchable", "Enonic", "nanostores", "Oxlint", "preact", "tailwindcss", "tsgo"]
+  "oxc.path.oxlint": "./node_modules/vite-plus/bin/oxlint",
+  "oxc.path.oxfmt": "./node_modules/vite-plus/bin/oxfmt",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit"
+  },
+  "js/ts.experimental.useTsgo": true,
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true
+  },
+  "cSpell.words": [
+    "cn",
+    "clsx",
+    "contentoperator",
+    "Dispatchable",
+    "Enonic",
+    "nanostores",
+    "Oxlint",
+    "preact",
+    "tailwindcss",
+    "tsgo"
+  ]
 }

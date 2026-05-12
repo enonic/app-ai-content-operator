@@ -1,51 +1,51 @@
 import clsx from 'clsx';
-import {useCallback, useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import {dispatchResultApplied} from '../../../../../common/events';
-import {delay} from '../../../../../common/func';
-import {messageContentToValues, pickValue} from '../../../../../common/messages';
-import type {ApplyMessage} from '@/store/content/ApplyMessage';
-import type {ModelChatMessageContent} from '@/store/content/ChatMessage';
-import type {MultipleValues} from '@/store/content/MultipleContentValue';
+import { dispatchResultApplied } from '../../../../../common/events';
+import { delay } from '../../../../../common/func';
+import { messageContentToValues, pickValue } from '../../../../../common/messages';
+import type { ApplyMessage } from '@/store/content/ApplyMessage';
+import type { ModelChatMessageContent } from '@/store/content/ChatMessage';
+import type { MultipleValues } from '@/store/content/MultipleContentValue';
 import ActionButton from '@/ui/primitives/ActionButton/ActionButton';
 
 type Props = {
-    className?: string;
-    content: ModelChatMessageContent;
+  className?: string;
+  content: ModelChatMessageContent;
 };
 
 function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
-    return Object.entries(messageContentToValues(content))
-        .filter((value): value is [string, string | MultipleValues] => value[1] != null)
-        .map(([name, value]) => ({
-            path: name,
-            text: pickValue(value),
-        }));
+  return Object.entries(messageContentToValues(content))
+    .filter((value): value is [string, string | MultipleValues] => value[1] != null)
+    .map(([name, value]) => ({
+      path: name,
+      text: pickValue(value),
+    }));
 }
 
-export default function ApplyControl({className, content}: Props): React.ReactNode {
-    const {t} = useTranslation();
-    const [applying, setApplying] = useState(false);
+export default function ApplyControl({ className, content }: Props): React.ReactNode {
+  const { t } = useTranslation();
+  const [applying, setApplying] = useState(false);
 
-    const handleApply = useCallback(() => {
-        setApplying(true);
+  const handleApply = useCallback(() => {
+    setApplying(true);
 
-        const items = extractItems(content);
-        dispatchResultApplied(items);
+    const items = extractItems(content);
+    dispatchResultApplied(items);
 
-        void delay(500).then(() => {
-            setApplying(false);
-        });
-    }, [content]);
+    void delay(500).then(() => {
+      setApplying(false);
+    });
+  }, [content]);
 
-    return (
-        <ActionButton
-            className={clsx(applying && 'text-enonic-green', className)}
-            name={t('action.insertAll')}
-            icon={applying ? 'check' : 'applyAll'}
-            mode='icon-with-title'
-            clickHandler={handleApply}
-        />
-    );
+  return (
+    <ActionButton
+      className={clsx(applying && 'text-enonic-green', className)}
+      name={t('action.insertAll')}
+      icon={applying ? 'check' : 'applyAll'}
+      mode="icon-with-title"
+      clickHandler={handleApply}
+    />
+  );
 }

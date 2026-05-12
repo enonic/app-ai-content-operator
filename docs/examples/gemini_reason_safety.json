@@ -1,30 +1,30 @@
 {
-    "candidates": [
+  "candidates": [
+    {
+      "finishReason": "SAFETY",
+      "index": 0,
+      "safetyRatings": [
         {
-            "finishReason": "SAFETY",
-            "index": 0,
-            "safetyRatings": [
-                {
-                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                    "probability": "NEGLIGIBLE"
-                },
-                {
-                    "category": "HARM_CATEGORY_HATE_SPEECH",
-                    "probability": "LOW"
-                },
-                {
-                    "category": "HARM_CATEGORY_HARASSMENT",
-                    "probability": "LOW"
-                },
-                {
-                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                    "probability": "MEDIUM"
-                }
-            ]
+          "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          "probability": "NEGLIGIBLE"
+        },
+        {
+          "category": "HARM_CATEGORY_HATE_SPEECH",
+          "probability": "LOW"
+        },
+        {
+          "category": "HARM_CATEGORY_HARASSMENT",
+          "probability": "LOW"
+        },
+        {
+          "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+          "probability": "MEDIUM"
         }
-    ],
-    "usageMetadata": {
-        "promptTokenCount": 20,
-        "totalTokenCount": 20
+      ]
     }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 20,
+    "totalTokenCount": 20
+  }
 }

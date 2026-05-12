@@ -1,6 +1,6 @@
 ---
 paths:
-  - "**/*.tsx"
+  - '**/*.tsx'
 ---
 
 # Preact Component Standards
@@ -56,6 +56,7 @@ Use `@ts-expect-error` with explanation. Do not use `as any` or `as React.Ref<..
 ## Best Practices
 
 Follow the same patterns as React (see `react.md`):
+
 - Functional components only
 - Arrow functions need `displayName`
 - Minimize `useEffect`, prefer derived state

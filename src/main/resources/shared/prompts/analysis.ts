@@ -1,29 +1,29 @@
-import {SPECIAL_KEYS, SPECIAL_NAMES} from '../enums';
+import { SPECIAL_KEYS, SPECIAL_NAMES } from '../enums';
 
 export type RawAnalysisResult = AnalysisResult | AnalysisUnclearResult | AnalysisErrorResult;
 
 export type AnalysisResult = Record<string, AnalysisObjectEntry | AnalysisReferenceEntry>;
 
 export type AnalysisUnclearResult = {
-    [SPECIAL_KEYS.unclear]: string;
+  [SPECIAL_KEYS.unclear]: string;
 };
 
 export type AnalysisErrorResult = {
-    [SPECIAL_KEYS.error]: string;
+  [SPECIAL_KEYS.error]: string;
 };
 
 export type AnalysisObjectEntry = {
-    task: string;
-    count: number;
-    language: string;
+  task: string;
+  count: number;
+  language: string;
 };
 
 export type AnalysisReferenceEntry = {
-    count: 0;
+  count: 0;
 };
 
 export const createAnalysisInstructions = (): string =>
-    `
+  `
 You are Juke, the AI assistant created by Enonic. You are a world-renowned blogging expert awarded the Webby Award for Excellence in Online Content Writing.
 Your task is to process user JSON request and generate a JSON response that will serve as precise instructions for a subsequent text generation model.
 

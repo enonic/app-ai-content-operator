@@ -3,22 +3,22 @@
 @import '@enonic/ui/preset.css';
 @import '@enonic/ui/style.css';
 
-@source "../.storybook";
-@source "../src/main/resources/assets";
+@source '../.storybook';
+@source '../src/main/resources/assets';
 
 body,
 .docs-story {
-    background:
-        radial-gradient(circle at top left, rgb(221 241 255 / 75%), transparent 40%),
-        linear-gradient(180deg, #f7fafc 0%, #edf3f7 100%);
-    color: #1a202c;
-    font-family: 'Open Sans', 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at top left, rgb(221 241 255 / 75%), transparent 40%),
+    linear-gradient(180deg, #f7fafc 0%, #edf3f7 100%);
+  color: #1a202c;
+  font-family: 'Open Sans', 'Segoe UI', sans-serif;
 }
 
 .dark body,
 .dark .docs-story {
-    background:
-        radial-gradient(circle at top left, rgb(61 77 94 / 55%), transparent 40%),
-        linear-gradient(180deg, #10151b 0%, #18212b 100%);
-    color: #f8fafc;
+  background:
+    radial-gradient(circle at top left, rgb(61 77 94 / 55%), transparent 40%),
+    linear-gradient(180deg, #10151b 0%, #18212b 100%);
+  color: #f8fafc;
 }

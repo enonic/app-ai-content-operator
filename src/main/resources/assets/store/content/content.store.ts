@@ -1,58 +1,61 @@
-import {t} from 'i18next';
-import {computed, map} from 'nanostores';
+import { t } from 'i18next';
+import { computed, map } from 'nanostores';
 
-import type {DataEntry} from '@shared/data/DataEntry';
-import {addGlobalUpdateDataHandler} from '@/common/events';
-import {MENTION_ALL} from '@/common/mentions';
-import {$context, resetContext} from '@/store/context/context.store';
-import type {ContentData, PropertyValue} from './ContentData';
-import type {UpdateEventData} from './EventData';
-import type {FieldDescriptor} from './FieldDescriptor';
-import type {FormItemWithPath, InputWithPath} from './FormItemWithPath';
-import type {Language} from './Language';
-import type {Path} from './Path';
-import type {Schema} from './Schema';
+import type { DataEntry } from '@shared/data/DataEntry';
+import { addGlobalUpdateDataHandler } from '@/common/events';
+import { MENTION_ALL } from '@/common/mentions';
+import { $context, resetContext } from '@/store/context/context.store';
+import type { ContentData, PropertyValue } from './ContentData';
+import type { UpdateEventData } from './EventData';
+import type { FieldDescriptor } from './FieldDescriptor';
+import type { FormItemWithPath, InputWithPath } from './FormItemWithPath';
+import type { Language } from './Language';
+import type { Path } from './Path';
+import type { Schema } from './Schema';
 import {
-    createDisplayNameInput,
-    getDataPathsToEditableItems,
-    getHelpText,
-    getParentHelpTexts,
-    getPropertyArrayByPath,
-    isTopicPath,
-    pathToMention,
+  createDisplayNameInput,
+  getDataPathsToEditableItems,
+  getHelpText,
+  getParentHelpTexts,
+  getPropertyArrayByPath,
+  isTopicPath,
+  pathToMention,
 } from '@/store/utils/data';
-import {getInputType} from '@/store/utils/input';
+import { getInputType } from '@/store/utils/input';
 import {
-    isChildPath,
-    isRootPath,
-    pathFromString,
-    pathsEqual,
-    pathToPrettifiedLabel,
-    pathToPrettifiedString,
-    pathToString,
+  isChildPath,
+  isRootPath,
+  pathFromString,
+  pathsEqual,
+  pathToPrettifiedLabel,
+  pathToPrettifiedString,
+  pathToString,
 } from '@/store/utils/path';
-import {getFormItemsWithPaths, isEditableInput} from '@/store/utils/schema';
+import { getFormItemsWithPaths, isEditableInput } from '@/store/utils/schema';
 
 export type Data = {
-    language: Language;
-    persisted: Optional<ContentData>;
-    schema: Optional<Schema>;
+  language: Language;
+  persisted: Optional<ContentData>;
+  schema: Optional<Schema>;
 };
 
 export const $content = map<Data>({
-    language: {
-        tag: navigator?.language ?? 'en',
-        name: 'English',
-    },
-    persisted: null,
-    schema: null,
+  language: {
+    tag: navigator?.language ?? 'en',
+    name: 'English',
+  },
+  persisted: null,
+  schema: null,
 });
 
-export const $language = computed($content, ({language}) => language?.tag ?? navigator?.language ?? 'en');
-export const $contentPath = computed($content, ({persisted}) => persisted?.contentPath ?? '');
+export const $language = computed(
+  $content,
+  ({ language }) => language?.tag ?? navigator?.language ?? 'en',
+);
+export const $contentPath = computed($content, ({ persisted }) => persisted?.contentPath ?? '');
 
-addGlobalUpdateDataHandler(event => {
-    putEventDataToStore(event.detail);
+addGlobalUpdateDataHandler((event) => {
+  putEventDataToStore(event.detail);
 });
 
 export const setLanguage = (language: Language): void => $content.setKey('language', language);
@@ -64,141 +67,146 @@ export const setPersistedData = (data: ContentData): void => $content.setKey('pe
 export const setSchema = (schema: Schema): void => $content.setKey('schema', schema);
 
 function putEventDataToStore(eventData: UpdateEventData): void {
-    if (!eventData.payload) {
-        return;
-    }
+  if (!eventData.payload) {
+    return;
+  }
 
-    const {language, data, schema} = eventData.payload;
+  const { language, data, schema } = eventData.payload;
 
-    if (language) {
-        setLanguage(language);
-    }
+  if (language) {
+    setLanguage(language);
+  }
 
-    if (data) {
-        setPersistedData(data);
-    }
+  if (data) {
+    setPersistedData(data);
+  }
 
-    if (schema) {
-        setSchema(schema);
-    }
+  if (schema) {
+    setSchema(schema);
+  }
 }
 
-export const $topic = computed($content, data => data.persisted?.topic ?? '');
+export const $topic = computed($content, (data) => data.persisted?.topic ?? '');
 
-export const $allFormItemsWithPaths = computed($content, ({schema, persisted}) => {
-    const schemaPaths = schema ? getFormItemsWithPaths(schema.form.formItems) : [];
-    const result = persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
+export const $allFormItemsWithPaths = computed($content, ({ schema, persisted }) => {
+  const schemaPaths = schema ? getFormItemsWithPaths(schema.form.formItems) : [];
+  const result = persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
 
-    return [createDisplayNameInput(), ...result];
+  return [createDisplayNameInput(), ...result];
 });
 
-export const $orderedPaths = computed($allFormItemsWithPaths, items => {
-    return items.map(item => pathToString(item));
+export const $orderedPaths = computed($allFormItemsWithPaths, (items) => {
+  return items.map((item) => pathToString(item));
 });
 
-const $helpTextMap = computed($allFormItemsWithPaths, items => {
-    return items.reduce(
-        (acc, item) => {
-            const path = pathToString(item);
-            const helpText = getHelpText(item);
+const $helpTextMap = computed($allFormItemsWithPaths, (items) => {
+  return items.reduce(
+    (acc, item) => {
+      const path = pathToString(item);
+      const helpText = getHelpText(item);
 
-            if (helpText) {
-                acc[path] = helpText;
-            }
+      if (helpText) {
+        acc[path] = helpText;
+      }
 
-            return acc;
-        },
-        {} as Record<string, string>,
-    );
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
 });
 
 //
 //* CONTEXT
 //
-export const $inputsInContext = computed([$context, $allFormItemsWithPaths], (context, allFormItems) => {
+export const $inputsInContext = computed(
+  [$context, $allFormItemsWithPaths],
+  (context, allFormItems) => {
     const contextPath = context && pathFromString(context);
 
     const input = contextPath
-        ? allFormItems.find((path): path is InputWithPath => pathsEqual(path, contextPath) && isEditableInput(path))
-        : null;
+      ? allFormItems.find(
+          (path): path is InputWithPath => pathsEqual(path, contextPath) && isEditableInput(path),
+        )
+      : null;
 
     if (input) {
-        return [input];
+      return [input];
     }
 
     const items: FormItemWithPath[] = contextPath
-        ? allFormItems.filter(path => isChildPath(path, contextPath))
-        : allFormItems.filter(path => isRootPath(path));
+      ? allFormItems.filter((path) => isChildPath(path, contextPath))
+      : allFormItems.filter((path) => isRootPath(path));
 
     return items.filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item));
+  },
+);
+
+export const $mentions = computed([$inputsInContext], (inputs) => {
+  const mentions = inputs.map(pathToMention);
+
+  if (mentions.length > 1) {
+    mentions.unshift({
+      path: MENTION_ALL.path,
+      label: t('field.mentions.all.label'),
+      prettified: t('field.mentions.all.prettified'),
+    });
+  }
+
+  return mentions;
 });
 
-export const $mentions = computed([$inputsInContext], inputs => {
-    const mentions = inputs.map(pathToMention);
+$allFormItemsWithPaths.listen((allFormItemsWithPaths) => {
+  const context = $context.get();
+  if (!context) {
+    return;
+  }
 
-    if (mentions.length > 1) {
-        mentions.unshift({
-            path: MENTION_ALL.path,
-            label: t('field.mentions.all.label'),
-            prettified: t('field.mentions.all.prettified'),
-        });
-    }
+  const path = pathFromString(context);
+  const isValidContext = allFormItemsWithPaths.some((p) => pathsEqual(p, path));
 
-    return mentions;
-});
-
-$allFormItemsWithPaths.listen(allFormItemsWithPaths => {
-    const context = $context.get();
-    if (!context) {
-        return;
-    }
-
-    const path = pathFromString(context);
-    const isValidContext = allFormItemsWithPaths.some(p => pathsEqual(p, path));
-
-    if (!isValidContext) {
-        resetContext();
-    }
+  if (!isValidContext) {
+    resetContext();
+  }
 });
 
 //
 //* FIELDS
 //
 
-export const $fieldDescriptors = computed($allFormItemsWithPaths, allFormItems => {
-    return allFormItems
-            .filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item))
-            .map(item => ({
-                name: pathToString(item),
-                label: pathToPrettifiedLabel(item),
-                displayName: pathToPrettifiedString(item),
-                type: getInputType(item),
-            })) satisfies FieldDescriptor[];
+export const $fieldDescriptors = computed($allFormItemsWithPaths, (allFormItems) => {
+  return allFormItems
+    .filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item))
+    .map((item) => ({
+      name: pathToString(item),
+      label: pathToPrettifiedLabel(item),
+      displayName: pathToPrettifiedString(item),
+      type: getInputType(item),
+    })) satisfies FieldDescriptor[];
 });
 
 export function createFields(): Record<string, DataEntry> {
-    const result: Record<string, DataEntry> = {};
+  const result: Record<string, DataEntry> = {};
 
-    $inputsInContext.get().forEach((inputWithPath: InputWithPath) => {
-        result[pathToString(inputWithPath)] = {
-            value: findValueByPath(inputWithPath)?.v ?? '',
-            type: getInputType(inputWithPath),
-            schemaType: inputWithPath.Input.inputType,
-            schemaLabel: inputWithPath.Input.label,
-            schemaHelpText: inputWithPath.Input.helpText,
-            parentHelpTexts: getParentHelpTexts(inputWithPath, $helpTextMap.get()),
-        };
-    });
+  $inputsInContext.get().forEach((inputWithPath: InputWithPath) => {
+    result[pathToString(inputWithPath)] = {
+      value: findValueByPath(inputWithPath)?.v ?? '',
+      type: getInputType(inputWithPath),
+      schemaType: inputWithPath.Input.inputType,
+      schemaLabel: inputWithPath.Input.label,
+      schemaHelpText: inputWithPath.Input.helpText,
+      parentHelpTexts: getParentHelpTexts(inputWithPath, $helpTextMap.get()),
+    };
+  });
 
-    return result;
+  return result;
 }
 
 export function findValueByPath(path: Path): Optional<PropertyValue> {
-    if (isTopicPath(path)) {
-        return {v: $topic.get()};
-    }
+  if (isTopicPath(path)) {
+    return { v: $topic.get() };
+  }
 
-    const fields = $content.get().persisted?.fields ?? [];
-    const array = getPropertyArrayByPath(fields, path);
-    return array?.values.at(path.elements.at(-1)?.index ?? 0);
+  const fields = $content.get().persisted?.fields ?? [];
+  const array = getPropertyArrayByPath(fields, path);
+  return array?.values.at(path.elements.at(-1)?.index ?? 0);
 }

@@ -1,65 +1,72 @@
-import {useStore} from '@nanostores/react';
-import {twMerge} from 'tailwind-merge';
+import { useStore } from '@nanostores/react';
+import { twMerge } from 'tailwind-merge';
 
-import {SPECIAL_NAMES} from '../../../../../../shared/enums';
-import {$messages} from '@/store/chat/chat.store';
+import { SPECIAL_NAMES } from '../../../../../../shared/enums';
+import { $messages } from '@/store/chat/chat.store';
 import type {
-    ChatMessage,
-    ModelChatMessage,
-    SystemChatMessage,
-    UserChatMessage,
+  ChatMessage,
+  ModelChatMessage,
+  SystemChatMessage,
+  UserChatMessage,
 } from '@/store/content/ChatMessage';
-import {MessageRole} from '@/store/content/MessageType';
-import {$licenseState} from '@/store/license/license.store';
-import {$isBusy, $isConnected} from '@/store/websocket/websocket.store';
+import { MessageRole } from '@/store/content/MessageType';
+import { $licenseState } from '@/store/license/license.store';
+import { $isBusy, $isConnected } from '@/store/websocket/websocket.store';
 import ApplyAllControl from '../ApplyAllControl/ApplyAllControl';
 import MessageSwitchControls from '../MessageSwitchControls/MessageSwitchControls';
 import RetryControl from '../RetryControl/RetryControl';
 
 export type Props = {
-    className?: string;
-    message: ModelChatMessage | SystemChatMessage;
-    last: boolean;
+  className?: string;
+  message: ModelChatMessage | SystemChatMessage;
+  last: boolean;
 };
 
-function canApplyAnyContent(message: ModelChatMessage | SystemChatMessage): message is ModelChatMessage {
-    if (message.role !== MessageRole.MODEL || message.content.generationResult == null) {
-        return false;
-    }
+function canApplyAnyContent(
+  message: ModelChatMessage | SystemChatMessage,
+): message is ModelChatMessage {
+  if (message.role !== MessageRole.MODEL || message.content.generationResult == null) {
+    return false;
+  }
 
-    const {generationResult} = message.content;
-    const keys = Object.keys(generationResult);
+  const { generationResult } = message.content;
+  const keys = Object.keys(generationResult);
 
-    return keys.length > 0 && keys.indexOf(SPECIAL_NAMES.common) === -1;
+  return keys.length > 0 && keys.indexOf(SPECIAL_NAMES.common) === -1;
 }
 
-function findUserMessageById(messages: Record<string, ChatMessage>, id: string): Optional<Readonly<UserChatMessage>> {
-    const message = messages[id];
-    return message != null && message.role === MessageRole.USER ? message : undefined;
+function findUserMessageById(
+  messages: Record<string, ChatMessage>,
+  id: string,
+): Optional<Readonly<UserChatMessage>> {
+  const message = messages[id];
+  return message != null && message.role === MessageRole.USER ? message : undefined;
 }
 
-export default function ResponseControls({className, message, last}: Props): React.ReactNode {
-    const messages = useStore($messages);
-    const prevId = message?.prevId;
-    const userMessage = prevId ? findUserMessageById(messages, prevId) : undefined;
+export default function ResponseControls({ className, message, last }: Props): React.ReactNode {
+  const messages = useStore($messages);
+  const prevId = message?.prevId;
+  const userMessage = prevId ? findUserMessageById(messages, prevId) : undefined;
 
-    const options = userMessage?.nextIds;
-    const userMessageId = userMessage?.id;
+  const options = userMessage?.nextIds;
+  const userMessageId = userMessage?.id;
 
-    const isConnected = useStore($isConnected);
-    const isBusy = useStore($isBusy);
-    const isLastAndAvailable = last && !isBusy;
-    const licenseState = useStore($licenseState);
+  const isConnected = useStore($isConnected);
+  const isBusy = useStore($isBusy);
+  const isLastAndAvailable = last && !isBusy;
+  const licenseState = useStore($licenseState);
 
-    const isRetryAvailable = isLastAndAvailable && userMessageId && licenseState === 'OK';
-    const isApplyAllAvailable = isLastAndAvailable && canApplyAnyContent(message);
-    const isSwitchAvailable = isLastAndAvailable && options != null && options.length > 1;
+  const isRetryAvailable = isLastAndAvailable && userMessageId && licenseState === 'OK';
+  const isApplyAllAvailable = isLastAndAvailable && canApplyAnyContent(message);
+  const isSwitchAvailable = isLastAndAvailable && options != null && options.length > 1;
 
-    return (
-        <div className={twMerge('flex empty:hidden', className)}>
-            {isRetryAvailable && <RetryControl userMessageId={userMessageId} disabled={!isConnected} />}
-            {isApplyAllAvailable && <ApplyAllControl content={message.content} />}
-            {isSwitchAvailable && <MessageSwitchControls className='ml-auto' ids={options} selectedId={message.id} />}
-        </div>
-    );
+  return (
+    <div className={twMerge('flex empty:hidden', className)}>
+      {isRetryAvailable && <RetryControl userMessageId={userMessageId} disabled={!isConnected} />}
+      {isApplyAllAvailable && <ApplyAllControl content={message.content} />}
+      {isSwitchAvailable && (
+        <MessageSwitchControls className="ml-auto" ids={options} selectedId={message.id} />
+      )}
+    </div>
+  );
 }

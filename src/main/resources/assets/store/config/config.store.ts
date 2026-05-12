@@ -1,36 +1,38 @@
-import {map} from 'nanostores';
+import { map } from 'nanostores';
 
-import {addGlobalConfigureHandler} from '@/common/events';
+import { addGlobalConfigureHandler } from '@/common/events';
 
 export type Config = {
-    wsServiceUrl: string;
-    user: {
-        fullName: string;
-        shortName: string;
-    };
-    instructions: string;
+  wsServiceUrl: string;
+  user: {
+    fullName: string;
+    shortName: string;
+  };
+  instructions: string;
 };
 
 export const $config = map<Config>({
-    wsServiceUrl: '',
-    user: {
-        fullName: 'You',
-        shortName: 'Y',
-    },
-    instructions: '',
+  wsServiceUrl: '',
+  user: {
+    fullName: 'You',
+    shortName: 'Y',
+  },
+  instructions: '',
 });
 
-export const setWsServiceUrl = (wsServiceUrl: string): void => $config.setKey('wsServiceUrl', wsServiceUrl);
+export const setWsServiceUrl = (wsServiceUrl: string): void =>
+  $config.setKey('wsServiceUrl', wsServiceUrl);
 export const setUser = (user: Config['user']): void => $config.setKey('user', user);
-export const setInstructions = (instructions: string): void => $config.setKey('instructions', instructions);
+export const setInstructions = (instructions: string): void =>
+  $config.setKey('instructions', instructions);
 
-addGlobalConfigureHandler(event => {
-    const {user, instructions} = event.detail.payload;
+addGlobalConfigureHandler((event) => {
+  const { user, instructions } = event.detail.payload;
 
-    if (user) {
-        setUser(user);
-    }
-    if (instructions) {
-        setInstructions(instructions);
-    }
+  if (user) {
+    setUser(user);
+  }
+  if (instructions) {
+    setInstructions(instructions);
+  }
 });

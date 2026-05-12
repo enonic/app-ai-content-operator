@@ -1,4 +1,4 @@
-import type {MultipleValues} from './MultipleContentValue';
+import type { MultipleValues } from './MultipleContentValue';
 
 export type MessageItem = Optional<string | MultipleValues>;
 

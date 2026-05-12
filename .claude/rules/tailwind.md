@@ -24,7 +24,7 @@ const buttonVariants = cva('px-4 py-2 rounded font-medium transition-colors', {
       lg: 'text-lg px-6 py-3',
     },
   },
-  defaultVariants: {variant: 'primary', size: 'md'},
+  defaultVariants: { variant: 'primary', size: 'md' },
 });
 ```
 
@@ -33,7 +33,7 @@ For a single boolean (e.g. only `disabled`), `cn` is fine.
 ## `size-*` for equal width and height
 
 ```tsx
-<Icon className='size-4' /> // not h-4 w-4
+<Icon className="size-4" /> // not h-4 w-4
 ```
 
 ## Semantic color tokens before raw palette

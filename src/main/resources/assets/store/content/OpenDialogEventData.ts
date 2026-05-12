@@ -1,3 +1,3 @@
 export type OpenDialogEventData = {
-    sourceDataPath: Optional<string>;
+  sourceDataPath: Optional<string>;
 };

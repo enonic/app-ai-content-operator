@@ -1,30 +1,30 @@
-import {useStore} from '@nanostores/react';
+import { useStore } from '@nanostores/react';
 import clsx from 'clsx';
-import {twMerge} from 'tailwind-merge';
+import { twMerge } from 'tailwind-merge';
 
-import {$config} from '@/store/config/config.store';
+import { $config } from '@/store/config/config.store';
 
 type Props = {
-    className?: string;
+  className?: string;
 };
 
-export default function UserIcon({className}: Props): React.ReactNode {
-    const {user} = useStore($config, {keys: ['user']});
-    return (
-        <div
-            className={twMerge(
-                clsx(
-                    'flex justify-center items-center',
-                    'w-8 h-8',
-                    'text-xs',
-                    'rounded-full',
-                    'text-white',
-                    'bg-black',
-                    className,
-                ),
-            )}
-        >
-            {user.shortName}
-        </div>
-    );
+export default function UserIcon({ className }: Props): React.ReactNode {
+  const { user } = useStore($config, { keys: ['user'] });
+  return (
+    <div
+      className={twMerge(
+        clsx(
+          'flex justify-center items-center',
+          'w-8 h-8',
+          'text-xs',
+          'rounded-full',
+          'text-white',
+          'bg-black',
+          className,
+        ),
+      )}
+    >
+      {user.shortName}
+    </div>
+  );
 }

@@ -1,31 +1,31 @@
 {
-    "compilerOptions": {
-        "module": "ES2022",
-        "moduleResolution": "bundler",
-        "target": "ES2023",
-        "lib": ["ES2023", "DOM", "DOM.Iterable"],
-        "jsx": "react-jsx",
-        "jsxImportSource": "preact",
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "useDefineForClassFields": false,
-        "strict": true,
-        "skipLibCheck": true,
-        "isolatedModules": true,
-        "paths": {
-            "react": ["./node_modules/preact/compat/"],
-            "react-dom": ["./node_modules/preact/compat/"],
-            "react/jsx-runtime": ["./node_modules/preact/jsx-runtime"],
-            "react/jsx-dev-runtime": ["./node_modules/preact/jsx-dev-runtime"],
-            "@/*": ["./src/main/resources/assets/*"],
-            "@shared/*": ["./src/main/resources/shared/*"]
-        },
-        "types": ["vite/client"]
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": false,
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "paths": {
+      "react": ["./node_modules/preact/compat/"],
+      "react-dom": ["./node_modules/preact/compat/"],
+      "react/jsx-runtime": ["./node_modules/preact/jsx-runtime"],
+      "react/jsx-dev-runtime": ["./node_modules/preact/jsx-dev-runtime"],
+      "@/*": ["./src/main/resources/assets/*"],
+      "@shared/*": ["./src/main/resources/shared/*"]
     },
-    "include": [
-        "src/main/resources/assets/**/*.ts",
-        "src/main/resources/assets/**/*.tsx",
-        "src/main/resources/shared/**/*.ts",
-        "src/main/resources/shared/**/*.d.ts"
-    ]
+    "types": ["vite/client"]
+  },
+  "include": [
+    "src/main/resources/assets/**/*.ts",
+    "src/main/resources/assets/**/*.tsx",
+    "src/main/resources/shared/**/*.ts",
+    "src/main/resources/shared/**/*.d.ts"
+  ]
 }

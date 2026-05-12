@@ -1,44 +1,44 @@
 export type Schema = {
-    name: string;
-    form: {
-        formItems: FormItem[];
-    };
+  name: string;
+  form: {
+    formItems: FormItem[];
+  };
 };
 
 export type FormItem = FieldSet | FormItemSet | FormOptionSet | Input | FormOptionSetOption;
 
 export type Input = {
-    Input: InputData;
+  Input: InputData;
 };
 
 export type FieldSet = {
-    FieldSet: FieldSetData;
+  FieldSet: FieldSetData;
 };
 
 export type FormItemSet = {
-    FormItemSet: FormItemSetData;
+  FormItemSet: FormItemSetData;
 };
 
 export type FormOptionSet = {
-    FormOptionSet: FormOptionSetData;
+  FormOptionSet: FormOptionSetData;
 };
 
 export type FormOptionSetOption = FormItemNameAndLabel & FormItemHelpText & FormItems;
 
 export type FormItemNameAndLabel = {
-    name: string;
-    label: string;
+  name: string;
+  label: string;
 };
 
 export type FormItems = {
-    items: FormItem[];
+  items: FormItem[];
 };
 
 export type FormItemOccurrences = {
-    occurrences: {
-        minimum: number;
-        maximum: number;
-    };
+  occurrences: {
+    minimum: number;
+    maximum: number;
+  };
 };
 
 export type FieldSetData = FormItemNameAndLabel & FormItems;
@@ -48,13 +48,13 @@ export type FormSetData = FormItemNameAndLabel & FormItemHelpText & FormItemOccu
 export type FormItemSetData = FormSetData & FormItems;
 
 export type InputData = FormSetData & {
-    inputType: string;
+  inputType: string;
 };
 
 export type FormItemHelpText = {
-    helpText?: string;
+  helpText?: string;
 };
 
 export type FormOptionSetData = FormSetData & {
-    options: FormOptionSetOption[];
+  options: FormOptionSetOption[];
 };

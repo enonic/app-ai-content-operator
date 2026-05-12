@@ -22,7 +22,7 @@ type Err<T> = Either<T, Error>;
 //
 // Utility types
 //
-type Identity<T> = {[P in keyof T]: T[P]};
+type Identity<T> = { [P in keyof T]: T[P] };
 
 type LiteralUnion<T extends U, U = string> = T | (U & Record<never, never>);
 
@@ -30,13 +30,13 @@ type LiteralUnion<T extends U, U = string> = T | (U & Record<never, never>);
 // XP
 //
 interface NashornError {
-    message: string;
+  message: string;
 }
 
 //
 // Library types
 //
 interface AiError {
-    code: number;
-    message: string;
+  code: number;
+  message: string;
 }

@@ -1,9 +1,9 @@
 export type Path = {
-    elements: PathElement[];
+  elements: PathElement[];
 };
 
 export type PathElement = {
-    name: string;
-    label?: string;
-    index?: number;
+  name: string;
+  label?: string;
+  index?: number;
 };

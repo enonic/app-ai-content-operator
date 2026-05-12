@@ -11,10 +11,13 @@ paths:
 Use `/` to group stories under a standard taxonomy. The `name` field on each story controls grouping in the sidebar:
 
 ```tsx
-export const Basic: Story = {name: 'Examples / Basic', render: () => <Component />};
-export const Disabled: Story = {name: 'States / Disabled', render: () => <Component disabled />};
-export const AlignEnd: Story = {name: 'Features / Align End', render: () => <Component align='end' />};
-export const FocusNav: Story = {name: 'Behavior / Focus Nav', render: () => <Component />};
+export const Basic: Story = { name: 'Examples / Basic', render: () => <Component /> };
+export const Disabled: Story = { name: 'States / Disabled', render: () => <Component disabled /> };
+export const AlignEnd: Story = {
+  name: 'Features / Align End',
+  render: () => <Component align="end" />,
+};
+export const FocusNav: Story = { name: 'Behavior / Focus Nav', render: () => <Component /> };
 ```
 
 Flat names (`Default`, `Disabled`, `Variants`) without a group prefix are not allowed.
@@ -38,28 +41,28 @@ Use local `useState` for interactive stories. Never subscribe stories to nanosto
 ## File template
 
 ```tsx
-import type {Meta, StoryObj} from '@storybook/react-vite';
-import {useState} from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useState } from 'react';
 
-import {Component} from './component';
+import { Component } from './component';
 
 type Story = StoryObj<typeof Component>;
 
 export default {
   title: 'Components/Component',
   component: Component,
-  parameters: {layout: 'centered'},
+  parameters: { layout: 'centered' },
   tags: ['autodocs'],
 } satisfies Meta<typeof Component>;
 
-export const Basic: Story = {name: 'Examples / Basic', render: () => <Component />};
+export const Basic: Story = { name: 'Examples / Basic', render: () => <Component /> };
 export const Interactive: Story = {
   name: 'Features / Interactive',
   render: () => {
     /* useState here */
   },
 };
-export const FocusNav: Story = {name: 'Behavior / Focus Nav', render: () => <Component />};
+export const FocusNav: Story = { name: 'Behavior / Focus Nav', render: () => <Component /> };
 ```
 
 ## Story wrapper
@@ -68,8 +71,8 @@ When the story benefits from explanation (keyboard interaction, multi-variant co
 
 ```tsx
 render: () => (
-  <div className='flex flex-col gap-y-3 p-4 items-center'>
-    <div className='max-w-120 text-sm text-subtle'>
+  <div className="flex flex-col gap-y-3 p-4 items-center">
+    <div className="max-w-120 text-sm text-subtle">
       Brief description, especially useful for keyboard/interaction testing.
     </div>
     <Component />

@@ -1,33 +1,33 @@
 {
-    "compilerOptions": {
-        "target": "ES2023",
-        "module": "ES2022",
-        "moduleResolution": "bundler",
-        "lib": ["ES2023"],
-        "noEmit": true,
-        "strict": true,
-        "skipLibCheck": true,
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "isolatedModules": true,
-        "paths": {
-            "/lib/xp/core": ["../../../node_modules/@enonic-types/core"],
-            "/lib/xp/*": ["../../../node_modules/@enonic-types/lib-*"],
-            "/lib/http-client": ["./types/lib/httpClient"],
-            "/lib/cron": ["./types/lib/cron"],
-            "/lib/license": ["./types/lib/license"],
-            "/tests/testUtils/*": ["../../../tests/testUtils/*"]
-        },
-        "typeRoots": [
-            "../../../node_modules/@types",
-            "../../../node_modules/@enonic-types",
-            "./types",
-            "./types/beans",
-            "./types/lib"
-        ],
-        "types": ["global"]
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "lib": ["ES2023"],
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "paths": {
+      "/lib/xp/core": ["../../../node_modules/@enonic-types/core"],
+      "/lib/xp/*": ["../../../node_modules/@enonic-types/lib-*"],
+      "/lib/http-client": ["./types/lib/httpClient"],
+      "/lib/cron": ["./types/lib/cron"],
+      "/lib/license": ["./types/lib/license"],
+      "/tests/testUtils/*": ["../../../tests/testUtils/*"]
     },
-    "include": ["**/*.ts"],
-    "exclude": ["assets/**", "static/**"]
+    "typeRoots": [
+      "../../../node_modules/@types",
+      "../../../node_modules/@enonic-types",
+      "./types",
+      "./types/beans",
+      "./types/lib"
+    ],
+    "types": ["global"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["assets/**", "static/**"]
 }

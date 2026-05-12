@@ -1,31 +1,31 @@
-import {SchemaType} from '../../shared/enums';
-import type {FunctionDeclarationSchemaProperty, Schema} from './types';
+import { SchemaType } from '../../shared/enums';
+import type { FunctionDeclarationSchemaProperty, Schema } from './types';
 
-export type SchemaFields = Record<string, {count?: number}>;
+export type SchemaFields = Record<string, { count?: number }>;
 
 export function fieldsToSchema(fields: SchemaFields): Schema {
-    const required = Object.keys(fields);
+  const required = Object.keys(fields);
 
-    const properties: Record<string, FunctionDeclarationSchemaProperty> = {};
-    required.forEach(name => {
-        const count = fields[name]?.count || 1;
-        properties[name] =
-            count > 1
-                ? {
-                      type: SchemaType.ARRAY,
-                      items: {
-                          type: SchemaType.STRING,
-                      },
-                  }
-                : {
-                      type: SchemaType.STRING,
-                  };
-    });
+  const properties: Record<string, FunctionDeclarationSchemaProperty> = {};
+  required.forEach((name) => {
+    const count = fields[name]?.count || 1;
+    properties[name] =
+      count > 1
+        ? {
+            type: SchemaType.ARRAY,
+            items: {
+              type: SchemaType.STRING,
+            },
+          }
+        : {
+            type: SchemaType.STRING,
+          };
+  });
 
-    return {
-        type: SchemaType.OBJECT,
-        description: 'Response schema.',
-        properties,
-        required,
-    };
+  return {
+    type: SchemaType.OBJECT,
+    description: 'Response schema.',
+    properties,
+    required,
+  };
 }

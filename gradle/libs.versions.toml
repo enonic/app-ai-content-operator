@@ -6,6 +6,6 @@ lib-license = "3.1.0"
 
 [libraries]
 google-auth-oauth2 = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "google-auth-oauth2" }
-lib-cron           = { module = "com.enonic.lib:lib-cron",                         version.ref = "lib-cron" }
-lib-http-client    = { module = "com.enonic.lib:lib-http-client",                  version.ref = "lib-http-client" }
-lib-license        = { module = "com.enonic.lib:lib-license",                      version.ref = "lib-license" }
+lib-cron = { module = "com.enonic.lib:lib-cron", version.ref = "lib-cron" }
+lib-http-client = { module = "com.enonic.lib:lib-http-client", version.ref = "lib-http-client" }
+lib-license = { module = "com.enonic.lib:lib-license", version.ref = "lib-license" }

@@ -1,7 +1,11 @@
-import {atom} from 'nanostores';
+import { atom } from 'nanostores';
 
-import {addGlobalOpenDialogHandler, addGlobalSetContextHandler, dispatchContextChanged} from '@/common/events';
-import {$dialog} from '@/store/dialog/dialog.store';
+import {
+  addGlobalOpenDialogHandler,
+  addGlobalSetContextHandler,
+  dispatchContextChanged,
+} from '@/common/events';
+import { $dialog } from '@/store/dialog/dialog.store';
 
 export const $context = atom<Optional<string>>(undefined);
 
@@ -9,23 +13,23 @@ export const setContext = (value: string): void => $context.set(value);
 
 export const resetContext = (): void => $context.set(undefined);
 
-addGlobalOpenDialogHandler(event => {
-    const {sourceDataPath} = event.detail;
-    if (sourceDataPath) {
-        setContext(sourceDataPath);
-    }
+addGlobalOpenDialogHandler((event) => {
+  const { sourceDataPath } = event.detail;
+  if (sourceDataPath) {
+    setContext(sourceDataPath);
+  }
 });
 
-addGlobalSetContextHandler(event => {
-    if (!$dialog.get().hidden) {
-        const {sourceDataPath} = event.detail;
+addGlobalSetContextHandler((event) => {
+  if (!$dialog.get().hidden) {
+    const { sourceDataPath } = event.detail;
 
-        if (sourceDataPath) {
-            setContext(sourceDataPath);
-        }
+    if (sourceDataPath) {
+      setContext(sourceDataPath);
     }
+  }
 });
 
 $context.listen((context: Optional<string>) => {
-    dispatchContextChanged(context);
+  dispatchContextChanged(context);
 });
