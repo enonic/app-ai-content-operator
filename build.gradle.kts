@@ -8,6 +8,9 @@ plugins {
     id("com.github.node-gradle.node") version "7.1.0"
 }
 
+val appName: String by project
+val xpVersion: String by project
+
 dependencies {
     include(libs.google.auth.oauth2)
     include(xplibs.auth)
@@ -29,6 +32,11 @@ node {
     download = true
     version = "24.15.0"
     pnpmVersion = "11.0.9"
+}
+
+app {
+    name = appName
+    systemVersion = xpVersion
 }
 
 fun isProd(): Boolean =

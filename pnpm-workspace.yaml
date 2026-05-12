@@ -1,5 +1,6 @@
 allowBuilds:
   '@google/genai': false
+  '@swc/core': true
   esbuild: false
   protobufjs: false
 
@@ -18,9 +19,6 @@ minimumReleaseAgeExclude:
   - '@enonic/ui'
   - '@enonic-types/*'
   - '@typescript/native-preview*'
-
-onlyBuiltDependencies:
-  - esbuild
 
 overrides:
   vite: 'catalog:'
