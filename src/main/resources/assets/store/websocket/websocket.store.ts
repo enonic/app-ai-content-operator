@@ -1,20 +1,8 @@
+import { WS_PROTOCOL } from '@shared/constants';
+import { MessageType } from '@shared/websocket';
 import { t } from 'i18next';
 import { atom, computed, map } from 'nanostores';
-import type { Descendant } from 'slate';
 
-import { WS_PROTOCOL } from '@shared/constants';
-import type {
-  AnalyzedMessagePayload,
-  ClientMessage,
-  FailedMessagePayload,
-  GeneratedMessagePayload,
-  GenerateMessagePayload,
-  LicenseUpdatedPayload,
-  LicenseUpdatedStatePayload,
-  MessageMetadata,
-  ServerMessage,
-} from '@shared/websocket';
-import { MessageType } from '@shared/websocket';
 import { parseNodes, parseText } from '@/common/slate';
 import {
   addErrorMessage,
@@ -27,18 +15,32 @@ import {
   markAllNextMessagesInactive,
   updateModelMessage,
   updateUserMessage,
-} from '@/store/chat/chat.store';
-import { $config } from '@/store/config/config.store';
-import { $context } from '@/store/context/context.store';
+} from '@/store/chat';
+import { $config } from '@/store/config';
 import {
   $contentPath,
   $fieldDescriptors,
   $language,
+  MessageRole,
   createFields,
-} from '@/store/content/content.store';
-import { MessageRole } from '@/store/content/MessageType';
-import { $licenseState } from '@/store/license/license.store';
-import { getAllPathsFromString, pathToString } from '@/store/utils/path';
+  getAllPathsFromString,
+  pathToString,
+} from '@/store/content';
+import { $context } from '@/store/context';
+import { $licenseState } from '@/store/license';
+
+import type {
+  AnalyzedMessagePayload,
+  ClientMessage,
+  FailedMessagePayload,
+  GeneratedMessagePayload,
+  GenerateMessagePayload,
+  LicenseUpdatedPayload,
+  LicenseUpdatedStatePayload,
+  MessageMetadata,
+  ServerMessage,
+} from '@shared/websocket';
+import type { Descendant } from 'slate';
 
 type WebSocketLifecycle = 'mounting' | 'mounted' | 'unmounting' | 'unmounted';
 

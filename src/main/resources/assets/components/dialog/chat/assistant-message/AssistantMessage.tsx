@@ -1,0 +1,44 @@
+import { twJoin, twMerge } from 'tailwind-merge';
+
+import AssistantIcon from '@/ui/primitives/assistant-icon/AssistantIcon';
+
+import type { ModelChatMessage, ModelChatMessageContent } from '@/store/content';
+
+import { AssistantMessageList } from '../assistant-message-list/AssistantMessageList';
+import AssistantMessagePlaceholder from '../assistant-message-placeholder/AssistantMessagePlaceholder';
+import ResponseControls from '../controls/response-controls/ResponseControls';
+
+type Props = {
+  className?: string;
+  message: ModelChatMessage;
+  last: boolean;
+};
+
+const hasGenerationResult = (
+  content: ModelChatMessageContent,
+): content is Required<ModelChatMessageContent> => {
+  return content.generationResult != null;
+};
+
+export default function AssistantMessage({ className, message, last }: Props): React.ReactNode {
+  const { id: messageId, content } = message;
+  const isGenerating = !hasGenerationResult(content);
+
+  return (
+    <div className={twMerge('flex gap-2', className)}>
+      <AssistantIcon
+        className={twJoin('shrink-0 text-enonic-blue-400', !isGenerating && 'mt-3 ')}
+      />
+      <article className={twJoin('flex flex-col flex-1', !isGenerating && 'gap-1 text-sm')}>
+        {isGenerating ? (
+          <AssistantMessagePlaceholder content={content} />
+        ) : (
+          <>
+            <AssistantMessageList messageId={messageId} content={content} last={last} />
+            <ResponseControls message={message} last={last} />
+          </>
+        )}
+      </article>
+    </div>
+  );
+}

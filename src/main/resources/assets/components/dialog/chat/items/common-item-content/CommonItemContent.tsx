@@ -1,0 +1,35 @@
+import { twJoin, twMerge } from 'tailwind-merge';
+
+import LoadingIcon from '@/ui/primitives/loading-icon/LoadingIcon';
+
+import { REGULAR_SCREEN } from '../../../../../common/device';
+import CopyControl from '../../controls/copy-control/CopyControl';
+
+type Props = {
+  className?: string;
+  content: Optional<string>;
+  last: boolean;
+};
+
+export default function CommonItemContent({ className, content, last }: Props): React.ReactNode {
+  return (
+    <div className={twMerge('group/item relative leading-6', className)}>
+      {content ? (
+        <>
+          <CopyControl
+            key="copy"
+            className={twJoin(
+              'float-right relative shadow',
+              REGULAR_SCREEN && !last && 'invisible group-hover/item:visible',
+            )}
+            content={content}
+            type="html"
+          />
+          <article dangerouslySetInnerHTML={{ __html: content }} className="prose prose-sm" />
+        </>
+      ) : (
+        <LoadingIcon />
+      )}
+    </div>
+  );
+}

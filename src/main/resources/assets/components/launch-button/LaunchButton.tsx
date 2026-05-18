@@ -1,0 +1,25 @@
+import { useStore } from '@nanostores/react';
+import { useTranslation } from 'react-i18next';
+import { twJoin } from 'tailwind-merge';
+
+import { $dialog, toggleDialog } from '@/store/dialog';
+import AssistantIcon from '@/ui/primitives/assistant-icon/AssistantIcon';
+
+export default function LaunchButton(): React.ReactNode {
+  const { t } = useTranslation();
+  const { hidden } = useStore($dialog, { keys: ['hidden'] });
+
+  const classNames = twJoin([
+    'w-full h-full flex items-center justify-center',
+    'box-border',
+    hidden && '[&:not(:hover)]:opacity-50 [&:not(:hover)]:grayscale-[50%]',
+  ]);
+
+  const title = hidden ? t('action.open') : t('action.close');
+
+  return (
+    <button className={classNames} onClick={toggleDialog} title={title}>
+      <AssistantIcon className="h-7 w-7 shrink-0" />
+    </button>
+  );
+}

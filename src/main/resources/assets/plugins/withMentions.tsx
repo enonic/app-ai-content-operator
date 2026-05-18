@@ -1,7 +1,7 @@
-import type { BaseEditor, BasePoint, Element } from 'slate';
 import { Editor, Range, Transforms } from 'slate';
 
-import type { Mention } from '@/store/content/Mention';
+import type { Mention } from '@/store/content';
+import type { BaseEditor, BasePoint, Element } from 'slate';
 
 type MentionSpec = {
   target: Range;

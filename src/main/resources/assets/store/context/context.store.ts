@@ -5,7 +5,7 @@ import {
   addGlobalSetContextHandler,
   dispatchContextChanged,
 } from '@/common/events';
-import { $dialog } from '@/store/dialog/dialog.store';
+import { $dialog } from '@/store/dialog';
 
 export const $context = atom<Optional<string>>(undefined);
 

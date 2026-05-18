@@ -1,11 +1,12 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import AssistantDialog from './components/dialog/AssistantDialog/AssistantDialog';
-import LaunchButton from './components/LaunchButton/LaunchButton';
+import { $config, setWsServiceUrl } from '@/store/config';
+
+import AssistantDialog from './components/dialog/assistant-dialog/AssistantDialog';
 import './i18n/i18n';
 import './index.css';
-import { $config, setWsServiceUrl } from '@/store/config/config.store';
+import LaunchButton from './components/launch-button/LaunchButton';
 
 type SetupConfig = {
   wsServiceUrl: string;

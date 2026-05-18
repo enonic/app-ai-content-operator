@@ -1,37 +1,38 @@
 import { t } from 'i18next';
 import { computed, map } from 'nanostores';
 
-import type { DataEntry } from '@shared/data/DataEntry';
 import { addGlobalUpdateDataHandler } from '@/common/events';
 import { MENTION_ALL } from '@/common/mentions';
-import { $context, resetContext } from '@/store/context/context.store';
+import { $context, resetContext } from '@/store/context';
+
 import type { ContentData, PropertyValue } from './ContentData';
-import type { UpdateEventData } from './EventData';
+import type { UpdateEventData } from './UpdateEventData';
 import type { FieldDescriptor } from './FieldDescriptor';
 import type { FormItemWithPath, InputWithPath } from './FormItemWithPath';
 import type { Language } from './Language';
 import type { Path } from './Path';
 import type { Schema } from './Schema';
+import type { DataEntry } from '@shared/data/DataEntry';
+
 import {
   createDisplayNameInput,
   getDataPathsToEditableItems,
+  getFormItemsWithPaths,
   getHelpText,
+  getInputType,
   getParentHelpTexts,
   getPropertyArrayByPath,
-  isTopicPath,
-  pathToMention,
-} from '@/store/utils/data';
-import { getInputType } from '@/store/utils/input';
-import {
   isChildPath,
+  isEditableInput,
   isRootPath,
+  isTopicPath,
   pathFromString,
   pathsEqual,
+  pathToMention,
   pathToPrettifiedLabel,
   pathToPrettifiedString,
   pathToString,
-} from '@/store/utils/path';
-import { getFormItemsWithPaths, isEditableInput } from '@/store/utils/schema';
+} from './content.utils';
 
 export type Data = {
   language: Language;

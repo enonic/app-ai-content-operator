@@ -1,8 +1,10 @@
-import type { ApplyMessage } from '@/store/content/ApplyMessage';
-import type { ConfigureEventData } from '@/store/content/ConfigureEventData';
-import type { UpdateEventData } from '@/store/content/EventData';
-import type { OpenDialogEventData } from '@/store/content/OpenDialogEventData';
-import type { SetContextEventData } from '@/store/content/SetContextEventData';
+import type {
+  ApplyMessage,
+  ConfigureEventData,
+  OpenDialogEventData,
+  SetContextEventData,
+  UpdateEventData,
+} from '@/store/content';
 
 export enum AiEvents {
   // Content Operator

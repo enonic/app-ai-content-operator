@@ -1,13 +1,11 @@
+import { ERRORS } from '@shared/errors';
 import { t } from 'i18next';
 import { nanoid } from 'nanoid';
 import { atom, computed, map } from 'nanostores';
 
-import { ERRORS } from '@shared/errors';
-import type { Message } from '@shared/model';
-import type { AnalysisResult } from '@shared/prompts/analysis';
-import type { GenerationResult } from '@shared/prompts/generation';
-import type { FailedMessagePayload } from '@shared/websocket';
 import { flattenGraph, getNextActiveNode, pruneGraph } from '@/common/graph';
+import { MessageRole } from '@/store/content';
+
 import type {
   ChatMessage,
   ModelChatMessage,
@@ -16,8 +14,11 @@ import type {
   SystemMessageType,
   UserChatMessage,
   UserChatMessageContent,
-} from '@/store/content/ChatMessage';
-import { MessageRole } from '@/store/content/MessageType';
+} from '@/store/content';
+import type { Message } from '@shared/model';
+import type { AnalysisResult } from '@shared/prompts/analysis';
+import type { GenerationResult } from '@shared/prompts/generation';
+import type { FailedMessagePayload } from '@shared/websocket';
 
 const $startId = atom<Optional<string>>(undefined);
 

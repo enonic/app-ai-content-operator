@@ -1,7 +1,8 @@
 import { isValidElement, type ReactElement, type ReactNode } from 'react';
+
 import type { Descendant } from 'slate';
 
-import MentionElement from '../components/dialog/input/prompt/MentionElement/MentionElement';
+import MentionElement from '../components/dialog/input/prompt/mention-element/MentionElement';
 
 type ElementEntry = ReactNode | string;
 
