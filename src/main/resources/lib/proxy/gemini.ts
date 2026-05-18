@@ -25,6 +25,9 @@ export class GeminiProxy implements ModelProxy {
         temperature,
         topP,
         responseMimeType: 'application/json',
+        thinkingConfig: {
+          thinkingLevel: config.thinkingLevel,
+        },
       },
       safetySettings: [
         {

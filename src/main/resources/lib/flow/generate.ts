@@ -43,9 +43,10 @@ export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
     const messages = createGenerationMessages(prompt, params.history);
 
     const proxy = new GeminiProxy({
-      url: options.pro,
+      url: options.pro.url,
       instructions: createGenerationInstructions(),
       modelParameters: MODES_DATA.balanced.gemini,
+      thinkingLevel: options.pro.thinkingLevel,
       messages,
       schema: fieldsToSchema(params.prompt),
     });

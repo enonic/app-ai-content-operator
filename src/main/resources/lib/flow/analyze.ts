@@ -34,9 +34,10 @@ export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndRe
     const messages = createAnalysisMessages(prompt, payload.history.analysis);
 
     const proxy = new GeminiProxy({
-      url: options.flash,
+      url: options.flash.url,
       instructions: createAnalysisInstructions(),
       modelParameters: MODES_DATA.focused.gemini,
+      thinkingLevel: options.flash.thinkingLevel,
       messages,
     });
 

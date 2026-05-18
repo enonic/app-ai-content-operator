@@ -6,6 +6,14 @@ export type { Content, Part };
 
 export type Role = 'user' | 'model' | 'system';
 
+export type ThinkingLevel = 'minimal' | 'low' | 'medium' | 'high';
+
+export type ThinkingConfig = {
+  includeThoughts?: boolean;
+  thinkingBudget?: number;
+  thinkingLevel?: ThinkingLevel;
+};
+
 export type FunctionDeclarationSchemaProperty = {
   type: string;
   description?: string;
@@ -35,6 +43,7 @@ export type GenerationConfig = {
   stopSequences?: string[];
   responseMimeType?: string;
   responseSchema?: ResponseSchema;
+  thinkingConfig?: ThinkingConfig;
 };
 
 export type GenerateContentRequest = {
