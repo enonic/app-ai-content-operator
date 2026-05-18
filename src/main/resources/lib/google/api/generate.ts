@@ -1,8 +1,9 @@
-import { ERRORS } from '../../../shared/errors';
 import type { ModelResponseGenerateData } from '../../../shared/model';
+import type { GenerateContentRequest, GenerateContentResponse, ResponseSchema } from '../types';
+
+import { ERRORS } from '../../../shared/errors';
 import { logDebug, LogDebugGroups } from '../../logger';
 import { parseResponse, sendPostRequest } from '../client';
-import type { GenerateContentRequest, GenerateContentResponse, ResponseSchema } from '../types';
 
 export type GenerationMeta = {
   instructions: string;

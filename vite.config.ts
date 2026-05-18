@@ -12,8 +12,21 @@ export default defineConfig({
   fmt: {
     singleQuote: true,
     jsxSingleQuote: false,
+    sortImports: {
+      newlinesBetween: true,
+      customGroups: [{ groupName: 'css', elementNamePattern: ['*.css', '*.scss', '*.sass'] }],
+      groups: [
+        ['value-builtin', 'value-external'],
+        'value-internal',
+        'type-import',
+        ['value-parent', 'value-sibling', 'value-index'],
+        'css',
+        'unknown',
+      ],
+    },
+    sortPackageJson: false,
     sortTailwindcss: {
-      functions: ['cn'],
+      functions: ['cn', 'clsx', 'twMerge'],
     },
   },
   plugins: [preact(), tailwindcss()],

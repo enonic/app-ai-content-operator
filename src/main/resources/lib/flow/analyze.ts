@@ -1,8 +1,5 @@
 import type { DataEntry } from '../../shared/data/DataEntry';
-import { SPECIAL_KEYS, SPECIAL_NAMES } from '../../shared/enums';
-import { ERRORS } from '../../shared/errors';
 import type { Message } from '../../shared/model';
-import { MODES_DATA } from '../../shared/modes';
 import type {
   AnalysisErrorResult,
   AnalysisObjectEntry,
@@ -11,8 +8,12 @@ import type {
   AnalysisUnclearResult,
   RawAnalysisResult,
 } from '../../shared/prompts/analysis';
-import { createAnalysisInstructions } from '../../shared/prompts/analysis';
 import type { GenerateMessagePayload } from '../../shared/websocket';
+
+import { SPECIAL_KEYS, SPECIAL_NAMES } from '../../shared/enums';
+import { ERRORS } from '../../shared/errors';
+import { MODES_DATA } from '../../shared/modes';
+import { createAnalysisInstructions } from '../../shared/prompts/analysis';
 import { getOptions } from '../google/options';
 import { logError } from '../logger';
 import { GeminiProxy } from '../proxy/gemini';

@@ -1,7 +1,7 @@
+import { transformSync } from '@swc/core';
+import { build } from 'esbuild';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { build } from 'esbuild';
-import { transformSync } from '@swc/core';
 
 const isProduction = process.env.NODE_ENV === 'production';
 

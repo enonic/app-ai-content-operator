@@ -1,11 +1,12 @@
 import { createResponse } from '/tests/testUtils/testHelpers';
 import { describe, expect, it, vi } from 'vitest';
 
+import type { ModelResponseGenerateData } from '../../../shared/model';
+import type { GenerateContentRequest } from '../types';
+
 import { content } from '../../../../../../tests/testUtils/fixtures/google';
 import { ERRORS } from '../../../shared/errors';
-import type { ModelResponseGenerateData } from '../../../shared/model';
 import * as Client from '../client';
-import type { GenerateContentRequest } from '../types';
 import { generate, generateCandidate } from './generate';
 
 const url =

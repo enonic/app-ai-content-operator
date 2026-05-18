@@ -1,8 +1,8 @@
+import type { CustomAiError } from '../../shared/errors';
+import type { RequestParams } from '../http/requests';
 import type { HttpClientResponse } from '/lib/http-client';
 
-import type { CustomAiError } from '../../shared/errors';
 import { ERRORS } from '../../shared/errors';
-import type { RequestParams } from '../http/requests';
 import { request } from '../http/requests';
 import { logDebug, LogDebugGroups, logError } from '../logger';
 import { parseOptions } from './options';

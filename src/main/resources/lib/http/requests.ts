@@ -1,9 +1,10 @@
-import type { HttpClientRequestOptions, HttpClientResponse } from '/lib/http-client';
 import libHttpClient from '/lib/http-client';
 import { sleep } from '/lib/xp/task';
 
-import { ERRORS, isNashornError } from '../../shared/errors';
 import type { ErrorResponse } from '../../shared/model';
+import type { HttpClientRequestOptions, HttpClientResponse } from '/lib/http-client';
+
+import { ERRORS, isNashornError } from '../../shared/errors';
 import { logError } from '../logger';
 import { calcBackoffDelay, shouldRetryRequest } from '../utils/http';
 import {

@@ -1,5 +1,6 @@
-import { SchemaType } from '../../shared/enums';
 import type { FunctionDeclarationSchemaProperty, Schema } from './types';
+
+import { SchemaType } from '../../shared/enums';
 
 export type SchemaFields = Record<string, { count?: number }>;
 

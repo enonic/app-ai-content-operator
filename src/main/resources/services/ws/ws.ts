@@ -1,14 +1,5 @@
 import { send } from '/lib/xp/websocket';
 
-import { analyze } from '../../lib/flow/analyze';
-import { generate } from '../../lib/flow/generate';
-import { respondError } from '../../lib/http/requests';
-import { getLicenseState } from '../../lib/license/license-manager';
-import { logDebug, LogDebugGroups, logError } from '../../lib/logger';
-import { runAsyncTask } from '../../lib/utils/task';
-import { unsafeUUIDv4 } from '../../lib/utils/uuid';
-import { WS_PROTOCOL } from '../../shared/constants';
-import { ERRORS } from '../../shared/errors';
 import type { LicenseState } from '../../shared/license';
 import type {
   AnalyzedMessage,
@@ -22,6 +13,16 @@ import type {
   MessageMetadata,
   ServerMessage,
 } from '../../shared/websocket';
+
+import { analyze } from '../../lib/flow/analyze';
+import { generate } from '../../lib/flow/generate';
+import { respondError } from '../../lib/http/requests';
+import { getLicenseState } from '../../lib/license/license-manager';
+import { logDebug, LogDebugGroups, logError } from '../../lib/logger';
+import { runAsyncTask } from '../../lib/utils/task';
+import { unsafeUUIDv4 } from '../../lib/utils/uuid';
+import { WS_PROTOCOL } from '../../shared/constants';
+import { ERRORS } from '../../shared/errors';
 import { MessageType } from '../../shared/websocket';
 
 //

@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import type { FinishReason } from '../../shared/model';
+import type { ModelProxyConfig } from './model';
+
 import { HarmBlockThreshold, HarmCategory } from '../../shared/enums';
 import { ERRORS } from '../../shared/errors';
-import type { FinishReason } from '../../shared/model';
 import * as GenerateApi from '../google/api/generate';
 import { GeminiProxy } from './gemini';
-import type { ModelProxyConfig } from './model';
 
 vi.mock('../google/api/generate', async (importOriginal) => {
   const original = await importOriginal<typeof GenerateApi>();

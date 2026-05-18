@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { GraphNode, GraphNodes } from './graph';
+
 import { getReachableNodeIds, pruneGraph } from './graph';
 
 describe('getReachableNodeIds', () => {

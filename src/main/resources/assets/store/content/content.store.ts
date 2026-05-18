@@ -6,12 +6,12 @@ import { MENTION_ALL } from '@/common/mentions';
 import { $context, resetContext } from '@/store/context';
 
 import type { ContentData, PropertyValue } from './ContentData';
-import type { UpdateEventData } from './UpdateEventData';
 import type { FieldDescriptor } from './FieldDescriptor';
 import type { FormItemWithPath, InputWithPath } from './FormItemWithPath';
 import type { Language } from './Language';
 import type { Path } from './Path';
 import type { Schema } from './Schema';
+import type { UpdateEventData } from './UpdateEventData';
 import type { DataEntry } from '@shared/data/DataEntry';
 
 import {

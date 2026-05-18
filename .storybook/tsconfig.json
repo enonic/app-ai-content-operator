@@ -7,5 +7,5 @@
     "noUnusedParameters": false,
     "types": ["vite/client", "node"]
   },
-  "include": ["./**/*", "../src/main/resources/assets/**/*"]
+  "include": ["./**/*", "../src/main/resources/assets/**/*", "../src/main/resources/shared/**/*"]
 }

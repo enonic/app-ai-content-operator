@@ -1,14 +1,15 @@
 import type { DataEntry, DataEntryType } from '../../shared/data/DataEntry';
-import { SPECIAL_KEYS, SPECIAL_NAMES } from '../../shared/enums';
-import { ERRORS } from '../../shared/errors';
 import type { Message } from '../../shared/model';
-import { MODES_DATA } from '../../shared/modes';
 import type {
   AnalysisObjectEntry,
   AnalysisReferenceEntry,
   AnalysisResult,
 } from '../../shared/prompts/analysis';
 import type { GenerationResult } from '../../shared/prompts/generation';
+
+import { SPECIAL_KEYS, SPECIAL_NAMES } from '../../shared/enums';
+import { ERRORS } from '../../shared/errors';
+import { MODES_DATA } from '../../shared/modes';
 import { createGenerationInstructions } from '../../shared/prompts/generation';
 import { getOptions } from '../google/options';
 import { fieldsToSchema } from '../google/schema';

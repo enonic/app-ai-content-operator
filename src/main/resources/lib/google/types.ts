@@ -1,6 +1,5 @@
-import type { Content, Part, SafetySetting } from '@google/genai';
-
 import type { FinishReason } from '../../shared/model';
+import type { Content, Part, SafetySetting } from '@google/genai';
 
 export type { Content, Part };
 

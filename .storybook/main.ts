@@ -1,7 +1,8 @@
+import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import type { StorybookConfig } from '@storybook/preact-vite';
-import tailwindcss from '@tailwindcss/vite';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const preactPath = path.resolve(__dirname, '../node_modules/preact');

@@ -1,9 +1,10 @@
-import { ERRORS } from '../../shared/errors';
 import type { Model } from '../../shared/models';
+import type { ThinkingLevel } from './types';
+
+import { ERRORS } from '../../shared/errors';
 import { GOOGLE_GEMINI_FLASH_URL, GOOGLE_GEMINI_PRO_URL, GOOGLE_SAK_PATH } from '../config';
 import { APP_NAME } from '../constants';
 import { logDebug, LogDebugGroups, logError } from '../logger';
-import type { ThinkingLevel } from './types';
 
 type ModelConfig = {
   url: string;
