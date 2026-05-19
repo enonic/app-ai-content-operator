@@ -1,7 +1,6 @@
 import { t } from 'i18next';
 import { computed, map } from 'nanostores';
 
-import { addGlobalUpdateDataHandler } from '@/common/events';
 import { MENTION_ALL } from '@/common/mentions';
 import { $context, resetContext } from '@/store/context';
 
@@ -11,7 +10,6 @@ import type { FormItemWithPath, InputWithPath } from './FormItemWithPath';
 import type { Language } from './Language';
 import type { Path } from './Path';
 import type { Schema } from './Schema';
-import type { UpdateEventData } from './UpdateEventData';
 import type { DataEntry } from '@shared/data/DataEntry';
 
 import {
@@ -55,10 +53,6 @@ export const $language = computed(
 );
 export const $contentPath = computed($content, ({ persisted }) => persisted?.contentPath ?? '');
 
-addGlobalUpdateDataHandler((event) => {
-  putEventDataToStore(event.detail);
-});
-
 export const setLanguage = (language: Language): void => $content.setKey('language', language);
 
 export const getPersistedData = (): Optional<Readonly<ContentData>> => $content.get().persisted;
@@ -66,26 +60,6 @@ export const getPersistedData = (): Optional<Readonly<ContentData>> => $content.
 export const setPersistedData = (data: ContentData): void => $content.setKey('persisted', data);
 
 export const setSchema = (schema: Schema): void => $content.setKey('schema', schema);
-
-function putEventDataToStore(eventData: UpdateEventData): void {
-  if (!eventData.payload) {
-    return;
-  }
-
-  const { language, data, schema } = eventData.payload;
-
-  if (language) {
-    setLanguage(language);
-  }
-
-  if (data) {
-    setPersistedData(data);
-  }
-
-  if (schema) {
-    setSchema(schema);
-  }
-}
 
 export const $topic = computed($content, (data) => data.persisted?.topic ?? '');
 

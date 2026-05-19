@@ -1,33 +1,17 @@
-@import 'tailwindcss' important;
+@layer theme, base, legacy, utilities, overrides;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import '@enonic/ui/preset.css';
+@import 'tw-animate-css';
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@source '../../../../node_modules/@enonic/ui/';
 
 @plugin '@tailwindcss/typography';
-@plugin 'tailwindcss-scoped-preflight' {
-  isolation-strategy: inside;
-  selector: .ai-content-operator;
-}
 
 @theme {
-  --color-enonic-gray-100: #f7f7f7;
-  --color-enonic-gray-400: #acacac;
-  --color-enonic-gray-500: #999999;
-  --color-enonic-gray-600: #777777;
-  --color-enonic-gray-700: #333333;
-
-  --color-enonic-green: #609e24;
-
-  --color-enonic-blue: #2c76e9;
-  --color-enonic-blue-400: #5a94ee;
-  --color-enonic-blue-500: #4279d9;
-  --color-enonic-blue-700: #1a56b8;
-  --color-enonic-blue-800: #123d8a;
-
-  --breakpoint-sm2: 720px;
-
-  --text-2xs: 0.625rem;
-  --text-header-title: 1.725rem;
-
   --leading-initial: initial;
-  --leading-header-title: 2rem;
 
   --animate-slide-fade-in: slide-fade-in 300ms ease-in-out forwards;
   --animate-move-gradient: move-gradient 3000ms linear infinite;
@@ -72,10 +56,6 @@
   background-size: 200% 100%;
 }
 
-@utility grid-cols-mid-3 {
-  grid-template-columns: minmax(auto, min-content) 1fr minmax(auto, min-content);
-}
-
 @utility grid-cols-fit-1fr {
   grid-template-columns: minmax(auto, min-content) 1fr;
 }
@@ -88,10 +68,6 @@
   transition-property: padding;
   transition-timing-function: var(--default-transition-timing-function, ease);
   transition-duration: var(--default-transition-duration, 150ms);
-}
-
-body.ai-content-operator-dragging > *:not(.ai-content-operator) {
-  pointer-events: none !important;
 }
 
 /* @enonic/ui Dialog's full-screen positioning layer must not block the editor behind the floating assistant. */
@@ -141,7 +117,7 @@ body.ai-content-operator-dragging > *:not(.ai-content-operator) {
   }
 
   .ai-content-operator-scroll::-webkit-scrollbar-thumb {
-    background-color: var(--color-enonic-gray-400);
+    background-color: #acacac;
     border-radius: 7px;
     border: 3px solid transparent;
     background-clip: content-box;

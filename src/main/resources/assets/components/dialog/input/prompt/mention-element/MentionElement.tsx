@@ -1,7 +1,8 @@
 import { cn } from '@enonic/ui';
 import { useFocused, useSelected } from 'slate-react';
 
-import { dispatchInteracted } from '../../../../../common/events';
+import { scrollToField } from '@/store/host';
+
 import { MENTION_ALL } from '../../../../../common/mentions';
 
 const MENTION_ELEMENT_NAME = 'MentionElement';
@@ -45,7 +46,7 @@ export default function MentionElement({
       contentEditable={false}
       className={classNames}
       title={element.title}
-      onClick={isAllMention ? undefined : () => dispatchInteracted(element.path)}
+      onClick={isAllMention ? undefined : () => scrollToField(element.path)}
     >
       <span className="mention text-xs">
         {element.character}

@@ -15,7 +15,11 @@ export default function LoadingMessage({ className }: Props): React.ReactNode {
   return (
     <section
       data-component={LOADING_MESSAGE_NAME}
-      className={cn(LOADING_MESSAGE_NAME, 'grid-cols-fit-1fr grid gap-x-4 pl-2.5 pr-5 py-2.5', className)}
+      className={cn(
+        LOADING_MESSAGE_NAME,
+        'grid-cols-fit-1fr grid gap-x-4 py-2.5 pr-5 pl-2.5',
+        className,
+      )}
     >
       <Avatar.Root size="md" shape="circle" className="bg-transparent">
         <Avatar.Fallback className="bg-transparent p-0">

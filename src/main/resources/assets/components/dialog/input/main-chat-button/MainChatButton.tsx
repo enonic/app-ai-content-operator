@@ -11,11 +11,7 @@ type Props = {
   clickHandler: () => void;
 };
 
-export default function MainChatButton({
-  className,
-  type,
-  clickHandler,
-}: Props): React.ReactNode {
+export default function MainChatButton({ className, type, clickHandler }: Props): React.ReactNode {
   const { t } = useTranslation();
 
   return (
@@ -27,12 +23,7 @@ export default function MainChatButton({
       icon={type === 'send' ? ArrowUp : Square}
       title={t('action.send')}
       aria-label={t('action.send')}
-      className={cn(
-        MAIN_CHAT_BUTTON_NAME,
-        'size-10',
-        'rounded-lg',
-        className,
-      )}
+      className={cn(MAIN_CHAT_BUTTON_NAME, 'size-10', 'rounded-lg', className)}
       onClick={clickHandler}
     />
   );

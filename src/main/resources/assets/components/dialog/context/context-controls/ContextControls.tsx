@@ -45,7 +45,7 @@ export default function ContextControl({ className }: Props): React.ReactNode {
       className={cn(
         CONTEXT_CONTROLS_NAME,
         'flex items-center justify-start gap-0.5',
-        'rounded-lg bg-surface-neutral',
+        'bg-surface-neutral rounded-lg',
         'text-xs',
         'overflow-hidden',
         'transition-all duration-200 ease-in-out',
@@ -60,7 +60,7 @@ export default function ContextControl({ className }: Props): React.ReactNode {
         icon={X}
         title={t('action.resetContext')}
         aria-label={t('action.resetContext')}
-        className="text-subtle ml-auto w-8 rounded-lg enabled:hover:bg-surface-neutral enabled:hover:text-main"
+        className="text-subtle enabled:hover:bg-surface-neutral enabled:hover:text-main ml-auto w-8 rounded-lg"
         onClick={resetContext}
       />
     </div>

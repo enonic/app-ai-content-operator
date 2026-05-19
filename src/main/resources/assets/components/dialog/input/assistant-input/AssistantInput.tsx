@@ -15,7 +15,10 @@ export default function AssistantInput({ className = '' }: Props): React.ReactNo
   return (
     <div
       data-component={ASSISTANT_INPUT_NAME}
-      className={cn(ASSISTANT_INPUT_NAME, 'flex w-full flex-col p-5 bg-surface-primary rounded-lg gap-2.5')}
+      className={cn(
+        ASSISTANT_INPUT_NAME,
+        'bg-surface-primary flex w-full flex-col gap-2.5 rounded-lg p-5',
+      )}
     >
       <PromptArea className={className} />
       <p

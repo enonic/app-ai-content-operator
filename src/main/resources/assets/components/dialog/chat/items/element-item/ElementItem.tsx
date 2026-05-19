@@ -1,9 +1,10 @@
 import { cn } from '@enonic/ui';
 
+import { scrollToField } from '@/store/host';
+
 import type { FieldDescriptor, MultipleValues } from '@/store/content';
 
 import { REGULAR_SCREEN } from '../../../../../common/device';
-import { dispatchInteracted } from '../../../../../common/events';
 import { pickValue } from '../../../../../common/messages';
 import ElementItemControls from '../../controls/element-item-controls/ElementItemControls';
 import ElementItemSwitchControls from '../../controls/element-item-switch-controls/ElementItemSwitchControls';
@@ -39,9 +40,9 @@ export default function ElementItem({
       )}
     >
       <button
-        className="cursor-pointer truncate px-1 align-baseline text-info-rev"
+        className="text-info-rev cursor-pointer truncate px-1 align-baseline"
         title={displayName}
-        onClick={() => dispatchInteracted(name)}
+        onClick={() => scrollToField(name)}
       >
         <span className="text-xs">{label}</span>
       </button>

@@ -1,13 +1,9 @@
-import { useStore } from '@nanostores/react';
 import { useTranslation } from 'react-i18next';
-
-import { $config } from '@/store/config';
 
 export default function GreetingText(): React.ReactNode {
   const { t } = useTranslation();
-  const { user } = useStore($config, { keys: ['user'] });
 
-  const name = user.fullName.split(' ')[0];
+  const name = 'You';
   const hours = new Date().getHours();
 
   switch (true) {

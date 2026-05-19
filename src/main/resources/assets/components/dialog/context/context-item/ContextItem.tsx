@@ -49,7 +49,7 @@ export default function ContextItem({ className, path, last }: Props): React.Rea
         CONTEXT_ITEM_NAME,
         'inline-flex items-center justify-center',
         'h-6 max-w-40 min-w-0 truncate rounded-lg px-1.5',
-        'text-xs text-main',
+        'text-main text-xs',
         'enabled:hover:bg-surface-neutral disabled:opacity-100',
         isEnabled && 'text-info hover:text-info-rev',
         last && 'max-w-none flex-shrink-0',

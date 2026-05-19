@@ -4,9 +4,9 @@ import { ChevronDown, ChevronRight, LoaderCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { dispatchInteracted } from '@/common/events';
 import { isNonOptional } from '@/common/objects';
 import { $fieldDescriptors } from '@/store/content';
+import { scrollToField } from '@/store/host';
 
 import type { FieldDescriptor, ModelChatMessageContent } from '@/store/content';
 
@@ -63,17 +63,17 @@ export default function AssistantMessagePlaceholder({ content }: Props): React.R
           ASSISTANT_MESSAGE_PLACEHOLDER_NAME,
           'inline-flex items-center justify-start',
           'min-h-8 rounded px-2 py-1.5',
-          'text-sm text-main bg-surface-neutral',
+          'text-main bg-surface-neutral text-sm',
           'enabled:hover:bg-surface-neutral-hover',
           'disabled:opacity-50',
-          !hasFields && 'enabled:hover:cursor-default enabled:hover:bg-surface-neutral',
+          !hasFields && 'enabled:hover:bg-surface-neutral enabled:hover:cursor-default',
         )}
       >
         {hasFields &&
           (expanded ? (
-            <ChevronDown className="shrink-0 size-3" />
+            <ChevronDown className="size-3 shrink-0" />
           ) : (
-            <ChevronRight className="shrink-0 size-3" />
+            <ChevronRight className="size-3 shrink-0" />
           ))}
         <span className="bg-gradient-middle bg-text-gradient-size to-muted animate-move-gradient from-main bg-clip-text pl-1 text-left text-sm text-transparent">
           {t(getPlaceholderMessage(count), {
@@ -86,9 +86,9 @@ export default function AssistantMessagePlaceholder({ content }: Props): React.R
         {analyzedFieldsDescriptors.map(({ name, label, displayName }) => (
           <li key={name} className="flex items-center gap-0.5">
             <button
-              className="inline-flex cursor-pointer items-center truncate rounded px-1 align-baseline text-info"
+              className="text-info inline-flex cursor-pointer items-center truncate rounded px-1 align-baseline"
               title={displayName}
-              onClick={() => dispatchInteracted(name)}
+              onClick={() => scrollToField(name)}
             >
               <span className="text-xs">{label}</span>
             </button>

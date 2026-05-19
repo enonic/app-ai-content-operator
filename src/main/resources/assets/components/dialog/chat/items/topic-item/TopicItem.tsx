@@ -1,11 +1,12 @@
 import { cn } from '@enonic/ui';
 import { useTranslation } from 'react-i18next';
 
+import { scrollToField } from '@/store/host';
+
 import type { MultipleValues } from '@/store/content';
 
 import { SPECIAL_NAMES } from '../../../../../../shared/enums';
 import { REGULAR_SCREEN } from '../../../../../common/device';
-import { dispatchInteracted } from '../../../../../common/events';
 import { pickValue } from '../../../../../common/messages';
 import ElementItemControls from '../../controls/element-item-controls/ElementItemControls';
 import ElementItemSwitchControls from '../../controls/element-item-switch-controls/ElementItemSwitchControls';
@@ -42,9 +43,9 @@ export default function TopicItem({
       )}
     >
       <button
-        className="cursor-pointer truncate px-1 align-baseline text-info-rev"
+        className="text-info-rev cursor-pointer truncate px-1 align-baseline"
         title={topic}
-        onClick={() => dispatchInteracted(SPECIAL_NAMES.topic)}
+        onClick={() => scrollToField(SPECIAL_NAMES.topic)}
       >
         <span className="text-xs">{topic}</span>
       </button>

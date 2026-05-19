@@ -21,7 +21,10 @@ export default function SystemMessage({ className, message, last }: Props): Reac
   const { type, node } = message.content;
 
   return (
-    <div data-component={SYSTEM_MESSAGE_NAME} className={cn(SYSTEM_MESSAGE_NAME, 'flex gap-2', className)}>
+    <div
+      data-component={SYSTEM_MESSAGE_NAME}
+      className={cn(SYSTEM_MESSAGE_NAME, 'flex gap-2', className)}
+    >
       <JukeIcon className="size-8 shrink-0" />
       <article className="flex flex-1 flex-col gap-3">
         <div className="pt-1 text-sm leading-6">

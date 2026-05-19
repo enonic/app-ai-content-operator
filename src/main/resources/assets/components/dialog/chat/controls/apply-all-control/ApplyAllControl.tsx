@@ -4,8 +4,8 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { delay } from '@/common/delay';
-import { dispatchResultApplied } from '@/common/events';
 import { messageContentToValues, pickValue } from '@/common/messages';
+import { applyResults } from '@/store/host';
 
 import type { ApplyMessage, ModelChatMessageContent, MultipleValues } from '@/store/content';
 
@@ -33,7 +33,7 @@ export default function ApplyAllControl({ className, content }: Props): React.Re
     setApplying(true);
 
     const items = extractItems(content);
-    dispatchResultApplied(items);
+    applyResults(items);
 
     void delay(500).then(() => {
       setApplying(false);

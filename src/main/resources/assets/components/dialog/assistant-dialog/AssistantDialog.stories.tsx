@@ -9,7 +9,6 @@ import AssistantMessage from '../chat/assistant-message/AssistantMessage';
 import UserMessage from '../chat/user-message/UserMessage';
 import AssistantHeader from '../header/assistant-header/AssistantHeader';
 import AssistantInput from '../input/assistant-input/AssistantInput';
-import './AssistantDialog.css';
 
 const userMessage: UserChatMessage = {
   id: 'user-1',
@@ -69,7 +68,7 @@ export const FullDialog: Story = {
       className={cn(
         'AssistantDialog pointer-events-auto',
         'flex h-full max-h-160 w-full max-w-160 flex-col overflow-hidden',
-        'leading-initial rounded-lg border bg-surface-neutral px-5 pb-10 text-base shadow-xl',
+        'leading-initial bg-surface-neutral rounded-lg border px-5 pb-10 text-base shadow-xl',
       )}
     >
       <AssistantHeader />

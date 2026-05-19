@@ -49,7 +49,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         entryFileNames: '[name].js',
-        extend: true,
       },
     },
     outDir: 'build/resources/main/assets',

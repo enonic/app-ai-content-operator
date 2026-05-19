@@ -29,7 +29,11 @@ export default function AssistantMessage({ className, message, last }: Props): R
   return (
     <section
       data-component={ASSISTANT_MESSAGE_NAME}
-      className={cn(ASSISTANT_MESSAGE_NAME, 'grid-cols-fit-1fr grid gap-x-4 pl-2.5 pr-5 py-2.5', className)}
+      className={cn(
+        ASSISTANT_MESSAGE_NAME,
+        'grid-cols-fit-1fr grid gap-x-4 py-2.5 pr-5 pl-2.5',
+        className,
+      )}
     >
       <Avatar.Root size="md" shape="circle" className="bg-transparent">
         <Avatar.Fallback className="bg-transparent p-0">

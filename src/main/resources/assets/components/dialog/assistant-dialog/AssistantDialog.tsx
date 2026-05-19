@@ -5,25 +5,26 @@ import { useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@/hooks/useDraggable';
 import useIsTouchDevice from '@/hooks/useIsTouchDevice';
 import { useResizable } from '@/hooks/useResizable';
+import { useShadowHost } from '@/shadow/ShadowHostContext';
 import { $dialog, setDialogHidden } from '@/store/dialog';
 import { clearTarget } from '@/store/editor';
 import { mountWebSocket } from '@/store/websocket';
 
 import AssistantContent from '../assistant-content/AssistantContent';
 import AssistantHeader from '../header/assistant-header/AssistantHeader';
-import './AssistantDialog.css';
 
 const ASSISTANT_DIALOG_NAME = 'AssistantDialog';
 
 export type Props = {
-  container?: HTMLElement;
   className?: string;
 };
 
 const DRAGGING_BODY_CLASS = 'ai-content-operator-dragging';
 
-export default function AssistantDialog({ container, className = '' }: Props): React.ReactNode {
+export default function AssistantDialog({ className = '' }: Props): React.ReactNode {
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const shadowHost = useShadowHost();
 
   const { hidden } = useStore($dialog, { keys: ['hidden'] });
 
@@ -85,7 +86,7 @@ export default function AssistantDialog({ container, className = '' }: Props): R
         }
       }}
     >
-      <Dialog.Portal container={container}>
+      <Dialog.Portal container={shadowHost ?? undefined}>
         <Dialog.Content
           ref={contentRef}
           data-component={ASSISTANT_DIALOG_NAME}
@@ -93,6 +94,10 @@ export default function AssistantDialog({ container, className = '' }: Props): R
             ASSISTANT_DIALOG_NAME,
             'group/resize pointer-events-auto',
             'flex flex-col overflow-hidden',
+            'h-[100svh] max-h-[100svh] w-[100svw] max-w-[100svw]',
+            'min-[512px]:w-[32rem] min-[720px]:w-[40rem]',
+            '[@media(min-width:512px)_and_(min-height:512px)_and_(max-height:896px)]:h-[32rem]',
+            '[@media(min-width:512px)_and_(min-height:896px)]:h-[40rem]',
             'leading-initial rounded-lg border px-5 pb-10 text-base shadow-xl',
             dragging && 'opacity-80 select-none',
             className,

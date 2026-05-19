@@ -9,7 +9,7 @@ const meta = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <div className="ai-content-operator text-main w-100 overflow-hidden rounded-lg border bg-surface-neutral">
+      <div className="ai-content-operator text-main bg-surface-neutral w-100 overflow-hidden rounded-lg border">
         <Story />
       </div>
     ),

@@ -47,7 +47,12 @@ export default function ElementItemContent({
       return (
         <div
           data-component={ELEMENT_ITEM_CONTENT_NAME}
-          className={cn(ELEMENT_ITEM_CONTENT_NAME, 'prose prose-sm relative', 'col-span-2', className)}
+          className={cn(
+            ELEMENT_ITEM_CONTENT_NAME,
+            'prose prose-sm relative',
+            'col-span-2',
+            className,
+          )}
         >
           {content}
         </div>

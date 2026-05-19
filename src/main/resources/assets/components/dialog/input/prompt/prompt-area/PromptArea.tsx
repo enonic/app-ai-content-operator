@@ -189,7 +189,7 @@ export default function PromptArea({ className }: Props): React.ReactNode {
         'rounded-lg',
         'overflow-y-auto',
         hasContext &&
-        'before:bg-gradient-fade-to-t before:to-surface-primary before:absolute before:inset-0 before:top-px before:right-2 before:left-2 before:z-10 before:h-10 before:rounded-t-lg before:from-transparent before:content-[""]',
+          'before:bg-gradient-fade-to-t before:to-surface-primary before:absolute before:inset-0 before:top-px before:right-2 before:left-2 before:z-10 before:h-10 before:rounded-t-lg before:from-transparent before:content-[""]',
         className,
       )}
     >

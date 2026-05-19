@@ -65,7 +65,10 @@ export function AssistantMessageList({ messageId, content, last }: Props): React
     <ul
       ref={ref}
       data-component={ASSISTANT_MESSAGE_LIST_NAME}
-      className={cn(ASSISTANT_MESSAGE_LIST_NAME, 'flex flex-col divide-y overflow-hidden rounded gap-5')}
+      className={cn(
+        ASSISTANT_MESSAGE_LIST_NAME,
+        'flex flex-col gap-5 divide-y overflow-hidden rounded',
+      )}
     >
       {sortedEntries.map(([key, value], _, arr) => {
         if (key === SPECIAL_NAMES.common) {

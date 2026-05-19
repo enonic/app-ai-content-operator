@@ -1,6 +1,6 @@
 import { map } from 'nanostores';
 
-import { addGlobalOpenDialogHandler, AiEvents, dispatchDialogEvent } from '@/common/events';
+import { getHostApi } from '@/store/host';
 
 export type Dialog = {
   hidden: boolean;
@@ -13,7 +13,7 @@ export const $dialog = map<Dialog>({
 export const setDialogHidden = (hidden: boolean): void => {
   const isStateChanged = $dialog.get().hidden !== hidden;
   if (isStateChanged) {
-    dispatchDialogEvent(hidden ? AiEvents.DIALOG_HIDDEN : AiEvents.DIALOG_SHOWN);
+    getHostApi().setDialogState(!hidden);
     $dialog.setKey('hidden', hidden);
   }
 };
@@ -21,9 +21,3 @@ export const setDialogHidden = (hidden: boolean): void => {
 export const toggleDialog = (): void => {
   setDialogHidden(!$dialog.get().hidden);
 };
-
-addGlobalOpenDialogHandler(() => {
-  if ($dialog.get().hidden) {
-    setDialogHidden(false);
-  }
-});

@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { delay } from '@/common/delay';
-import { dispatchResultApplied } from '@/common/events';
+import { applyResults } from '@/store/host';
 
 const APPLY_CONTROL_NAME = 'ApplyControl';
 
@@ -20,7 +20,7 @@ export default function ApplyControl({ className, name, content }: Props): React
 
   const handleApply = useCallback(() => {
     setApplying(true);
-    dispatchResultApplied([{ path: name, text: content }]);
+    applyResults([{ path: name, text: content }]);
     void delay(500).then(() => {
       setApplying(false);
     });
