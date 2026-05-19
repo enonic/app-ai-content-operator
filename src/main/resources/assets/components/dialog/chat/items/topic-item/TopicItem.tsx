@@ -1,6 +1,5 @@
-import clsx from 'clsx';
+import { cn } from '@enonic/ui';
 import { useTranslation } from 'react-i18next';
-import { twJoin, twMerge } from 'tailwind-merge';
 
 import type { MultipleValues } from '@/store/content';
 
@@ -11,6 +10,8 @@ import { pickValue } from '../../../../../common/messages';
 import ElementItemControls from '../../controls/element-item-controls/ElementItemControls';
 import ElementItemSwitchControls from '../../controls/element-item-switch-controls/ElementItemSwitchControls';
 import ElementItemContent from '../element-item-content/ElementItemContent';
+
+const TOPIC_ITEM_NAME = 'TopicItem';
 
 type Props = {
   className?: string;
@@ -33,12 +34,15 @@ export default function TopicItem({
 
   return (
     <li
-      className={twMerge(
-        clsx('group/item grid-cols-fit-fit-1fr grid gap-x-1 gap-y-1 hover:bg-slate-50', className),
+      data-component={TOPIC_ITEM_NAME}
+      className={cn(
+        TOPIC_ITEM_NAME,
+        'group/item grid-cols-fit-fit-1fr grid gap-x-1 gap-y-1 hover:bg-slate-50',
+        className,
       )}
     >
       <button
-        className="-mx-1 cursor-pointer truncate px-1 align-baseline text-sky-600"
+        className="cursor-pointer truncate px-1 align-baseline text-info-rev"
         title={topic}
         onClick={() => dispatchInteracted(SPECIAL_NAMES.topic)}
       >
@@ -49,7 +53,7 @@ export default function TopicItem({
       )}
       {content && (
         <ElementItemControls
-          className={twJoin(
+          className={cn(
             'col-start-3',
             REGULAR_SCREEN && !last && 'invisible group-hover/item:visible',
           )}

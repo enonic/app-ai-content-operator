@@ -1,8 +1,9 @@
-import { twMerge } from 'tailwind-merge';
-
-import LoadingIcon from '@/ui/primitives/loading-icon/LoadingIcon';
+import { cn } from '@enonic/ui';
+import { LoaderCircle } from 'lucide-react';
 
 import type { DataEntryType } from '../../../../../../shared/data/DataEntry';
+
+const ELEMENT_ITEM_CONTENT_NAME = 'ElementItemContent';
 
 type Props = {
   className?: string;
@@ -17,8 +18,11 @@ export default function ElementItemContent({
 }: Props): React.ReactNode {
   if (!content) {
     return (
-      <div className={twMerge('relative', 'col-span-2', className)}>
-        <LoadingIcon />
+      <div
+        data-component={ELEMENT_ITEM_CONTENT_NAME}
+        className={cn(ELEMENT_ITEM_CONTENT_NAME, 'relative', 'col-span-2', className)}
+      >
+        <LoaderCircle className="text-decorative size-5 animate-spin" />
       </div>
     );
   }
@@ -27,8 +31,10 @@ export default function ElementItemContent({
     case 'html':
       return (
         <div
+          data-component={ELEMENT_ITEM_CONTENT_NAME}
           dangerouslySetInnerHTML={{ __html: content }}
-          className={twMerge(
+          className={cn(
+            ELEMENT_ITEM_CONTENT_NAME,
             'ai-content-operator-html-based',
             'prose prose-sm max-w-max',
             'relative',
@@ -39,7 +45,12 @@ export default function ElementItemContent({
       );
     case 'text':
       return (
-        <div className={twMerge('prose prose-sm relative', 'col-span-2', className)}>{content}</div>
+        <div
+          data-component={ELEMENT_ITEM_CONTENT_NAME}
+          className={cn(ELEMENT_ITEM_CONTENT_NAME, 'prose prose-sm relative', 'col-span-2', className)}
+        >
+          {content}
+        </div>
       );
   }
 }

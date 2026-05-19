@@ -1,15 +1,16 @@
+import { cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
+import { ChevronDown, ChevronRight, LoaderCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { twJoin } from 'tailwind-merge';
 
 import { dispatchInteracted } from '@/common/events';
 import { isNonOptional } from '@/common/objects';
 import { $fieldDescriptors } from '@/store/content';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
-import LoadingIcon from '@/ui/primitives/loading-icon/LoadingIcon';
 
 import type { FieldDescriptor, ModelChatMessageContent } from '@/store/content';
+
+const ASSISTANT_MESSAGE_PLACEHOLDER_NAME = 'AssistantMessagePlaceholder';
 
 type Props = {
   content: Omit<ModelChatMessageContent, 'generationResult'>;
@@ -52,41 +53,46 @@ export default function AssistantMessagePlaceholder({ content }: Props): React.R
 
   return (
     <>
-      <ActionButton
-        className={twJoin(
-          'max-w-none justify-start min-h-8 h-auto px-2 py-1.5',
-          !hasFields && 'enabled:hover:bg-white enabled:hover:cursor-default',
-        )}
-        icon={expanded ? 'expand' : 'right'}
-        size="sm"
-        mode={hasFields ? 'full' : 'text-only'}
-        clickHandler={() => setExpanded(!expanded)}
+      <button
         ref={ref}
+        type="button"
+        data-component={ASSISTANT_MESSAGE_PLACEHOLDER_NAME}
+        disabled={!hasFields}
+        onClick={() => setExpanded(!expanded)}
+        className={cn(
+          ASSISTANT_MESSAGE_PLACEHOLDER_NAME,
+          'inline-flex items-center justify-start',
+          'min-h-8 rounded px-2 py-1.5',
+          'text-sm text-main bg-surface-neutral',
+          'enabled:hover:bg-surface-neutral-hover',
+          'disabled:opacity-50',
+          !hasFields && 'enabled:hover:cursor-default enabled:hover:bg-surface-neutral',
+        )}
       >
-        <span
-          className={twJoin([
-            'bg-gradient-middle bg-text-gradient-size from-black to-enonic-gray-400',
-            'text-transparent bg-clip-text animate-move-gradient',
-            'pl-1 text-sm text-left',
-          ])}
-        >
+        {hasFields &&
+          (expanded ? (
+            <ChevronDown className="shrink-0 size-3" />
+          ) : (
+            <ChevronRight className="shrink-0 size-3" />
+          ))}
+        <span className="bg-gradient-middle bg-text-gradient-size to-muted animate-move-gradient from-main bg-clip-text pl-1 text-left text-sm text-transparent">
           {t(getPlaceholderMessage(count), {
             name: analyzedFieldsDescriptors.at(0)?.label,
             count: count - 1,
           })}
         </span>
-      </ActionButton>
-      <ul className={twJoin('flex flex-col gap-1 pl-6 divide-y', !expanded && 'hidden')}>
+      </button>
+      <ul className={cn('flex flex-col gap-1 divide-y pl-6', !expanded && 'hidden')}>
         {analyzedFieldsDescriptors.map(({ name, label, displayName }) => (
           <li key={name} className="flex items-center gap-0.5">
             <button
-              className="-mx-1 inline-flex cursor-pointer items-center truncate rounded px-1 align-baseline text-sky-600"
+              className="inline-flex cursor-pointer items-center truncate rounded px-1 align-baseline text-info"
               title={displayName}
               onClick={() => dispatchInteracted(name)}
             >
               <span className="text-xs">{label}</span>
             </button>
-            <LoadingIcon className="h-4 w-4" />
+            <LoaderCircle className="text-decorative size-4 animate-spin" />
           </li>
         ))}
       </ul>

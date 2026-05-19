@@ -1,13 +1,15 @@
-import clsx from 'clsx';
+import { Button, cn } from '@enonic/ui';
+import { Astroid, Check } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { delay } from '@/common/delay';
 import { dispatchResultApplied } from '@/common/events';
 import { messageContentToValues, pickValue } from '@/common/messages';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
 
 import type { ApplyMessage, ModelChatMessageContent, MultipleValues } from '@/store/content';
+
+const APPLY_ALL_CONTROL_NAME = 'ApplyAllControl';
 
 type Props = {
   className?: string;
@@ -23,7 +25,7 @@ function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
     }));
 }
 
-export default function ApplyControl({ className, content }: Props): React.ReactNode {
+export default function ApplyAllControl({ className, content }: Props): React.ReactNode {
   const { t } = useTranslation();
   const [applying, setApplying] = useState(false);
 
@@ -39,12 +41,14 @@ export default function ApplyControl({ className, content }: Props): React.React
   }, [content]);
 
   return (
-    <ActionButton
-      className={clsx(applying && 'text-enonic-green', className)}
-      name={t('action.insertAll')}
-      icon={applying ? 'check' : 'applyAll'}
-      mode="icon-with-title"
-      clickHandler={handleApply}
+    <Button
+      data-component={APPLY_ALL_CONTROL_NAME}
+      variant="outline"
+      size="sm"
+      label={t('action.insertAll')}
+      endIcon={applying ? Check : Astroid}
+      className={cn(APPLY_ALL_CONTROL_NAME, applying && 'text-success', className)}
+      onClick={handleApply}
     />
   );
 }

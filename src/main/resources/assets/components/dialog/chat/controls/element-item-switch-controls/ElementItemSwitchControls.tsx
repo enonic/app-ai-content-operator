@@ -1,10 +1,12 @@
+import { IconButton, cn } from '@enonic/ui';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { twJoin, twMerge } from 'tailwind-merge';
 
 import { changeModelMessageSelectedIndex } from '@/store/chat';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
 
 import type { MultipleValues } from '@/store/content';
+
+const ELEMENT_ITEM_SWITCH_CONTROLS_NAME = 'ElementItemSwitchControls';
 
 export type Props = {
   className?: string;
@@ -27,35 +29,40 @@ export default function ElementItemSwitchControls({
   const text = `${selectedIndex + 1}/${totalCount}`;
 
   return (
-    <div className={twMerge('flex items-center', className)}>
-      <ActionButton
+    <div
+      data-component={ELEMENT_ITEM_SWITCH_CONTROLS_NAME}
+      className={cn(ELEMENT_ITEM_SWITCH_CONTROLS_NAME, 'flex items-center', className)}
+    >
+      <IconButton
+        variant="text"
+        size="sm"
+        icon={ChevronLeft}
+        title={t('showPreviousOption')}
+        aria-label={t('showPreviousOption')}
         className="h-auto w-4 disabled:opacity-25"
-        name={t('showPreviousOption')}
-        icon="left"
-        mode="icon-only"
-        size="xs"
         disabled={isFirst}
-        clickHandler={() => {
+        onClick={() => {
           changeModelMessageSelectedIndex(messageId, name, selectedIndex - 1);
         }}
       />
       <span
-        className={twJoin(
+        className={cn(
           'flex items-center justify-center',
-          'w-6 h-6 p-',
-          'text-xs text-enonic-gray-600 cursor-default',
+          'h-6 w-6',
+          'text-subtle cursor-default text-xs',
         )}
       >
         {text}
       </span>
-      <ActionButton
+      <IconButton
+        variant="text"
+        size="sm"
+        icon={ChevronRight}
+        title={t('action.showNextOption')}
+        aria-label={t('action.showNextOption')}
         className="h-auto w-4 disabled:opacity-25"
-        name={t('action.showNextOption')}
-        icon="right"
-        mode="icon-only"
-        size="xs"
         disabled={isLast}
-        clickHandler={() => {
+        onClick={() => {
           changeModelMessageSelectedIndex(messageId, name, selectedIndex + 1);
         }}
       />

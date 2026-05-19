@@ -61,6 +61,7 @@
   "text.greeting.recurring.night": "God kveld, {{name}}. Hvordan kan jeg hjelpe deg?",
   "text.input.placeholder": "Spør Juke",
   "text.input.tip": "Bruk @ for å liste og nevne elementer på siden.",
+  "text.thinking": "Tenker...",
   "text.mentions.notFound": "Fant ingen redigerbar input",
   "text.system.stopped.system": "Din forespørsel tok for lang tid, så jeg stoppet. La meg få vite om du vil fortsette.",
   "text.system.stopped.user": "Stoppet som forespurt. La meg vite hvordan jeg skal gå videre."

@@ -1,7 +1,7 @@
+import { cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
 import { t } from 'i18next';
 import { useEffect, useMemo, useRef } from 'react';
-import { twJoin } from 'tailwind-merge';
 
 import { $fieldDescriptors, $orderedPaths } from '@/store/content';
 
@@ -11,6 +11,8 @@ import { SPECIAL_NAMES } from '../../../../../shared/enums';
 import { messageContentToValues } from '../../../../common/messages';
 import CommonItem from '../items/common-item/CommonItem';
 import ElementItem from '../items/element-item/ElementItem';
+
+const ASSISTANT_MESSAGE_LIST_NAME = 'AssistantMessageList';
 
 type Props = {
   messageId: string;
@@ -60,14 +62,18 @@ export function AssistantMessageList({ messageId, content, last }: Props): React
   }, [content, fieldDescriptors, orderedPaths]);
 
   return (
-    <ul className="flex flex-col divide-y overflow-hidden rounded" ref={ref}>
+    <ul
+      ref={ref}
+      data-component={ASSISTANT_MESSAGE_LIST_NAME}
+      className={cn(ASSISTANT_MESSAGE_LIST_NAME, 'flex flex-col divide-y overflow-hidden rounded gap-5')}
+    >
       {sortedEntries.map(([key, value], _, arr) => {
         if (key === SPECIAL_NAMES.common) {
           const hasOtherContent = arr.length > 1;
           return (
             <CommonItem
               key={key}
-              className={twJoin('p-2 border-dashed', hasOtherContent && '!border-b')}
+              className={cn('border-dashed', hasOtherContent && 'border-b!')}
               value={value}
               last={last}
             />
@@ -82,7 +88,7 @@ export function AssistantMessageList({ messageId, content, last }: Props): React
         return (
           <ElementItem
             key={key}
-            className={'border-dashed p-2 last:!border-b'}
+            className={'border-dashed last:border-b!'}
             messageId={messageId}
             descriptor={descriptor}
             value={value}

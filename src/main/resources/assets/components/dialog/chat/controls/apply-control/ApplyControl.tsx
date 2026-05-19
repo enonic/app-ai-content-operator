@@ -1,10 +1,12 @@
-import clsx from 'clsx';
+import { IconButton, cn } from '@enonic/ui';
+import { Astroid, Check } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { delay } from '@/common/delay';
 import { dispatchResultApplied } from '@/common/events';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
+
+const APPLY_CONTROL_NAME = 'ApplyControl';
 
 type Props = {
   className?: string;
@@ -25,12 +27,15 @@ export default function ApplyControl({ className, name, content }: Props): React
   }, [name, content]);
 
   return (
-    <ActionButton
-      className={clsx(applying && 'text-enonic-green', className)}
-      name={t('action.insert')}
-      icon={applying ? 'check' : 'apply'}
-      mode="icon-with-title"
-      clickHandler={handleApply}
+    <IconButton
+      data-component={APPLY_CONTROL_NAME}
+      variant="text"
+      size="sm"
+      icon={applying ? Check : Astroid}
+      title={t('action.insert')}
+      aria-label={t('action.insert')}
+      className={cn(APPLY_CONTROL_NAME, applying && 'text-success', 'size-8', className)}
+      onClick={handleApply}
     />
   );
 }

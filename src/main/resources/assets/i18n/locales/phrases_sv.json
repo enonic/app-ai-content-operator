@@ -61,6 +61,7 @@
   "text.greeting.recurring.night": "God kväll, {{name}}. Hur kan jag hjälpa dig?",
   "text.input.placeholder": "Fråga Juke eller skriv @",
   "text.input.tip": "Använd @ för att lista och nämna element på sidan.",
+  "text.thinking": "Tänker...",
   "text.mentions.notFound": "Inga redigerbara indata hittades",
   "text.system.stopped.system": "Din begäran tog för lång tid, så jag slutade. Säg till om du vill att jag ska fortsätta.",
   "text.system.stopped.user": "Stoppade som begärt. Låt mig veta hur jag ska gå vidare."

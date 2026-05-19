@@ -1,9 +1,11 @@
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@enonic/ui';
 
 import type { DataEntryType } from '../../../../../../shared/data/DataEntry';
 
 import ApplyControl from '../apply-control/ApplyControl';
 import CopyControl from '../copy-control/CopyControl';
+
+const ELEMENT_ITEM_CONTROLS_NAME = 'ElementItemControls';
 
 type Props = {
   className?: string;
@@ -20,12 +22,13 @@ export default function ElementItemControls({
 }: Props): React.ReactNode {
   return (
     <div
-      className={twMerge(
+      data-component={ELEMENT_ITEM_CONTROLS_NAME}
+      className={cn(
+        ELEMENT_ITEM_CONTROLS_NAME,
         'inline-flex items-center justify-end',
-        'ml-auto',
+        'ml-2',
         'divide-x rounded',
         'overflow-hidden',
-        'shadow',
         className,
       )}
     >

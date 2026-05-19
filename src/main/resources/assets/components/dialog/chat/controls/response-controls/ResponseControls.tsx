@@ -1,5 +1,5 @@
+import { cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
-import { twMerge } from 'tailwind-merge';
 
 import { $messages } from '@/store/chat';
 import { MessageRole } from '@/store/content';
@@ -17,6 +17,8 @@ import { SPECIAL_NAMES } from '../../../../../../shared/enums';
 import ApplyAllControl from '../apply-all-control/ApplyAllControl';
 import MessageSwitchControls from '../message-switch-controls/MessageSwitchControls';
 import RetryControl from '../retry-control/RetryControl';
+
+const RESPONSE_CONTROLS_NAME = 'ResponseControls';
 
 export type Props = {
   className?: string;
@@ -63,7 +65,10 @@ export default function ResponseControls({ className, message, last }: Props): R
   const isSwitchAvailable = isLastAndAvailable && options != null && options.length > 1;
 
   return (
-    <div className={twMerge('flex empty:hidden', className)}>
+    <div
+      data-component={RESPONSE_CONTROLS_NAME}
+      className={cn(RESPONSE_CONTROLS_NAME, 'flex empty:hidden', className)}
+    >
       {isRetryAvailable && <RetryControl userMessageId={userMessageId} disabled={!isConnected} />}
       {isApplyAllAvailable && <ApplyAllControl content={message.content} />}
       {isSwitchAvailable && (

@@ -1,11 +1,13 @@
+import { cn } from '@enonic/ui';
 import { t } from 'i18next';
 import { useEffect, useRef } from 'react';
-import { twJoin, twMerge } from 'tailwind-merge';
 
 import { MENTION_ALL } from '@/common/mentions';
 import { Portal } from '@/ui/primitives/portal/Portal';
 
 import type { Mention } from '@/store/content';
+
+const MENTIONS_LIST_NAME = 'MentionsList';
 
 type Props = {
   className?: string;
@@ -87,7 +89,9 @@ export default function MentionsList({
       <div className="ai-content-operator">
         <div
           ref={ref}
-          className={twMerge(
+          data-component={MENTIONS_LIST_NAME}
+          className={cn(
+            MENTIONS_LIST_NAME,
             'EnonicAiMentionsList',
             'absolute',
             !targetRect && 'hidden',
@@ -95,11 +99,11 @@ export default function MentionsList({
             'flex flex-col',
             'max-h-30 max-w-96 min-w-24',
             'p-1',
-            'bg-white',
+            'bg-surface-neutral',
             'rounded',
             'shadow-md',
             'overflow-x-hidden overflow-y-auto',
-            'z-[2000]',
+            'z-2000',
             'ai-content-operator-scroll',
             className,
           )}
@@ -113,16 +117,16 @@ export default function MentionsList({
                 }}
                 onClick={() => handleClick(mention)}
                 title={mention.prettified !== mention.label ? mention.prettified : undefined}
-                className={twJoin(
+                className={cn(
                   'block',
                   'flex-none',
                   'h-6',
                   'px-2 py-0.5',
                   'truncate',
                   'rounded-sm',
-                  'hover:bg-slate-50',
-                  i === selectedIndex && 'bg-slate-100 hover:bg-slate-200',
-                  i !== selectedIndex && 'hover:bg-slate-50',
+                  'hover:bg-surface-neutral-hover',
+                  i === selectedIndex && 'bg-muted hover:bg-muted',
+                  i !== selectedIndex && 'hover:bg-surface-neutral-hover',
                   'text-left text-sm',
                   mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
                 )}
@@ -131,7 +135,7 @@ export default function MentionsList({
               </button>
             ))
           ) : (
-            <div className="text-enonic-gray-400 flex h-6 items-center px-2 text-sm select-none">
+            <div className="text-decorative flex h-6 items-center px-2 text-sm select-none">
               {t('text.mentions.notFound')}
             </div>
           )}

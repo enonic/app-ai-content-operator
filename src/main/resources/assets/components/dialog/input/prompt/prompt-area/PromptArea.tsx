@@ -1,10 +1,10 @@
+import { cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createEditor, Editor, Node, Transforms } from 'slate';
 import { withHistory } from 'slate-history';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
-import { twJoin, twMerge } from 'tailwind-merge';
 
 import { $mentions, MessageRole, getAllPathsFromString } from '@/store/content';
 import { $context } from '@/store/context';
@@ -23,6 +23,8 @@ import ContextControl from '../../../context/context-controls/ContextControls';
 import MainChatButton from '../../main-chat-button/MainChatButton';
 import MentionsList from '../mentions-list/MentionsList';
 import PromptAreaElement from '../prompt-area-element/PromptAreaElement';
+
+const PROMPT_AREA_NAME = 'PromptArea';
 
 type Props = {
   className?: string;
@@ -177,27 +179,29 @@ export default function PromptArea({ className }: Props): React.ReactNode {
 
   return (
     <div
-      className={twMerge(
+      data-component={PROMPT_AREA_NAME}
+      className={cn(
+        PROMPT_AREA_NAME,
         'relative',
-        'flex flex-grow flex-col items-center',
+        'flex grow flex-col items-center gap-2.5',
         'w-full',
-        'bg-enonic-gray-100',
-        'rounded-2xl',
+        'bg-surface-neutral',
+        'rounded-lg',
         'overflow-y-auto',
         hasContext &&
-          'before:bg-gradient-fade-to-t before:to-enonic-gray-100 before:absolute before:inset-0 before:top-[1px] before:right-2 before:left-2 before:z-10 before:h-10 before:rounded-t-lg before:from-transparent before:content-[""]',
+        'before:bg-gradient-fade-to-t before:to-surface-primary before:absolute before:inset-0 before:top-px before:right-2 before:left-2 before:z-10 before:h-10 before:rounded-t-lg before:from-transparent before:content-[""]',
         className,
       )}
     >
       <ContextControl className="absolute top-2 left-2 z-20 w-[calc(100%-1rem)]" />
       <Slate editor={editor} initialValue={INITIAL_VALUE} onChange={handleChange}>
         <Editable
-          className={twJoin(
-            'w-full max-h-[7.75rem]',
-            'm-0 pb-3 pr-11',
+          className={cn(
+            'max-h-31 w-full',
+            'm-0 pr-11 pb-3',
             hasContext ? 'pt-12' : 'pt-3',
             'bg-transparent placeholder-black/50',
-            'border-0 rounded-2xl',
+            'rounded-2xl border-0',
             'resize-none',
             'text-sm leading-6',
             'outline-none',
@@ -221,7 +225,7 @@ export default function PromptArea({ className }: Props): React.ReactNode {
         )}
       </Slate>
       <MainChatButton
-        className="absolute right-2 bottom-2 z-20"
+        className="absolute right-1 bottom-1 z-20"
         disabled={isMainChatButtonDisabled}
         type={isBusy ? 'stop' : 'send'}
         clickHandler={isBusy ? () => sendStop(MessageRole.USER) : () => sendPromptAndClear(editor)}

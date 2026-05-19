@@ -1,7 +1,10 @@
+import { Button, cn } from '@enonic/ui';
+import { RotateCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { sendRetry } from '@/store/websocket';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
+
+const RETRY_CONTROL_NAME = 'RetryControl';
 
 type Props = {
   className?: string;
@@ -17,13 +20,15 @@ export default function RetryControl({
   const { t } = useTranslation();
 
   return (
-    <ActionButton
-      className={className}
-      name={t('action.retry')}
-      icon="retry"
-      mode="icon-with-title"
-      clickHandler={() => sendRetry(userMessageId)}
+    <Button
+      data-component={RETRY_CONTROL_NAME}
+      variant="outline"
+      size="sm"
+      label={t('action.retry')}
+      endIcon={RotateCw}
+      className={cn(RETRY_CONTROL_NAME, className)}
       disabled={disabled}
+      onClick={() => sendRetry(userMessageId)}
     />
   );
 }

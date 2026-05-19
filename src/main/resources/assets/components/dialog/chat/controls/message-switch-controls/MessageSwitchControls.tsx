@@ -1,8 +1,10 @@
+import { IconButton, cn } from '@enonic/ui';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { twJoin, twMerge } from 'tailwind-merge';
 
 import { markMessageAsActive } from '@/store/chat';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
+
+const MESSAGE_SWITCH_CONTROLS_NAME = 'MessageSwitchControls';
 
 export type Props = {
   className?: string;
@@ -24,35 +26,40 @@ export default function MessageSwitchControls({
   const text = `${selectedIndex + 1}/${totalCount}`;
 
   return (
-    <div className={twMerge('flex items-center', className)}>
-      <ActionButton
-        className="disabled:opacity-25"
-        name={t('showPreviousMessage')}
-        icon="left"
-        mode="icon-only"
+    <div
+      data-component={MESSAGE_SWITCH_CONTROLS_NAME}
+      className={cn(MESSAGE_SWITCH_CONTROLS_NAME, 'flex items-center', className)}
+    >
+      <IconButton
+        variant="text"
         size="sm"
+        icon={ChevronLeft}
+        title={t('showPreviousMessage')}
+        aria-label={t('showPreviousMessage')}
+        className="disabled:opacity-25"
         disabled={isFirst}
-        clickHandler={() => {
+        onClick={() => {
           markMessageAsActive(ids.at(selectedIndex - 1));
         }}
       />
       <span
-        className={twJoin(
+        className={cn(
           'flex items-center justify-center',
-          'w-6 h-6',
-          'text-xs text-enonic-gray-600 cursor-default',
+          'h-6 w-6',
+          'text-subtle cursor-default text-xs',
         )}
       >
         {text}
       </span>
-      <ActionButton
-        className="disabled:opacity-25"
-        name={t('action.showNextMessage')}
-        icon="right"
-        mode="icon-only"
+      <IconButton
+        variant="text"
         size="sm"
+        icon={ChevronRight}
+        title={t('action.showNextMessage')}
+        aria-label={t('action.showNextMessage')}
+        className="disabled:opacity-25"
         disabled={isLast}
-        clickHandler={() => {
+        onClick={() => {
           markMessageAsActive(ids.at(selectedIndex + 1));
         }}
       />

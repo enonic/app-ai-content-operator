@@ -1,7 +1,8 @@
+import { IconButton, cn } from '@enonic/ui';
+import { ArrowUp, Square } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { twMerge } from 'tailwind-merge';
 
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
+const MAIN_CHAT_BUTTON_NAME = 'MainChatButton';
 
 type Props = {
   className?: string;
@@ -12,30 +13,27 @@ type Props = {
 
 export default function MainChatButton({
   className,
-  disabled,
   type,
   clickHandler,
 }: Props): React.ReactNode {
   const { t } = useTranslation();
 
   return (
-    <ActionButton
-      className={twMerge(
-        'h-8 w-8',
-        'p-0.5',
-        'text-white',
-        'border-enonic-blue rounded-xl border',
-        'bg-enonic-blue',
-        'enabled:hover:bg-enonic-blue-400',
-        'disabled:bg-enonic-gray-400 disabled:border-enonic-gray-400',
+    <IconButton
+      data-component={MAIN_CHAT_BUTTON_NAME}
+      variant="text"
+      size="lg"
+      iconStrokeWidth={2}
+      icon={type === 'send' ? ArrowUp : Square}
+      title={t('action.send')}
+      aria-label={t('action.send')}
+      className={cn(
+        MAIN_CHAT_BUTTON_NAME,
+        'size-10',
+        'rounded-lg',
         className,
       )}
-      disabled={disabled}
-      name={t('action.send')}
-      icon={type}
-      mode="icon-with-title"
-      size="md"
-      clickHandler={clickHandler}
+      onClick={clickHandler}
     />
   );
 }

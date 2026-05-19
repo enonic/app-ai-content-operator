@@ -31,6 +31,7 @@
   "text.greeting.recurring.night": "Good night, {{name}}. How can I help you?",
   "text.input.placeholder": "Ask Juke or type @",
   "text.input.tip": "Type @ to refer to input fields",
+  "text.thinking": "Thinking...",
   "text.error.rest.unknown": "Something went wrong. Code: <{{code}}>.",
   "text.error.rest.timeout": "Request timed out. Please try again later.",
   "text.error.rest.maxRetriesReached": "AI service is currently experiencing issues. Please try again later.",

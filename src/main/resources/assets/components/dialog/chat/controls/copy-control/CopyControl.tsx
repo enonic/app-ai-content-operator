@@ -1,9 +1,11 @@
-import clsx from 'clsx';
+import { IconButton, cn } from '@enonic/ui';
+import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { delay } from '@/common/delay';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
+
+const COPY_CONTROL_NAME = 'CopyControl';
 
 type CopyType = 'text' | 'html';
 
@@ -39,12 +41,15 @@ export default function CopyControl({ className, content, type }: Props): React.
   };
 
   return (
-    <ActionButton
-      className={clsx(copying && 'text-enonic-green', className)}
-      name={t('action.copy')}
-      icon={copying ? 'copySuccess' : 'copy'}
-      mode="icon-with-title"
-      clickHandler={() => void handleCopy()}
+    <IconButton
+      data-component={COPY_CONTROL_NAME}
+      variant="text"
+      size="sm"
+      icon={copying ? Check : Copy}
+      title={t('action.copy')}
+      aria-label={t('action.copy')}
+      className={cn(COPY_CONTROL_NAME, copying && 'text-success', 'size-8', className)}
+      onClick={() => void handleCopy()}
     />
   );
 }

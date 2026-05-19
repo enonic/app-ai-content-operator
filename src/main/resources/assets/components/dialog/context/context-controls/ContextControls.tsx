@@ -1,14 +1,16 @@
+import { IconButton, cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
 import { t } from 'i18next';
-import { twMerge } from 'tailwind-merge';
+import { X } from 'lucide-react';
 
 import { getAllPathsFromString, pathToString } from '@/store/content';
 import { $context, resetContext } from '@/store/context';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
 
 import type { Path } from '@/store/content';
 
 import ContextItem from '../context-item/ContextItem';
+
+const CONTEXT_CONTROLS_NAME = 'ContextControls';
 
 type Props = {
   className?: string;
@@ -24,7 +26,7 @@ function createItems(paths: Path[]): React.ReactNode[] {
           <ContextItem key={`${key}-item`} path={path} last={isLast} />,
           <span
             key={`${key}-sep`}
-            className="text-enonic-gray-400 flex-shrink-0 cursor-default select-none"
+            className="text-decorative flex-shrink-0 cursor-default select-none"
           >
             /
           </span>,
@@ -39,9 +41,11 @@ export default function ContextControl({ className }: Props): React.ReactNode {
 
   return (
     <div
-      className={twMerge(
+      data-component={CONTEXT_CONTROLS_NAME}
+      className={cn(
+        CONTEXT_CONTROLS_NAME,
         'flex items-center justify-start gap-0.5',
-        'rounded-lg bg-white',
+        'rounded-lg bg-surface-neutral',
         'text-xs',
         'overflow-hidden',
         'transition-all duration-200 ease-in-out',
@@ -50,13 +54,14 @@ export default function ContextControl({ className }: Props): React.ReactNode {
       )}
     >
       <div className="flex w-fit items-center overflow-hidden">{createItems(paths)}</div>
-      <ActionButton
-        className="text-enonic-gray-600 ml-auto w-8 rounded-lg enabled:hover:bg-white enabled:hover:text-black"
-        name={t('action.resetContext')}
-        mode="icon-with-title"
+      <IconButton
+        variant="text"
         size="sm"
-        icon="close"
-        clickHandler={resetContext}
+        icon={X}
+        title={t('action.resetContext')}
+        aria-label={t('action.resetContext')}
+        className="text-subtle ml-auto w-8 rounded-lg enabled:hover:bg-surface-neutral enabled:hover:text-main"
+        onClick={resetContext}
       />
     </div>
   );

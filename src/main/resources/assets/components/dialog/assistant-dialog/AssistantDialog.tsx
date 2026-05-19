@@ -1,26 +1,55 @@
+import { cn, Dialog } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
-import debounce from 'lodash.debounce';
 import { useEffect, useRef, useState } from 'react';
-import Draggable from 'react-draggable';
-import { twJoin } from 'tailwind-merge';
 
-import { $dialog } from '@/store/dialog';
+import { useDraggable } from '@/hooks/useDraggable';
+import useIsTouchDevice from '@/hooks/useIsTouchDevice';
+import { useResizable } from '@/hooks/useResizable';
+import { $dialog, setDialogHidden } from '@/store/dialog';
 import { clearTarget } from '@/store/editor';
 import { mountWebSocket } from '@/store/websocket';
-import Resizable from '@/ui/primitives/resizable/Resizable';
 
 import AssistantContent from '../assistant-content/AssistantContent';
 import AssistantHeader from '../header/assistant-header/AssistantHeader';
 import './AssistantDialog.css';
 
+const ASSISTANT_DIALOG_NAME = 'AssistantDialog';
+
 export type Props = {
+  container?: HTMLElement;
   className?: string;
 };
 
-export default function AssistantDialog({ className = '' }: Props): React.ReactNode {
+const DRAGGING_BODY_CLASS = 'ai-content-operator-dragging';
+
+export default function AssistantDialog({ container, className = '' }: Props): React.ReactNode {
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const { hidden } = useStore($dialog, { keys: ['hidden'] });
+
   const [dragging, setDragging] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const isTouchDevice = useIsTouchDevice();
+
+  const handleInteractionStart = (): void => {
+    setDragging(true);
+    clearTarget();
+    document.body.classList.add(DRAGGING_BODY_CLASS);
+  };
+
+  const handleInteractionStop = (): void => {
+    setDragging(false);
+    document.body.classList.remove(DRAGGING_BODY_CLASS);
+  };
+
+  const { onDragStart } = useDraggable(contentRef, {
+    onStart: handleInteractionStart,
+    onStop: handleInteractionStop,
+  });
+
+  const { onResizeStart } = useResizable(contentRef, {
+    onStart: handleInteractionStart,
+    onStop: handleInteractionStop,
+  });
 
   useEffect(() => {
     if (!hidden) {
@@ -29,16 +58,13 @@ export default function AssistantDialog({ className = '' }: Props): React.ReactN
   }, [hidden]);
 
   useEffect(() => {
-    const liveFrame = document.querySelector<HTMLElement>('.live-edit-frame');
-    liveFrame?.style.setProperty('pointer-events', dragging ? 'none' : null);
-  }, [dragging]);
+    if (hidden) return;
 
-  useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
       if (
         event.target instanceof HTMLElement &&
-        ref.current &&
-        !ref.current.contains(event.target) &&
+        contentRef.current &&
+        !contentRef.current.contains(event.target) &&
         !event.target.classList.contains('EnonicAiMentionsList') &&
         !document.querySelector('.EnonicAiMentionsList')?.contains(event.target)
       ) {
@@ -47,64 +73,53 @@ export default function AssistantDialog({ className = '' }: Props): React.ReactN
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    const handleResize: () => void = debounce((): void => {
-      ['transform', 'width', 'height'].forEach((prop) => {
-        ref.current?.style.removeProperty(prop);
-      });
-    }, 200);
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  }, [hidden]);
 
   return (
-    <Draggable
-      bounds="body"
-      onStart={() => {
-        setDragging(true);
-        clearTarget();
+    <Dialog.Root
+      open={!hidden}
+      onOpenChange={(open) => {
+        if (!open) {
+          setDialogHidden(true);
+        }
       }}
-      onStop={() => {
-        setDragging(false);
-      }}
-      handle=".drag-handle"
-      // ! To be removed asap, react-draggable is not working properly with react 19
-      nodeRef={ref as React.RefObject<HTMLElement>}
     >
-      <Resizable
-        className={twJoin(
-          'AssistantDialog',
-          'absolute',
-          'flex flex-col',
-          'text-base',
-          'leading-initial',
-          'bg-white',
-          'border',
-          'shadow-xl',
-          'z-[2000]',
-          dragging && 'opacity-80',
-          hidden && 'hidden',
-          className,
-        )}
-        ref={ref}
-        onStart={() => {
-          document.body.classList.add('ai-content-operator-dragging');
-          clearTarget();
-        }}
-        onStop={() => {
-          document.body.classList.remove('ai-content-operator-dragging');
-        }}
-      >
-        <AssistantHeader className={dragging ? 'cursor-grabbing' : 'cursor-grab'} />
-        <AssistantContent />
-      </Resizable>
-    </Draggable>
+      <Dialog.Portal container={container}>
+        <Dialog.Content
+          ref={contentRef}
+          data-component={ASSISTANT_DIALOG_NAME}
+          className={cn(
+            ASSISTANT_DIALOG_NAME,
+            'group/resize pointer-events-auto',
+            'flex flex-col overflow-hidden',
+            'leading-initial rounded-lg border px-5 pb-10 text-base shadow-xl',
+            dragging && 'opacity-80 select-none',
+            className,
+          )}
+        >
+          <AssistantHeader dragging={dragging} onDragStart={onDragStart} />
+          <AssistantContent />
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-label="Resize"
+            className={cn(
+              'absolute right-0 bottom-0',
+              'box-content flex h-6 w-5 justify-end pr-1',
+              'text-decorative text-3xl/[0.875rem]',
+              'cursor-nwse-resize border-0 bg-transparent outline-none select-none focus:outline-none',
+              'transition-opacity group-hover/resize:opacity-100',
+              !isTouchDevice && 'opacity-0',
+              'active:-right-4 active:-bottom-4 active:py-4 active:pr-5 active:pl-4',
+            )}
+            onMouseDown={onResizeStart}
+            onTouchStart={onResizeStart}
+          >
+            ⌟
+          </button>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

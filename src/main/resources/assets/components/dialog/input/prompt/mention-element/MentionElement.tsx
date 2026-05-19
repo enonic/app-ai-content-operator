@@ -1,8 +1,10 @@
+import { cn } from '@enonic/ui';
 import { useFocused, useSelected } from 'slate-react';
-import { twJoin } from 'tailwind-merge';
 
 import { dispatchInteracted } from '../../../../../common/events';
 import { MENTION_ALL } from '../../../../../common/mentions';
+
+const MENTION_ELEMENT_NAME = 'MentionElement';
 
 export type Props = {
   attributes?: Record<string, unknown>;
@@ -22,7 +24,8 @@ export default function MentionElement({
 
   const isAllMention = element.path === MENTION_ALL.path;
 
-  const classNames = twJoin(
+  const classNames = cn(
+    MENTION_ELEMENT_NAME,
     'inline-flex',
     'px-1 py-0.25',
     'align-baseline',
@@ -37,6 +40,7 @@ export default function MentionElement({
   return (
     <button
       {...attributes}
+      data-component={MENTION_ELEMENT_NAME}
       data-slate-node="mention"
       contentEditable={false}
       className={classNames}

@@ -1,12 +1,14 @@
-import { twJoin, twMerge } from 'tailwind-merge';
+import { Avatar, cn } from '@enonic/ui';
 
-import AssistantIcon from '@/ui/primitives/assistant-icon/AssistantIcon';
+import { JukeIcon } from '@/ui/primitives/juke-icon/JukeIcon';
 
 import type { ModelChatMessage, ModelChatMessageContent } from '@/store/content';
 
 import { AssistantMessageList } from '../assistant-message-list/AssistantMessageList';
 import AssistantMessagePlaceholder from '../assistant-message-placeholder/AssistantMessagePlaceholder';
 import ResponseControls from '../controls/response-controls/ResponseControls';
+
+const ASSISTANT_MESSAGE_NAME = 'AssistantMessage';
 
 type Props = {
   className?: string;
@@ -25,11 +27,16 @@ export default function AssistantMessage({ className, message, last }: Props): R
   const isGenerating = !hasGenerationResult(content);
 
   return (
-    <div className={twMerge('flex gap-2', className)}>
-      <AssistantIcon
-        className={twJoin('shrink-0 text-enonic-blue-400', !isGenerating && 'mt-3 ')}
-      />
-      <article className={twJoin('flex flex-col flex-1', !isGenerating && 'gap-1 text-sm')}>
+    <section
+      data-component={ASSISTANT_MESSAGE_NAME}
+      className={cn(ASSISTANT_MESSAGE_NAME, 'grid-cols-fit-1fr grid gap-x-4 pl-2.5 pr-5 py-2.5', className)}
+    >
+      <Avatar.Root size="md" shape="circle" className="bg-transparent">
+        <Avatar.Fallback className="bg-transparent p-0">
+          <JukeIcon className="size-full" />
+        </Avatar.Fallback>
+      </Avatar.Root>
+      <article className="flex flex-1 flex-col gap-1 text-sm text-pretty">
         {isGenerating ? (
           <AssistantMessagePlaceholder content={content} />
         ) : (
@@ -39,6 +46,6 @@ export default function AssistantMessage({ className, message, last }: Props): R
           </>
         )}
       </article>
-    </div>
+    </section>
   );
 }

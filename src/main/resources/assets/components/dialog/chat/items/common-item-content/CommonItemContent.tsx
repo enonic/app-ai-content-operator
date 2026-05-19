@@ -1,9 +1,10 @@
-import { twJoin, twMerge } from 'tailwind-merge';
-
-import LoadingIcon from '@/ui/primitives/loading-icon/LoadingIcon';
+import { cn } from '@enonic/ui';
+import { LoaderCircle } from 'lucide-react';
 
 import { REGULAR_SCREEN } from '../../../../../common/device';
 import CopyControl from '../../controls/copy-control/CopyControl';
+
+const COMMON_ITEM_CONTENT_NAME = 'CommonItemContent';
 
 type Props = {
   className?: string;
@@ -13,13 +14,16 @@ type Props = {
 
 export default function CommonItemContent({ className, content, last }: Props): React.ReactNode {
   return (
-    <div className={twMerge('group/item relative leading-6', className)}>
+    <div
+      data-component={COMMON_ITEM_CONTENT_NAME}
+      className={cn(COMMON_ITEM_CONTENT_NAME, 'group/item relative leading-6', className)}
+    >
       {content ? (
         <>
           <CopyControl
             key="copy"
-            className={twJoin(
-              'float-right relative shadow',
+            className={cn(
+              'relative float-right ml-2',
               REGULAR_SCREEN && !last && 'invisible group-hover/item:visible',
             )}
             content={content}
@@ -28,7 +32,7 @@ export default function CommonItemContent({ className, content, last }: Props): 
           <article dangerouslySetInnerHTML={{ __html: content }} className="prose prose-sm" />
         </>
       ) : (
-        <LoadingIcon />
+        <LoaderCircle className="text-decorative size-5 animate-spin" />
       )}
     </div>
   );

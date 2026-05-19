@@ -1,6 +1,6 @@
+import { cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
 import { t } from 'i18next';
-import { twJoin } from 'tailwind-merge';
 
 import {
   $allFormItemsWithPaths,
@@ -12,9 +12,10 @@ import {
   pathsEqual,
 } from '@/store/content';
 import { setContext } from '@/store/context';
-import ActionButton from '@/ui/primitives/action-button/ActionButton';
 
 import type { FormItemWithPath, Path } from '@/store/content';
+
+const CONTEXT_ITEM_NAME = 'ContextItem';
 
 type Props = {
   className?: string;
@@ -35,31 +36,32 @@ export default function ContextItem({ className, path, last }: Props): React.Rea
   const titleText = (formItem && pathToPrettifiedLabel(formItem)) ?? '';
   const title = isEnabled ? t('action.switchContextTo', { name: titleText }) : titleText;
 
-  const clickHandler = isEnabled ? () => setContext(pathToString(path)) : undefined;
+  const onClick = isEnabled ? () => setContext(pathToString(path)) : undefined;
 
   return (
-    <ActionButton
-      className={twJoin(
-        'max-w-none min-w-0',
-        'disabled:opacity-100 enabled:hover:bg-white text-xs rounded-lg',
-        isEnabled && 'text-enonic-blue-400 hover:text-enonic-blue-500',
+    <button
+      type="button"
+      data-component={CONTEXT_ITEM_NAME}
+      disabled={!isEnabled}
+      onClick={onClick}
+      title={title}
+      className={cn(
+        CONTEXT_ITEM_NAME,
+        'inline-flex items-center justify-center',
+        'h-6 max-w-40 min-w-0 truncate rounded-lg px-1.5',
+        'text-xs text-main',
+        'enabled:hover:bg-surface-neutral disabled:opacity-100',
+        isEnabled && 'text-info hover:text-info-rev',
         last && 'max-w-none flex-shrink-0',
         className,
       )}
-      size="sm"
-      mode="text-with-title"
-      forceTitle={true}
-      title={title}
-      name={name}
-      clickHandler={clickHandler}
     >
+      <span className="truncate">{name}</span>
       {index != null && (
-        <span
-          className={twJoin('pl-0.5', isEnabled ? 'text-enonic-gray-400' : 'text-enonic-gray-600')}
-        >
+        <span className={cn('pl-0.5', isEnabled ? 'text-decorative' : 'text-subtle')}>
           [{index}]
         </span>
       )}
-    </ActionButton>
+    </button>
   );
 }

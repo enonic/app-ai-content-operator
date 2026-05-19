@@ -1,11 +1,13 @@
+import { cn } from '@enonic/ui';
 import { useTranslation } from 'react-i18next';
-import { twMerge } from 'tailwind-merge';
 
-import AssistantIcon from '@/ui/primitives/assistant-icon/AssistantIcon';
+import { JukeIcon } from '@/ui/primitives/juke-icon/JukeIcon';
 
 import type { SystemChatMessage } from '@/store/content';
 
 import ResponseControls from '../controls/response-controls/ResponseControls';
+
+const SYSTEM_MESSAGE_NAME = 'SystemMessage';
 
 type Props = {
   className?: string;
@@ -19,8 +21,8 @@ export default function SystemMessage({ className, message, last }: Props): Reac
   const { type, node } = message.content;
 
   return (
-    <div className={twMerge('flex gap-2', className)}>
-      <AssistantIcon className="text-enonic-blue-400 shrink-0" />
+    <div data-component={SYSTEM_MESSAGE_NAME} className={cn(SYSTEM_MESSAGE_NAME, 'flex gap-2', className)}>
+      <JukeIcon className="size-8 shrink-0" />
       <article className="flex flex-1 flex-col gap-3">
         <div className="pt-1 text-sm leading-6">
           {type === 'error' ? (
