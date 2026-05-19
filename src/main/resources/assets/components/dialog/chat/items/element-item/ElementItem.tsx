@@ -35,13 +35,13 @@ export const ElementItem = ({
       data-component={ELEMENT_ITEM_NAME}
       className={cn(
         ELEMENT_ITEM_NAME,
-        'group/item grid-cols-fit-fit-1fr grid gap-x-2.5',
+        'group/item grid-cols-fit-fit-1fr grid gap-x-1',
         className,
       )}
     >
       <Button
         size="sm"
-        className="text-info-rev h-7 cursor-pointer truncate px-1 align-baseline font-semibold -ml-1"
+        className="text-info -ml-1 block h-7 cursor-pointer truncate px-1 leading-7 font-semibold"
         title={displayName}
         onClick={() => scrollToField(name)}
       >
@@ -53,7 +53,7 @@ export const ElementItem = ({
       {content && (
         <ElementItemControls
           className={cn(
-            'col-start-3',
+            'col-start-3 -mt-1',
             REGULAR_SCREEN && !last && 'invisible group-hover/item:visible',
           )}
           content={content}

@@ -70,16 +70,7 @@
   transition-duration: var(--default-transition-duration, 150ms);
 }
 
-/* @enonic/ui Dialog's full-screen positioning layer must not block the editor behind the floating assistant. */
-.ai-content-operator div:has(> .AssistantDialog) {
-  pointer-events: none;
-}
-
 @layer utilities {
-  .ai-content-operator-html-based a {
-    @apply text-blue-600 underline visited:text-purple-600 hover:text-blue-800;
-  }
-
   .ai-content-operator li {
     list-style: initial;
   }
@@ -90,6 +81,35 @@
 
   .ai-content-operator ul>li {
     list-style: disc;
+  }
+}
+
+@layer overrides {
+  .prose {
+    --tw-prose-body: var(--color-main);
+    --tw-prose-headings: var(--color-main);
+    --tw-prose-lead: var(--color-subtle);
+    --tw-prose-links: var(--color-main);
+    --tw-prose-bold: var(--color-main);
+    --tw-prose-counters: var(--color-subtle);
+    --tw-prose-bullets: var(--color-subtle);
+    --tw-prose-hr: var(--color-bdr-soft);
+    --tw-prose-quotes: var(--color-main);
+    --tw-prose-quote-borders: var(--color-bdr-soft);
+    --tw-prose-captions: var(--color-subtle);
+    --tw-prose-code: var(--color-main);
+    --tw-prose-pre-code: var(--color-main);
+    --tw-prose-pre-bg: var(--color-surface-primary);
+    --tw-prose-th-borders: var(--color-bdr-strong);
+    --tw-prose-td-borders: var(--color-bdr-soft);
+  }
+
+  .prose a:visited {
+    color: var(--color-link-visited);
+  }
+
+  .prose a:hover {
+    color: var(--color-main-hover);
   }
 }
 

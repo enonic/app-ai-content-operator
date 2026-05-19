@@ -30,19 +30,17 @@ export const SystemMessage = ({
       className={cn(SYSTEM_MESSAGE_NAME, 'flex gap-4', className)}
     >
       <JukeIcon className="size-8 shrink-0" />
-      <article className="flex flex-1 flex-col gap-3">
-        <div className="pt-1 text-sm leading-6">
-          {type === 'error' ? (
-            <div className="flex flex-col gap-x-2 gap-y-1">
-              <div className="truncate align-baseline text-xs text-red-600">
-                {t('field.message.error')}
-              </div>
-              <div className="relative col-span-2">{node}</div>
+      <article className="flex flex-1 flex-col gap-5">
+        {type === 'error' ? (
+          <div className="flex flex-col">
+            <div className="text-error flex h-7 items-center font-semibold">
+              {t('field.message.error')}
             </div>
-          ) : (
-            node
-          )}
-        </div>
+            <div className="text-sm leading-6">{node}</div>
+          </div>
+        ) : (
+          <div className="pt-1 text-sm leading-6">{node}</div>
+        )}
         <ResponseControls message={message} last={last} />
       </article>
     </div>

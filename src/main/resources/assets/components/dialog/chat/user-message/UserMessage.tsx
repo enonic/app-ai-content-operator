@@ -33,7 +33,7 @@ export const UserMessage = ({ className, message }: UserMessageProps): React.Rea
           <Button
             variant="filled"
             size="sm"
-            className="text-sm text-info-rev cursor-pointer truncate px-1.5 h-5 -my-0.5 align-baseline font-semibold"
+            className="text-sm text-info cursor-pointer truncate px-1.5 h-5 -my-0.5 align-baseline font-semibold"
             title={contextData.title}
             onClick={() => scrollToField(contextData.name)}
           >

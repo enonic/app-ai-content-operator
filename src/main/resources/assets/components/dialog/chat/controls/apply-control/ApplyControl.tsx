@@ -21,7 +21,7 @@ export const ApplyControl = ({ className, name, content }: ApplyControlProps): R
   const handleApply = useCallback(() => {
     setApplying(true);
     applyResults([{ path: name, text: content }]);
-    void delay(500).then(() => {
+    void delay(300).then(() => {
       setApplying(false);
     });
   }, [name, content]);

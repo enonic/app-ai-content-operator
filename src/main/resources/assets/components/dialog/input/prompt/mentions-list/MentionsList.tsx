@@ -40,40 +40,35 @@ export const MentionsList = ({
   useEffect(() => {
     const list = ref.current;
     if (list && targetRect) {
-      // Reset position, width, and children auto-fit to calculate proper dimensions
-      list.style.display = 'block';
       list.style.width = 'auto';
       list.style.top = '';
       list.style.left = '';
 
-      // Calculate dimensions AFTER the list has had a chance to layout its content
       requestAnimationFrame(() => {
+        if (buttonRefs.current.length > 0 && mentions.length > 0) {
+          const widths = buttonRefs.current.map((button) => button?.offsetWidth ?? 0);
+          const maxWidth = Math.max(...widths);
+          list.style.width = `${maxWidth + 16}px`;
+        }
+
+        // ! Measure after width is set — flex gap-y-1 contributes height the block layout would miss
         const listRect = list.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         const viewportWidth = window.innerWidth;
 
-        const spaceBelow = viewportHeight - (targetRect.bottom + window.scrollY);
-        const spaceAbove = targetRect.top - window.scrollY;
+        const spaceBelow = viewportHeight - targetRect.bottom;
+        const spaceAbove = targetRect.top;
         const spaceRight = viewportWidth - targetRect.left;
-
-        if (buttonRefs.current.length > 0 && mentions.length > 0) {
-          const widths = buttonRefs.current.map((button) => button?.offsetWidth ?? 0);
-          const maxWidth = Math.max(...widths);
-          list.style.width = `${maxWidth + 16}px`; // Adding padding
-          list.style.display = '';
-        }
 
         let top: number;
         let left: number;
 
-        // Vertical positioning
         if (spaceBelow >= listRect.height || spaceBelow >= spaceAbove) {
           top = targetRect.bottom + window.scrollY;
         } else {
           top = targetRect.top + window.scrollY - listRect.height;
         }
 
-        // Horizontal positioning
         if (spaceRight >= listRect.width) {
           left = targetRect.left + window.scrollX;
         } else {

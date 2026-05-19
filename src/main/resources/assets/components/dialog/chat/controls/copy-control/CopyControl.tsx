@@ -36,7 +36,7 @@ export const CopyControl = ({ className, content, type }: CopyControlProps): Rea
 
   const handleCopy = async (): Promise<void> => {
     setCopying(true);
-    await Promise.all([copyContent(content, type), delay(500)]);
+    await Promise.all([copyContent(content, type), delay(300)]);
     setCopying(false);
   };
 

@@ -35,7 +35,6 @@ export const ElementItemContent = ({
           dangerouslySetInnerHTML={{ __html: content }}
           className={cn(
             ELEMENT_ITEM_CONTENT_NAME,
-            'ai-content-operator-html-based',
             'prose prose-sm max-w-max',
             'relative',
             'col-span-2',

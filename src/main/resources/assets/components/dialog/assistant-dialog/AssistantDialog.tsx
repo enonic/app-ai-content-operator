@@ -90,11 +90,10 @@ export const AssistantDialog = ({ className = '' }: AssistantDialogProps): React
         <Dialog.Content
           ref={contentRef}
           data-component={ASSISTANT_DIALOG_NAME}
-          onPointerDownOutside={(event) => event.preventDefault()}
-          onInteractOutside={(event) => event.preventDefault()}
+          modal={false}
           className={cn(
             ASSISTANT_DIALOG_NAME,
-            'group/resize pointer-events-auto',
+            'group/resize',
             'flex flex-col overflow-hidden',
             'h-svh max-h-svh w-svw max-w-svw',
             'sm:w-lg md:w-xl lg:w-2xl',

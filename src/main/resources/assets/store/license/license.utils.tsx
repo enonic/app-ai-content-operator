@@ -9,11 +9,12 @@ export const setInitialized = (): void => $initialized.set(true);
 
 $licenseState.listen((value) => {
   if (value === 'OK') {
+    // ? Short pad so the greeting doesn't pop instantly on warm sessions
     setTimeout(() => {
       removeChatMessage('license-missing');
-      setInitialized(); // creating a delay for better UX
+      setInitialized();
       addSystemMessage({ type: 'context', key: 'greeting', node: <GreetingText /> });
-    }, 800);
+    }, 450);
   } else {
     setInitialized();
     const message =

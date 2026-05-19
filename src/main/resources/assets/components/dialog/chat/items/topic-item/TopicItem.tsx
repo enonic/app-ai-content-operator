@@ -43,11 +43,11 @@ export const TopicItem = ({
       )}
     >
       <button
-        className="text-info-rev cursor-pointer truncate px-1 align-baseline"
+        className="text-info block cursor-pointer truncate px-1 text-xs leading-7"
         title={topic}
         onClick={() => scrollToField(SPECIAL_NAMES.topic)}
       >
-        <span className="text-xs">{topic}</span>
+        {topic}
       </button>
       {content && typeof value !== 'string' && (
         <ElementItemSwitchControls messageId={messageId} name={name} content={value} />
@@ -55,7 +55,7 @@ export const TopicItem = ({
       {content && (
         <ElementItemControls
           className={cn(
-            'col-start-3',
+            'col-start-3 -mt-1',
             REGULAR_SCREEN && !last && 'invisible group-hover/item:visible',
           )}
           content={content}

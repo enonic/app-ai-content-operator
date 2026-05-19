@@ -25,7 +25,7 @@ export const ElementItemControls = ({
       data-component={ELEMENT_ITEM_CONTROLS_NAME}
       className={cn(
         ELEMENT_ITEM_CONTROLS_NAME,
-        'inline-flex items-center justify-end gap-2.5',
+        'inline-flex items-center justify-end gap-2',
         className,
       )}
     >

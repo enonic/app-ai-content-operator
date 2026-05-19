@@ -38,7 +38,7 @@ export const MentionElement = ({
         'align-baseline font-semibold',
         'rounded',
         'border border-bdr-subtle',
-        !isAllMention && 'text-info-rev',
+        !isAllMention && 'text-info',
         isAllMention && 'cursor-default',
         selected && focused && 'outline outline-info-rev border-info-rev',
         className,

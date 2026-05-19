@@ -29,7 +29,7 @@ export const MainChatButton = ({
       icon={kind === 'send' ? ArrowUp : Square}
       title={t('action.send')}
       aria-label={t('action.send')}
-      className={cn(MAIN_CHAT_BUTTON_NAME, 'size-10 rounded-lg', className)}
+      className={cn(MAIN_CHAT_BUTTON_NAME, 'size-10 rounded-md', className)}
       disabled={disabled}
       onClick={clickHandler}
     />

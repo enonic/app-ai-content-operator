@@ -77,7 +77,7 @@ export const AssistantMessagePlaceholder = ({
           ) : (
             <ChevronRight className="size-3 shrink-0" />
           ))}
-        <span className="bg-gradient-middle bg-text-gradient-size to-muted animate-move-gradient from-main bg-clip-text pl-1 text-left text-sm text-transparent">
+        <span className="bg-gradient-middle bg-text-gradient-size to-muted animate-move-gradient from-main bg-clip-text text-left text-sm text-transparent">
           {t(getPlaceholderMessage(count), {
             name: analyzedFieldsDescriptors.at(0)?.label,
             count: count - 1,

@@ -5,7 +5,7 @@ const GREETING_TEXT_NAME = 'GreetingText';
 export const GreetingText = (): React.ReactNode => {
   const { t } = useTranslation();
 
-  const name = 'You';
+  const name = 'user';
   const hours = new Date().getHours();
 
   switch (true) {
