@@ -6,19 +6,33 @@ import { GOOGLE_GEMINI_FLASH_URL, GOOGLE_GEMINI_PRO_URL, GOOGLE_SAK_PATH } from 
 import { APP_NAME } from '../constants';
 import { logDebug, LogDebugGroups, logError } from '../logger';
 
-type ModelConfig = {
+export type ModelConfig = {
   url: string;
   thinkingLevel: ThinkingLevel;
 };
 
-type ClientOptions = {
+export type ClientOptions = {
   accessToken: string;
 } & Record<Model, ModelConfig>;
 
+type ModelDefaults = {
+  modelName: string;
+  thinkingLevel: ThinkingLevel;
+  urlOverride: string | null;
+};
+
 // Pro favours precise, intent-aware output (more thinking); flash favours faster, lighter analysis.
-const THINKING_LEVELS: Record<Model, ThinkingLevel> = {
-  flash: 'low',
-  pro: 'medium',
+const MODEL_DEFAULTS: Record<Model, ModelDefaults> = {
+  flash: {
+    modelName: 'gemini-3.1-flash-lite',
+    thinkingLevel: 'minimal',
+    urlOverride: GOOGLE_GEMINI_FLASH_URL,
+  },
+  pro: {
+    modelName: 'gemini-3.5-flash',
+    thinkingLevel: 'low',
+    urlOverride: GOOGLE_GEMINI_PRO_URL,
+  },
 };
 
 export function getOptions(): Try<ClientOptions> {
@@ -28,6 +42,12 @@ export function getOptions(): Try<ClientOptions> {
     return [null, err];
   }
   return [options, null];
+}
+
+export function getModelConfig(model: Model): Try<ModelConfig> {
+  const [options, err] = getOptions();
+  if (err) return [null, err];
+  return [options[model], null];
 }
 
 export function parseOptions(): Try<ClientOptions> {
@@ -64,26 +84,20 @@ export function parseOptions(): Try<ClientOptions> {
 }
 
 function createModelConfig(model: Model, projectId: string): ModelConfig {
+  const { modelName, thinkingLevel, urlOverride } = MODEL_DEFAULTS[model];
   return {
-    url: createModelGenerateUrl(model, projectId),
-    thinkingLevel: THINKING_LEVELS[model],
+    url: createGenerateUrl(urlOverride ?? buildModelUrl(modelName, projectId)),
+    thinkingLevel,
   };
 }
 
-function createModelGenerateUrl(model: Model, projectId: string): string {
-  return `${createModelBaseUrl(model, projectId)}:generateContent`;
+function createGenerateUrl(baseUrl: string): string {
+  return `${baseUrl}:generateContent`;
 }
 
-function createModelBaseUrl(model: Model, projectId: string): string {
-  // EU multi-region endpoint: keeps data inside the EU while pooling capacity across EU data
-  // centres. Required for models not yet available on single-region hosts (e.g. gemini-3.1-flash-lite).
-  // Single-region alternative: europe-west1-aiplatform.googleapis.com with locations/europe-west1.
-  // Global (no data residency): aiplatform.googleapis.com with locations/global.
-  const defaultUrl = `https://aiplatform.eu.rep.googleapis.com/v1/projects/${projectId}/locations/eu/publishers/google/models/gemini-3.1-flash-lite`;
-  switch (model) {
-    case 'flash':
-      return GOOGLE_GEMINI_FLASH_URL || defaultUrl;
-    case 'pro':
-      return GOOGLE_GEMINI_PRO_URL || defaultUrl;
-  }
+// EU multi-region endpoint: keeps data inside the EU while pooling capacity across EU data centres.
+// Single-region alternative: europe-west1-aiplatform.googleapis.com with locations/europe-west1.
+// Global (no data residency): aiplatform.googleapis.com with locations/global.
+function buildModelUrl(modelName: string, projectId: string): string {
+  return `https://aiplatform.eu.rep.googleapis.com/v1/projects/${projectId}/locations/eu/publishers/google/models/${modelName}`;
 }

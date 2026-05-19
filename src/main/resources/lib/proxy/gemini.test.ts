@@ -20,7 +20,7 @@ const config: ModelProxyConfig = {
   url: 'https://aiplatform.eu.rep.googleapis.com/v1/projects/test/locations/eu/publishers/google/models/gemini-3.1-flash-lite:generateContent',
   instructions: 'Be precise.',
   modelParameters: { temperature: 0.3, topP: 0.95 },
-  thinkingLevel: 'medium',
+  thinkingLevel: 'low',
   messages: [{ role: 'user', text: 'Generate the content.' }],
 };
 
@@ -45,7 +45,7 @@ describe('GeminiProxy', () => {
         topP: 0.95,
         responseMimeType: 'application/json',
         thinkingConfig: {
-          thinkingLevel: 'medium',
+          thinkingLevel: config.thinkingLevel,
         },
       },
       safetySettings: [

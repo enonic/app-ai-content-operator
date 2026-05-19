@@ -11,7 +11,7 @@ import { SPECIAL_KEYS, SPECIAL_NAMES } from '../../shared/enums';
 import { ERRORS } from '../../shared/errors';
 import { MODES_DATA } from '../../shared/modes';
 import { createGenerationInstructions } from '../../shared/prompts/generation';
-import { getOptions } from '../google/options';
+import { getModelConfig } from '../google/options';
 import { fieldsToSchema } from '../google/schema';
 import { logError, logWarn } from '../logger';
 import { GeminiProxy } from '../proxy/gemini';
@@ -35,7 +35,7 @@ type GenerationTasksEntry = AnalysisObjectEntry & {
 
 export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
   try {
-    const [options, err1] = getOptions();
+    const [modelConfig, err1] = getModelConfig('pro');
     if (err1) {
       return [null, err1];
     }
@@ -44,10 +44,9 @@ export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
     const messages = createGenerationMessages(prompt, params.history);
 
     const proxy = new GeminiProxy({
-      url: options.pro.url,
+      ...modelConfig,
       instructions: createGenerationInstructions(),
       modelParameters: MODES_DATA.balanced.gemini,
-      thinkingLevel: options.pro.thinkingLevel,
       messages,
       schema: fieldsToSchema(params.prompt),
     });

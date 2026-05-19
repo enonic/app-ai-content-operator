@@ -14,7 +14,7 @@ import { SPECIAL_KEYS, SPECIAL_NAMES } from '../../shared/enums';
 import { ERRORS } from '../../shared/errors';
 import { MODES_DATA } from '../../shared/modes';
 import { createAnalysisInstructions } from '../../shared/prompts/analysis';
-import { getOptions } from '../google/options';
+import { getModelConfig } from '../google/options';
 import { logError } from '../logger';
 import { GeminiProxy } from '../proxy/gemini';
 import { fixFieldKey, toFieldPath } from '../utils/fields';
@@ -26,7 +26,7 @@ type AnalyzePromptAndResult = {
 
 export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndResult | string> {
   try {
-    const [options, err1] = getOptions();
+    const [modelConfig, err1] = getModelConfig('flash');
     if (err1) {
       return [null, err1];
     }
@@ -35,10 +35,9 @@ export function analyze(payload: GenerateMessagePayload): Try<AnalyzePromptAndRe
     const messages = createAnalysisMessages(prompt, payload.history.analysis);
 
     const proxy = new GeminiProxy({
-      url: options.flash.url,
+      ...modelConfig,
       instructions: createAnalysisInstructions(),
       modelParameters: MODES_DATA.focused.gemini,
-      thinkingLevel: options.flash.thinkingLevel,
       messages,
     });
 
