@@ -110,6 +110,8 @@ export const MentionsList = ({
               ref={(el) => {
                 buttonRefs.current[i] = el;
               }}
+              // ! Keep editor focused so the cursor lands after the inserted mention, not at position 0
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => handleClick(mention)}
               onPointerMove={() => {
                 if (i !== selectedIndex) setSelectedIndex(i);

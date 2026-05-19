@@ -9,6 +9,7 @@
   "action.retry": "Riprova",
   "action.send": "Invia messaggio",
   "action.settings": "Impostazioni",
+  "action.stop": "Interrompi invio",
   "action.showNextMessage": "Mostra il messaggio successivo",
   "action.showNextOption": "Mostra l'opzione successiva",
   "action.showPreviousMessage": "Mostra messaggio precedente",

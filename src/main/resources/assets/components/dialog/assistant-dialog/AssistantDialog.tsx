@@ -62,13 +62,17 @@ export const AssistantDialog = ({ className = '' }: AssistantDialogProps): React
     if (hidden) return;
 
     const handleClickOutside = (event: MouseEvent): void => {
-      if (
-        event.target instanceof HTMLElement &&
-        contentRef.current &&
-        !contentRef.current.contains(event.target) &&
-        !event.target.classList.contains(MENTIONS_LIST_NAME) &&
-        !document.getElementsByClassName(MENTIONS_LIST_NAME)[0]?.contains(event.target)
-      ) {
+      if (!contentRef.current) return;
+
+      // ! composedPath pierces the shadow root; event.target retargets to the host outside it
+      const path = event.composedPath();
+      const insideDialog = path.includes(contentRef.current);
+      const insideMentionsList = path.some(
+        (node) =>
+          node instanceof HTMLElement && node.dataset.component === MENTIONS_LIST_NAME,
+      );
+
+      if (!insideDialog && !insideMentionsList) {
         clearTarget();
       }
     };

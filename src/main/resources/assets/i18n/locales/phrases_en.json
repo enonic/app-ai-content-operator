@@ -8,6 +8,7 @@
   "action.retry": "Retry",
   "action.send": "Send message",
   "action.settings": "Settings",
+  "action.stop": "Stop sending",
   "action.showNextOption": "Show next option",
   "action.showPreviousOption": "Show previous option",
   "action.showNextMessage": "Show next message",

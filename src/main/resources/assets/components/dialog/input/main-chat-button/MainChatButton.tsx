@@ -18,6 +18,7 @@ export const MainChatButton = ({
   clickHandler,
 }: MainChatButtonProps): React.ReactNode => {
   const { t } = useTranslation();
+  const label = t(kind === 'send' ? 'action.send' : 'action.stop');
 
   return (
     <IconButton
@@ -27,8 +28,8 @@ export const MainChatButton = ({
       iconSize={kind === 'send' ? 'lg' : 'md'}
       iconStrokeWidth={2}
       icon={kind === 'send' ? ArrowUp : Square}
-      title={t('action.send')}
-      aria-label={t('action.send')}
+      title={label}
+      aria-label={label}
       className={cn(MAIN_CHAT_BUTTON_NAME, 'size-10 rounded-md', className)}
       disabled={disabled}
       onClick={clickHandler}

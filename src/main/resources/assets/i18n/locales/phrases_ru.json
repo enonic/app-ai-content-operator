@@ -9,6 +9,7 @@
   "action.retry": "Повторить",
   "action.send": "Отправить сообщение",
   "action.settings": "Настройки",
+  "action.stop": "Остановить отправку",
   "action.showNextMessage": "Показать следующее сообщение",
   "action.showNextOption": "Следующий вариант",
   "action.showPreviousMessage": "Показать предыдущее сообщение",

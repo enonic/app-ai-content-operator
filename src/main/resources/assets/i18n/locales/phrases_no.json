@@ -9,6 +9,7 @@
   "action.retry": "Prøv igjen",
   "action.send": "Send melding",
   "action.settings": "Innstillinger",
+  "action.stop": "Stopp sending",
   "action.showNextMessage": "Vis neste melding",
   "action.showNextOption": "Vis neste alternativ",
   "action.showPreviousMessage": "Vis forrige melding",

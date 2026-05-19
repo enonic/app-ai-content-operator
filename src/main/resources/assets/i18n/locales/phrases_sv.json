@@ -9,6 +9,7 @@
   "action.retry": "Försök igen",
   "action.send": "Skicka meddelande",
   "action.settings": "Inställningar",
+  "action.stop": "Stoppa sändning",
   "action.showNextMessage": "Visa nästa meddelande",
   "action.showNextOption": "Visa nästa alternativ",
   "action.showPreviousMessage": "Visa föregående meddelande",

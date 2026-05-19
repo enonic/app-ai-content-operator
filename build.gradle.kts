@@ -31,7 +31,7 @@ repositories {
 node {
     download = true
     version = "24.15.0"
-    pnpmVersion = "11.0.9"
+    pnpmVersion = "11.1.1"
 }
 
 app {
