@@ -14,6 +14,7 @@ export type MentionsListProps = {
   mentions: Mention[];
   selectedIndex: number;
   targetRect?: DOMRect;
+  setSelectedIndex: (index: number) => void;
   handleClick: (mention: Mention) => void;
 };
 
@@ -22,6 +23,7 @@ export const MentionsList = ({
   targetRect,
   mentions,
   selectedIndex,
+  setSelectedIndex,
   handleClick,
 }: MentionsListProps): React.ReactNode => {
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -86,59 +88,57 @@ export const MentionsList = ({
 
   return (
     <Portal>
-      <div className="ai-content-operator">
-        <div
-          ref={ref}
-          data-component={MENTIONS_LIST_NAME}
-          className={cn(
-            MENTIONS_LIST_NAME,
-            'absolute',
-            !targetRect && 'hidden',
-            'box-content',
-            'flex flex-col',
-            'max-h-30 max-w-96 min-w-24',
-            'p-1',
-            'bg-surface-neutral',
-            'rounded',
-            'shadow-md',
-            'overflow-x-hidden overflow-y-auto',
-            'z-2000',
-            'ai-content-operator-scroll',
-            className,
-          )}
-        >
-          {hasMentions ? (
-            mentions.map((mention, i) => (
-              <button
-                key={mention.path}
-                ref={(el) => {
-                  buttonRefs.current[i] = el;
-                }}
-                onClick={() => handleClick(mention)}
-                title={mention.prettified !== mention.label ? mention.prettified : undefined}
-                className={cn(
-                  'block',
-                  'flex-none',
-                  'h-6',
-                  'px-2 py-0.5',
-                  'truncate',
-                  'rounded-sm',
-                  'hover:bg-surface-neutral-hover',
-                  i === selectedIndex && 'bg-muted hover:bg-muted',
-                  i !== selectedIndex && 'hover:bg-surface-neutral-hover',
-                  'text-left text-sm',
-                  mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
-                )}
-              >
-                {mention.label}
-              </button>
-            ))
-          ) : (
-            <div className="text-subtle flex h-6 items-center px-2 text-sm select-none">
-              {t('text.mentions.notFound')}
-            </div>
-          )}
-        </div>
+      <div
+        ref={ref}
+        data-component={MENTIONS_LIST_NAME}
+        className={cn(
+          MENTIONS_LIST_NAME,
+          'absolute',
+          !targetRect && 'hidden',
+          'box-content',
+          'flex flex-col items-start gap-y-1',
+          'max-h-30 max-w-96 min-w-24',
+          'p-1',
+          'rounded-sm border border-bdr-subtle',
+          'bg-surface-neutral',
+          'shadow-lg outline-none',
+          'overflow-x-hidden overflow-y-auto',
+          'z-50',
+          'ai-content-operator-scroll',
+          className,
+        )}
+      >
+        {hasMentions ? (
+          mentions.map((mention, i) => (
+            <button
+              key={mention.path}
+              ref={(el) => {
+                buttonRefs.current[i] = el;
+              }}
+              onClick={() => handleClick(mention)}
+              onPointerMove={() => {
+                if (i !== selectedIndex) setSelectedIndex(i);
+              }}
+              title={mention.prettified !== mention.label ? mention.prettified : undefined}
+              className={cn(
+                'relative z-0',
+                'block flex-none w-full px-4.5 py-1',
+                'cursor-pointer outline-none transition-highlight',
+                'text-left font-semibold truncate',
+                i === selectedIndex
+                  ? 'bg-muted ring-3 ring-ring-offset ring-inset ring-offset-3 ring-offset-ring'
+                  : 'hover:bg-surface-neutral-hover',
+                mention.path === MENTION_ALL.path && "before:content-['<'] after:content-['>']",
+              )}
+            >
+              {mention.label}
+            </button>
+          ))
+        ) : (
+          <div className="text-subtle w-full px-4.5 py-1 select-none">
+            {t('text.mentions.notFound')}
+          </div>
+        )}
       </div>
     </Portal>
   );

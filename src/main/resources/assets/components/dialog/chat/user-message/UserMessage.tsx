@@ -1,4 +1,4 @@
-import { cn } from '@enonic/ui';
+import { Button, cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
 
 import { $dialog } from '@/store/dialog';
@@ -30,13 +30,15 @@ export const UserMessage = ({ className, message }: UserMessageProps): React.Rea
         )}
       >
         {contextData && (
-          <button
-            className="text-info-rev cursor-pointer truncate px-1 align-baseline"
+          <Button
+            variant="filled"
+            size="sm"
+            className="text-sm text-info-rev cursor-pointer truncate px-1.5 h-5 -my-0.5 align-baseline font-semibold"
             title={contextData.title}
             onClick={() => scrollToField(contextData.name)}
           >
             <span className="text-xs">{contextData.displayName}</span>
-          </button>
+          </Button>
         )}
         {message.content.node}
       </article>

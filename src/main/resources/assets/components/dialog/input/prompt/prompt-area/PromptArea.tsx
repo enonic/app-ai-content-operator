@@ -210,6 +210,7 @@ export const PromptArea = ({ className }: PromptAreaProps): React.ReactNode => {
             mentions={mentionsToDisplay}
             targetRect={rect}
             selectedIndex={index}
+            setSelectedIndex={setIndex}
             handleClick={handleMentionSelected}
           />
         )}

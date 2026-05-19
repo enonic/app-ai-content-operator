@@ -17,7 +17,7 @@ export const LoadingMessage = ({ className }: LoadingMessageProps): React.ReactN
       data-component={LOADING_MESSAGE_NAME}
       className={cn(
         LOADING_MESSAGE_NAME,
-        'grid-cols-fit-1fr grid gap-x-4 py-2.5 pr-5 pl-2.5',
+        'grid-cols-fit-1fr grid gap-x-4 py-2.5 pr-5',
         className,
       )}
     >

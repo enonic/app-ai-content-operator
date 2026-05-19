@@ -25,26 +25,25 @@ export const MentionElement = ({
 
   const isAllMention = element.path === MENTION_ALL.path;
 
-  const classNames = cn(
-    MENTION_ELEMENT_NAME,
-    'inline-flex',
-    'px-1 py-0.25',
-    'align-baseline',
-    'rounded',
-    'border border-slate-300',
-    !isAllMention && 'text-sky-600',
-    isAllMention && 'cursor-default',
-    selected && focused && 'outline outline-2',
-    className,
-  );
-
   return (
     <button
       {...attributes}
       data-component={MENTION_ELEMENT_NAME}
       data-slate-node="mention"
       contentEditable={false}
-      className={classNames}
+      className={cn(
+        MENTION_ELEMENT_NAME,
+        'inline-flex',
+        'px-1 py-px',
+        'align-baseline font-semibold',
+        'rounded',
+        'border border-bdr-subtle',
+        !isAllMention && 'text-info-rev',
+        isAllMention && 'cursor-default',
+        selected && focused && 'outline outline-info-rev border-info-rev',
+        className,
+      )}
+      tabIndex={-1}
       title={element.title}
       onClick={isAllMention ? undefined : () => scrollToField(element.path)}
     >

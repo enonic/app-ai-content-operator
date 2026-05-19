@@ -3,9 +3,9 @@ import com.github.gradle.node.pnpm.task.PnpmTask
 plugins {
     java
     `maven-publish`
-    id("com.enonic.defaults") version "2.1.6"
-    id("com.enonic.xp.app")
-    id("com.github.node-gradle.node") version "7.1.0"
+    alias(libs.plugins.enonic.defaults)
+    alias(libs.plugins.enonic.xp.app)
+    alias(libs.plugins.node.gradle)
 }
 
 val appName: String by project

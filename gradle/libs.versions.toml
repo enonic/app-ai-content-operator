@@ -3,9 +3,16 @@ google-auth-oauth2 = "1.46.0"
 lib-cron = "2.0.0-SNAPSHOT"
 lib-http-client = "3.2.2"
 lib-license = "4.0.0-SNAPSHOT"
+enonicDefaults = "2.1.6"
+nodeGradle = "7.1.0"
 
 [libraries]
 google-auth-oauth2 = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "google-auth-oauth2" }
 lib-cron = { module = "com.enonic.lib:lib-cron", version.ref = "lib-cron" }
 lib-http-client = { module = "com.enonic.lib:lib-http-client", version.ref = "lib-http-client" }
 lib-license = { module = "com.enonic.lib:lib-license", version.ref = "lib-license" }
+
+[plugins]
+enonic-defaults = { id = "com.enonic.defaults", version.ref = "enonicDefaults" }
+enonic-xp-app = { id = "com.enonic.xp.app" }
+node-gradle = { id = "com.github.node-gradle.node", version.ref = "nodeGradle" }

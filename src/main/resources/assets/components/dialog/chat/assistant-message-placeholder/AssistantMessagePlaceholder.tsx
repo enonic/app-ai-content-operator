@@ -88,7 +88,7 @@ export const AssistantMessagePlaceholder = ({
         {analyzedFieldsDescriptors.map(({ name, label, displayName }) => (
           <li key={name} className="flex items-center gap-0.5">
             <button
-              className="text-info inline-flex cursor-pointer items-center truncate rounded px-1 align-baseline"
+              className="text-info inline-flex cursor-pointer items-center truncate rounded px-1 align-baseline font-semibold"
               title={displayName}
               onClick={() => scrollToField(name)}
             >
