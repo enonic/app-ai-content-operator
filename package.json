@@ -43,7 +43,7 @@
     "lucide-react": "~1.16.0",
     "nanoid": "~5.1.11",
     "nanostores": "~1.3.0",
-    "preact": "~10.29.1",
+    "preact": "~10.29.2",
     "react-i18next": "~17.0.8",
     "slate": "~0.124.1",
     "slate-history": "~0.113.1",
