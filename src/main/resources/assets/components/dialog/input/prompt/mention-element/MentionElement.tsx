@@ -39,7 +39,7 @@ export const MentionElement = ({
         'rounded',
         'border border-bdr-subtle',
         !isAllMention && 'text-info',
-        isAllMention && 'cursor-default',
+        isAllMention ? 'cursor-default' : 'cursor-pointer',
         selected && focused && 'outline outline-info-rev border-info-rev',
         className,
       )}

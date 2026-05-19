@@ -78,6 +78,5 @@ export function scrollToField(path: string): void {
   const fieldPath = pathStringToAiFieldPath(path);
   const glow = fieldPath.kind === 'topic' ? 'innerGlow' : 'glow';
 
-  console.log('[ai-debug] scrollToField', { path, fieldPath });
   getHostApi().animateField(fieldPath, ['scroll', glow]);
 }
