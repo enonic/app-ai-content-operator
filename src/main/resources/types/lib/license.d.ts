@@ -1,19 +1,19 @@
 declare global {
-    interface XpLibraries {
-        '/lib/license': typeof import('./license');
-    }
+  interface XpLibraries {
+    '/lib/license': typeof import('./license');
+  }
 }
 
 export interface ValidateLicenseParams {
-    appKey: string;
+  appKey: string;
 }
 
 export interface LicenseDetails {
-    expired: boolean;
+  expired: boolean;
 }
 
 export interface License {
-    validateLicense: (params: ValidateLicenseParams) => LicenseDetails;
+  validateLicense: (params: ValidateLicenseParams) => LicenseDetails;
 }
 
 declare const license: License;

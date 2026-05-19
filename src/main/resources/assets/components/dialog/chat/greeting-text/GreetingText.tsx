@@ -1,0 +1,22 @@
+import { useTranslation } from 'react-i18next';
+
+const GREETING_TEXT_NAME = 'GreetingText';
+
+export const GreetingText = (): React.ReactNode => {
+  const { t } = useTranslation();
+
+  const name = 'user';
+  const hours = new Date().getHours();
+
+  switch (true) {
+    case hours < 6:
+      return t('text.greeting.recurring.night', { name });
+    case hours < 12:
+      return t('text.greeting.recurring.morning', { name });
+    case hours < 18:
+      return t('text.greeting.recurring.afternoon', { name });
+    default:
+      return t('text.greeting.recurring.evening', { name });
+  }
+};
+GreetingText.displayName = GREETING_TEXT_NAME;

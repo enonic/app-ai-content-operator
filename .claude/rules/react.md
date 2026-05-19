@@ -19,7 +19,7 @@ export type ToggleProps = {
   children?: ReactNode;
 };
 
-export const Toggle = ({label, disabled, className, children}: ToggleProps): ReactElement => {
+export const Toggle = ({ label, disabled, className, children }: ToggleProps): ReactElement => {
   // ...
   return (
     <label className={className}>
@@ -35,9 +35,9 @@ When the component name is reused inside the body (e.g. for `useId`), define it 
 
 ```tsx
 const TOOLTIP_NAME = 'Tooltip';
-export const Tooltip = ({id, ...props}: TooltipProps): ReactElement => {
+export const Tooltip = ({ id, ...props }: TooltipProps): ReactElement => {
   const tooltipId = id ?? `${TOOLTIP_NAME}-${useId()}`;
-  return <div id={tooltipId} role='tooltip' {...props} />;
+  return <div id={tooltipId} role="tooltip" {...props} />;
 };
 Tooltip.displayName = TOOLTIP_NAME;
 ```
@@ -73,7 +73,7 @@ type InputProps = {
   label?: string;
 };
 
-export const Input = ({ref, label, ...props}: InputProps): ReactElement => (
+export const Input = ({ ref, label, ...props }: InputProps): ReactElement => (
   <input ref={ref} aria-label={label} {...props} />
 );
 Input.displayName = 'Input';
@@ -106,7 +106,7 @@ return <Profile key={userId} userId={userId} />;
 If the store is a map and only some keys are read, subscribe to those keys:
 
 ```ts
-const {account} = useStore($application, {keys: ['account']});
+const { account } = useStore($application, { keys: ['account'] });
 ```
 
 ## setState updater purity
@@ -115,14 +115,14 @@ const {account} = useStore($application, {keys: ['account']});
 
 ```tsx
 // wrong
-setDisplay(prev => {
+setDisplay((prev) => {
   const next = tick(prev);
   if (isSettled(next)) clearInterval(id);
   return next;
 });
 
 // right
-setDisplay(prev => tick(prev));
+setDisplay((prev) => tick(prev));
 useEffect(() => {
   if (!isSettled(display)) return;
   clearInterval(id);

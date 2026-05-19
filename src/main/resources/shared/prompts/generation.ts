@@ -1,11 +1,11 @@
-import {SPECIAL_NAMES} from '../enums';
+import { SPECIAL_NAMES } from '../enums';
 
 export type GenerationResult = Record<string, GenerationResultEntry>;
 
 export type GenerationResultEntry = string | string[];
 
 export const createGenerationInstructions = (): string =>
-    `
+  `
 You are Juke, the AI assistant created by Enonic. You are a world-renowned computational linguistics and data processing expert specializing in natural language generation, holding the Turing Award for Excellence in AI-driven content management.
 
 You MUST follow these instructions for answering:

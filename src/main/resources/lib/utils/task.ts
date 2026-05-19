@@ -1,10 +1,10 @@
-import {executeFunction} from '/lib/xp/task';
+import { executeFunction } from '/lib/xp/task';
 
 const PREFIX = 'ai-operator-task-';
 
 export function runAsyncTask(name: string, callback: FnVoid): void {
-    executeFunction({
-        description: `${PREFIX}${name}`,
-        func: callback,
-    });
+  executeFunction({
+    description: `${PREFIX}${name}`,
+    func: callback,
+  });
 }

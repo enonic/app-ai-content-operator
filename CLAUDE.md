@@ -30,6 +30,7 @@ No conventional commit prefixes. Plain descriptive language throughout.
 
 - **Title**: `<Issue Title> #<number>` — matches the commit title
 - **Body**: concisely explain what and why, skip trivial details. No emojis. Separate sections with one blank line.
+
   ```
   <summary of changes>
 

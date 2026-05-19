@@ -1,29 +1,31 @@
-import licenseLib, {LicenseDetails} from '/lib/license';
+import licenseLib from '/lib/license';
 
-import {ERRORS} from '../../shared/errors';
-import {LicenseState} from '../../shared/license';
+import type { LicenseState } from '../../shared/license';
+import type { LicenseDetails } from '/lib/license';
+
+import { ERRORS } from '../../shared/errors';
 
 const subscriptionKey = 'enonic.platform.subscription';
 
 function getLicenseDetails(): LicenseDetails {
-    const params = {
-        appKey: subscriptionKey,
-    };
+  const params = {
+    appKey: subscriptionKey,
+  };
 
-    return licenseLib.validateLicense(params);
+  return licenseLib.validateLicense(params);
 }
 
 export function getLicenseState(): Try<LicenseState> {
-    try {
-        const licenseDetails = getLicenseDetails();
+  try {
+    const licenseDetails = getLicenseDetails();
 
-        if (!licenseDetails) {
-            return ['MISSING', null];
-        }
-
-        return [licenseDetails.expired ? 'EXPIRED' : 'OK', null];
-    } catch (e) {
-        log.error('Failed to get license state', e);
-        return [null, ERRORS.LICENSE_ERROR_UNKNOWN];
+    if (!licenseDetails) {
+      return ['MISSING', null];
     }
+
+    return [licenseDetails.expired ? 'EXPIRED' : 'OK', null];
+  } catch (e) {
+    log.error('Failed to get license state', e);
+    return [null, ERRORS.LICENSE_ERROR_UNKNOWN];
+  }
 }

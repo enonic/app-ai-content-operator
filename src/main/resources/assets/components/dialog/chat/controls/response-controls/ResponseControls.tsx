@@ -1,0 +1,84 @@
+import { cn } from '@enonic/ui';
+import { useStore } from '@nanostores/react';
+
+import { $messages } from '@/store/chat';
+import { MessageRole } from '@/store/content';
+import { $licenseState } from '@/store/license';
+import { $isBusy, $isConnected } from '@/store/websocket';
+
+import type {
+  ChatMessage,
+  ModelChatMessage,
+  SystemChatMessage,
+  UserChatMessage,
+} from '@/store/content';
+
+import { SPECIAL_NAMES } from '../../../../../../shared/enums';
+import { ApplyAllControl } from '../apply-all-control/ApplyAllControl';
+import { MessageSwitchControls } from '../message-switch-controls/MessageSwitchControls';
+import { RetryControl } from '../retry-control/RetryControl';
+
+const RESPONSE_CONTROLS_NAME = 'ResponseControls';
+
+export type ResponseControlsProps = {
+  className?: string;
+  message: ModelChatMessage | SystemChatMessage;
+  last: boolean;
+};
+
+function canApplyAnyContent(
+  message: ModelChatMessage | SystemChatMessage,
+): message is ModelChatMessage {
+  if (message.role !== MessageRole.MODEL || message.content.generationResult == null) {
+    return false;
+  }
+
+  const { generationResult } = message.content;
+  const keys = Object.keys(generationResult);
+
+  return keys.length > 0 && keys.indexOf(SPECIAL_NAMES.common) === -1;
+}
+
+function findUserMessageById(
+  messages: Record<string, ChatMessage>,
+  id: string,
+): Optional<Readonly<UserChatMessage>> {
+  const message = messages[id];
+  return message != null && message.role === MessageRole.USER ? message : undefined;
+}
+
+export const ResponseControls = ({
+  className,
+  message,
+  last,
+}: ResponseControlsProps): React.ReactNode => {
+  const messages = useStore($messages);
+  const prevId = message?.prevId;
+  const userMessage = prevId ? findUserMessageById(messages, prevId) : undefined;
+
+  const options = userMessage?.nextIds;
+  const userMessageId = userMessage?.id;
+
+  const isConnected = useStore($isConnected);
+  const isBusy = useStore($isBusy);
+  const isLastAndAvailable = last && !isBusy;
+  const licenseState = useStore($licenseState);
+
+  const isRetryAvailable = isLastAndAvailable && userMessageId && licenseState === 'OK';
+  const isApplyAllAvailable = isLastAndAvailable && canApplyAnyContent(message);
+  const isSwitchAvailable = isLastAndAvailable && options != null && options.length > 1;
+
+  return (
+    <div
+      data-component={RESPONSE_CONTROLS_NAME}
+      className={cn(RESPONSE_CONTROLS_NAME, 'flex gap-2.5 empty:hidden', className)}
+    >
+      {isApplyAllAvailable && <ApplyAllControl content={message.content} />}
+      {isRetryAvailable && <RetryControl userMessageId={userMessageId} disabled={!isConnected} />}
+      {isSwitchAvailable && (
+        <MessageSwitchControls className="ml-auto" ids={options} selectedId={message.id} />
+      )}
+    </div>
+  );
+};
+ResponseControls.displayName = RESPONSE_CONTROLS_NAME;

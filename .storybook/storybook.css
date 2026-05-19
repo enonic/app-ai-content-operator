@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@enonic/ui/preset.css';
+
+@source '../.storybook';
+@source '../src/main/resources/assets';
+@source '../node_modules/@enonic/ui/';
+
+@theme {
+  --animate-slide-fade-in: slide-fade-in 300ms ease-in-out forwards;
+  --animate-move-gradient: move-gradient 3000ms linear infinite;
+}
+
+@keyframes slide-fade-in {
+  0% {
+    opacity: 0;
+    padding-bottom: 0;
+    padding-top: 0.5rem;
+  }
+
+  100% {
+    opacity: 1;
+    padding-bottom: 0.5rem;
+    padding-top: 0;
+  }
+}
+
+@keyframes move-gradient {
+  0% {
+    background-position: 200% 0%;
+  }
+
+  100% {
+    background-position: -200% 0%;
+  }
+}
+
+@utility bg-gradient-middle {
+  background-image: linear-gradient(
+    90deg,
+    var(--tw-gradient-from) 25%,
+    var(--tw-gradient-to) 50%,
+    var(--tw-gradient-from) 75%
+  );
+}
+
+@utility bg-gradient-fade-to-t {
+  background-image: linear-gradient(0deg, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 15%);
+}
+
+@utility bg-text-gradient-size {
+  background-size: 200% 100%;
+}
+
+@utility grid-cols-mid-3 {
+  grid-template-columns: minmax(auto, min-content) 1fr minmax(auto, min-content);
+}
+
+@utility grid-cols-fit-1fr {
+  grid-template-columns: minmax(auto, min-content) 1fr;
+}
+
+@utility grid-cols-fit-fit-1fr {
+  grid-template-columns: minmax(auto, min-content) minmax(auto, min-content) 1fr;
+}
+
+@utility transition-padding {
+  transition-property: padding;
+  transition-timing-function: var(--default-transition-timing-function, ease);
+  transition-duration: var(--default-transition-duration, 150ms);
+}
+
+@layer base {
+  body,
+  .docs-story {
+    background-color: var(--color-surface-neutral);
+    color: var(--color-main);
+    font-family: 'Open Sans', sans-serif;
+  }
+}
