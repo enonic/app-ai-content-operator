@@ -7,19 +7,19 @@ import { MENTION_ALL } from '../../../../../common/mentions';
 
 const MENTION_ELEMENT_NAME = 'MentionElement';
 
-export type Props = {
+export type MentionElementProps = {
   attributes?: Record<string, unknown>;
   className?: string;
   children?: React.ReactNode;
   element: Slate.MentionElement;
 };
 
-export default function MentionElement({
+export const MentionElement = ({
   attributes = {},
   className,
   children,
   element,
-}: Props): React.ReactNode {
+}: MentionElementProps): React.ReactNode => {
   const selected = useSelected();
   const focused = useFocused();
 
@@ -54,4 +54,5 @@ export default function MentionElement({
       </span>
     </button>
   );
-}
+};
+MentionElement.displayName = MENTION_ELEMENT_NAME;

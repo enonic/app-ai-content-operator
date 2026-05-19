@@ -1,15 +1,16 @@
-import type { Props as MentionElementProps } from '../mention-element/MentionElement';
 import type { RenderElementProps } from 'slate-react';
 
-import MentionElement from '../mention-element/MentionElement';
+import { MentionElement, type MentionElementProps } from '../mention-element/MentionElement';
 
-type Props = MentionElementProps | RenderElementProps;
+const PROMPT_AREA_ELEMENT_NAME = 'PromptAreaElement';
 
-function isMentionProps(props: Props): props is MentionElementProps {
+export type PromptAreaElementProps = MentionElementProps | RenderElementProps;
+
+function isMentionProps(props: PromptAreaElementProps): props is MentionElementProps {
   return 'element' in props && props.element.type === 'mention';
 }
 
-export default function PromptAreaElement(props: Props): React.ReactElement {
+export const PromptAreaElement = (props: PromptAreaElementProps): React.ReactElement => {
   if (isMentionProps(props)) {
     return <MentionElement {...props} />;
   }
@@ -18,4 +19,5 @@ export default function PromptAreaElement(props: Props): React.ReactElement {
       {props.children as React.ReactNode}
     </p>
   );
-}
+};
+PromptAreaElement.displayName = PROMPT_AREA_ELEMENT_NAME;

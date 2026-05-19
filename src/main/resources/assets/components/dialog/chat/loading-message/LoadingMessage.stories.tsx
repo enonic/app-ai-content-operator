@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/preact-vite';
 
-import LoadingMessage from './LoadingMessage';
+import { LoadingMessage } from './LoadingMessage';
 
 const meta = {
   title: 'ContentOperator/Dialog/Chat/LoadingMessage',

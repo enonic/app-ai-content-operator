@@ -52,8 +52,7 @@
   "text.greeting.recurring.evening": "Buona sera {{name}}. Come posso aiutarti?",
   "text.greeting.recurring.morning": "Buongiorno {{name}}. Come posso aiutarti?",
   "text.greeting.recurring.night": "Buona notte {{name}}. Come posso aiutarti?",
-  "text.input.placeholder": "Chiedi a Juke",
-  "text.input.tip": "Usare @ per elencare e menzionare gli elementi della pagina.",
+  "text.input.placeholder": "Chiedi qualsiasi cosa a Juke, o @ per riferimenti",
   "text.mentions.notFound": "Nessun input modificabile trovato",
   "text.system.stopped.system": "La tua richiesta stava impiegando troppo tempo, quindi mi sono fermato. Fammi sapere se vuoi che continui.",
   "text.system.stopped.user": "Arrestato come richiesto. Fammi sapere come procedere."

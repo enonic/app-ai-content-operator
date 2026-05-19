@@ -14,13 +14,13 @@ import type {
 } from '@/store/content';
 
 import { SPECIAL_NAMES } from '../../../../../../shared/enums';
-import ApplyAllControl from '../apply-all-control/ApplyAllControl';
-import MessageSwitchControls from '../message-switch-controls/MessageSwitchControls';
-import RetryControl from '../retry-control/RetryControl';
+import { ApplyAllControl } from '../apply-all-control/ApplyAllControl';
+import { MessageSwitchControls } from '../message-switch-controls/MessageSwitchControls';
+import { RetryControl } from '../retry-control/RetryControl';
 
 const RESPONSE_CONTROLS_NAME = 'ResponseControls';
 
-export type Props = {
+export type ResponseControlsProps = {
   className?: string;
   message: ModelChatMessage | SystemChatMessage;
   last: boolean;
@@ -47,7 +47,11 @@ function findUserMessageById(
   return message != null && message.role === MessageRole.USER ? message : undefined;
 }
 
-export default function ResponseControls({ className, message, last }: Props): React.ReactNode {
+export const ResponseControls = ({
+  className,
+  message,
+  last,
+}: ResponseControlsProps): React.ReactNode => {
   const messages = useStore($messages);
   const prevId = message?.prevId;
   const userMessage = prevId ? findUserMessageById(messages, prevId) : undefined;
@@ -67,13 +71,14 @@ export default function ResponseControls({ className, message, last }: Props): R
   return (
     <div
       data-component={RESPONSE_CONTROLS_NAME}
-      className={cn(RESPONSE_CONTROLS_NAME, 'flex empty:hidden', className)}
+      className={cn(RESPONSE_CONTROLS_NAME, 'flex gap-2.5 empty:hidden', className)}
     >
-      {isRetryAvailable && <RetryControl userMessageId={userMessageId} disabled={!isConnected} />}
       {isApplyAllAvailable && <ApplyAllControl content={message.content} />}
+      {isRetryAvailable && <RetryControl userMessageId={userMessageId} disabled={!isConnected} />}
       {isSwitchAvailable && (
         <MessageSwitchControls className="ml-auto" ids={options} selectedId={message.id} />
       )}
     </div>
   );
-}
+};
+ResponseControls.displayName = RESPONSE_CONTROLS_NAME;

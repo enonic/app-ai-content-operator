@@ -6,17 +6,17 @@ import { markMessageAsActive } from '@/store/chat';
 
 const MESSAGE_SWITCH_CONTROLS_NAME = 'MessageSwitchControls';
 
-export type Props = {
+export type MessageSwitchControlsProps = {
   className?: string;
   ids: string[];
   selectedId: string;
 };
 
-export default function MessageSwitchControls({
+export const MessageSwitchControls = ({
   className,
   ids,
   selectedId,
-}: Props): React.ReactNode {
+}: MessageSwitchControlsProps): React.ReactNode => {
   const { t } = useTranslation();
 
   const selectedIndex = ids.indexOf(selectedId);
@@ -45,8 +45,8 @@ export default function MessageSwitchControls({
       <span
         className={cn(
           'flex items-center justify-center',
-          'h-6 w-6',
-          'text-subtle cursor-default text-xs',
+          'h-6 min-w-8 px-1 tabular-nums',
+          'text-subtle cursor-default text-sm',
         )}
       >
         {text}
@@ -65,4 +65,5 @@ export default function MessageSwitchControls({
       />
     </div>
   );
-}
+};
+MessageSwitchControls.displayName = MESSAGE_SWITCH_CONTROLS_NAME;

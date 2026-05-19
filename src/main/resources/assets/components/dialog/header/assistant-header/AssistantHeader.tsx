@@ -31,6 +31,7 @@ export const AssistantHeader = ({
       )}
     >
       <IconButton
+        className="z-10"
         variant="filled"
         shape="round"
         size="lg"
@@ -46,9 +47,10 @@ export const AssistantHeader = ({
         type="button"
         tabIndex={-1}
         className={cn(
-          'flex-1 self-stretch',
-          'text-center text-2xl font-semibold',
           'flex items-center justify-center',
+          'flex-1 self-stretch',
+          'w-full h-20 -mt-5 absolute left-0',
+          'text-center text-2xl font-semibold',
           dragging ? 'cursor-grabbing' : 'cursor-grab',
         )}
         onMouseDown={onDragStart}
@@ -57,6 +59,7 @@ export const AssistantHeader = ({
         Juke AI
       </button>
       <IconButton
+        className="z-10"
         variant="filled"
         shape="round"
         size="lg"

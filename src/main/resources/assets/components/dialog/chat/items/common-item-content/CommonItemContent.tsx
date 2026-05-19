@@ -2,17 +2,21 @@ import { cn } from '@enonic/ui';
 import { LoaderCircle } from 'lucide-react';
 
 import { REGULAR_SCREEN } from '../../../../../common/device';
-import CopyControl from '../../controls/copy-control/CopyControl';
+import { CopyControl } from '../../controls/copy-control/CopyControl';
 
 const COMMON_ITEM_CONTENT_NAME = 'CommonItemContent';
 
-type Props = {
+export type CommonItemContentProps = {
   className?: string;
   content: Optional<string>;
   last: boolean;
 };
 
-export default function CommonItemContent({ className, content, last }: Props): React.ReactNode {
+export const CommonItemContent = ({
+  className,
+  content,
+  last,
+}: CommonItemContentProps): React.ReactNode => {
   return (
     <div
       data-component={COMMON_ITEM_CONTENT_NAME}
@@ -32,8 +36,9 @@ export default function CommonItemContent({ className, content, last }: Props): 
           <article dangerouslySetInnerHTML={{ __html: content }} className="prose prose-sm pr-5" />
         </>
       ) : (
-        <LoaderCircle className="text-decorative size-5 animate-spin" />
+        <LoaderCircle className="text-subtle size-5 animate-spin" />
       )}
     </div>
   );
-}
+};
+CommonItemContent.displayName = COMMON_ITEM_CONTENT_NAME;

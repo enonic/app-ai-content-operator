@@ -5,24 +5,24 @@ import type { DataEntryType } from '../../../../../../shared/data/DataEntry';
 
 const ELEMENT_ITEM_CONTENT_NAME = 'ElementItemContent';
 
-type Props = {
+export type ElementItemContentProps = {
   className?: string;
   content: Optional<string>;
   type?: DataEntryType;
 };
 
-export default function ElementItemContent({
+export const ElementItemContent = ({
   className,
   content,
   type = 'text',
-}: Props): React.ReactNode {
+}: ElementItemContentProps): React.ReactNode => {
   if (!content) {
     return (
       <div
         data-component={ELEMENT_ITEM_CONTENT_NAME}
         className={cn(ELEMENT_ITEM_CONTENT_NAME, 'relative col-span-2', className)}
       >
-        <LoaderCircle className="text-decorative size-5 animate-spin" />
+        <LoaderCircle className="text-subtle size-5 animate-spin" />
       </div>
     );
   }
@@ -58,4 +58,5 @@ export default function ElementItemContent({
         </div>
       );
   }
-}
+};
+ElementItemContent.displayName = ELEMENT_ITEM_CONTENT_NAME;

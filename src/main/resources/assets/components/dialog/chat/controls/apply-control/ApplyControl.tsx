@@ -8,13 +8,13 @@ import { applyResults } from '@/store/host';
 
 const APPLY_CONTROL_NAME = 'ApplyControl';
 
-type Props = {
+export type ApplyControlProps = {
   className?: string;
   name: string;
   content: string;
 };
 
-export default function ApplyControl({ className, name, content }: Props): React.ReactNode {
+export const ApplyControl = ({ className, name, content }: ApplyControlProps): React.ReactNode => {
   const { t } = useTranslation();
   const [applying, setApplying] = useState(false);
 
@@ -31,11 +31,13 @@ export default function ApplyControl({ className, name, content }: Props): React
       data-component={APPLY_CONTROL_NAME}
       variant="text"
       size="sm"
+      iconSize="md"
       icon={applying ? Check : Astroid}
       title={t('action.insert')}
       aria-label={t('action.insert')}
-      className={cn(APPLY_CONTROL_NAME, applying && 'text-success size-8', className)}
+      className={cn(APPLY_CONTROL_NAME, applying && 'text-success hover:text-success', className)}
       onClick={handleApply}
     />
   );
-}
+};
+ApplyControl.displayName = APPLY_CONTROL_NAME;

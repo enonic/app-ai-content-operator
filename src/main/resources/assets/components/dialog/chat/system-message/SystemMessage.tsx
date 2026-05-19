@@ -5,17 +5,21 @@ import { JukeIcon } from '@/ui/primitives/juke-icon/JukeIcon';
 
 import type { SystemChatMessage } from '@/store/content';
 
-import ResponseControls from '../controls/response-controls/ResponseControls';
+import { ResponseControls } from '../controls/response-controls/ResponseControls';
 
 const SYSTEM_MESSAGE_NAME = 'SystemMessage';
 
-type Props = {
+export type SystemMessageProps = {
   className?: string;
   message: SystemChatMessage;
   last: boolean;
 };
 
-export default function SystemMessage({ className, message, last }: Props): React.ReactNode {
+export const SystemMessage = ({
+  className,
+  message,
+  last,
+}: SystemMessageProps): React.ReactNode => {
   const { t } = useTranslation();
 
   const { type, node } = message.content;
@@ -23,7 +27,7 @@ export default function SystemMessage({ className, message, last }: Props): Reac
   return (
     <div
       data-component={SYSTEM_MESSAGE_NAME}
-      className={cn(SYSTEM_MESSAGE_NAME, 'flex gap-2', className)}
+      className={cn(SYSTEM_MESSAGE_NAME, 'flex gap-4', className)}
     >
       <JukeIcon className="size-8 shrink-0" />
       <article className="flex flex-1 flex-col gap-3">
@@ -43,4 +47,5 @@ export default function SystemMessage({ className, message, last }: Props): Reac
       </article>
     </div>
   );
-}
+};
+SystemMessage.displayName = SYSTEM_MESSAGE_NAME;

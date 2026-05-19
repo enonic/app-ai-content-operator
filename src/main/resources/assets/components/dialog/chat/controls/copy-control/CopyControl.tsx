@@ -9,7 +9,7 @@ const COPY_CONTROL_NAME = 'CopyControl';
 
 type CopyType = 'text' | 'html';
 
-type Props = {
+export type CopyControlProps = {
   className?: string;
   content: string;
   type?: CopyType;
@@ -30,7 +30,7 @@ async function copyContent(content: string, type?: CopyType): Promise<void> {
   }
 }
 
-export default function CopyControl({ className, content, type }: Props): React.ReactNode {
+export const CopyControl = ({ className, content, type }: CopyControlProps): React.ReactNode => {
   const { t } = useTranslation();
   const [copying, setCopying] = useState(false);
 
@@ -45,11 +45,13 @@ export default function CopyControl({ className, content, type }: Props): React.
       data-component={COPY_CONTROL_NAME}
       variant="text"
       size="sm"
+      iconSize="md"
       icon={copying ? Check : Copy}
       title={t('action.copy')}
       aria-label={t('action.copy')}
-      className={cn(COPY_CONTROL_NAME, copying && 'text-success size-8', className)}
+      className={cn(COPY_CONTROL_NAME, copying && 'text-success hover:text-success', className)}
       onClick={() => void handleCopy()}
     />
   );
-}
+};
+CopyControl.displayName = COPY_CONTROL_NAME;

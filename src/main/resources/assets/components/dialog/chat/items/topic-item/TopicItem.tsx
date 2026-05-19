@@ -8,13 +8,13 @@ import type { MultipleValues } from '@/store/content';
 import { SPECIAL_NAMES } from '../../../../../../shared/enums';
 import { REGULAR_SCREEN } from '../../../../../common/device';
 import { pickValue } from '../../../../../common/messages';
-import ElementItemControls from '../../controls/element-item-controls/ElementItemControls';
-import ElementItemSwitchControls from '../../controls/element-item-switch-controls/ElementItemSwitchControls';
-import ElementItemContent from '../element-item-content/ElementItemContent';
+import { ElementItemControls } from '../../controls/element-item-controls/ElementItemControls';
+import { ElementItemSwitchControls } from '../../controls/element-item-switch-controls/ElementItemSwitchControls';
+import { ElementItemContent } from '../element-item-content/ElementItemContent';
 
 const TOPIC_ITEM_NAME = 'TopicItem';
 
-type Props = {
+export type TopicItemProps = {
   className?: string;
   messageId: string;
   name: string;
@@ -22,13 +22,13 @@ type Props = {
   value: Optional<string | MultipleValues>;
 };
 
-export default function TopicItem({
+export const TopicItem = ({
   className,
   messageId,
   name,
   last,
   value,
-}: Props): React.ReactNode {
+}: TopicItemProps): React.ReactNode => {
   const { t } = useTranslation();
   const topic = t('field.mentions.__topic__.label');
   const content = value && pickValue(value);
@@ -65,4 +65,5 @@ export default function TopicItem({
       <ElementItemContent className="col-span-3" content={content} />
     </li>
   );
-}
+};
+TopicItem.displayName = TOPIC_ITEM_NAME;

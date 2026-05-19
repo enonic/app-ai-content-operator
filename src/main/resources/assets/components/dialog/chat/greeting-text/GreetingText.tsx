@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
-export default function GreetingText(): React.ReactNode {
+const GREETING_TEXT_NAME = 'GreetingText';
+
+export const GreetingText = (): React.ReactNode => {
   const { t } = useTranslation();
 
   const name = 'You';
@@ -16,4 +18,5 @@ export default function GreetingText(): React.ReactNode {
     default:
       return t('text.greeting.recurring.evening', { name });
   }
-}
+};
+GreetingText.displayName = GREETING_TEXT_NAME;

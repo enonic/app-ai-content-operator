@@ -6,17 +6,17 @@ import { sendRetry } from '@/store/websocket';
 
 const RETRY_CONTROL_NAME = 'RetryControl';
 
-type Props = {
+export type RetryControlProps = {
   className?: string;
   userMessageId: string;
   disabled?: boolean;
 };
 
-export default function RetryControl({
+export const RetryControl = ({
   className,
   userMessageId,
   disabled,
-}: Props): React.ReactNode {
+}: RetryControlProps): React.ReactNode => {
   const { t } = useTranslation();
 
   return (
@@ -31,4 +31,5 @@ export default function RetryControl({
       onClick={() => sendRetry(userMessageId)}
     />
   );
-}
+};
+RetryControl.displayName = RETRY_CONTROL_NAME;

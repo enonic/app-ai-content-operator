@@ -12,7 +12,7 @@ import type { FieldDescriptor, ModelChatMessageContent } from '@/store/content';
 
 const ASSISTANT_MESSAGE_PLACEHOLDER_NAME = 'AssistantMessagePlaceholder';
 
-type Props = {
+export type AssistantMessagePlaceholderProps = {
   content: Omit<ModelChatMessageContent, 'generationResult'>;
 };
 
@@ -27,7 +27,9 @@ function getPlaceholderMessage(count: number): string {
   }
 }
 
-export default function AssistantMessagePlaceholder({ content }: Props): React.ReactNode {
+export const AssistantMessagePlaceholder = ({
+  content,
+}: AssistantMessagePlaceholderProps): React.ReactNode => {
   const { t } = useTranslation();
   const fieldDescriptors = useStore($fieldDescriptors);
 
@@ -62,7 +64,7 @@ export default function AssistantMessagePlaceholder({ content }: Props): React.R
         className={cn(
           ASSISTANT_MESSAGE_PLACEHOLDER_NAME,
           'inline-flex items-center justify-start',
-          'min-h-8 rounded -mx-2 px-2 py-1.5',
+          '-mx-2 min-h-8 rounded px-2 py-1.5',
           'text-main bg-surface-neutral text-sm',
           'enabled:hover:bg-surface-neutral-hover',
           'disabled:opacity-50',
@@ -82,7 +84,7 @@ export default function AssistantMessagePlaceholder({ content }: Props): React.R
           })}
         </span>
       </button>
-      <ul className={cn('flex flex-col gap-1 divide-y pl-6', !expanded && 'hidden')}>
+      <ul className={cn('flex flex-col gap-1 pl-6', !expanded && 'hidden')}>
         {analyzedFieldsDescriptors.map(({ name, label, displayName }) => (
           <li key={name} className="flex items-center gap-0.5">
             <button
@@ -92,10 +94,11 @@ export default function AssistantMessagePlaceholder({ content }: Props): React.R
             >
               <span className="text-xs">{label}</span>
             </button>
-            <LoaderCircle className="text-decorative size-4 animate-spin" />
+            <LoaderCircle className="text-subtle size-4 animate-spin" />
           </li>
         ))}
       </ul>
     </>
   );
-}
+};
+AssistantMessagePlaceholder.displayName = ASSISTANT_MESSAGE_PLACEHOLDER_NAME;

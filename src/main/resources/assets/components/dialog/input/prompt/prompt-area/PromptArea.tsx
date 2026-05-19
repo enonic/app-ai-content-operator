@@ -6,8 +6,7 @@ import { createEditor, Editor, Node, Transforms } from 'slate';
 import { withHistory } from 'slate-history';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 
-import { $mentions, MessageRole, getAllPathsFromString } from '@/store/content';
-import { $context } from '@/store/context';
+import { $mentions, MessageRole } from '@/store/content';
 import { $dialog } from '@/store/dialog';
 import { $target, clearTarget, setTarget } from '@/store/editor';
 import { $licenseState } from '@/store/license';
@@ -19,14 +18,13 @@ import type { Descendant } from 'slate';
 import { findLooseMatch } from '../../../../../common/mentions';
 import { useDeepMemo } from '../../../../../hooks/useDeepMemo';
 import { calcMentionSpec, insertMention, withMentions } from '../../../../../plugins/withMentions';
-import ContextControl from '../../../context/context-controls/ContextControls';
-import MainChatButton from '../../main-chat-button/MainChatButton';
+import { MainChatButton } from '../../main-chat-button/MainChatButton';
 import { MentionsList } from '../mentions-list/MentionsList';
-import PromptAreaElement from '../prompt-area-element/PromptAreaElement';
+import { PromptAreaElement } from '../prompt-area-element/PromptAreaElement';
 
 const PROMPT_AREA_NAME = 'PromptArea';
 
-type Props = {
+export type PromptAreaProps = {
   className?: string;
 };
 
@@ -60,7 +58,7 @@ function sendPromptAndClear(editor: Editor): void {
   clearPrompt(editor);
 }
 
-export default function PromptArea({ className }: Props): React.ReactNode {
+export const PromptArea = ({ className }: PromptAreaProps): React.ReactNode => {
   const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (ref.current) {
@@ -87,10 +85,6 @@ export default function PromptArea({ className }: Props): React.ReactNode {
   const [editorEmpty, setEditorEmpty] = useState(isEditorEmpty(editor));
   const canSend = isConnected && !editorEmpty && !isBusy;
   const isMainChatButtonDisabled = !isConnected || (editorEmpty && !isBusy);
-
-  const context = useStore($context);
-  const paths = context ? getAllPathsFromString(context) : [];
-  const hasContext = paths.length > 0;
 
   useEffect(() => {
     if (hidden || licenseState !== 'OK') {
@@ -188,18 +182,14 @@ export default function PromptArea({ className }: Props): React.ReactNode {
         'bg-surface-neutral',
         'rounded-lg',
         'overflow-y-auto',
-        hasContext &&
-        'before:bg-gradient-fade-to-t before:to-surface-primary before:absolute before:inset-0 before:top-px before:right-2 before:left-2 before:z-10 before:h-10 before:rounded-t-lg before:from-transparent before:content-[""]',
         className,
       )}
     >
-      <ContextControl className="absolute top-2 left-2 z-20 w-[calc(100%-1rem)]" />
       <Slate editor={editor} initialValue={INITIAL_VALUE} onChange={handleChange}>
         <Editable
           className={cn(
             'max-h-31 w-full',
-            'm-0 pr-11 pb-3',
-            hasContext ? 'pt-12' : 'pt-3',
+            'm-0 py-3 pr-11',
             'bg-transparent placeholder-black/50',
             'rounded-2xl border-0',
             'resize-none',
@@ -232,4 +222,5 @@ export default function PromptArea({ className }: Props): React.ReactNode {
       />
     </div>
   );
-}
+};
+PromptArea.displayName = PROMPT_AREA_NAME;

@@ -8,19 +8,19 @@ import type { MultipleValues } from '@/store/content';
 
 const ELEMENT_ITEM_SWITCH_CONTROLS_NAME = 'ElementItemSwitchControls';
 
-export type Props = {
+export type ElementItemSwitchControlsProps = {
   className?: string;
   messageId: string;
   name: string;
   content: MultipleValues;
 };
 
-export default function ElementItemSwitchControls({
+export const ElementItemSwitchControls = ({
   className,
   messageId,
   name,
   content,
-}: Props): React.ReactNode {
+}: ElementItemSwitchControlsProps): React.ReactNode => {
   const { t } = useTranslation();
   const { values, selectedIndex } = content;
   const isFirst = selectedIndex === 0;
@@ -68,4 +68,5 @@ export default function ElementItemSwitchControls({
       />
     </div>
   );
-}
+};
+ElementItemSwitchControls.displayName = ELEMENT_ITEM_SWITCH_CONTROLS_NAME;

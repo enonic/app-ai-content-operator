@@ -1,4 +1,4 @@
-import { cn } from '@enonic/ui';
+import { Button, cn } from '@enonic/ui';
 
 import { scrollToField } from '@/store/host';
 
@@ -6,13 +6,13 @@ import type { FieldDescriptor, MultipleValues } from '@/store/content';
 
 import { REGULAR_SCREEN } from '../../../../../common/device';
 import { pickValue } from '../../../../../common/messages';
-import ElementItemControls from '../../controls/element-item-controls/ElementItemControls';
-import ElementItemSwitchControls from '../../controls/element-item-switch-controls/ElementItemSwitchControls';
-import ElementItemContent from '../element-item-content/ElementItemContent';
+import { ElementItemControls } from '../../controls/element-item-controls/ElementItemControls';
+import { ElementItemSwitchControls } from '../../controls/element-item-switch-controls/ElementItemSwitchControls';
+import { ElementItemContent } from '../element-item-content/ElementItemContent';
 
 const ELEMENT_ITEM_NAME = 'ElementItem';
 
-type Props = {
+export type ElementItemProps = {
   className?: string;
   messageId: string;
   descriptor: FieldDescriptor;
@@ -20,13 +20,13 @@ type Props = {
   value: Optional<string | MultipleValues>;
 };
 
-export default function ElementItem({
+export const ElementItem = ({
   className,
   messageId,
   descriptor,
   value,
   last,
-}: Props): React.ReactNode {
+}: ElementItemProps): React.ReactNode => {
   const { name, label, displayName, type } = descriptor;
   const content = value && pickValue(value);
 
@@ -35,17 +35,18 @@ export default function ElementItem({
       data-component={ELEMENT_ITEM_NAME}
       className={cn(
         ELEMENT_ITEM_NAME,
-        'group/item grid-cols-fit-fit-1fr grid gap-x-1 gap-y-1 hover:bg-slate-50',
+        'group/item grid-cols-fit-fit-1fr grid gap-x-2.5',
         className,
       )}
     >
-      <button
-        className="text-info-rev cursor-pointer truncate px-1 align-baseline"
+      <Button
+        size="sm"
+        className="text-info-rev h-7 cursor-pointer truncate px-1 align-baseline font-semibold -ml-1"
         title={displayName}
         onClick={() => scrollToField(name)}
       >
-        <span className="text-xs">{label}</span>
-      </button>
+        {label}
+      </Button>
       {content && typeof value !== 'string' && (
         <ElementItemSwitchControls messageId={messageId} name={name} content={value} />
       )}
@@ -63,4 +64,5 @@ export default function ElementItem({
       <ElementItemContent className="col-span-3" content={content} type={type} />
     </li>
   );
-}
+};
+ElementItem.displayName = ELEMENT_ITEM_NAME;

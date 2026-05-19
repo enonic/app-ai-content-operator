@@ -5,12 +5,12 @@ import { JukeIcon } from '@/ui/primitives/juke-icon/JukeIcon';
 import type { ModelChatMessage, ModelChatMessageContent } from '@/store/content';
 
 import { AssistantMessageList } from '../assistant-message-list/AssistantMessageList';
-import AssistantMessagePlaceholder from '../assistant-message-placeholder/AssistantMessagePlaceholder';
-import ResponseControls from '../controls/response-controls/ResponseControls';
+import { AssistantMessagePlaceholder } from '../assistant-message-placeholder/AssistantMessagePlaceholder';
+import { ResponseControls } from '../controls/response-controls/ResponseControls';
 
 const ASSISTANT_MESSAGE_NAME = 'AssistantMessage';
 
-type Props = {
+export type AssistantMessageProps = {
   className?: string;
   message: ModelChatMessage;
   last: boolean;
@@ -22,18 +22,18 @@ const hasGenerationResult = (
   return content.generationResult != null;
 };
 
-export default function AssistantMessage({ className, message, last }: Props): React.ReactNode {
+export const AssistantMessage = ({
+  className,
+  message,
+  last,
+}: AssistantMessageProps): React.ReactNode => {
   const { id: messageId, content } = message;
   const isGenerating = !hasGenerationResult(content);
 
   return (
     <section
       data-component={ASSISTANT_MESSAGE_NAME}
-      className={cn(
-        ASSISTANT_MESSAGE_NAME,
-        'grid-cols-fit-1fr grid gap-x-4',
-        className,
-      )}
+      className={cn(ASSISTANT_MESSAGE_NAME, 'grid-cols-fit-1fr grid gap-x-4', className)}
     >
       <Avatar.Root size="md" shape="circle" className="bg-transparent">
         <Avatar.Fallback className="bg-transparent p-0">
@@ -52,4 +52,5 @@ export default function AssistantMessage({ className, message, last }: Props): R
       </article>
     </section>
   );
-}
+};
+AssistantMessage.displayName = ASSISTANT_MESSAGE_NAME;

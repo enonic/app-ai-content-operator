@@ -4,19 +4,19 @@ import { useTranslation } from 'react-i18next';
 
 const MAIN_CHAT_BUTTON_NAME = 'MainChatButton';
 
-type Props = {
+export type MainChatButtonProps = {
   className?: string;
   disabled?: boolean;
   kind: 'send' | 'stop';
   clickHandler: () => void;
 };
 
-export default function MainChatButton({
+export const MainChatButton = ({
   className,
   disabled,
   kind,
   clickHandler,
-}: Props): React.ReactNode {
+}: MainChatButtonProps): React.ReactNode => {
   const { t } = useTranslation();
 
   return (
@@ -24,6 +24,7 @@ export default function MainChatButton({
       data-component={MAIN_CHAT_BUTTON_NAME}
       variant="text"
       size="lg"
+      iconSize={kind === 'send' ? 'lg' : 'md'}
       iconStrokeWidth={2}
       icon={kind === 'send' ? ArrowUp : Square}
       title={t('action.send')}
@@ -33,4 +34,5 @@ export default function MainChatButton({
       onClick={clickHandler}
     />
   );
-}
+};
+MainChatButton.displayName = MAIN_CHAT_BUTTON_NAME;

@@ -476,4 +476,3 @@ export function getParentHelpTexts(
 
   return texts.length > 0 ? texts : undefined;
 }
-

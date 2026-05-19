@@ -100,7 +100,7 @@ export const AssistantDialog = ({ className = '' }: AssistantDialogProps): React
             'sm:w-lg md:w-xl lg:w-2xl',
             'sm:h-128 md:h-144 lg:h-168',
             'sm:max-h-[calc(100svh-4rem)]',
-            'leading-initial rounded-lg border p-5 pt-0 text-base shadow-xl',
+            'leading-initial rounded-2xl border p-5 pt-0 text-base shadow-xl',
             dragging && 'bg-surface-neutral/20 backdrop-blur-xs select-none',
             className,
           )}
@@ -114,7 +114,7 @@ export const AssistantDialog = ({ className = '' }: AssistantDialogProps): React
             className={cn(
               'absolute right-0 bottom-0',
               'box-content flex h-6 w-5 justify-end pr-1',
-              'text-decorative text-3xl/[0.875rem]',
+              'text-subtle text-3xl/[0.875rem]',
               'cursor-nwse-resize border-0 bg-transparent outline-none select-none focus:outline-none',
               'transition-opacity group-hover/resize:opacity-100',
               !isTouchDevice && 'opacity-0',

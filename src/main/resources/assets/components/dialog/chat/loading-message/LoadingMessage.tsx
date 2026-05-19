@@ -5,11 +5,11 @@ import { JukeIcon } from '@/ui/primitives/juke-icon/JukeIcon';
 
 const LOADING_MESSAGE_NAME = 'LoadingMessage';
 
-type Props = {
+export type LoadingMessageProps = {
   className?: string;
 };
 
-export default function LoadingMessage({ className }: Props): React.ReactNode {
+export const LoadingMessage = ({ className }: LoadingMessageProps): React.ReactNode => {
   const { t } = useTranslation();
 
   return (
@@ -33,4 +33,5 @@ export default function LoadingMessage({ className }: Props): React.ReactNode {
       </article>
     </section>
   );
-}
+};
+LoadingMessage.displayName = LOADING_MESSAGE_NAME;

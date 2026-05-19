@@ -354,6 +354,6 @@ export const JukeIcon = ({ className }: JukeIconProps): React.ReactNode => {
       </g>
     </svg>
   );
-}
+};
 
 JukeIcon.displayName = JUKE_ICON_NAME;

@@ -3,7 +3,7 @@ import { MessageRole } from '@/store/content';
 import type { ModelChatMessage } from '@/store/content';
 import type { Meta, StoryObj } from '@storybook/preact-vite';
 
-import AssistantMessage from './AssistantMessage';
+import { AssistantMessage } from './AssistantMessage';
 
 const meta = {
   title: 'ContentOperator/Dialog/Chat/AssistantMessage',

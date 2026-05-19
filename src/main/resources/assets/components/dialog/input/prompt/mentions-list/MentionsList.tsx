@@ -134,7 +134,7 @@ export const MentionsList = ({
               </button>
             ))
           ) : (
-            <div className="text-decorative flex h-6 items-center px-2 text-sm select-none">
+            <div className="text-subtle flex h-6 items-center px-2 text-sm select-none">
               {t('text.mentions.notFound')}
             </div>
           )}

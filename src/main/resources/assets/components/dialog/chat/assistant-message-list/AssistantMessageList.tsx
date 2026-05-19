@@ -9,18 +9,22 @@ import type { MessageItem, ModelChatMessageContent } from '@/store/content';
 
 import { SPECIAL_NAMES } from '../../../../../shared/enums';
 import { messageContentToValues } from '../../../../common/messages';
-import CommonItem from '../items/common-item/CommonItem';
-import ElementItem from '../items/element-item/ElementItem';
+import { CommonItem } from '../items/common-item/CommonItem';
+import { ElementItem } from '../items/element-item/ElementItem';
 
 const ASSISTANT_MESSAGE_LIST_NAME = 'AssistantMessageList';
 
-type Props = {
+export type AssistantMessageListProps = {
   messageId: string;
   content: Required<ModelChatMessageContent>;
   last: boolean;
 };
 
-export function AssistantMessageList({ messageId, content, last }: Props): React.ReactNode {
+export const AssistantMessageList = ({
+  messageId,
+  content,
+  last,
+}: AssistantMessageListProps): React.ReactNode => {
   const fieldDescriptors = useStore($fieldDescriptors);
   const orderedPaths = useStore($orderedPaths);
 
@@ -65,22 +69,11 @@ export function AssistantMessageList({ messageId, content, last }: Props): React
     <ul
       ref={ref}
       data-component={ASSISTANT_MESSAGE_LIST_NAME}
-      className={cn(
-        ASSISTANT_MESSAGE_LIST_NAME,
-        'flex flex-col gap-5 divide-y overflow-hidden rounded',
-      )}
+      className={cn(ASSISTANT_MESSAGE_LIST_NAME, 'flex flex-col gap-5')}
     >
-      {sortedEntries.map(([key, value], _, arr) => {
+      {sortedEntries.map(([key, value]) => {
         if (key === SPECIAL_NAMES.common) {
-          const hasOtherContent = arr.length > 1;
-          return (
-            <CommonItem
-              key={key}
-              className={cn('border-dashed', hasOtherContent && 'border-b!')}
-              value={value}
-              last={last}
-            />
-          );
+          return <CommonItem key={key} value={value} last={last} />;
         }
 
         const descriptor = fieldDescriptors.find((descriptor) => descriptor.name === key);
@@ -91,7 +84,6 @@ export function AssistantMessageList({ messageId, content, last }: Props): React
         return (
           <ElementItem
             key={key}
-            className={'border-dashed last:border-b!'}
             messageId={messageId}
             descriptor={descriptor}
             value={value}
@@ -101,4 +93,5 @@ export function AssistantMessageList({ messageId, content, last }: Props): React
       })}
     </ul>
   );
-}
+};
+AssistantMessageList.displayName = ASSISTANT_MESSAGE_LIST_NAME;

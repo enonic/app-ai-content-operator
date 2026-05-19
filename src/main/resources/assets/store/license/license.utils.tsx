@@ -1,6 +1,6 @@
 import { t } from 'i18next';
 
-import GreetingText from '@/components/dialog/chat/greeting-text/GreetingText';
+import { GreetingText } from '@/components/dialog/chat/greeting-text/GreetingText';
 import { addErrorMessage, addSystemMessage, removeChatMessage } from '@/store/chat';
 
 import { $initialized, $licenseState } from './license.store';

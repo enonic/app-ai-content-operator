@@ -11,7 +11,7 @@ import type { ApplyMessage, ModelChatMessageContent, MultipleValues } from '@/st
 
 const APPLY_ALL_CONTROL_NAME = 'ApplyAllControl';
 
-type Props = {
+export type ApplyAllControlProps = {
   className?: string;
   content: ModelChatMessageContent;
 };
@@ -25,7 +25,7 @@ function extractItems(content: ModelChatMessageContent): ApplyMessage[] {
     }));
 }
 
-export default function ApplyAllControl({ className, content }: Props): React.ReactNode {
+export const ApplyAllControl = ({ className, content }: ApplyAllControlProps): React.ReactNode => {
   const { t } = useTranslation();
   const [applying, setApplying] = useState(false);
 
@@ -47,8 +47,13 @@ export default function ApplyAllControl({ className, content }: Props): React.Re
       size="sm"
       label={t('action.insertAll')}
       endIcon={applying ? Check : Astroid}
-      className={cn(APPLY_ALL_CONTROL_NAME, applying && 'text-success', className)}
+      className={cn(
+        APPLY_ALL_CONTROL_NAME,
+        applying && 'text-success hover:text-success',
+        className,
+      )}
       onClick={handleApply}
     />
   );
-}
+};
+ApplyAllControl.displayName = APPLY_ALL_CONTROL_NAME;

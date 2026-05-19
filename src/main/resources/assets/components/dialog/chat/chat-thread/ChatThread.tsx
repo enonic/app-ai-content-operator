@@ -8,12 +8,12 @@ import { $busyAnalyzing, $websocket } from '@/store/websocket';
 
 import type { ChatMessage } from '@/store/content';
 
-import LoadingMessage from '../loading-message/LoadingMessage';
-import Message from '../message/Message';
+import { LoadingMessage } from '../loading-message/LoadingMessage';
+import { Message } from '../message/Message';
 
 const CHAT_THREAD_NAME = 'ChatThread';
 
-export type Props = {
+export type ChatThreadProps = {
   className?: string;
 };
 
@@ -36,7 +36,7 @@ function createMessages(history: ChatMessage[], isLoading: boolean): React.React
   return messages;
 }
 
-export default function ChatThread({ className = '' }: Props): React.ReactNode {
+export const ChatThread = ({ className = '' }: ChatThreadProps): React.ReactNode => {
   const isInitialized = useStore($initialized);
   const licenseState = useStore($licenseState);
   const isConnecting = useStore($websocket, { keys: ['state'] }).state === 'connecting';
@@ -58,11 +58,17 @@ export default function ChatThread({ className = '' }: Props): React.ReactNode {
     <div
       ref={ref}
       data-component={CHAT_THREAD_NAME}
-      className={cn(CHAT_THREAD_NAME, 'relative flex-1 overflow-y-auto scroll-smooth', className)}
+      className={cn(
+        CHAT_THREAD_NAME,
+        'relative flex-1 overflow-y-auto scroll-smooth',
+        'focus-visible:ring-ring/10 outline-none focus-visible:ring-2 focus-visible:ring-inset',
+        className,
+      )}
     >
-      <div className={cn('flex h-full w-full grow flex-col gap-6 px-3 pt-3')}>
+      <div className={cn('flex h-full w-full grow flex-col gap-6 px-2.5')}>
         {createMessages(history, isLoading)}
       </div>
     </div>
   );
-}
+};
+ChatThread.displayName = CHAT_THREAD_NAME;

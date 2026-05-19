@@ -36,10 +36,12 @@
 }
 
 @utility bg-gradient-middle {
-  background-image: linear-gradient(90deg,
-      var(--tw-gradient-from) 25%,
-      var(--tw-gradient-to) 50%,
-      var(--tw-gradient-from) 75%);
+  background-image: linear-gradient(
+    90deg,
+    var(--tw-gradient-from) 25%,
+    var(--tw-gradient-to) 50%,
+    var(--tw-gradient-from) 75%
+  );
 }
 
 @utility bg-gradient-fade-to-t {
@@ -69,7 +71,6 @@
 }
 
 @layer base {
-
   body,
   .docs-story {
     background-color: var(--color-surface-neutral);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { ShadowHostContext } from '@/shadow/ShadowHostContext';
 import {
   addModelMessage,
   addSystemMessage,
@@ -13,13 +14,12 @@ import { $dialog } from '@/store/dialog';
 import { clearPluginContext, setPluginContext } from '@/store/host';
 import { $initialized, $licenseState } from '@/store/license';
 import { $websocket } from '@/store/websocket';
-import { ShadowHostContext } from '@/shadow/ShadowHostContext';
 
 import type { AiPluginApi, AiPluginContext } from '@shared/ai-protocol';
 import type { Meta, StoryObj } from '@storybook/preact-vite';
 
+import { GreetingText } from '../chat/greeting-text/GreetingText';
 import { AssistantDialog } from './AssistantDialog';
-import GreetingText from '../chat/greeting-text/GreetingText';
 
 const noopApi: AiPluginApi = {
   on: () => () => undefined,
@@ -53,13 +53,33 @@ function seedMockStores(): () => void {
             occurrences: { minimum: 0, maximum: 1 },
           },
         },
+        {
+          Input: {
+            name: 'displayName',
+            label: 'Display Name',
+            inputType: 'TextLine',
+            occurrences: { minimum: 0, maximum: 1 },
+          },
+        },
+        {
+          Input: {
+            name: 'description',
+            label: 'Description',
+            inputType: 'TextArea',
+            occurrences: { minimum: 0, maximum: 1 },
+          },
+        },
       ],
     },
   });
   setPersistedData({
     contentId: 'mock-id',
     contentPath: '/mock',
-    fields: [{ name: 'intro', type: 'String', values: [{ v: 'Sample introduction.' }] }],
+    fields: [
+      { name: 'intro', type: 'String', values: [{ v: 'Sample introduction.' }] },
+      { name: 'displayName', type: 'String', values: [{ v: '' }] },
+      { name: 'description', type: 'String', values: [{ v: '' }] },
+    ],
     topic: 'Renewable energy',
   });
   setContext('/intro');
@@ -103,6 +123,34 @@ function seedMockStores(): () => void {
     });
   }
 
+  const followUpUserMsg =
+    modelMsg &&
+    addUserMessage({
+      node: 'Now suggest a display name and description for a heroic-fantasy story.',
+      prompt: 'Now suggest a display name and description for a heroic-fantasy story.',
+      contextData: {
+        name: '/',
+        title: 'All',
+        displayName: 'All',
+      },
+    });
+  const followUpModelMsg =
+    followUpUserMsg &&
+    addModelMessage(
+      {
+        '/displayName': { task: 'Suggest a display name.', count: 1, language: 'en' },
+        '/description': { task: 'Suggest a description.', count: 1, language: 'en' },
+      },
+      followUpUserMsg.id,
+    );
+  if (followUpModelMsg) {
+    updateModelMessage(followUpModelMsg.id, {
+      '/displayName': 'Chronicles of Heroes: The Awakening',
+      '/description':
+        'Dive into a world of justice and courage, where every story reveals the true power of the heroes who protect our destiny.',
+    });
+  }
+
   $dialog.setKey('hidden', false);
 
   return () => {
@@ -129,7 +177,7 @@ function MockedDialog(): React.ReactNode {
     <div ref={setContainer} className="ai-content-operator text-main relative h-svh w-svw">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-center p-8 text-center text-4xl font-semibold text-balance text-subtle/60 select-none"
+        className="text-subtle/60 pointer-events-none absolute inset-0 flex items-center justify-center p-8 text-center text-4xl font-semibold text-balance select-none"
       >
         Drag the dialog around to preview the glassy backdrop against this text.
       </div>
