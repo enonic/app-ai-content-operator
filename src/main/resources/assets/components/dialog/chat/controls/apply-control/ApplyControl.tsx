@@ -34,7 +34,7 @@ export default function ApplyControl({ className, name, content }: Props): React
       icon={applying ? Check : Astroid}
       title={t('action.insert')}
       aria-label={t('action.insert')}
-      className={cn(APPLY_CONTROL_NAME, applying && 'text-success', 'size-8', className)}
+      className={cn(APPLY_CONTROL_NAME, applying && 'text-success size-8', className)}
       onClick={handleApply}
     />
   );

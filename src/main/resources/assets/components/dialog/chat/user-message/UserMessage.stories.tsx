@@ -3,7 +3,7 @@ import { MessageRole } from '@/store/content';
 import type { UserChatMessage } from '@/store/content';
 import type { Meta, StoryObj } from '@storybook/preact-vite';
 
-import UserMessage from './UserMessage';
+import { UserMessage } from './UserMessage';
 
 const meta = {
   title: 'ContentOperator/Dialog/Chat/UserMessage',

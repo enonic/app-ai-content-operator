@@ -1,13 +1,10 @@
 import { t } from 'i18next';
-import { atom } from 'nanostores';
 
 import GreetingText from '@/components/dialog/chat/greeting-text/GreetingText';
 import { addErrorMessage, addSystemMessage, removeChatMessage } from '@/store/chat';
 
-import type { LicenseState } from '@shared/license';
+import { $initialized, $licenseState } from './license.store';
 
-export const $licenseState = atom<Optional<LicenseState>>(null);
-export const $initialized = atom<boolean>(false);
 export const setInitialized = (): void => $initialized.set(true);
 
 $licenseState.listen((value) => {

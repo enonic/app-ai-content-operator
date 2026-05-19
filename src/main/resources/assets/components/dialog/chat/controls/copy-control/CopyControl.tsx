@@ -48,7 +48,7 @@ export default function CopyControl({ className, content, type }: Props): React.
       icon={copying ? Check : Copy}
       title={t('action.copy')}
       aria-label={t('action.copy')}
-      className={cn(COPY_CONTROL_NAME, copying && 'text-success', 'size-8', className)}
+      className={cn(COPY_CONTROL_NAME, copying && 'text-success size-8', className)}
       onClick={() => void handleCopy()}
     />
   );

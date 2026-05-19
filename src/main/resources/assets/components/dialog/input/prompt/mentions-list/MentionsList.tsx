@@ -7,9 +7,9 @@ import { Portal } from '@/ui/primitives/portal/Portal';
 
 import type { Mention } from '@/store/content';
 
-const MENTIONS_LIST_NAME = 'MentionsList';
+export const MENTIONS_LIST_NAME = 'MentionsList';
 
-type Props = {
+export type MentionsListProps = {
   className?: string;
   mentions: Mention[];
   selectedIndex: number;
@@ -17,13 +17,13 @@ type Props = {
   handleClick: (mention: Mention) => void;
 };
 
-export default function MentionsList({
+export const MentionsList = ({
   className,
   targetRect,
   mentions,
   selectedIndex,
   handleClick,
-}: Props): React.ReactNode {
+}: MentionsListProps): React.ReactNode => {
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const ref = useRef<HTMLDivElement | null>(null);
   const hasMentions = mentions.length > 0;
@@ -92,7 +92,6 @@ export default function MentionsList({
           data-component={MENTIONS_LIST_NAME}
           className={cn(
             MENTIONS_LIST_NAME,
-            'EnonicAiMentionsList',
             'absolute',
             !targetRect && 'hidden',
             'box-content',
@@ -143,4 +142,5 @@ export default function MentionsList({
       </div>
     </Portal>
   );
-}
+};
+MentionsList.displayName = MENTIONS_LIST_NAME;

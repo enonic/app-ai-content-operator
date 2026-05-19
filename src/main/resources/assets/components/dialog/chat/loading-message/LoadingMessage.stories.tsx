@@ -6,7 +6,6 @@ const meta = {
   title: 'ContentOperator/Dialog/Chat/LoadingMessage',
   component: LoadingMessage,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   decorators: [
     (Story) => (
       <div className="ai-content-operator text-main bg-surface-neutral w-100 rounded-lg p-4">

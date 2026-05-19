@@ -18,7 +18,7 @@ import {
 
 import type { AiPlugin, AiPluginContext, AiPluginInstance } from '@shared/ai-protocol';
 
-import AssistantDialog from './components/dialog/assistant-dialog/AssistantDialog';
+import { AssistantDialog } from './components/dialog/assistant-dialog/AssistantDialog';
 import './i18n/i18n';
 
 const VERSION = '1.1.0';

@@ -1,15 +1,19 @@
 import { cn } from '@enonic/ui';
+import { useStore } from '@nanostores/react';
 import { useTranslation } from 'react-i18next';
+
+import { $dialog } from '@/store/dialog';
 
 import PromptArea from '../prompt/prompt-area/PromptArea';
 
 const ASSISTANT_INPUT_NAME = 'AssistantInput';
 
-export type Props = {
+export type AssistantInputProps = {
   className?: string;
 };
 
-export default function AssistantInput({ className = '' }: Props): React.ReactNode {
+export const AssistantInput = ({ className = '' }: AssistantInputProps): React.ReactNode => {
+  const { dragging } = useStore($dialog, { keys: ['dragging'] });
   const { t } = useTranslation();
 
   return (
@@ -18,6 +22,7 @@ export default function AssistantInput({ className = '' }: Props): React.ReactNo
       className={cn(
         ASSISTANT_INPUT_NAME,
         'bg-surface-primary flex w-full flex-col gap-2.5 rounded-lg p-5',
+        dragging && 'bg-surface-primary/40',
       )}
     >
       <PromptArea className={className} />
@@ -32,4 +37,5 @@ export default function AssistantInput({ className = '' }: Props): React.ReactNo
       </p>
     </div>
   );
-}
+};
+AssistantInput.displayName = ASSISTANT_INPUT_NAME;

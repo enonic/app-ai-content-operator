@@ -1,17 +1,21 @@
 import { cn } from '@enonic/ui';
+import { useStore } from '@nanostores/react';
 
+import { $dialog } from '@/store/dialog';
 import { scrollToField } from '@/store/host';
 
 import type { UserChatMessage } from '@/store/content';
 
 const USER_MESSAGE_NAME = 'UserMessage';
 
-type Props = {
+export type UserMessageProps = {
   className?: string;
   message: UserChatMessage;
 };
 
-export default function UserMessage({ className, message }: Props): React.ReactNode {
+export const UserMessage = ({ className, message }: UserMessageProps): React.ReactNode => {
+  const { dragging } = useStore($dialog, { keys: ['dragging'] });
+
   const contextData = message.content.contextData;
 
   return (
@@ -19,7 +23,12 @@ export default function UserMessage({ className, message }: Props): React.ReactN
       data-component={USER_MESSAGE_NAME}
       className={cn(USER_MESSAGE_NAME, 'flex pl-10', className)}
     >
-      <article className="bg-surface-primary ml-auto max-w-4/5 rounded-xl px-5 py-2.5 text-sm leading-6 text-pretty">
+      <article
+        className={cn(
+          'bg-surface-primary ml-auto max-w-4/5 rounded-xl px-5 py-2.5 text-sm leading-6 text-pretty',
+          dragging && 'bg-surface-primary/40',
+        )}
+      >
         {contextData && (
           <button
             className="text-info-rev cursor-pointer truncate px-1 align-baseline"
@@ -33,4 +42,5 @@ export default function UserMessage({ className, message }: Props): React.ReactN
       </article>
     </div>
   );
-}
+};
+UserMessage.displayName = USER_MESSAGE_NAME;

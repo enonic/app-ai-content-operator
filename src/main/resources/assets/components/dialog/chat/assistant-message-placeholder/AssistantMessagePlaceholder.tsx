@@ -62,7 +62,7 @@ export default function AssistantMessagePlaceholder({ content }: Props): React.R
         className={cn(
           ASSISTANT_MESSAGE_PLACEHOLDER_NAME,
           'inline-flex items-center justify-start',
-          'min-h-8 rounded px-2 py-1.5',
+          'min-h-8 rounded -mx-2 px-2 py-1.5',
           'text-main bg-surface-neutral text-sm',
           'enabled:hover:bg-surface-neutral-hover',
           'disabled:opacity-50',

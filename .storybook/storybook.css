@@ -1,34 +1,12 @@
 @import 'tailwindcss';
-@import '@enonic/ui/tokens.css';
+@import 'tw-animate-css';
 @import '@enonic/ui/preset.css';
-@import '@enonic/ui/style.css';
 
 @source '../.storybook';
 @source '../src/main/resources/assets';
+@source '../node_modules/@enonic/ui/';
 
 @theme {
-  --color-enonic-gray-100: #f7f7f7;
-  --color-enonic-gray-400: #acacac;
-  --color-enonic-gray-500: #999999;
-  --color-enonic-gray-600: #777777;
-  --color-enonic-gray-700: #333333;
-
-  --color-enonic-green: #609e24;
-
-  --color-enonic-blue: #2c76e9;
-  --color-enonic-blue-400: #5a94ee;
-  --color-enonic-blue-500: #4279d9;
-  --color-enonic-blue-700: #1a56b8;
-  --color-enonic-blue-800: #123d8a;
-
-  --breakpoint-sm2: 720px;
-
-  --text-2xs: 0.625rem;
-  --text-header-title: 1.725rem;
-
-  --leading-initial: initial;
-  --leading-header-title: 2rem;
-
   --animate-slide-fade-in: slide-fade-in 300ms ease-in-out forwards;
   --animate-move-gradient: move-gradient 3000ms linear infinite;
 }
@@ -39,6 +17,7 @@
     padding-bottom: 0;
     padding-top: 0.5rem;
   }
+
   100% {
     opacity: 1;
     padding-bottom: 0.5rem;
@@ -50,18 +29,17 @@
   0% {
     background-position: 200% 0%;
   }
+
   100% {
     background-position: -200% 0%;
   }
 }
 
 @utility bg-gradient-middle {
-  background-image: linear-gradient(
-    90deg,
-    var(--tw-gradient-from) 25%,
-    var(--tw-gradient-to) 50%,
-    var(--tw-gradient-from) 75%
-  );
+  background-image: linear-gradient(90deg,
+      var(--tw-gradient-from) 25%,
+      var(--tw-gradient-to) 50%,
+      var(--tw-gradient-from) 75%);
 }
 
 @utility bg-gradient-fade-to-t {
@@ -91,6 +69,7 @@
 }
 
 @layer base {
+
   body,
   .docs-story {
     background-color: var(--color-surface-neutral);

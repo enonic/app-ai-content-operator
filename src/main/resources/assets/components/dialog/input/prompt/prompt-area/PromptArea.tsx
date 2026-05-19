@@ -21,7 +21,7 @@ import { useDeepMemo } from '../../../../../hooks/useDeepMemo';
 import { calcMentionSpec, insertMention, withMentions } from '../../../../../plugins/withMentions';
 import ContextControl from '../../../context/context-controls/ContextControls';
 import MainChatButton from '../../main-chat-button/MainChatButton';
-import MentionsList from '../mentions-list/MentionsList';
+import { MentionsList } from '../mentions-list/MentionsList';
 import PromptAreaElement from '../prompt-area-element/PromptAreaElement';
 
 const PROMPT_AREA_NAME = 'PromptArea';
@@ -189,7 +189,7 @@ export default function PromptArea({ className }: Props): React.ReactNode {
         'rounded-lg',
         'overflow-y-auto',
         hasContext &&
-          'before:bg-gradient-fade-to-t before:to-surface-primary before:absolute before:inset-0 before:top-px before:right-2 before:left-2 before:z-10 before:h-10 before:rounded-t-lg before:from-transparent before:content-[""]',
+        'before:bg-gradient-fade-to-t before:to-surface-primary before:absolute before:inset-0 before:top-px before:right-2 before:left-2 before:z-10 before:h-10 before:rounded-t-lg before:from-transparent before:content-[""]',
         className,
       )}
     >
@@ -227,7 +227,7 @@ export default function PromptArea({ className }: Props): React.ReactNode {
       <MainChatButton
         className="absolute right-1 bottom-1 z-20"
         disabled={isMainChatButtonDisabled}
-        type={isBusy ? 'stop' : 'send'}
+        kind={isBusy ? 'stop' : 'send'}
         clickHandler={isBusy ? () => sendStop(MessageRole.USER) : () => sendPromptAndClear(editor)}
       />
     </div>

@@ -9,7 +9,6 @@ const meta = {
   title: 'ContentOperator/Dialog/Chat/AssistantMessage',
   component: AssistantMessage,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   decorators: [
     (Story) => (
       <div className="ai-content-operator text-main bg-surface-neutral w-100 rounded-lg p-4">

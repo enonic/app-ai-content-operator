@@ -1,44 +1,44 @@
 import { cn, Dialog } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useDraggable } from '@/hooks/useDraggable';
 import useIsTouchDevice from '@/hooks/useIsTouchDevice';
 import { useResizable } from '@/hooks/useResizable';
 import { useShadowHost } from '@/shadow/ShadowHostContext';
-import { $dialog, setDialogHidden } from '@/store/dialog';
+import { $dialog, setDialogDragging, setDialogHidden } from '@/store/dialog';
 import { clearTarget } from '@/store/editor';
 import { mountWebSocket } from '@/store/websocket';
 
-import AssistantContent from '../assistant-content/AssistantContent';
-import AssistantHeader from '../header/assistant-header/AssistantHeader';
+import { AssistantContent } from '../assistant-content/AssistantContent';
+import { AssistantHeader } from '../header/assistant-header/AssistantHeader';
+import { MENTIONS_LIST_NAME } from '../input/prompt/mentions-list/MentionsList';
 
 const ASSISTANT_DIALOG_NAME = 'AssistantDialog';
 
-export type Props = {
+export type AssistantDialogProps = {
   className?: string;
 };
 
 const DRAGGING_BODY_CLASS = 'ai-content-operator-dragging';
 
-export default function AssistantDialog({ className = '' }: Props): React.ReactNode {
+export const AssistantDialog = ({ className = '' }: AssistantDialogProps): React.ReactNode => {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const shadowHost = useShadowHost();
 
-  const { hidden } = useStore($dialog, { keys: ['hidden'] });
+  const { hidden, dragging } = useStore($dialog, { keys: ['hidden', 'dragging'] });
 
-  const [dragging, setDragging] = useState(false);
   const isTouchDevice = useIsTouchDevice();
 
   const handleInteractionStart = (): void => {
-    setDragging(true);
+    setDialogDragging(true);
     clearTarget();
     document.body.classList.add(DRAGGING_BODY_CLASS);
   };
 
   const handleInteractionStop = (): void => {
-    setDragging(false);
+    setDialogDragging(false);
     document.body.classList.remove(DRAGGING_BODY_CLASS);
   };
 
@@ -66,8 +66,8 @@ export default function AssistantDialog({ className = '' }: Props): React.ReactN
         event.target instanceof HTMLElement &&
         contentRef.current &&
         !contentRef.current.contains(event.target) &&
-        !event.target.classList.contains('EnonicAiMentionsList') &&
-        !document.querySelector('.EnonicAiMentionsList')?.contains(event.target)
+        !event.target.classList.contains(MENTIONS_LIST_NAME) &&
+        !document.getElementsByClassName(MENTIONS_LIST_NAME)[0]?.contains(event.target)
       ) {
         clearTarget();
       }
@@ -90,20 +90,22 @@ export default function AssistantDialog({ className = '' }: Props): React.ReactN
         <Dialog.Content
           ref={contentRef}
           data-component={ASSISTANT_DIALOG_NAME}
+          onPointerDownOutside={(event) => event.preventDefault()}
+          onInteractOutside={(event) => event.preventDefault()}
           className={cn(
             ASSISTANT_DIALOG_NAME,
             'group/resize pointer-events-auto',
             'flex flex-col overflow-hidden',
-            'h-[100svh] max-h-[100svh] w-[100svw] max-w-[100svw]',
-            'min-[512px]:w-[32rem] min-[720px]:w-[40rem]',
-            '[@media(min-width:512px)_and_(min-height:512px)_and_(max-height:896px)]:h-[32rem]',
-            '[@media(min-width:512px)_and_(min-height:896px)]:h-[40rem]',
-            'leading-initial rounded-lg border px-5 pb-10 text-base shadow-xl',
-            dragging && 'opacity-80 select-none',
+            'h-svh max-h-svh w-svw max-w-svw',
+            'sm:w-lg md:w-xl lg:w-2xl',
+            'sm:h-128 md:h-144 lg:h-168',
+            'sm:max-h-[calc(100svh-4rem)]',
+            'leading-initial rounded-lg border p-5 pt-0 text-base shadow-xl',
+            dragging && 'bg-surface-neutral/20 backdrop-blur-xs select-none',
             className,
           )}
         >
-          <AssistantHeader dragging={dragging} onDragStart={onDragStart} />
+          <AssistantHeader onDragStart={onDragStart} />
           <AssistantContent />
           <button
             type="button"
@@ -127,4 +129,5 @@ export default function AssistantDialog({ className = '' }: Props): React.ReactN
       </Dialog.Portal>
     </Dialog.Root>
   );
-}
+};
+AssistantDialog.displayName = ASSISTANT_DIALOG_NAME;

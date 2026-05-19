@@ -20,7 +20,7 @@ export default function ElementItemContent({
     return (
       <div
         data-component={ELEMENT_ITEM_CONTENT_NAME}
-        className={cn(ELEMENT_ITEM_CONTENT_NAME, 'relative', 'col-span-2', className)}
+        className={cn(ELEMENT_ITEM_CONTENT_NAME, 'relative col-span-2', className)}
       >
         <LoaderCircle className="text-decorative size-5 animate-spin" />
       </div>

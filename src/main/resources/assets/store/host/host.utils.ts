@@ -8,11 +8,35 @@ import type { ApplyMessage, ContentData, Schema } from '@/store/content';
 import type {
   AiContentSnapshot,
   AiLanguageSnapshot,
+  AiPluginApi,
   AiPluginConfig,
+  AiPluginContext,
   AiSchemaSnapshot,
 } from '@shared/ai-protocol';
 
-import { getHostApi } from './host.store';
+import { $hostContext } from './host.store';
+
+export function setPluginContext(context: AiPluginContext): void {
+  $hostContext.set(context);
+}
+
+export function clearPluginContext(): void {
+  $hostContext.set(null);
+}
+
+// Throws if called before `mount` ran — that is a programming error, not a
+// runtime condition to handle.
+export function getHostApi(): AiPluginApi {
+  const context = $hostContext.get();
+  if (context == null) {
+    throw new Error('[ai.contentOperator] host API requested before mount');
+  }
+  return context.api;
+}
+
+export function getInitialContext(): AiPluginContext | null {
+  return $hostContext.get();
+}
 
 // Thin adapters: take a protocol snapshot/config and call the matching store
 // setter. They receive the typed payload directly — no CustomEvent unwrapping.

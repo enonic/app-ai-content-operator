@@ -29,7 +29,7 @@ export default function CommonItemContent({ className, content, last }: Props): 
             content={content}
             type="html"
           />
-          <article dangerouslySetInnerHTML={{ __html: content }} className="prose prose-sm" />
+          <article dangerouslySetInnerHTML={{ __html: content }} className="prose prose-sm pr-5" />
         </>
       ) : (
         <LoaderCircle className="text-decorative size-5 animate-spin" />

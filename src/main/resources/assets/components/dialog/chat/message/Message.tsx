@@ -4,7 +4,7 @@ import type { ChatMessage } from '@/store/content';
 
 import AssistantMessage from '../assistant-message/AssistantMessage';
 import SystemMessage from '../system-message/SystemMessage';
-import UserMessage from '../user-message/UserMessage';
+import { UserMessage } from '../user-message/UserMessage';
 
 type Props = {
   className?: string;

@@ -51,15 +51,8 @@ export const $language = computed(
   $content,
   ({ language }) => language?.tag ?? navigator?.language ?? 'en',
 );
+
 export const $contentPath = computed($content, ({ persisted }) => persisted?.contentPath ?? '');
-
-export const setLanguage = (language: Language): void => $content.setKey('language', language);
-
-export const getPersistedData = (): Optional<Readonly<ContentData>> => $content.get().persisted;
-
-export const setPersistedData = (data: ContentData): void => $content.setKey('persisted', data);
-
-export const setSchema = (schema: Schema): void => $content.setKey('schema', schema);
 
 export const $topic = computed($content, (data) => data.persisted?.topic ?? '');
 
@@ -90,9 +83,6 @@ const $helpTextMap = computed($allFormItemsWithPaths, (items) => {
   );
 });
 
-//
-//* CONTEXT
-//
 export const $inputsInContext = computed(
   [$context, $allFormItemsWithPaths],
   (context, allFormItems) => {
@@ -130,24 +120,6 @@ export const $mentions = computed([$inputsInContext], (inputs) => {
   return mentions;
 });
 
-$allFormItemsWithPaths.listen((allFormItemsWithPaths) => {
-  const context = $context.get();
-  if (!context) {
-    return;
-  }
-
-  const path = pathFromString(context);
-  const isValidContext = allFormItemsWithPaths.some((p) => pathsEqual(p, path));
-
-  if (!isValidContext) {
-    resetContext();
-  }
-});
-
-//
-//* FIELDS
-//
-
 export const $fieldDescriptors = computed($allFormItemsWithPaths, (allFormItems) => {
   return allFormItems
     .filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item))
@@ -158,6 +130,14 @@ export const $fieldDescriptors = computed($allFormItemsWithPaths, (allFormItems)
       type: getInputType(item),
     })) satisfies FieldDescriptor[];
 });
+
+export const setLanguage = (language: Language): void => $content.setKey('language', language);
+
+export const getPersistedData = (): Optional<Readonly<ContentData>> => $content.get().persisted;
+
+export const setPersistedData = (data: ContentData): void => $content.setKey('persisted', data);
+
+export const setSchema = (schema: Schema): void => $content.setKey('schema', schema);
 
 export function createFields(): Record<string, DataEntry> {
   const result: Record<string, DataEntry> = {};
@@ -185,3 +165,17 @@ export function findValueByPath(path: Path): Optional<PropertyValue> {
   const array = getPropertyArrayByPath(fields, path);
   return array?.values.at(path.elements.at(-1)?.index ?? 0);
 }
+
+$allFormItemsWithPaths.listen((allFormItemsWithPaths) => {
+  const context = $context.get();
+  if (!context) {
+    return;
+  }
+
+  const path = pathFromString(context);
+  const isValidContext = allFormItemsWithPaths.some((p) => pathsEqual(p, path));
+
+  if (!isValidContext) {
+    resetContext();
+  }
+});

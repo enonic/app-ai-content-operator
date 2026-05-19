@@ -6,7 +6,6 @@ const meta = {
   title: 'ContentOperator/Primitives/JukeIcon',
   component: JukeIcon,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
 } satisfies Meta<typeof JukeIcon>;
 
 export default meta;

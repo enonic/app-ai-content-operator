@@ -31,7 +31,7 @@ export default function AssistantMessage({ className, message, last }: Props): R
       data-component={ASSISTANT_MESSAGE_NAME}
       className={cn(
         ASSISTANT_MESSAGE_NAME,
-        'grid-cols-fit-1fr grid gap-x-4 py-2.5 pr-5 pl-2.5',
+        'grid-cols-fit-1fr grid gap-x-4',
         className,
       )}
     >
@@ -40,7 +40,7 @@ export default function AssistantMessage({ className, message, last }: Props): R
           <JukeIcon className="size-full" />
         </Avatar.Fallback>
       </Avatar.Root>
-      <article className="flex flex-1 flex-col gap-1 text-sm text-pretty">
+      <article className="flex flex-1 flex-col gap-5 text-sm text-pretty">
         {isGenerating ? (
           <AssistantMessagePlaceholder content={content} />
         ) : (

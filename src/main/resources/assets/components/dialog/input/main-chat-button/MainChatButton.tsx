@@ -7,11 +7,16 @@ const MAIN_CHAT_BUTTON_NAME = 'MainChatButton';
 type Props = {
   className?: string;
   disabled?: boolean;
-  type: 'send' | 'stop';
+  kind: 'send' | 'stop';
   clickHandler: () => void;
 };
 
-export default function MainChatButton({ className, type, clickHandler }: Props): React.ReactNode {
+export default function MainChatButton({
+  className,
+  disabled,
+  kind,
+  clickHandler,
+}: Props): React.ReactNode {
   const { t } = useTranslation();
 
   return (
@@ -20,10 +25,11 @@ export default function MainChatButton({ className, type, clickHandler }: Props)
       variant="text"
       size="lg"
       iconStrokeWidth={2}
-      icon={type === 'send' ? ArrowUp : Square}
+      icon={kind === 'send' ? ArrowUp : Square}
       title={t('action.send')}
       aria-label={t('action.send')}
-      className={cn(MAIN_CHAT_BUTTON_NAME, 'size-10', 'rounded-lg', className)}
+      className={cn(MAIN_CHAT_BUTTON_NAME, 'size-10 rounded-lg', className)}
+      disabled={disabled}
       onClick={clickHandler}
     />
   );

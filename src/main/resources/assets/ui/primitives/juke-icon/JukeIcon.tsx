@@ -7,7 +7,7 @@ export type JukeIconProps = {
   className?: string;
 };
 
-export function JukeIcon({ className }: JukeIconProps): React.ReactNode {
+export const JukeIcon = ({ className }: JukeIconProps): React.ReactNode => {
   const id = useId();
   const buttonFace = `${id}-buttonFace`;
   const outerRim = `${id}-outerRim`;

@@ -1,32 +1,32 @@
 import { IconButton, cn } from '@enonic/ui';
+import { useStore } from '@nanostores/react';
 import { SquarePen, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { clearChat } from '@/store/chat';
 import { resetContext } from '@/store/context';
-import { setDialogHidden } from '@/store/dialog';
+import { $dialog, setDialogHidden } from '@/store/dialog';
 
 const ASSISTANT_HEADER_NAME = 'AssistantHeader';
 
-type Props = {
-  dragging?: boolean;
+export type AssistantHeaderProps = {
   onDragStart?: (event: React.MouseEvent<HTMLElement> | React.TouchEvent<HTMLElement>) => void;
   className?: string;
 };
 
-export default function AssistantHeader({
-  dragging,
+export const AssistantHeader = ({
   onDragStart,
   className,
-}: Props): React.ReactNode {
+}: AssistantHeaderProps): React.ReactNode => {
   const { t } = useTranslation();
+  const { dragging } = useStore($dialog, { keys: ['dragging'] });
 
   return (
     <div
       data-component={ASSISTANT_HEADER_NAME}
       className={cn(
         ASSISTANT_HEADER_NAME,
-        'flex items-center justify-between gap-2.5 pt-5 pb-3',
+        'flex items-center justify-between gap-2.5 pt-5',
         className,
       )}
     >
@@ -69,4 +69,5 @@ export default function AssistantHeader({
       />
     </div>
   );
-}
+};
+AssistantHeader.displayName = ASSISTANT_HEADER_NAME;
