@@ -8,6 +8,7 @@ import {
   clearChat,
   updateModelMessage,
 } from '@/store/chat';
+import { setConfig } from '@/store/config';
 import { setPersistedData, setSchema } from '@/store/content';
 import { resetContext, setContext } from '@/store/context';
 import { $dialog } from '@/store/dialog';
@@ -33,13 +34,18 @@ const noopApi: AiPluginApi = {
 };
 
 const mockPluginContext: AiPluginContext = {
-  config: { wsServiceUrl: 'ws://mock', instructions: '' },
+  config: {
+    wsServiceUrl: 'ws://mock',
+    instructions: '',
+    user: { key: 'user:system:mikita', displayName: 'Mikita Taukachou' },
+  },
   initial: { content: null, schema: null, language: null },
   api: noopApi,
 };
 
 function seedMockStores(): () => void {
   setPluginContext(mockPluginContext);
+  setConfig(mockPluginContext.config);
 
   setSchema({
     name: 'mockSchema',
