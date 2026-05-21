@@ -1,4 +1,4 @@
-import { IconButton, cn } from '@enonic/ui';
+import { IconButton, Tooltip, cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
 import { SquarePen, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -30,19 +30,20 @@ export const AssistantHeader = ({
         className,
       )}
     >
-      <IconButton
-        className="z-10"
-        variant="filled"
-        shape="round"
-        size="lg"
-        icon={SquarePen}
-        title={t('action.newChat')}
-        aria-label={t('action.newChat')}
-        onClick={() => {
-          clearChat();
-          resetContext();
-        }}
-      />
+      <Tooltip delay={500} value={t('action.newChat')} asChild>
+        <IconButton
+          className="z-10"
+          variant="filled"
+          shape="round"
+          size="lg"
+          icon={SquarePen}
+          aria-label={t('action.newChat')}
+          onClick={() => {
+            clearChat();
+            resetContext();
+          }}
+        />
+      </Tooltip>
       <button
         type="button"
         tabIndex={-1}
@@ -58,18 +59,19 @@ export const AssistantHeader = ({
       >
         Juke AI
       </button>
-      <IconButton
-        className="z-10"
-        variant="filled"
-        shape="round"
-        size="lg"
-        icon={X}
-        title={t('action.close')}
-        aria-label={t('action.close')}
-        onClick={() => {
-          setDialogHidden(true);
-        }}
-      />
+      <Tooltip delay={500} value={t('action.close')} asChild>
+        <IconButton
+          className="z-10"
+          variant="filled"
+          shape="round"
+          size="lg"
+          icon={X}
+          aria-label={t('action.close')}
+          onClick={() => {
+            setDialogHidden(true);
+          }}
+        />
+      </Tooltip>
     </div>
   );
 };

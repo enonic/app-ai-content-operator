@@ -1,4 +1,4 @@
-import { IconButton, cn } from '@enonic/ui';
+import { IconButton, Tooltip, cn } from '@enonic/ui';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -36,22 +36,23 @@ export const CopyControl = ({ className, content, type }: CopyControlProps): Rea
 
   const handleCopy = async (): Promise<void> => {
     setCopying(true);
-    await Promise.all([copyContent(content, type), delay(300)]);
+    await Promise.all([copyContent(content, type), delay(500)]);
     setCopying(false);
   };
 
   return (
-    <IconButton
-      data-component={COPY_CONTROL_NAME}
-      variant="text"
-      size="sm"
-      iconSize="md"
-      icon={copying ? Check : Copy}
-      title={t('action.copy')}
-      aria-label={t('action.copy')}
-      className={cn(COPY_CONTROL_NAME, copying && 'text-success hover:text-success', className)}
-      onClick={() => void handleCopy()}
-    />
+    <Tooltip delay={500} value={t('action.copy')} asChild>
+      <IconButton
+        data-component={COPY_CONTROL_NAME}
+        variant="text"
+        size="sm"
+        iconSize="md"
+        icon={copying ? Check : Copy}
+        aria-label={t('action.copy')}
+        className={cn(COPY_CONTROL_NAME, copying && 'text-success hover:text-success', className)}
+        onClick={() => void handleCopy()}
+      />
+    </Tooltip>
   );
 };
 CopyControl.displayName = COPY_CONTROL_NAME;

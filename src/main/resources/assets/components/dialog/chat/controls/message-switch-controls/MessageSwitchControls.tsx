@@ -1,4 +1,4 @@
-import { IconButton, cn } from '@enonic/ui';
+import { IconButton, Tooltip, cn } from '@enonic/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -30,18 +30,18 @@ export const MessageSwitchControls = ({
       data-component={MESSAGE_SWITCH_CONTROLS_NAME}
       className={cn(MESSAGE_SWITCH_CONTROLS_NAME, 'flex items-center', className)}
     >
-      <IconButton
-        variant="text"
-        size="sm"
-        icon={ChevronLeft}
-        title={t('showPreviousMessage')}
-        aria-label={t('showPreviousMessage')}
-        className="disabled:opacity-25"
-        disabled={isFirst}
-        onClick={() => {
-          markMessageAsActive(ids.at(selectedIndex - 1));
-        }}
-      />
+      <Tooltip delay={500} value={t('action.showPreviousMessage')} asChild>
+        <IconButton
+          variant="text"
+          size="sm"
+          icon={ChevronLeft}
+          aria-label={t('action.showPreviousMessage')}
+          disabled={isFirst}
+          onClick={() => {
+            markMessageAsActive(ids.at(selectedIndex - 1));
+          }}
+        />
+      </Tooltip>
       <span
         className={cn(
           'flex items-center justify-center',
@@ -51,18 +51,18 @@ export const MessageSwitchControls = ({
       >
         {text}
       </span>
-      <IconButton
-        variant="text"
-        size="sm"
-        icon={ChevronRight}
-        title={t('action.showNextMessage')}
-        aria-label={t('action.showNextMessage')}
-        className="disabled:opacity-25"
-        disabled={isLast}
-        onClick={() => {
-          markMessageAsActive(ids.at(selectedIndex + 1));
-        }}
-      />
+      <Tooltip delay={500} value={t('action.showNextMessage')} asChild>
+        <IconButton
+          variant="text"
+          size="sm"
+          icon={ChevronRight}
+          aria-label={t('action.showNextMessage')}
+          disabled={isLast}
+          onClick={() => {
+            markMessageAsActive(ids.at(selectedIndex + 1));
+          }}
+        />
+      </Tooltip>
     </div>
   );
 };

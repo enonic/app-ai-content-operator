@@ -44,7 +44,6 @@ export const TopicItem = ({
     >
       <button
         className="text-info block cursor-pointer truncate px-1 text-xs leading-7"
-        title={topic}
         onClick={() => scrollToField(SPECIAL_NAMES.topic)}
       >
         {topic}

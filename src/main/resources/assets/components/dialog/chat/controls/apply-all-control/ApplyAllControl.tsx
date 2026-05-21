@@ -35,7 +35,7 @@ export const ApplyAllControl = ({ className, content }: ApplyAllControlProps): R
     const items = extractItems(content);
     applyResults(items);
 
-    void delay(300).then(() => {
+    void delay(500).then(() => {
       setApplying(false);
     });
   }, [content]);

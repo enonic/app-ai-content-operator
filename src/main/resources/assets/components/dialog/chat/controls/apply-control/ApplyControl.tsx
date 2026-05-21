@@ -1,4 +1,4 @@
-import { IconButton, cn } from '@enonic/ui';
+import { IconButton, Tooltip, cn } from '@enonic/ui';
 import { Astroid, Check } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,23 +21,24 @@ export const ApplyControl = ({ className, name, content }: ApplyControlProps): R
   const handleApply = useCallback(() => {
     setApplying(true);
     applyResults([{ path: name, text: content }]);
-    void delay(300).then(() => {
+    void delay(500).then(() => {
       setApplying(false);
     });
   }, [name, content]);
 
   return (
-    <IconButton
-      data-component={APPLY_CONTROL_NAME}
-      variant="text"
-      size="sm"
-      iconSize="md"
-      icon={applying ? Check : Astroid}
-      title={t('action.insert')}
-      aria-label={t('action.insert')}
-      className={cn(APPLY_CONTROL_NAME, applying && 'text-success hover:text-success', className)}
-      onClick={handleApply}
-    />
+    <Tooltip delay={500} value={t('action.insert')} asChild>
+      <IconButton
+        data-component={APPLY_CONTROL_NAME}
+        variant="text"
+        size="sm"
+        iconSize="md"
+        icon={applying ? Check : Astroid}
+        aria-label={t('action.insert')}
+        className={cn(APPLY_CONTROL_NAME, applying && 'text-success hover:text-success', className)}
+        onClick={handleApply}
+      />
+    </Tooltip>
   );
 };
 ApplyControl.displayName = APPLY_CONTROL_NAME;
