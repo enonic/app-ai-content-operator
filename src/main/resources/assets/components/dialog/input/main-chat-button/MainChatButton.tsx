@@ -1,4 +1,4 @@
-import { IconButton, cn } from '@enonic/ui';
+import { IconButton, Tooltip, cn } from '@enonic/ui';
 import { ArrowUp, Square } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,19 +21,20 @@ export const MainChatButton = ({
   const label = t(kind === 'send' ? 'action.send' : 'action.stop');
 
   return (
-    <IconButton
-      data-component={MAIN_CHAT_BUTTON_NAME}
-      variant="text"
-      size="lg"
-      iconSize={kind === 'send' ? 'lg' : 'md'}
-      iconStrokeWidth={2}
-      icon={kind === 'send' ? ArrowUp : Square}
-      title={label}
-      aria-label={label}
-      className={cn(MAIN_CHAT_BUTTON_NAME, 'size-10 rounded-md', className)}
-      disabled={disabled}
-      onClick={clickHandler}
-    />
+    <Tooltip delay={500} value={label} asChild>
+      <IconButton
+        data-component={MAIN_CHAT_BUTTON_NAME}
+        variant="text"
+        size="lg"
+        iconSize={kind === 'send' ? 'lg' : 'md'}
+        iconStrokeWidth={2}
+        icon={kind === 'send' ? ArrowUp : Square}
+        aria-label={label}
+        className={cn(MAIN_CHAT_BUTTON_NAME, 'size-10 rounded-md', className)}
+        disabled={disabled}
+        onClick={clickHandler}
+      />
+    </Tooltip>
   );
 };
 MainChatButton.displayName = MAIN_CHAT_BUTTON_NAME;

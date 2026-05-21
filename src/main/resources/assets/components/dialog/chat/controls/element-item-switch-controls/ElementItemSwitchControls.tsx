@@ -1,4 +1,4 @@
-import { IconButton, cn } from '@enonic/ui';
+import { IconButton, Tooltip, cn } from '@enonic/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -31,41 +31,43 @@ export const ElementItemSwitchControls = ({
   return (
     <div
       data-component={ELEMENT_ITEM_SWITCH_CONTROLS_NAME}
-      className={cn(ELEMENT_ITEM_SWITCH_CONTROLS_NAME, 'flex items-center', className)}
+      className={cn(ELEMENT_ITEM_SWITCH_CONTROLS_NAME, 'flex items-center h-7', className)}
     >
-      <IconButton
-        variant="text"
-        size="sm"
-        icon={ChevronLeft}
-        title={t('showPreviousOption')}
-        aria-label={t('showPreviousOption')}
-        className="h-auto w-4 disabled:opacity-25"
-        disabled={isFirst}
-        onClick={() => {
-          changeModelMessageSelectedIndex(messageId, name, selectedIndex - 1);
-        }}
-      />
+      <Tooltip delay={500} value={t('action.showPreviousOption')} asChild>
+        <IconButton
+          variant="text"
+          size="sm"
+          icon={ChevronLeft}
+          aria-label={t('action.showPreviousOption')}
+          className="h-7 w-6"
+          disabled={isFirst}
+          onClick={() => {
+            changeModelMessageSelectedIndex(messageId, name, selectedIndex - 1);
+          }}
+        />
+      </Tooltip>
       <span
         className={cn(
           'flex items-center justify-center',
-          'h-6 w-6',
+          'h-6 min-w-6 tabular-nums',
           'text-subtle cursor-default text-xs',
         )}
       >
         {text}
       </span>
-      <IconButton
-        variant="text"
-        size="sm"
-        icon={ChevronRight}
-        title={t('action.showNextOption')}
-        aria-label={t('action.showNextOption')}
-        className="h-auto w-4 disabled:opacity-25"
-        disabled={isLast}
-        onClick={() => {
-          changeModelMessageSelectedIndex(messageId, name, selectedIndex + 1);
-        }}
-      />
+      <Tooltip delay={500} value={t('action.showNextOption')} asChild>
+        <IconButton
+          variant="text"
+          size="sm"
+          icon={ChevronRight}
+          aria-label={t('action.showNextOption')}
+          className="h-7 w-6"
+          disabled={isLast}
+          onClick={() => {
+            changeModelMessageSelectedIndex(messageId, name, selectedIndex + 1);
+          }}
+        />
+      </Tooltip>
     </div>
   );
 };

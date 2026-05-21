@@ -68,7 +68,7 @@ export const PromptArea = ({ className }: PromptAreaProps): React.ReactNode => {
 
   const [editor] = useState(() => withMentions(withHistory(withReact(createEditor()))));
   const [rect, setRect] = useState<DOMRect | undefined>();
-  const { hidden } = useStore($dialog, { keys: ['hidden'] });
+  const { dragging, hidden } = useStore($dialog);
   const target = useStore($target);
 
   const [index, setIndex] = useState(0);
@@ -179,7 +179,7 @@ export const PromptArea = ({ className }: PromptAreaProps): React.ReactNode => {
         'relative',
         'flex grow flex-col items-center gap-2.5',
         'w-full',
-        'bg-surface-neutral',
+        dragging ? 'bg-surface-neutral/40' : 'bg-surface-neutral',
         'rounded-lg',
         'overflow-y-auto',
         className,
