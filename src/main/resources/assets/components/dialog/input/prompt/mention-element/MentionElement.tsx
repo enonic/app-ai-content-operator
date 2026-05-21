@@ -1,4 +1,4 @@
-import { cn } from '@enonic/ui';
+import { Button, cn } from '@enonic/ui';
 import { useFocused, useSelected } from 'slate-react';
 
 import { scrollToField } from '@/store/host';
@@ -12,6 +12,7 @@ export type MentionElementProps = {
   className?: string;
   children?: React.ReactNode;
   element: Slate.MentionElement;
+  'data-component'?: string;
 };
 
 export const MentionElement = ({
@@ -19,6 +20,7 @@ export const MentionElement = ({
   className,
   children,
   element,
+  'data-component': dataComponent = MENTION_ELEMENT_NAME,
 }: MentionElementProps): React.ReactNode => {
   const selected = useSelected();
   const focused = useFocused();
@@ -26,32 +28,32 @@ export const MentionElement = ({
   const isAllMention = element.path === MENTION_ALL.path;
 
   return (
-    <button
+    <Button
       {...attributes}
-      data-component={MENTION_ELEMENT_NAME}
+      data-component={dataComponent}
       data-slate-node="mention"
-      contentEditable={false}
+      variant="filled"
+      size="sm"
       className={cn(
         MENTION_ELEMENT_NAME,
-        'inline-flex',
-        'px-1 py-px',
-        'align-baseline font-semibold',
-        'rounded',
-        'border border-bdr-subtle',
+        "px-1.5 h-5 font-semibold",
+        "bg-transparent",
         !isAllMention && 'text-info',
-        isAllMention ? 'cursor-default' : 'cursor-pointer',
+        isAllMention && 'cursor-default',
+        'border border-bdr-subtle',
         selected && focused && 'outline outline-info-rev border-info-rev',
         className,
       )}
-      tabIndex={-1}
-      title={element.title}
       onClick={isAllMention ? undefined : () => scrollToField(element.path)}
+      tabIndex={-1}
     >
-      <span className="mention text-xs">
+      <span className="mention text-xs truncate">
         {element.character}
         {children}
       </span>
-    </button>
+    </Button>
+
+
   );
 };
 MentionElement.displayName = MENTION_ELEMENT_NAME;

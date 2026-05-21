@@ -33,11 +33,11 @@ export const UserMessage = ({ className, message }: UserMessageProps): React.Rea
           <Button
             variant="filled"
             size="sm"
-            className="text-sm text-info cursor-pointer truncate px-1.5 h-5 -my-0.5 align-baseline font-semibold"
-            title={contextData.title}
+            className="text-info px-1.5 -ml-1.5 h-5 font-semibold "
             onClick={() => scrollToField(contextData.name)}
+            tabIndex={-1}
           >
-            <span className="text-xs">{contextData.displayName}</span>
+            <span className="text-xs truncate">{contextData.displayName}</span>
           </Button>
         )}
         {message.content.node}

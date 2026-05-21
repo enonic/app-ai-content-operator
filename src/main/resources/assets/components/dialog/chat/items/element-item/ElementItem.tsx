@@ -27,7 +27,7 @@ export const ElementItem = ({
   value,
   last,
 }: ElementItemProps): React.ReactNode => {
-  const { name, label, displayName, type } = descriptor;
+  const { name, label, type } = descriptor;
   const content = value && pickValue(value);
 
   return (
@@ -42,7 +42,6 @@ export const ElementItem = ({
       <Button
         size="sm"
         className="text-info -ml-1 block h-7 cursor-pointer truncate px-1 leading-7 font-semibold"
-        title={displayName}
         onClick={() => scrollToField(name)}
       >
         {label}
