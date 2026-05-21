@@ -40,13 +40,13 @@ export const AssistantMessage = ({
           <JukeIcon className="size-full" />
         </Avatar.Fallback>
       </Avatar.Root>
-      <article className="flex flex-1 flex-col gap-5 text-sm text-pretty">
+      <article className="flex flex-1 flex-col text-sm text-pretty">
         {isGenerating ? (
           <AssistantMessagePlaceholder content={content} />
         ) : (
           <>
             <AssistantMessageList messageId={messageId} content={content} last={last} />
-            <ResponseControls message={message} last={last} />
+            <ResponseControls className='mt-5' message={message} last={last} />
           </>
         )}
       </article>
