@@ -1,6 +1,6 @@
-import { cn } from '@enonic/ui';
+import { Button, cn } from '@enonic/ui';
 import { useStore } from '@nanostores/react';
-import { ChevronDown, ChevronRight, LoaderCircle } from 'lucide-react';
+import { ChevronRight, LoaderCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -63,20 +63,19 @@ export const AssistantMessagePlaceholder = ({
         onClick={() => setExpanded(!expanded)}
         className={cn(
           ASSISTANT_MESSAGE_PLACEHOLDER_NAME,
-          'inline-flex items-center justify-start',
+          'inline-flex items-center justify-start gap-1',
           '-mx-2 min-h-8 rounded px-2 py-1.5',
           'text-main bg-surface-neutral text-sm',
-          'enabled:hover:bg-surface-neutral-hover',
+          'enabled:hover:bg-surface-neutral-hover enabled:cursor-pointer',
           'disabled:opacity-50',
           !hasFields && 'enabled:hover:bg-surface-neutral enabled:hover:cursor-default',
         )}
       >
-        {hasFields &&
-          (expanded ? (
-            <ChevronDown className="size-3 shrink-0" />
-          ) : (
-            <ChevronRight className="size-3 shrink-0" />
-          ))}
+        {hasFields && (
+          <ChevronRight
+            className={cn('size-3 shrink-0 transition-transform', expanded && 'rotate-90')}
+          />
+        )}
         <span className="bg-gradient-middle bg-text-gradient-size to-muted animate-move-gradient from-main bg-clip-text text-left text-sm text-transparent">
           {t(getPlaceholderMessage(count), {
             name: analyzedFieldsDescriptors.at(0)?.label,
@@ -84,17 +83,19 @@ export const AssistantMessagePlaceholder = ({
           })}
         </span>
       </button>
-      <ul className={cn('flex flex-col gap-1 pl-6', !expanded && 'hidden')}>
+      <ul className={cn('flex flex-col gap-1 pl-6 mt-1', !expanded && 'hidden')}>
         {analyzedFieldsDescriptors.map(({ name, label, displayName }) => (
-          <li key={name} className="flex items-center gap-0.5">
-            <button
-              className="text-info inline-flex cursor-pointer items-center truncate rounded px-1 align-baseline font-semibold"
+          <li key={name}>
+            <Button
+              size="sm"
+              endIcon={LoaderCircle}
+              endIconClassName="text-subtle size-3 animate-spin"
+              className="text-info flex h-6 leading-6 px-2 -ml-2 text-sm max-w-full truncate"
               title={displayName}
               onClick={() => scrollToField(name)}
             >
-              <span className="text-xs">{label}</span>
-            </button>
-            <LoaderCircle className="text-subtle size-4 animate-spin" />
+              <span className="truncate">{label}</span>
+            </Button>
           </li>
         ))}
       </ul>

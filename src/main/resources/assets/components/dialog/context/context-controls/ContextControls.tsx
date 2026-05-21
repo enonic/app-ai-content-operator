@@ -23,11 +23,11 @@ function createItems(paths: Path[]): React.ReactNode[] {
     return isLast
       ? [<ContextItem key={`${key}-item-last`} path={path} last={isLast} />]
       : [
-          <ContextItem key={`${key}-item`} path={path} last={isLast} />,
-          <span key={`${key}-sep`} className="text-subtle shrink-0 cursor-default select-none">
-            /
-          </span>,
-        ];
+        <ContextItem key={`${key}-item`} path={path} last={isLast} />,
+        <span key={`${key}-sep`} className="text-subtle shrink-0 cursor-default select-none">
+          /
+        </span>,
+      ];
   });
 }
 
@@ -41,7 +41,7 @@ export const ContextControls = ({ className }: ContextControlsProps): React.Reac
       data-component={CONTEXT_CONTROLS_NAME}
       className={cn(
         CONTEXT_CONTROLS_NAME,
-        'flex items-center justify-start gap-0.5',
+        'flex items-center justify-start gap-2',
         'text-xs',
         'overflow-hidden',
         'transition-all duration-150 ease-in-out',
@@ -54,12 +54,13 @@ export const ContextControls = ({ className }: ContextControlsProps): React.Reac
         variant="filled"
         size="sm"
         endIcon={X}
+        endIconClassName='shrink-0'
         iconSize="md"
         aria-label={t('action.resetContext')}
-        className="ml-auto"
+        className="ml-auto h-7"
         onClick={resetContext}
       >
-        {t('action.resetContext')}
+        <span className="truncate">{t('action.resetContext')}</span>
       </Button>
     </div>
   );
