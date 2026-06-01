@@ -65,23 +65,23 @@ importers:
         version: 1.4.0
     devDependencies:
       '@enonic-types/core':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: 8.0.0-RC2
+        version: 8.0.0-RC2
       '@enonic-types/global':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: 8.0.0-RC2
+        version: 8.0.0-RC2
       '@enonic-types/lib-auth':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: 8.0.0-RC2
+        version: 8.0.0-RC2
       '@enonic-types/lib-task':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: 8.0.0-RC2
+        version: 8.0.0-RC2
       '@enonic-types/lib-websocket':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: 8.0.0-RC2
+        version: 8.0.0-RC2
       '@enonic/ui':
-        specifier: ~1.0.0-beta.5
-        version: 1.0.0-beta.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.4))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(lucide-react@1.16.0(react@19.2.4))(preact@10.29.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tw-animate-css@1.4.0)
+        specifier: ~1.0.0-beta.9
+        version: 1.0.0-beta.9(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.4))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(lucide-react@1.16.0(react@19.2.4))(preact@10.29.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tw-animate-css@1.4.0)
       '@google/genai':
         specifier: ~2.4.0
         version: 2.4.0
@@ -312,24 +312,24 @@ packages:
     resolution: {integrity: sha512-QxULHAm7cNu72w97JUNCBFODFaXpbDg+dP8b/oWFAZ2MTRppA3U00Y2L1HqaS4J6yBqxwa/Y3nMBaxVKbB/NsA==}
     engines: {node: '>=20.19.0'}
 
-  '@enonic-types/core@8.0.0-B5':
-    resolution: {integrity: sha512-kN17TYr6pNqqggdo4/k5sMLoDPJ2SYM6DjXJq1u3jOMshr1tjOl90wvcefg65leBwLcvyqlrdcSmYdiB2G3rCQ==}
+  '@enonic-types/core@8.0.0-RC2':
+    resolution: {integrity: sha512-zE10jGrjUTlqAzmxZ7QvQkIO64e2yvMNRv15YusvmWT2v0a5+zpPIee1CXm0oQEpeRFf/tDdfmMA9r9ylDpMjw==}
 
-  '@enonic-types/global@8.0.0-B5':
-    resolution: {integrity: sha512-Nm4PFuEV8mvsdnOTl1e5qQ3uemaJHXv4lJTZmhWR98CLne+TT0dffuXkSXM27repDgT4w142YwH2yJjx23YOvg==}
+  '@enonic-types/global@8.0.0-RC2':
+    resolution: {integrity: sha512-K9Ly01ZWk6R9LPxhRMmSsKyVc+xBFhhCXVeSgPs8k77E1cXJwyFWPtW9m0w6o0bKM9OC9Su2jGRfetZVyoVvrg==}
 
-  '@enonic-types/lib-auth@8.0.0-B5':
-    resolution: {integrity: sha512-Syt2Wq999hQTu7leoiOXDbUa/c7D/RC/x/TbLlN4e53k9C6BPZfay7Myg97ePWGtEpoiCyauIwbRidRCOZPRlg==}
+  '@enonic-types/lib-auth@8.0.0-RC2':
+    resolution: {integrity: sha512-5oWwJQ1SEcuJoaeasenIUXSMMo0BHmy3JrPs9hDzA/W+kj9e8meJvnc6N2Axas2hVwrQWUS+S5rdtxzQKTigww==}
 
-  '@enonic-types/lib-task@8.0.0-B5':
-    resolution: {integrity: sha512-ubK5XCjg9pkiKHXs/ZCL+236A61yEbgrfCwe2UhXHRx5KmooJgJcUecJmVs3QNuB3CwOYuXcVr3M9hobznD1nw==}
+  '@enonic-types/lib-task@8.0.0-RC2':
+    resolution: {integrity: sha512-BdtKFqlOY5eMVflh9U/207wYCe8J7/9enPGRl8NwVHbHtPGce/UpgRmeKXGjGgfYEX+gyqVQuatrRJKJpRX9Ig==}
 
-  '@enonic-types/lib-websocket@8.0.0-B5':
-    resolution: {integrity: sha512-+FDlq2vlhjB0pOsxaN+iFCpHE4o5wjkNCnK4onb0dtVFdLG42cA8YB77gcHKXKZvdaEo6pWyg+BdpNnTLpkHQw==}
+  '@enonic-types/lib-websocket@8.0.0-RC2':
+    resolution: {integrity: sha512-LhsWbZj17pjpoFOSaWbk2GiCHe9fQsx4GYVZvOwKU+lK9c0oSl9CHxTmEGBCtiMnDjac5lxr0wCbibhsUAkNSA==}
 
-  '@enonic/ui@1.0.0-beta.5':
-    resolution: {integrity: sha512-1CBPbC8vERGWZaeovqf57W5MgEbL9/MI3cEp6nFagzK85ekbtm2gqlai9wxwIcEfPONYOQMrIbQMumNaTSXj5A==}
-    engines: {node: '>=24.11.1', npm: '>=11.6.2', pnpm: '>=10.28.0'}
+  '@enonic/ui@1.0.0-beta.9':
+    resolution: {integrity: sha512-1z7q+yuDTJ7MnwGC3CLlBmu1lcqEY/A+k3OUl9Qt8ko+cJxKU9ELxkBebXOJzTt2nWXgHBmH7PBw0f0/Qapqkw==}
+    engines: {node: '>=24.16.0', pnpm: '>=11.1.1'}
     peerDependencies:
       '@radix-ui/react-slot': ^1.2.0
       focus-trap-react: ^11.0.0
@@ -2808,23 +2808,23 @@ snapshots:
 
   '@csstools/css-tokenizer@4.0.0': {}
 
-  '@enonic-types/core@8.0.0-B5': {}
+  '@enonic-types/core@8.0.0-RC2': {}
 
-  '@enonic-types/global@8.0.0-B5':
+  '@enonic-types/global@8.0.0-RC2':
     dependencies:
-      '@enonic-types/core': 8.0.0-B5
+      '@enonic-types/core': 8.0.0-RC2
 
-  '@enonic-types/lib-auth@8.0.0-B5':
+  '@enonic-types/lib-auth@8.0.0-RC2':
     dependencies:
-      '@enonic-types/core': 8.0.0-B5
+      '@enonic-types/core': 8.0.0-RC2
 
-  '@enonic-types/lib-task@8.0.0-B5':
+  '@enonic-types/lib-task@8.0.0-RC2':
     dependencies:
-      '@enonic-types/core': 8.0.0-B5
+      '@enonic-types/core': 8.0.0-RC2
 
-  '@enonic-types/lib-websocket@8.0.0-B5': {}
+  '@enonic-types/lib-websocket@8.0.0-RC2': {}
 
-  '@enonic/ui@1.0.0-beta.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.4))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(lucide-react@1.16.0(react@19.2.4))(preact@10.29.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tw-animate-css@1.4.0)':
+  '@enonic/ui@1.0.0-beta.9(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.4))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(lucide-react@1.16.0(react@19.2.4))(preact@10.29.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tw-animate-css@1.4.0)':
     dependencies:
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.14)(react@19.2.4)
       class-variance-authority: 0.7.1
