@@ -15,7 +15,6 @@ jobs:
           repoPassword: ${{ secrets.ARTIFACTORY_PASSWORD }}
           codecovToken: ${{ secrets.CODECOV_TOKEN }}
           releaseBranch: |
-            master
             1.x
             2.x
 
