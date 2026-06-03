@@ -95,6 +95,8 @@ export const AssistantDialog = ({ className = '' }: AssistantDialogProps): React
           ref={contentRef}
           data-component={ASSISTANT_DIALOG_NAME}
           modal={false}
+          // ! PromptArea owns focus-on-open; let Radix's autofocus not contend for it
+          onOpenAutoFocus={(event) => event.preventDefault()}
           className={cn(
             ASSISTANT_DIALOG_NAME,
             'group/resize',
