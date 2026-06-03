@@ -3,8 +3,8 @@ import { useStore } from '@nanostores/react';
 import { useEffect, useRef } from 'react';
 
 import { $history } from '@/store/chat';
-import { $initialized, $licenseState } from '@/store/license';
-import { $busyAnalyzing, $websocket } from '@/store/websocket';
+import { $initialized } from '@/store/license';
+import { $busyAnalyzing } from '@/store/websocket';
 
 import type { ChatMessage } from '@/store/content';
 
@@ -38,10 +38,8 @@ function createMessages(history: ChatMessage[], isLoading: boolean): React.React
 
 export const ChatThread = ({ className = '' }: ChatThreadProps): React.ReactNode => {
   const isInitialized = useStore($initialized);
-  const licenseState = useStore($licenseState);
-  const isConnecting = useStore($websocket, { keys: ['state'] }).state === 'connecting';
   const isBusyAnalyzing = useStore($busyAnalyzing);
-  const isLoading = !isInitialized || !licenseState || isConnecting || isBusyAnalyzing;
+  const isLoading = !isInitialized || isBusyAnalyzing;
 
   const history = useStore($history);
   const count = history.length;
