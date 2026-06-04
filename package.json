@@ -70,7 +70,7 @@
     "@types/lodash.isequal": "~4.5.8",
     "@types/lodash.merge": "~4.6.9",
     "@types/node": "~25.8.0",
-    "@types/react": "~19.2.14",
+    "@types/react": "~19.2.16",
     "@types/react-dom": "~19.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260603.1",
     "esbuild": "~0.28.0",
