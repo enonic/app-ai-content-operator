@@ -71,7 +71,7 @@ importers:
         specifier: ^8
         version: 8.0.0
       '@enonic-types/lib-auth':
-        specifier: ^8
+        specifier: 8.0.0
         version: 8.0.0
       '@enonic-types/lib-task':
         specifier: ^8
