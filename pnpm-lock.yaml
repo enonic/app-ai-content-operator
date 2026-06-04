@@ -92,8 +92,8 @@ importers:
         specifier: ~10.3.6
         version: 10.3.6(@types/react@19.2.15)(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(storybook@10.4.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite-plus@0.1.22(@types/node@25.8.0)(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(jiti@2.7.0)(jsdom@29.1.1)(typescript@6.0.3)))
       '@storybook/addon-themes':
-        specifier: ~10.4.0
-        version: 10.4.1(storybook@10.4.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite-plus@0.1.22(@types/node@25.8.0)(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(jiti@2.7.0)(jsdom@29.1.1)(typescript@6.0.3)))
+        specifier: ~10.4.2
+        version: 10.4.2(storybook@10.4.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite-plus@0.1.22(@types/node@25.8.0)(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(jiti@2.7.0)(jsdom@29.1.1)(typescript@6.0.3)))
       '@storybook/preact-vite':
         specifier: ~10.3.6
         version: 10.3.6(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(preact@10.29.2)(storybook@10.4.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite-plus@0.1.22(@types/node@25.8.0)(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(jiti@2.7.0)(jsdom@29.1.1)(typescript@6.0.3)))
@@ -1346,10 +1346,10 @@ packages:
     peerDependencies:
       storybook: ^10.3.6
 
-  '@storybook/addon-themes@10.4.1':
-    resolution: {integrity: sha512-nxNskZwpgptCUWyci+jiM5IrKY6xSaTpv3xzgkL6NCU+5PyCxyp0Z6jE8NDvew9jolzOC9pBhGJAW26A/jbFqg==}
+  '@storybook/addon-themes@10.4.2':
+    resolution: {integrity: sha512-e5rP/RLujp06wmO75njxnfi3ndOBbgHIXceAsuN870BVh7D7iGx+8bwslIWy+FwRBYsCMCnWk+d25Zp4ai3p4w==}
     peerDependencies:
-      storybook: ^10.4.1
+      storybook: ^10.4.2
 
   '@storybook/builder-vite@10.3.6':
     resolution: {integrity: sha512-gpvR/sE4BcrFtmQZ+Ker7zD23oQzoVeqD9nF6cK6yzY+Q0svJXyX2EPmFG4y+EwygD5/vNzDpP84gGMut8VRwg==}
@@ -3598,7 +3598,7 @@ snapshots:
       - vite
       - webpack
 
-  '@storybook/addon-themes@10.4.1(storybook@10.4.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite-plus@0.1.22(@types/node@25.8.0)(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(jiti@2.7.0)(jsdom@29.1.1)(typescript@6.0.3)))':
+  '@storybook/addon-themes@10.4.2(storybook@10.4.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite-plus@0.1.22(@types/node@25.8.0)(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(jiti@2.7.0)(jsdom@29.1.1)(typescript@6.0.3)))':
     dependencies:
       storybook: 10.4.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vite-plus@0.1.22(@types/node@25.8.0)(@voidzero-dev/vite-plus-core@0.1.22(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(typescript@6.0.3))(esbuild@0.28.0)(jiti@2.7.0)(jsdom@29.1.1)(typescript@6.0.3))
       ts-dedent: 2.2.0
