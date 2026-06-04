@@ -65,8 +65,8 @@ importers:
         version: 1.4.0
     devDependencies:
       '@enonic-types/core':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: 8.0.0
+        version: 8.0.0
       '@enonic-types/global':
         specifier: 8.0.0-B5
         version: 8.0.0-B5
@@ -320,6 +320,9 @@ packages:
 
   '@emnapi/wasi-threads@1.2.1':
     resolution: {integrity: sha512-uTII7OYF+/Mes/MrcIOYp5yOtSMLBWSIoLPpcgwipoiKbli6k322tcoFsxoIIxPDqW01SQGAgko4EzZi2BNv2w==}
+
+  '@enonic-types/core@8.0.0':
+    resolution: {integrity: sha512-t93pLDJbyoJGRJ1Qlm+EWpRyClRo2sA5cn+mDS9zoN5687zqroUr2+kAlX0FarHx5bwnRqZq8Pdf1nRnEaVDNw==}
 
   '@enonic-types/core@8.0.0-B5':
     resolution: {integrity: sha512-kN17TYr6pNqqggdo4/k5sMLoDPJ2SYM6DjXJq1u3jOMshr1tjOl90wvcefg65leBwLcvyqlrdcSmYdiB2G3rCQ==}
@@ -2984,6 +2987,8 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@enonic-types/core@8.0.0': {}
 
   '@enonic-types/core@8.0.0-B5': {}
 
