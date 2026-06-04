@@ -71,8 +71,8 @@ importers:
         specifier: 8.0.0-B5
         version: 8.0.0-B5
       '@enonic-types/lib-auth':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: 8.0.0
+        version: 8.0.0
       '@enonic-types/lib-task':
         specifier: 8.0.0-B5
         version: 8.0.0-B5
@@ -330,8 +330,8 @@ packages:
   '@enonic-types/global@8.0.0-B5':
     resolution: {integrity: sha512-Nm4PFuEV8mvsdnOTl1e5qQ3uemaJHXv4lJTZmhWR98CLne+TT0dffuXkSXM27repDgT4w142YwH2yJjx23YOvg==}
 
-  '@enonic-types/lib-auth@8.0.0-B5':
-    resolution: {integrity: sha512-Syt2Wq999hQTu7leoiOXDbUa/c7D/RC/x/TbLlN4e53k9C6BPZfay7Myg97ePWGtEpoiCyauIwbRidRCOZPRlg==}
+  '@enonic-types/lib-auth@8.0.0':
+    resolution: {integrity: sha512-w9dnkqJiyzFJdAGVZ22ZPeR+3xZ9ceqt7/IiU9AC+Zk6CZNDv4aPwFrJMzQ1pgNuRzypDBz/omG8NxXbjIKSLw==}
 
   '@enonic-types/lib-task@8.0.0-B5':
     resolution: {integrity: sha512-ubK5XCjg9pkiKHXs/ZCL+236A61yEbgrfCwe2UhXHRx5KmooJgJcUecJmVs3QNuB3CwOYuXcVr3M9hobznD1nw==}
@@ -2996,9 +2996,9 @@ snapshots:
     dependencies:
       '@enonic-types/core': 8.0.0-B5
 
-  '@enonic-types/lib-auth@8.0.0-B5':
+  '@enonic-types/lib-auth@8.0.0':
     dependencies:
-      '@enonic-types/core': 8.0.0-B5
+      '@enonic-types/core': 8.0.0
 
   '@enonic-types/lib-task@8.0.0-B5':
     dependencies:
