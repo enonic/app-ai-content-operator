@@ -47,7 +47,7 @@
     "react-i18next": "~17.0.8",
     "slate": "~0.124.1",
     "slate-history": "~0.113.1",
-    "slate-react": "~0.114.2",
+    "slate-react": "~0.124.2",
     "tw-animate-css": "^1.4.0"
   },
   "devDependencies": {
