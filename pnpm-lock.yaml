@@ -65,22 +65,22 @@ importers:
         version: 1.4.0
     devDependencies:
       '@enonic-types/core':
-        specifier: 8.0.0
+        specifier: ^8
         version: 8.0.0
       '@enonic-types/global':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: ^8
+        version: 8.0.0
       '@enonic-types/lib-auth':
-        specifier: 8.0.0
+        specifier: ^8
         version: 8.0.0
       '@enonic-types/lib-task':
-        specifier: 8.0.0-B5
-        version: 8.0.0-B5
+        specifier: ^8
+        version: 8.0.0
       '@enonic-types/lib-websocket':
-        specifier: 8.0.0
+        specifier: ^8
         version: 8.0.0
       '@enonic/ui':
-        specifier: ~1.0.0
+        specifier: ^1.0.0
         version: 1.0.0(@radix-ui/react-slot@1.2.4(@types/react@19.2.16)(react@19.2.6))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.16))(@types/react@19.2.16)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(lucide-react@1.16.0(react@19.2.6))(preact@10.29.2)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(tw-animate-css@1.4.0)
       '@google/genai':
         specifier: ~2.4.0
@@ -330,17 +330,14 @@ packages:
   '@enonic-types/core@8.0.0':
     resolution: {integrity: sha512-t93pLDJbyoJGRJ1Qlm+EWpRyClRo2sA5cn+mDS9zoN5687zqroUr2+kAlX0FarHx5bwnRqZq8Pdf1nRnEaVDNw==}
 
-  '@enonic-types/core@8.0.0-B5':
-    resolution: {integrity: sha512-kN17TYr6pNqqggdo4/k5sMLoDPJ2SYM6DjXJq1u3jOMshr1tjOl90wvcefg65leBwLcvyqlrdcSmYdiB2G3rCQ==}
-
-  '@enonic-types/global@8.0.0-B5':
-    resolution: {integrity: sha512-Nm4PFuEV8mvsdnOTl1e5qQ3uemaJHXv4lJTZmhWR98CLne+TT0dffuXkSXM27repDgT4w142YwH2yJjx23YOvg==}
+  '@enonic-types/global@8.0.0':
+    resolution: {integrity: sha512-RYPrl8RN20qNnCBSUUZaiHNEnjxVTz7XSpd5INKzbTzKDXz576JkOEVxr9EKe/i1lOVlzoKl+hBRvQS2aELecg==}
 
   '@enonic-types/lib-auth@8.0.0':
     resolution: {integrity: sha512-w9dnkqJiyzFJdAGVZ22ZPeR+3xZ9ceqt7/IiU9AC+Zk6CZNDv4aPwFrJMzQ1pgNuRzypDBz/omG8NxXbjIKSLw==}
 
-  '@enonic-types/lib-task@8.0.0-B5':
-    resolution: {integrity: sha512-ubK5XCjg9pkiKHXs/ZCL+236A61yEbgrfCwe2UhXHRx5KmooJgJcUecJmVs3QNuB3CwOYuXcVr3M9hobznD1nw==}
+  '@enonic-types/lib-task@8.0.0':
+    resolution: {integrity: sha512-QMKtPQxaxec6kPHyIAHhV3+jdRoKUoQJ3YM28wYnQIPk6UCm8UPE1W6DwGQXRoBVjUtt8dm7jl+GJHY1OL4d5w==}
 
   '@enonic-types/lib-websocket@8.0.0':
     resolution: {integrity: sha512-gGR65q6SjJuykEtW2P0eVW55+N4MTMRcgywTapIrIXJccWQKWm8nHIOSM6/RzH3fBSIjP7enB3TIY+XukWnLHQ==}
@@ -3114,19 +3111,17 @@ snapshots:
 
   '@enonic-types/core@8.0.0': {}
 
-  '@enonic-types/core@8.0.0-B5': {}
-
-  '@enonic-types/global@8.0.0-B5':
+  '@enonic-types/global@8.0.0':
     dependencies:
-      '@enonic-types/core': 8.0.0-B5
+      '@enonic-types/core': 8.0.0
 
   '@enonic-types/lib-auth@8.0.0':
     dependencies:
       '@enonic-types/core': 8.0.0
 
-  '@enonic-types/lib-task@8.0.0-B5':
+  '@enonic-types/lib-task@8.0.0':
     dependencies:
-      '@enonic-types/core': 8.0.0-B5
+      '@enonic-types/core': 8.0.0
 
   '@enonic-types/lib-websocket@8.0.0': {}
 
