@@ -2,6 +2,8 @@
 
 Content Operator is the main application for providing access to Enonic's AI universe. It is crafted to optimize and elevate your daily workflows using cutting-edge Large Language Models. Juke AI offers comprehensive support to enhance your efficiency and productivity.
 
+Requires [Enonic License 2.0](LICENSE.txt).
+
 ## Building
 
 With the Enonic SDK installed, you may build the application locally

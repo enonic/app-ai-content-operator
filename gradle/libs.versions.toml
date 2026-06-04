@@ -3,7 +3,7 @@ google-auth-oauth2 = "1.47.0"
 lib-cron = "2.0.0-B1"
 lib-http-client = "4.0.0-B1"
 lib-license = "4.0.0-B1"
-enonicDefaults = "2.1.6"
+enonicDefaults = "2.1.7"
 nodeGradle = "7.1.0"
 
 [libraries]
