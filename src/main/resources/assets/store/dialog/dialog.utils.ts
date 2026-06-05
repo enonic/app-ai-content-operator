@@ -1,3 +1,4 @@
+import { resetContext } from '@/store/context';
 import { getHostApi } from '@/store/host';
 
 import { $dialog } from './dialog.store';
@@ -7,6 +8,9 @@ export const setDialogHidden = (hidden: boolean): void => {
   if (isStateChanged) {
     getHostApi().setDialogState(!hidden);
     $dialog.setKey('hidden', hidden);
+    if (hidden) {
+      resetContext();
+    }
   }
 };
 
