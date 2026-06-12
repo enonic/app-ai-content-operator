@@ -59,7 +59,7 @@
     "@enonic/ui": "^1.0.0",
     "@google/genai": "~2.4.0",
     "@preact/preset-vite": "~2.10.5",
-    "@storybook/addon-docs": "~10.3.6",
+    "@storybook/addon-docs": "~10.4.4",
     "@storybook/addon-themes": "~10.4.2",
     "@storybook/preact-vite": "~10.3.6",
     "@swc/core": "^1.15.33",
