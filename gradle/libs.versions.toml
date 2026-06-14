@@ -1,8 +1,8 @@
 [versions]
 google-auth-oauth2 = "1.48.0"
-lib-cron = "2.0.0-SNAPSHOT"
-lib-http-client = "4.1.0-SNAPSHOT"
-lib-license = "4.1.0-SNAPSHOT"
+lib-cron = "2.0.0"
+lib-http-client = "4.0.0"
+lib-license = "4.0.0"
 enonicDefaults = "2.1.7"
 nodeGradle = "7.1.0"
 
