@@ -61,7 +61,7 @@
     "@preact/preset-vite": "~2.10.5",
     "@storybook/addon-docs": "~10.4.4",
     "@storybook/addon-themes": "~10.4.2",
-    "@storybook/preact-vite": "~10.3.6",
+    "@storybook/preact-vite": "~10.4.4",
     "@swc/core": "^1.15.33",
     "@tailwindcss/typography": "~0.5.19",
     "@tailwindcss/vite": "~4.3.0",
