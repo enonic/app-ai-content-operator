@@ -83,28 +83,35 @@ const $helpTextMap = computed($allFormItemsWithPaths, (items) => {
   );
 });
 
-export const $inputsInContext = computed(
-  [$context, $allFormItemsWithPaths],
-  (context, allFormItems) => {
-    const contextPath = context && pathFromString(context);
+function resolveInputsForContext(
+  contextPath: Optional<Path>,
+  allFormItems: FormItemWithPath[],
+): InputWithPath[] {
+  const input = contextPath
+    ? allFormItems.find(
+        (path): path is InputWithPath => pathsEqual(path, contextPath) && isEditableInput(path),
+      )
+    : null;
 
-    const input = contextPath
-      ? allFormItems.find(
-          (path): path is InputWithPath => pathsEqual(path, contextPath) && isEditableInput(path),
-        )
-      : null;
+  if (input) {
+    return [input];
+  }
 
-    if (input) {
-      return [input];
-    }
+  const items: FormItemWithPath[] = contextPath
+    ? allFormItems.filter((path) => isChildPath(path, contextPath))
+    : allFormItems.filter((path) => isRootPath(path));
 
-    const items: FormItemWithPath[] = contextPath
-      ? allFormItems.filter((path) => isChildPath(path, contextPath))
-      : allFormItems.filter((path) => isRootPath(path));
+  return items.filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item));
+}
 
-    return items.filter((item: FormItemWithPath): item is InputWithPath => isEditableInput(item));
-  },
+export const $inputsInContext = computed([$context, $allFormItemsWithPaths], (context, allFormItems) =>
+  resolveInputsForContext(context ? pathFromString(context) : null, allFormItems),
 );
+
+// True when the path resolves to an editable input: the field itself, or a parent's editable children.
+export function isResolvableContext(context: string): boolean {
+  return resolveInputsForContext(pathFromString(context), $allFormItemsWithPaths.get()).length > 0;
+}
 
 export const $mentions = computed([$inputsInContext], (inputs) => {
   const mentions = inputs.map(pathToMention);

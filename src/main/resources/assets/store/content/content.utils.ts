@@ -356,6 +356,7 @@ function createPropertyPaths(
   properties: PropertyArray[] | undefined,
   schemaPath: Path,
   previousIterationResult: Path[],
+  emitEmptyLeaf: boolean,
 ): Path[] {
   const pathElement = schemaPath.elements.shift();
 
@@ -366,6 +367,17 @@ function createPropertyPaths(
   const propertyArray = properties.find((propertyArray) => propertyArray.name === pathElement.name);
 
   if (!propertyArray || propertyArray.values.length === 0) {
+    // An empty leaf input still renders as a field, so emit it at an index-less
+    // path; a missing non-leaf is an uninstantiated set with nothing to focus.
+    if (emitEmptyLeaf && schemaPath.elements.length === 0) {
+      const leafPath =
+        previousIterationResult.length > 0
+          ? clonePath(previousIterationResult[0])
+          : { elements: [] };
+      leafPath.elements.push({ name: pathElement.name, label: pathElement.label });
+      return [leafPath];
+    }
+
     return previousIterationResult;
   }
 
@@ -382,7 +394,9 @@ function createPropertyPaths(
       previousIterationResult.length > 0 ? clonePath(previousIterationResult[0]) : { elements: [] };
     newPath.elements.push(newPathElement);
 
-    thisIterationResult.push(...createPropertyPaths(value.set, clonePath(schemaPath), [newPath]));
+    thisIterationResult.push(
+      ...createPropertyPaths(value.set, clonePath(schemaPath), [newPath], emitEmptyLeaf),
+    );
   });
 
   return thisIterationResult;
@@ -393,9 +407,12 @@ export function getDataPathsToEditableItems(
   data: ContentData,
 ): FormItemWithPath[] {
   return schemaPaths.flatMap((schemaPath: FormItemWithPath) => {
-    const dataPaths = createPropertyPaths(data.fields, clonePath(schemaPath), []).filter(
-      (dataPath) => dataPath.elements.length === schemaPath.elements.length,
-    );
+    const dataPaths = createPropertyPaths(
+      data.fields,
+      clonePath(schemaPath),
+      [],
+      isInput(schemaPath),
+    ).filter((dataPath) => dataPath.elements.length === schemaPath.elements.length);
 
     return dataPaths.map((dataPath) => {
       if (isInput(schemaPath)) {
