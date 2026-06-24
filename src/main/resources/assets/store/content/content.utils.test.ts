@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
+import type { ContentData } from './ContentData';
 import type { Schema } from './Schema';
 
-import { getFormItemsWithPaths } from './content.utils';
+import { getDataPathsToEditableItems, getFormItemsWithPaths, pathToString } from './content.utils';
 
 describe('schemaUtil', () => {
   it('should return two top items', () => {
@@ -751,6 +752,177 @@ describe('schemaUtil', () => {
     ];
 
     expect(received).toEqual(expected);
+  });
+});
+
+describe('getDataPathsToEditableItems', () => {
+  it('includes an editable input with no stored value at an index-less path', () => {
+    const schema: Schema = {
+      form: {
+        formItems: [
+          {
+            Input: {
+              name: 'description',
+              label: 'Description',
+              occurrences: { maximum: 1, minimum: 0 },
+              inputType: 'TextLine',
+            },
+          },
+          {
+            Input: {
+              name: 'baseUrl',
+              label: 'Base URL',
+              occurrences: { maximum: 1, minimum: 0 },
+              inputType: 'TextLine',
+            },
+          },
+        ],
+      },
+      name: 'Test',
+    };
+
+    const data: ContentData = {
+      contentId: '1',
+      contentPath: '/x',
+      fields: [{ name: 'description', type: 'String', values: [{ v: 'hello' }] }],
+      topic: 'topic',
+    };
+
+    const received = getDataPathsToEditableItems(
+      getFormItemsWithPaths(schema.form.formItems),
+      data,
+    ).map(pathToString);
+
+    expect(received).toContain('/description');
+    expect(received).toContain('/baseUrl');
+  });
+
+  it('does not include inputs inside an uninstantiated set', () => {
+    const schema: Schema = {
+      form: {
+        formItems: [
+          {
+            FormItemSet: {
+              name: 'mySet',
+              label: 'My Set',
+              occurrences: { maximum: 5, minimum: 0 },
+              items: [
+                {
+                  Input: {
+                    name: 'inner',
+                    label: 'Inner',
+                    occurrences: { maximum: 1, minimum: 0 },
+                    inputType: 'TextLine',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      name: 'Test',
+    };
+
+    const data: ContentData = { contentId: '1', contentPath: '/x', fields: [], topic: 'topic' };
+
+    const received = getDataPathsToEditableItems(
+      getFormItemsWithPaths(schema.form.formItems),
+      data,
+    ).map(pathToString);
+
+    expect(received).not.toContain('/mySet/inner');
+  });
+
+  it('includes an empty input inside an instantiated set', () => {
+    const schema: Schema = {
+      form: {
+        formItems: [
+          {
+            FormItemSet: {
+              name: 'mySet',
+              label: 'My Set',
+              occurrences: { maximum: 5, minimum: 0 },
+              items: [
+                {
+                  Input: {
+                    name: 'inner',
+                    label: 'Inner',
+                    occurrences: { maximum: 1, minimum: 0 },
+                    inputType: 'TextLine',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      name: 'Test',
+    };
+
+    const data: ContentData = {
+      contentId: '1',
+      contentPath: '/x',
+      fields: [{ name: 'mySet', type: 'PropertySet', values: [{ set: [] }] }],
+      topic: 'topic',
+    };
+
+    const received = getDataPathsToEditableItems(
+      getFormItemsWithPaths(schema.form.formItems),
+      data,
+    ).map(pathToString);
+
+    expect(received).toContain('/mySet/inner');
+  });
+
+  it('emits a per-occurrence leaf path when one occurrence of a repeated set is empty', () => {
+    const schema: Schema = {
+      form: {
+        formItems: [
+          {
+            FormItemSet: {
+              name: 'mySet',
+              label: 'My Set',
+              occurrences: { maximum: 5, minimum: 0 },
+              items: [
+                {
+                  Input: {
+                    name: 'inner',
+                    label: 'Inner',
+                    occurrences: { maximum: 1, minimum: 0 },
+                    inputType: 'TextLine',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      name: 'Test',
+    };
+
+    const data: ContentData = {
+      contentId: '1',
+      contentPath: '/x',
+      fields: [
+        {
+          name: 'mySet',
+          type: 'PropertySet',
+          values: [
+            { set: [{ name: 'inner', type: 'String', values: [{ v: 'filled' }] }] },
+            { set: [] },
+          ],
+        },
+      ],
+      topic: 'topic',
+    };
+
+    const received = getDataPathsToEditableItems(
+      getFormItemsWithPaths(schema.form.formItems),
+      data,
+    ).map(pathToString);
+
+    expect(received).toContain('/mySet/inner');
+    expect(received).toContain('/mySet[1]/inner');
   });
 });
 

@@ -3,8 +3,15 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { ContentData, PropertyValue } from './ContentData';
 import type { Path } from './Path';
+import type { Schema } from './Schema';
 
-import { findValueByPath, setLanguage, setPersistedData } from './content.store';
+import {
+  findValueByPath,
+  isResolvableContext,
+  setLanguage,
+  setPersistedData,
+  setSchema,
+} from './content.store';
 import { setValueByPath } from './content.utils';
 
 beforeAll(() => {
@@ -104,6 +111,57 @@ describe('setValueByPath', () => {
     expect(received).toEqual(expected);
   });
 });
+
+describe('isResolvableContext', () => {
+  it('resolves an editable field that has no stored value', () => {
+    setSchema(getResolvableSchema());
+    setPersistedData(getResolvableData());
+
+    expect(isResolvableContext('/baseUrl')).toBe(true);
+  });
+
+  it('does not resolve a path that matches no editable field', () => {
+    setSchema(getResolvableSchema());
+    setPersistedData(getResolvableData());
+
+    expect(isResolvableContext('/doesNotExist')).toBe(false);
+  });
+});
+
+function getResolvableSchema(): Schema {
+  return {
+    form: {
+      formItems: [
+        {
+          Input: {
+            name: 'description',
+            label: 'Description',
+            occurrences: { maximum: 1, minimum: 0 },
+            inputType: 'TextLine',
+          },
+        },
+        {
+          Input: {
+            name: 'baseUrl',
+            label: 'Base URL',
+            occurrences: { maximum: 1, minimum: 0 },
+            inputType: 'TextLine',
+          },
+        },
+      ],
+    },
+    name: 'Test',
+  };
+}
+
+function getResolvableData(): ContentData {
+  return {
+    contentId: '1',
+    contentPath: '/x',
+    fields: [{ name: 'description', type: 'String', values: [{ v: 'hello' }] }],
+    topic: 'topic',
+  };
+}
 
 function getRootTextItems(): ContentData {
   return {

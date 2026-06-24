@@ -5,6 +5,7 @@ import { injectHostStyles } from '@/shadow/injectHostStyles';
 import { injectStyles } from '@/shadow/injectStyles';
 import { ShadowHostContext } from '@/shadow/ShadowHostContext';
 import { registerThemeHost } from '@/shadow/themeSync';
+import { isResolvableContext } from '@/store/content';
 import { setContext, resetContext } from '@/store/context';
 import { setDialogHidden } from '@/store/dialog';
 import {
@@ -59,11 +60,15 @@ function mount(container: HTMLElement, context: AiPluginContext): AiPluginInstan
     context.api.on('dialog:open', () => setDialogHidden(false)),
     context.api.on('dialog:close', () => setDialogHidden(true)),
     context.api.on('context:set', (path) => {
-      if (path != null) {
-        setContext(path);
-      } else {
+      if (path == null) {
         resetContext();
+        return;
       }
+      // A field the operator can't act on (e.g. non-text): keep the previous context, not a dead one.
+      if (!isResolvableContext(path)) {
+        return;
+      }
+      setContext(path);
     }),
   ];
 
