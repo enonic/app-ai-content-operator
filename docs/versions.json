@@ -1,0 +1,6 @@
+{
+  "versions": [
+    { "label": "stable", "checkout": "2.x", "latest": true },
+    { "label": "1.x", "checkout": "1.x" }
+  ]
+}

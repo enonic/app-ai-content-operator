@@ -1,0 +1,73 @@
+= Juke AI Content Operator
+:toc: right
+
+== Introduction
+
+NOTE: Versions 2.x target XP 8+.
+
+Juke AI Content Operator is the main application for accessing Enonic's AI universe from Content Studio. It uses large language models to help editors draft, refine, and translate content directly inside the editor.
+
+== Installation
+
+The application is available in the https://market.enonic.com/vendors/enonic/ai-content-operator[Enonic Market]. Install it from the Applications XP tool, or build it locally with the Enonic SDK:
+
+[source,shell]
+----
+enonic project deploy
+----
+
+== Requirements
+
+Juke AI Content Operator relies on the Google Cloud Vertex AI API for access to large language models.
+
+NOTE: Enonic provisions access to AI services for subscription customers at no additional charge. https://support.enonic.com[Create a support ticket] to get in touch.
+
+== Configuration
+
+=== Create a Google Cloud Service Account
+
+The application authenticates against Vertex AI with a Google Service Account Key (SAK) in JSON format.
+
+. *Activate the Vertex API* in the Google Cloud console.
+. *Create a Service Account* in Google Cloud IAM and grant it the role `Vertex AI User (roles/aiplatform.user)`.
+. *Create a Service Account Key* for that account and download the JSON key file.
+
+=== Configure the application
+
+. *Place the SAK JSON file* in your `$XP_HOME/config` directory (or any subdirectory).
+. *Create* `com.enonic.app.ai.contentoperator.cfg` in `$XP_HOME/config` and point `google.api.sak.path` at the SAK file.
+
+TIP: Use Unix-style paths, or properly escape backslashes on Windows.
+
+.Example `com.enonic.app.ai.contentoperator.cfg`
+[source,properties]
+----
+# Path to Google's Service Account Key (a JSON file)
+google.api.sak.path=${xp.home}/config/playground-123456-e13cb1841f87.json
+
+# (Optional) Comma-separated list of debug groups to limit debug output.
+# Possible values: all, none, google, func, ws
+# Leaving empty or including "all" logs every debug group.
+log.debug.groups=all
+----
+
+[%header,cols="2,1,4"]
+|===
+| Key | Default | Description
+
+| `google.api.sak.path`
+| _(required)_
+| Absolute path to the Google Service Account Key JSON file.
+
+| `log.debug.groups`
+| `all`
+| Comma-separated list of debug groups to include in the log output. Valid groups: `all`, `none`, `google`, `func`, `ws`.
+|===
+
+=== Custom instructions
+
+The application ships with a CMS-level *General Instructions* field. Editors can use it to tailor the assistant's behavior, tone, and content for a given site — for example, "respond as a pirate captain" to alter the assistant's language and approach.
+
+== License
+
+Requires Enonic License 2.0. See the `LICENSE.txt` file at the root of the repository for the full text.
