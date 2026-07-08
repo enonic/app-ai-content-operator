@@ -1,5 +1,5 @@
 [versions]
-google-auth-oauth2 = "1.48.0"
+google-auth-oauth2 = "1.49.0"
 lib-cron = "2.0.0"
 lib-http-client = "4.0.0"
 lib-license = "4.0.0"
