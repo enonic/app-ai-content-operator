@@ -64,7 +64,7 @@
     "@storybook/preact-vite": "~10.4.4",
     "@swc/core": "^1.15.33",
     "@tailwindcss/typography": "~0.5.19",
-    "@tailwindcss/vite": "~4.3.0",
+    "@tailwindcss/vite": "~4.3.2",
     "@testing-library/jest-dom": "~6.9.1",
     "@types/lodash.clonedeep": "~4.5.9",
     "@types/lodash.isequal": "~4.5.8",
