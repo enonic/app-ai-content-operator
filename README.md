@@ -18,7 +18,7 @@ A pre-buit version of the application can be installed from [Enonic Market](http
 
 ## Requirements
 
-This applications relies on access to the Google Cloud Vertex API which provides a range of different AI models.
+This application relies on access to the Google Cloud Gemini Enterprise Agent Platform, formerly known as Vertex AI, which provides a range of different AI models.
 
 > [!NOTE]
 > Enonic will provision access to AI services for subscription customers without any additional charge, please get in touch. [Create a support ticket](https://support.enonic.com)
@@ -27,7 +27,7 @@ This applications relies on access to the Google Cloud Vertex API which provides
 
 The application authenticates to Google in one of two ways. When `google.api.sak.path` is set, the credentials at that path are used. When it is absent, the application falls back to [Application Default Credentials](https://cloud.google.com/docs/authentication/application-default-credentials) (ADC).
 
-Whichever you choose, the service account or user needs the role `Vertex AI User (roles/aiplatform.user)`, or a custom role granting `aiplatform.endpoints.predict`. Activate the API in the Google Cloud console first.
+Whichever you choose, enable the Agent Platform API (`aiplatform.googleapis.com`) in the Google Cloud console first, then grant the service account or user the role `Gemini Enterprise Agent Platform User (roles/aiplatform.user)`, or a custom role granting `aiplatform.endpoints.predict`.
 
 ### Option 1: Application Default Credentials
 
