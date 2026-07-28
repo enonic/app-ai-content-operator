@@ -69,6 +69,7 @@ export default defineConfig({
       '.gradle/',
       'src/main/resources/admin/',
       'src/main/resources/static/',
+      'src/test/resources/',
       '**/*.d.ts',
     ],
     rules: {

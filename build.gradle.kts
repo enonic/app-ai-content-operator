@@ -19,6 +19,12 @@ dependencies {
     include(libs.lib.cron)
     include(libs.lib.http.client)
     include(libs.lib.license)
+
+    testImplementation("com.enonic.xp:testing:$xpVersion")
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockito.core)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.graalvm.js)
 }
 
 repositories {
@@ -70,8 +76,25 @@ tasks.named("jar") {
     dependsOn(tasks.named("pnpmBuild"))
 }
 
+tasks.named<Test>("test") {
+    dependsOn(tasks.named("pnpmBuild"))
+    useJUnitPlatform()
+}
+
+val testGraalJs = tasks.register<Test>("testGraalJs") {
+    group = "verification"
+    description = "Runs tests with the GraalJS script engine."
+    dependsOn(tasks.named("pnpmBuild"))
+    useJUnitPlatform()
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    systemProperty("xp.script-engine", "GraalJS")
+    shouldRunAfter(tasks.named("test"))
+}
+
 tasks.named("check") {
     dependsOn(tasks.named("pnpmCheck"))
+    dependsOn(testGraalJs)
 }
 
 tasks.named<ProcessResources>("processResources") {

@@ -1,3 +1,4 @@
+import { submitTask } from '/lib/xp/task';
 import { send } from '/lib/xp/websocket';
 
 import type { LicenseState } from '../../shared/license';
@@ -19,7 +20,6 @@ import { generate } from '../../lib/flow/generate';
 import { respondError } from '../../lib/http/requests';
 import { getLicenseState } from '../../lib/license/license-manager';
 import { logDebug, LogDebugGroups, logError } from '../../lib/logger';
-import { runAsyncTask } from '../../lib/utils/task';
 import { unsafeUUIDv4 } from '../../lib/utils/uuid';
 import { WS_PROTOCOL } from '../../shared/constants';
 import { ERRORS } from '../../shared/errors';
@@ -233,10 +233,13 @@ function handleGenerateMessage(socketId: string, message: GenerateMessage): void
     return sendLicenseUpdatedMessage(socketId, result);
   }
 
-  runAsyncTask('ws', () => analyzeAndGenerate(socketId, message));
+  submitTask({
+    descriptor: 'analyzeAndGenerate',
+    config: { socketId, message: JSON.stringify(message) },
+  });
 }
 
-function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
+export function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
   try {
     const { id } = message.metadata;
 
