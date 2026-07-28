@@ -28,7 +28,7 @@ await build({
   target: 'es2020',
   platform: 'neutral',
   mainFields: ['module', 'main'],
-  external: ['/lib/xp/*', '/lib/http-client', '/lib/cron', '/lib/license'],
+  external: ['/lib/xp/*', '/lib/http-client', '/lib/cron', '/lib/license', '/services/ws/ws'],
   sourcemap: !isProduction ? 'inline' : false,
   minify: false,
   ...(isProduction && {

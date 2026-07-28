@@ -5,12 +5,19 @@ lib-http-client = "4.0.0"
 lib-license = "4.0.0"
 enonicDefaults = "2.1.7"
 nodeGradle = "7.1.0"
+junit = "6.1.1"
+mockito = "5.23.0"
+graalvm = "25.0.3"
 
 [libraries]
 google-auth-oauth2 = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "google-auth-oauth2" }
 lib-cron = { module = "com.enonic.lib:lib-cron", version.ref = "lib-cron" }
 lib-http-client = { module = "com.enonic.lib:lib-http-client", version.ref = "lib-http-client" }
 lib-license = { module = "com.enonic.lib:lib-license", version.ref = "lib-license" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+graalvm-js = { module = "org.graalvm.polyglot:js", version.ref = "graalvm" }
 
 [plugins]
 enonic-defaults = { id = "com.enonic.defaults", version.ref = "enonicDefaults" }

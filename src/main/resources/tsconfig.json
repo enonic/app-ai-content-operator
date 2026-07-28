@@ -18,6 +18,7 @@
       "/lib/http-client": ["./types/lib/httpClient"],
       "/lib/cron": ["./types/lib/cron"],
       "/lib/license": ["./types/lib/license"],
+      "/services/ws/ws": ["./services/ws/ws"],
       "/tests/testUtils/*": ["../../../tests/testUtils/*"]
     },
     "typeRoots": [
