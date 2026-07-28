@@ -10,13 +10,16 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 
 public class ServiceAccountKeyHandler {
 
     private static final String CLOUD_PLATFORM_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
 
-    private ServiceAccountCredentials credentials;
+    private static final String PROJECT_ID_ENV = "GOOGLE_CLOUD_PROJECT";
+
+    private GoogleCredentials credentials;
 
     private byte[] checksum;
 
@@ -26,33 +29,63 @@ public class ServiceAccountKeyHandler {
         try {
             return credentials.refreshAccessToken().getTokenValue();
         } catch (IOException e) {
-            throw new IOException("Failed to refresh Access Token using Service AccountKey.", e);
+            throw new IOException("Failed to refresh Access Token.", e);
         }
     }
 
     public synchronized String getProjectId(String serviceAccountKeyPath)
             throws IOException {
         updateCredentialsIfNeeded(serviceAccountKeyPath);
-        return credentials.getProjectId();
+
+        if (credentials instanceof ServiceAccountCredentials) {
+            final String projectId = ((ServiceAccountCredentials) credentials).getProjectId();
+            if (projectId != null && !projectId.isBlank()) {
+                return projectId;
+            }
+        }
+
+        return System.getenv(PROJECT_ID_ENV);
     }
 
     private void updateCredentialsIfNeeded(String serviceAccountKeyPath)
             throws IOException {
+        if (serviceAccountKeyPath == null || serviceAccountKeyPath.isBlank()) {
+            // ? checksum is null only while credentials come from ADC, so a switch away from a key file reloads
+            if (credentials == null || checksum != null) {
+                this.credentials = applyScope(loadApplicationDefaultCredentials());
+                this.checksum = null;
+            }
+            return;
+        }
+
         final byte[] currentChecksum = calculateChecksum(Paths.get(serviceAccountKeyPath));
 
         if (credentials == null || !MessageDigest.isEqual(checksum, currentChecksum)) {
-            this.credentials
-                    = (ServiceAccountCredentials) loadCredentialsFromFile(serviceAccountKeyPath).createScoped(CLOUD_PLATFORM_SCOPE);
+            this.credentials = applyScope(loadCredentialsFromFile(serviceAccountKeyPath));
             this.checksum = currentChecksum;
         }
     }
 
-    private ServiceAccountCredentials loadCredentialsFromFile(String serviceAccountKeyPath)
+    // ! User credentials carry their scopes in the refresh token and reject scoping
+    private GoogleCredentials applyScope(GoogleCredentials credentials) {
+        return credentials.createScopedRequired() ? credentials.createScoped(CLOUD_PLATFORM_SCOPE) : credentials;
+    }
+
+    private GoogleCredentials loadApplicationDefaultCredentials()
+            throws IOException {
+        try {
+            return GoogleCredentials.getApplicationDefault();
+        } catch (IOException e) {
+            throw new IOException("Failed to load Application Default Credentials.", e);
+        }
+    }
+
+    private GoogleCredentials loadCredentialsFromFile(String serviceAccountKeyPath)
             throws IOException {
         try (FileInputStream fileInputStream = new FileInputStream(serviceAccountKeyPath)) {
-            return ServiceAccountCredentials.fromStream(fileInputStream);
+            return GoogleCredentials.fromStream(fileInputStream);
         } catch (IOException e) {
-            throw new IOException("Failed to load Service Account Key from file: " + serviceAccountKeyPath, e);
+            throw new IOException("Failed to load credentials from file: " + serviceAccountKeyPath, e);
         }
     }
 
