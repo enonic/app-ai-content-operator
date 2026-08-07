@@ -45,9 +45,9 @@ ADC resolves credentials from `GOOGLE_APPLICATION_CREDENTIALS`, then the well-kn
 > [!NOTE]
 > If XP runs in a container, credentials written by `gcloud` on the host are not visible inside it. Mount them read-only with `-v ~/.config/gcloud:/root/.config/gcloud:ro`, or point `GOOGLE_APPLICATION_CREDENTIALS` at a mounted path.
 
-### Option 2: Service Account Key
+### Option 2: Service Account Key or other credentials file
 
-Required when XP runs somewhere that cannot obtain credentials from its environment.
+Required when XP runs somewhere that cannot obtain credentials from its environment. A Service Account Key is the usual choice; see the note below for the other accepted formats.
 
 1. **Create Service Account**
 
@@ -64,9 +64,12 @@ Required when XP runs somewhere that cannot obtain credentials from its environm
 4. **Create an app configuration file**
 
    Place the file `com.enonic.app.ai.contentoperator.cfg` in your `$XP_HOME/config` directory.
-   Add a configuration value `google.api.sak.path : <Path to the Google Service Account Key (SAK) file>` within the config file
+   Add a configuration value `google.api.sak.path : <Path to the credentials file>` within the config file
 
    > Use Unix-style paths or properly escape backslashes for windows system
+
+> [!NOTE]
+> Despite its name, `google.api.sak.path` also accepts the other credentials formats Google's client libraries read: an external account (Workload Identity Federation) configuration, a service account impersonation configuration, and an authorized user file. This is useful when XP cannot see `GOOGLE_APPLICATION_CREDENTIALS` but can read a mounted file. Of these, only a Service Account Key carries a `project_id`, so the others need the project configured — see [Google Cloud project](#google-cloud-project).
 
 ### Google Cloud project
 
@@ -76,14 +79,14 @@ The project is resolved in this order:
 2. The project carried by the credentials — the `project_id` field of a Service Account Key, or, on a Google Cloud instance, the project of the attached service account as reported by the metadata server
 3. The `GOOGLE_CLOUD_PROJECT` environment variable
 
-A Service Account Key and a Google Cloud instance therefore need no further configuration, while ADC user credentials — which carry no project — require one of the other two. The project is not needed at all when both `google.api.gemini.flash.url` and `google.api.gemini.pro.url` are overridden.
+A Service Account Key and a Google Cloud instance therefore need no further configuration. Every other credential — a `gcloud` user login, and the external account, impersonation, and authorized user formats — carries no project and requires one of the other two. The project is not needed at all when both `google.api.gemini.flash.url` and `google.api.gemini.pro.url` are overridden.
 
 ## Example config file
 
 `com.enonic.app.ai.contentoperator.cfg (sample)`
 
 ```properties
-# (Optional) Path to Google's Service Account Key (a JSON file).
+# (Optional) Path to Google's Service Account Key, or any other credentials JSON file.
 # Leave unset to use Application Default Credentials.
 google.api.sak.path=${xp.home}/config/playground-123456-e13cb1841f87.json
 

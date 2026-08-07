@@ -1,7 +1,7 @@
 declare interface ServiceAccountKeyHandler {
   /**
-   * Retrieves an access token for the given service account key path.
-   * @param serviceAccountKeyPath The path to the service account key file, or `null` to use Application Default Credentials.
+   * Retrieves an access token for the credentials at the given path.
+   * @param serviceAccountKeyPath The path to a credentials file (Service Account Key, external account, impersonation, or authorized user), or `null` to use Application Default Credentials.
    * @returns The access token string.
    * @throws {Error} If there's an issue retrieving the access token.
    */
@@ -9,7 +9,7 @@ declare interface ServiceAccountKeyHandler {
 
   /**
    * Retrieves the project ID from the credentials, falling back to the `GOOGLE_CLOUD_PROJECT` environment variable.
-   * @param serviceAccountKeyPath The path to the service account key file, or `null` to use Application Default Credentials.
+   * @param serviceAccountKeyPath The path to a credentials file (Service Account Key, external account, impersonation, or authorized user), or `null` to use Application Default Credentials.
    * @returns The project ID string, or `null` if the credentials carry no project and the environment variable is unset.
    * @throws {Error} If there's an issue retrieving the project ID.
    */
