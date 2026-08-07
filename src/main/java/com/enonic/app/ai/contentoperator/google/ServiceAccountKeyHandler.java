@@ -11,7 +11,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 
 public class ServiceAccountKeyHandler {
 
@@ -37,14 +36,22 @@ public class ServiceAccountKeyHandler {
             throws IOException {
         updateCredentialsIfNeeded(serviceAccountKeyPath);
 
-        if (credentials instanceof ServiceAccountCredentials) {
-            final String projectId = ((ServiceAccountCredentials) credentials).getProjectId();
-            if (projectId != null && !projectId.isBlank()) {
-                return projectId;
-            }
+        final String projectId = readProjectIdFromCredentials();
+        if (projectId != null && !projectId.isBlank()) {
+            return projectId;
         }
 
         return System.getenv(PROJECT_ID_ENV);
+    }
+
+    // ? Only Service Account Key and Compute Engine credentials carry a project; the rest return null
+    private String readProjectIdFromCredentials() {
+        try {
+            return credentials.getProjectId();
+        } catch (RuntimeException e) {
+            // ! ComputeEngineCredentials throws NPE on a cause-less IOException; the env fallback must still run
+            return null;
+        }
     }
 
     private void updateCredentialsIfNeeded(String serviceAccountKeyPath)

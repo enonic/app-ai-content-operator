@@ -40,7 +40,7 @@ gcloud auth application-default login
 export GOOGLE_CLOUD_PROJECT=<your project id>
 ```
 
-ADC resolves credentials from `GOOGLE_APPLICATION_CREDENTIALS`, then the well-known `gcloud` location, then the Google Cloud metadata server. XP inherits these from the environment it is started in, so no application configuration is required.
+ADC resolves credentials from `GOOGLE_APPLICATION_CREDENTIALS`, then the well-known `gcloud` location, then the Google Cloud metadata server. XP inherits these from the environment it is started in, so no credentials configuration is required. The project is resolved separately — see [Google Cloud project](#google-cloud-project).
 
 > [!NOTE]
 > If XP runs in a container, credentials written by `gcloud` on the host are not visible inside it. Mount them read-only with `-v ~/.config/gcloud:/root/.config/gcloud:ro`, or point `GOOGLE_APPLICATION_CREDENTIALS` at a mounted path.
@@ -73,10 +73,10 @@ Required when XP runs somewhere that cannot obtain credentials from its environm
 The project is resolved in this order:
 
 1. The `google.api.project.id` configuration value
-2. The `project_id` field of a Service Account Key, when one is configured
+2. The project carried by the credentials — the `project_id` field of a Service Account Key, or, on a Google Cloud instance, the project of the attached service account as reported by the metadata server
 3. The `GOOGLE_CLOUD_PROJECT` environment variable
 
-A Service Account Key therefore needs no further configuration, while ADC user credentials — which carry no project — require one of the other two. The project is not needed at all when both `google.api.gemini.flash.url` and `google.api.gemini.pro.url` are overridden.
+A Service Account Key and a Google Cloud instance therefore need no further configuration, while ADC user credentials — which carry no project — require one of the other two. The project is not needed at all when both `google.api.gemini.flash.url` and `google.api.gemini.pro.url` are overridden.
 
 ## Example config file
 
@@ -88,7 +88,8 @@ A Service Account Key therefore needs no further configuration, while ADC user c
 google.api.sak.path=${xp.home}/config/playground-123456-e13cb1841f87.json
 
 # (Optional) Google Cloud project ID.
-# Required with Application Default Credentials, unless GOOGLE_CLOUD_PROJECT is set.
+# Required with Application Default Credentials, unless the credentials carry a project
+# (a Google Cloud instance does) or GOOGLE_CLOUD_PROJECT is set.
 google.api.project.id=playground-123456
 
 # (Optional) (Default: "all") A comma separated list of debug groups to limit the debug output, not enforce it.
