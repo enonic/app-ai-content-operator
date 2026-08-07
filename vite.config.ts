@@ -47,6 +47,14 @@ export default defineConfig({
       formats: ['iife'],
     },
     rollupOptions: {
+      onLog(level, log, defaultHandler) {
+        // ! @enonic/ui ships a prebuilt bundle whose `/* @__PURE__ */` hints sit where
+        //   Rolldown can't attach them. The annotations are harmless, so mute the noise.
+        //   Rolldown routes these through `onLog` (not `onwarn`) and omits `id`, so drop
+        //   the whole code.
+        if (log.code === 'INVALID_ANNOTATION') return;
+        defaultHandler(level, log);
+      },
       output: {
         entryFileNames: '[name].js',
       },
