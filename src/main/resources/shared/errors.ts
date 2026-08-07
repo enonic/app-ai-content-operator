@@ -60,8 +60,11 @@ export const ERRORS = {
   MODEL_GENERATION_EMPTY: err(4113, 'Generation result is empty.'),
 
   // Google Errors 5000
-  GOOGLE_SAK_MISSING: err(5000, 'Google Service Account Key is missing or invalid.'),
-  GOOGLE_SAK_READ_FAILED: err(5001, 'Failed to read Google Service Account Key.'),
+  GOOGLE_ADC_FAILED: err(5000, 'Failed to authenticate to Google using Application Default Credentials.'),
+  GOOGLE_CREDENTIALS_FILE_FAILED: err(
+    5001,
+    'Failed to authenticate to Google using the configured credentials file.',
+  ),
   GOOGLE_ACCESS_TOKEN_MISSING: err(5002, 'Google Access Token is missing or invalid.'),
   GOOGLE_PROJECT_ID_MISSING: err(5003, 'Google Project ID is missing or invalid.'),
   GOOGLE_REQUEST_FAILED: err(5010, 'Request to Google API failed.'),

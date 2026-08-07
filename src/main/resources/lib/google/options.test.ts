@@ -29,6 +29,15 @@ function buildHandler({
   };
 }
 
+function buildFailingHandler(): Handler {
+  return {
+    getAccessToken: vi.fn(() => {
+      throw new Error('java.io.IOException: boom');
+    }),
+    getProjectId: vi.fn(),
+  };
+}
+
 const bridge = globalThis as unknown as { __: { newBean: unknown } };
 const originalNewBean = bridge.__.newBean;
 
@@ -142,5 +151,27 @@ describe('parseOptions', () => {
 
     expect(options).toBeNull();
     expect(err?.code).toBe(ERRORS.GOOGLE_ACCESS_TOKEN_MISSING.code);
+  });
+
+  it('should blame the credentials file when a key path is configured', async () => {
+    const handler = buildFailingHandler();
+    const { parseOptions } = await loadOptions({ GOOGLE_SAK_PATH: '/xp/config/key.json' }, handler);
+
+    const [options, err] = parseOptions();
+
+    expect(options).toBeNull();
+    expect(err?.code).toBe(ERRORS.GOOGLE_CREDENTIALS_FILE_FAILED.code);
+    expect(err?.message).toContain('java.io.IOException: boom');
+  });
+
+  it('should blame Application Default Credentials when no key path is configured', async () => {
+    const handler = buildFailingHandler();
+    const { parseOptions } = await loadOptions({}, handler);
+
+    const [options, err] = parseOptions();
+
+    expect(options).toBeNull();
+    expect(err?.code).toBe(ERRORS.GOOGLE_ADC_FAILED.code);
+    expect(err?.message).toContain('java.io.IOException: boom');
   });
 });

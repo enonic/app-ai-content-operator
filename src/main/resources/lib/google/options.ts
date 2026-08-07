@@ -80,7 +80,10 @@ export function parseOptions(): Try<ClientOptions> {
 
     return [{ accessToken, flash, pro }, null];
   } catch (error) {
-    return [null, ERRORS.GOOGLE_SAK_READ_FAILED.withMsg(String(error))];
+    // ? Names the credential source rather than the failed step, since any step in the try can throw
+    const failure =
+      GOOGLE_SAK_PATH != null ? ERRORS.GOOGLE_CREDENTIALS_FILE_FAILED : ERRORS.GOOGLE_ADC_FAILED;
+    return [null, failure.withMsg(String(error))];
   }
 }
 
