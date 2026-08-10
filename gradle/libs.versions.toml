@@ -5,7 +5,7 @@ lib-http-client = "4.0.0"
 lib-license = "4.0.0"
 enonicDefaults = "2.1.7"
 nodeGradle = "7.1.0"
-junit = "6.1.2"
+junit = "6.1.3"
 mockito = "5.23.0"
 
 [libraries]
