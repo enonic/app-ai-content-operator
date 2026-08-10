@@ -376,8 +376,8 @@ function getErrorMessageText(payload: FailedMessagePayload | string): string {
 
 function getErrorMessageByCode(code: number): string {
   switch (code) {
-    case ERRORS.GOOGLE_SAK_MISSING.code:
-    case ERRORS.GOOGLE_SAK_READ_FAILED.code:
+    case ERRORS.GOOGLE_ADC_FAILED.code:
+    case ERRORS.GOOGLE_CREDENTIALS_FILE_FAILED.code:
     case ERRORS.GOOGLE_ACCESS_TOKEN_MISSING.code:
     case ERRORS.GOOGLE_PROJECT_ID_MISSING.code:
       return t('text.error.configuration');

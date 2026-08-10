@@ -18,49 +18,82 @@ A pre-buit version of the application can be installed from [Enonic Market](http
 
 ## Requirements
 
-This applications relies on access to the Google Cloud Vertex API which provides a range of different AI models.
+This application relies on access to the Google Cloud Gemini Enterprise Agent Platform, formerly known as Vertex AI, which provides a range of different AI models.
 
 > [!NOTE]
 > Enonic will provision access to AI services for subscription customers without any additional charge, please get in touch. [Create a support ticket](https://support.enonic.com)
 
 ## Configuration
 
-### Create Google Cloud Service Account
+The application authenticates to Google in one of two ways. When `google.api.sak.path` is set, the credentials at that path are used. When it is absent, the application falls back to [Application Default Credentials](https://cloud.google.com/docs/authentication/application-default-credentials) (ADC).
 
-You will need a valid Google Service Account Key (SAK) in JSON format and store it in your XP configuration.
+Whichever you choose, enable the Agent Platform API (`aiplatform.googleapis.com`) in the Google Cloud console first, then grant the service account or user the role `Gemini Enterprise Agent Platform User (roles/aiplatform.user)`, or a custom role granting `aiplatform.endpoints.predict`.
 
-1. **Activate Vertex API**
+### Option 1: Application Default Credentials
 
-   In Google Cloud console. Search for and activate the Google Vertex API
+Suitable for local development, CI using Workload Identity Federation, and instances running on Google Cloud with an attached service account. No key file is created or distributed.
 
-2. **Create Service Account**
+For local development, leave `google.api.sak.path` unset and run:
 
-   From the Google cloud IAM. Create a service account and make sure it has the role `Vertex AI User (roles/aiplatform.user)`
+```shell
+gcloud auth application-default login
+export GOOGLE_CLOUD_PROJECT=<your project id>
+```
 
-3. **Create a Service Account Key (SAK)**
+ADC resolves credentials from `GOOGLE_APPLICATION_CREDENTIALS`, then the well-known `gcloud` location, then the Google Cloud metadata server. XP inherits these from the environment it is started in, so no credentials configuration is required. The project is resolved separately — see [Google Cloud project](#google-cloud-project).
+
+> [!NOTE]
+> If XP runs in a container, credentials written by `gcloud` on the host are not visible inside it. Mount them read-only with `-v ~/.config/gcloud:/root/.config/gcloud:ro`, or point `GOOGLE_APPLICATION_CREDENTIALS` at a mounted path.
+
+### Option 2: Service Account Key or other credentials file
+
+Required when XP runs somewhere that cannot obtain credentials from its environment. A Service Account Key is the usual choice; see the note below for the other accepted formats.
+
+1. **Create Service Account**
+
+   From the Google cloud IAM. Create a service account and grant it the role described above.
+
+2. **Create a Service Account Key (SAK)**
 
    Using your Service Account, create a new Service Account Key. The key will download automatically to your local machine.
 
-### Configure the application
-
-1. **Upload SAK**
+3. **Upload SAK**
 
    Place it in your `$XP_HOME/config` directory, or a subdirectory
 
-2. **Create an app configuration file**
+4. **Create an app configuration file**
 
    Place the file `com.enonic.app.ai.contentoperator.cfg` in your `$XP_HOME/config` directory.
-   Add a configuration value `google.api.sak.path : <Path to the Google Service Account Key (SAK) file>` within the config file
+   Add a configuration value `google.api.sak.path : <Path to the credentials file>` within the config file
 
    > Use Unix-style paths or properly escape backslashes for windows system
+
+> [!NOTE]
+> Despite its name, `google.api.sak.path` also accepts the other credentials formats Google's client libraries read: an external account (Workload Identity Federation) configuration, a service account impersonation configuration, and an authorized user file. This is useful when XP cannot see `GOOGLE_APPLICATION_CREDENTIALS` but can read a mounted file. Of these, only a Service Account Key carries a `project_id`, so the others need the project configured — see [Google Cloud project](#google-cloud-project).
+
+### Google Cloud project
+
+The project is resolved in this order:
+
+1. The `google.api.project.id` configuration value
+2. The project carried by the credentials — the `project_id` field of a Service Account Key, or, on a Google Cloud instance, the project of the attached service account as reported by the metadata server
+3. The `GOOGLE_CLOUD_PROJECT` environment variable
+
+A Service Account Key and a Google Cloud instance therefore need no further configuration. Every other credential — a `gcloud` user login, and the external account, impersonation, and authorized user formats — carries no project and requires one of the other two. The project is not needed at all when both `google.api.gemini.flash.url` and `google.api.gemini.pro.url` are overridden.
 
 ## Example config file
 
 `com.enonic.app.ai.contentoperator.cfg (sample)`
 
 ```properties
-# Path to Google's Service Account Key (a JSON file)
+# (Optional) Path to Google's Service Account Key, or any other credentials JSON file.
+# Leave unset to use Application Default Credentials.
 google.api.sak.path=${xp.home}/config/playground-123456-e13cb1841f87.json
+
+# (Optional) Google Cloud project ID.
+# Required with Application Default Credentials, unless the credentials carry a project
+# (a Google Cloud instance does) or GOOGLE_CLOUD_PROJECT is set.
+google.api.project.id=playground-123456
 
 # (Optional) (Default: "all") A comma separated list of debug groups to limit the debug output, not enforce it.
 # Possible values: all, none, google, func, ws
