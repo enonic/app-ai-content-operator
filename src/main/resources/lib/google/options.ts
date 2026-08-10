@@ -2,7 +2,12 @@ import type { Model } from '../../shared/models';
 import type { ThinkingLevel } from './types';
 
 import { ERRORS } from '../../shared/errors';
-import { GOOGLE_GEMINI_FLASH_URL, GOOGLE_GEMINI_PRO_URL, GOOGLE_SAK_PATH } from '../config';
+import {
+  GOOGLE_GEMINI_FLASH_URL,
+  GOOGLE_GEMINI_PRO_URL,
+  GOOGLE_PROJECT_ID,
+  GOOGLE_SAK_PATH,
+} from '../config';
 import { APP_NAME } from '../constants';
 import { logDebug, LogDebugGroups, logError } from '../logger';
 
@@ -53,10 +58,6 @@ export function getModelConfig(model: Model): Try<ModelConfig> {
 export function parseOptions(): Try<ClientOptions> {
   logDebug(LogDebugGroups.GOOGLE, 'options.getOptions()');
 
-  if (!GOOGLE_SAK_PATH) {
-    return [null, ERRORS.GOOGLE_SAK_MISSING];
-  }
-
   try {
     const handler = __.newBean(`${APP_NAME}.google.ServiceAccountKeyHandler`);
 
@@ -65,30 +66,53 @@ export function parseOptions(): Try<ClientOptions> {
       return [null, ERRORS.GOOGLE_ACCESS_TOKEN_MISSING];
     }
 
-    const projectId = handler.getProjectId(GOOGLE_SAK_PATH);
-    if (!projectId) {
-      return [null, ERRORS.GOOGLE_PROJECT_ID_MISSING];
+    const resolveProjectId = createProjectIdResolver(handler);
+
+    const [flash, flashErr] = createModelConfig('flash', resolveProjectId);
+    if (flashErr) {
+      return [null, flashErr];
     }
 
-    return [
-      {
-        accessToken,
-        flash: createModelConfig('flash', projectId),
-        pro: createModelConfig('pro', projectId),
-      },
-      null,
-    ];
+    const [pro, proErr] = createModelConfig('pro', resolveProjectId);
+    if (proErr) {
+      return [null, proErr];
+    }
+
+    return [{ accessToken, flash, pro }, null];
   } catch (error) {
-    return [null, ERRORS.GOOGLE_SAK_READ_FAILED.withMsg(String(error))];
+    // ? Names the credential source rather than the failed step, since any step in the try can throw
+    const failure =
+      GOOGLE_SAK_PATH != null ? ERRORS.GOOGLE_CREDENTIALS_FILE_FAILED : ERRORS.GOOGLE_ADC_FAILED;
+    return [null, failure.withMsg(String(error))];
   }
 }
 
-function createModelConfig(model: Model, projectId: string): ModelConfig {
-  const { modelName, thinkingLevel, urlOverride } = MODEL_DEFAULTS[model];
-  return {
-    url: createGenerateUrl(urlOverride ?? buildModelUrl(modelName, projectId)),
-    thinkingLevel,
+// ? Resolved lazily and memoized: a project id is only needed for models without a URL override
+function createProjectIdResolver(handler: ServiceAccountKeyHandler): () => Optional<string> {
+  let projectId: Optional<string>;
+
+  return () => {
+    projectId ??= GOOGLE_PROJECT_ID ?? handler.getProjectId(GOOGLE_SAK_PATH);
+    return projectId;
   };
+}
+
+function createModelConfig(
+  model: Model,
+  resolveProjectId: () => Optional<string>,
+): Try<ModelConfig> {
+  const { modelName, thinkingLevel, urlOverride } = MODEL_DEFAULTS[model];
+
+  if (urlOverride != null) {
+    return [{ url: createGenerateUrl(urlOverride), thinkingLevel }, null];
+  }
+
+  const projectId = resolveProjectId();
+  if (!projectId) {
+    return [null, ERRORS.GOOGLE_PROJECT_ID_MISSING];
+  }
+
+  return [{ url: createGenerateUrl(buildModelUrl(modelName, projectId)), thinkingLevel }, null];
 }
 
 function createGenerateUrl(baseUrl: string): string {
