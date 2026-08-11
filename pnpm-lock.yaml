@@ -66,7 +66,7 @@ importers:
     devDependencies:
       '@enonic-types/core':
         specifier: ^8
-        version: 8.0.0
+        version: 8.0.3
       '@enonic-types/global':
         specifier: ^8
         version: 8.0.2
