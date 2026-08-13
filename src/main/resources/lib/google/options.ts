@@ -34,7 +34,7 @@ const MODEL_DEFAULTS: Record<Model, ModelDefaults> = {
     urlOverride: GOOGLE_GEMINI_FLASH_URL,
   },
   pro: {
-    modelName: 'gemini-3.5-flash',
+    modelName: 'gemini-3.7-flash',
     thinkingLevel: 'low',
     urlOverride: GOOGLE_GEMINI_PRO_URL,
   },
