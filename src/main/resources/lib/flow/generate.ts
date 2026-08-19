@@ -12,7 +12,6 @@ import { ERRORS } from '../../shared/errors';
 import { MODES_DATA } from '../../shared/modes';
 import { createGenerationInstructions } from '../../shared/prompts/generation';
 import { getModelConfig } from '../google/options';
-import { fieldsToSchema } from '../google/schema';
 import { logError, logWarn } from '../logger';
 import { GeminiProxy } from '../proxy/gemini';
 import { fixFieldKey } from '../utils/fields';
@@ -48,7 +47,7 @@ export function generate(params: GenerateParams): Try<GeneratePromptAndResult> {
       instructions: createGenerationInstructions(),
       modelParameters: MODES_DATA.balanced.gemini,
       messages,
-      schema: fieldsToSchema(params.prompt),
+      // don't send the schema to allow user to change it in the runtime
     });
 
     const [textResult, err2] = proxy.generate();

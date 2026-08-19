@@ -6,11 +6,20 @@ export type ModelProxy = {
   generate(): Try<string>;
 };
 
+export type MediaPayload = {
+  mimeType: string;
+  data: string;
+};
+
+export type ProxyMessage = Message & {
+  media?: MediaPayload;
+};
+
 export type ModelProxyConfig = {
   url: string;
   instructions: string;
   modelParameters: ModelParameters;
   thinkingLevel: ThinkingLevel;
-  messages: Message[];
+  messages: ProxyMessage[];
   schema?: Schema;
 };

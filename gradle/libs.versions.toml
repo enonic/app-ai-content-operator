@@ -1,5 +1,6 @@
 [versions]
 google-auth-oauth2 = "1.50.0"
+jsvg = "2.1.0"
 lib-cron = "2.0.0"
 lib-http-client = "4.0.0"
 lib-license = "4.0.0"
@@ -10,6 +11,7 @@ mockito = "5.23.0"
 
 [libraries]
 google-auth-oauth2 = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "google-auth-oauth2" }
+jsvg = { module = "com.github.weisj:jsvg", version.ref = "jsvg" }
 lib-cron = { module = "com.enonic.lib:lib-cron", version.ref = "lib-cron" }
 lib-http-client = { module = "com.enonic.lib:lib-http-client", version.ref = "lib-http-client" }
 lib-license = { module = "com.enonic.lib:lib-license", version.ref = "lib-license" }

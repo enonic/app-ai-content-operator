@@ -1,5 +1,5 @@
-import type { Content, GenerateContentRequest, Role } from '../google/types';
-import type { ModelProxy, ModelProxyConfig } from './model';
+import type { Content, GenerateContentRequest, Part, Role } from '../google/types';
+import type { ModelProxy, ModelProxyConfig, ProxyMessage } from './model';
 
 import { HarmBlockThreshold, HarmCategory } from '../../shared/enums';
 import { ERRORS } from '../../shared/errors';
@@ -26,6 +26,7 @@ export class GeminiProxy implements ModelProxy {
         temperature,
         topP,
         responseMimeType: 'application/json',
+        responseSchema: config.schema,
         thinkingConfig: {
           thinkingLevel: config.thinkingLevel,
         },
@@ -53,7 +54,15 @@ export class GeminiProxy implements ModelProxy {
   }
 
   private static createContents({ messages }: ModelProxyConfig): Content[] {
-    return messages.map(({ role, text }) => GeminiProxy.createTextContent(role, text));
+    return messages.map((message) => GeminiProxy.createMessageContent(message));
+  }
+
+  private static createMessageContent({ role, text, media }: ProxyMessage): Content {
+    const parts: Part[] = [{ text }];
+    if (media != null) {
+      parts.push({ inlineData: { mimeType: media.mimeType, data: media.data } });
+    }
+    return { role, parts };
   }
 
   private static createTextContent(role: Role, text: string): Content {
