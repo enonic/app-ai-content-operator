@@ -1,12 +1,17 @@
 import { submitTask } from '/lib/xp/task';
 import { send } from '/lib/xp/websocket';
 
+import type { ContextUserParams } from '/lib/xp/context';
+
 import type { LicenseState } from '../../shared/license';
 import type {
+  AltTextGeneratedMessage,
+  AltTextGeneratedMessagePayload,
   AnalyzedMessage,
   AnalyzedMessagePayload,
   ClientMessage,
   FailedMessage,
+  GenerateAltTextMessage,
   GeneratedMessage,
   GeneratedMessagePayload,
   GenerateMessage,
@@ -15,39 +20,21 @@ import type {
   ServerMessage,
 } from '../../shared/websocket';
 
+import { CMS_REPO_PREFIX, generateAltTextForImage } from '../../lib/flow/altText';
 import { analyze } from '../../lib/flow/analyze';
 import { generate } from '../../lib/flow/generate';
 import { respondError } from '../../lib/http/requests';
 import { getLicenseState } from '../../lib/license/license-manager';
 import { logDebug, LogDebugGroups, logError } from '../../lib/logger';
+import { createOperationRegistry } from '../../lib/utils/operations';
 import { unsafeUUIDv4 } from '../../lib/utils/uuid';
 import { WS_PROTOCOL } from '../../shared/constants';
 import { ERRORS } from '../../shared/errors';
 import { MessageType } from '../../shared/websocket';
 
-//
-//* Active generation operations
-//
+type WsData = Record<string, never>;
 
-const ACTIVE_OPERATIONS = __.newBean<Java.ConcurrentHashMap<string, boolean>>(
-  'java.util.concurrent.ConcurrentHashMap',
-);
-
-function isActiveOperation(id: string): boolean {
-  return ACTIVE_OPERATIONS.get(id) != null;
-}
-
-function addActiveOperation(id: string): boolean {
-  if (isActiveOperation(id)) {
-    return false;
-  }
-  ACTIVE_OPERATIONS.put(id, true);
-  return isActiveOperation(id);
-}
-
-function removeActiveOperation(id: string): void {
-  ACTIVE_OPERATIONS.remove(id);
-}
+const activeOperations = createOperationRegistry();
 
 //
 //* WebSocket
@@ -76,7 +63,7 @@ export function get(request: Enonic.Request): Enonic.Response {
   };
 }
 
-export function webSocketEvent(event: Enonic.WebSocketEvent): void {
+export function webSocketEvent(event: Enonic.WebSocketEvent<WsData>): void {
   try {
     const { type } = event;
 
@@ -110,7 +97,7 @@ function handleError(event: Enonic.WebSocketEvent): void {
 //* Receive
 //
 
-function handleMessage(event: Enonic.WebSocketEvent): void {
+function handleMessage(event: Enonic.WebSocketEvent<WsData>): void {
   const { id } = event.session;
   const message = parseMessage(event.message);
   if (!message) {
@@ -131,6 +118,9 @@ function handleMessage(event: Enonic.WebSocketEvent): void {
       break;
     case MessageType.STOP:
       stopGeneration(message.payload.generationId);
+      break;
+    case MessageType.GENERATE_ALT_TEXT:
+      handleGenerateAltTextMessage(id, message, event);
       break;
   }
 }
@@ -169,6 +159,17 @@ function sendAnalyzedMessage(socketId: string, payload: AnalyzedMessagePayload):
 function sendGeneratedMessage(socketId: string, payload: GeneratedMessagePayload): void {
   const message = { type: MessageType.GENERATED, payload } satisfies Omit<
     GeneratedMessage,
+    'metadata'
+  >;
+  sendMessage(socketId, message);
+}
+
+function sendAltTextGeneratedMessage(
+  socketId: string,
+  payload: AltTextGeneratedMessagePayload,
+): void {
+  const message = { type: MessageType.ALT_TEXT_GENERATED, payload } satisfies Omit<
+    AltTextGeneratedMessage,
     'metadata'
   >;
   sendMessage(socketId, message);
@@ -239,11 +240,59 @@ function handleGenerateMessage(socketId: string, message: GenerateMessage): void
   });
 }
 
+function handleGenerateAltTextMessage(
+  socketId: string,
+  message: GenerateAltTextMessage,
+  event: Enonic.WebSocketEvent<WsData>,
+): void {
+  const { contentId, project } = message.payload;
+
+  const result = getLicenseState();
+  const [licenseState] = result;
+
+  // ! Every skip path must answer, or the client holds a temporary connection until it times out
+  if (licenseState !== 'OK') {
+    sendLicenseUpdatedMessage(socketId, result);
+    return sendAltTextGeneratedMessage(socketId, { contentId, altText: null });
+  }
+
+  const { user } = event.session;
+  const repo = project ? `${CMS_REPO_PREFIX}${project}` : null;
+  if (user == null || repo == null) {
+    logDebug(
+      LogDebugGroups.WS,
+      `Skipped alt text request: no user or no project <${String(project)}>`,
+    );
+    return sendAltTextGeneratedMessage(socketId, { contentId, altText: null });
+  }
+
+  submitTask({
+    descriptor: 'generateAltText',
+    config: {
+      socketId,
+      repo,
+      contentId,
+      login: user.login,
+      idProvider: user.idProvider,
+    },
+  });
+}
+
+export function generateAltText(
+  socketId: string,
+  repo: string,
+  contentId: string,
+  user: ContextUserParams,
+): void {
+  const altText = generateAltTextForImage(repo, contentId, user) ?? null;
+  sendAltTextGeneratedMessage(socketId, { contentId, altText });
+}
+
 export function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
   try {
     const { id } = message.metadata;
 
-    if (!addActiveOperation(id)) {
+    if (!activeOperations.add(id)) {
       return sendFailedErrorMessage(
         socketId,
         ERRORS.WS_OPERATION_ALREADY_RUNNING.withMsg(`Generation id: ${id}`),
@@ -252,7 +301,7 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
 
     const [analysis, err1] = analyze(message.payload);
 
-    if (!isActiveOperation(id)) {
+    if (!activeOperations.isActive(id)) {
       return;
     }
 
@@ -272,7 +321,7 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
       fields: message.payload.fields,
     });
 
-    if (!isActiveOperation(id)) {
+    if (!activeOperations.isActive(id)) {
       return;
     }
 
@@ -282,7 +331,7 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
 
     sendGeneratedMessage(socketId, generation);
 
-    removeActiveOperation(id);
+    activeOperations.remove(id);
   } catch (e) {
     sendFailedErrorMessage(socketId, ERRORS.WS_UNKNOWN_ERROR.withMsg('See server logs.'));
     logError(e);
@@ -290,5 +339,5 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
 }
 
 function stopGeneration(id: string): void {
-  removeActiveOperation(id);
+  activeOperations.remove(id);
 }

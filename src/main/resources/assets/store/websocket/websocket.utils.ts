@@ -16,6 +16,7 @@ import {
   updateUserMessage,
 } from '@/store/chat';
 import { $config } from '@/store/config';
+import { $dialog } from '@/store/dialog/dialog.store';
 import {
   $contentPath,
   $fieldDescriptors,
@@ -29,6 +30,7 @@ import { $context } from '@/store/context';
 import { $licenseState } from '@/store/license';
 
 import type {
+  AltTextGeneratedMessagePayload,
   AnalyzedMessagePayload,
   ClientMessage,
   FailedMessagePayload,
@@ -118,11 +120,13 @@ const PING_INTERVAL = 50_000; // ms
 const PONG_TIMEOUT = 15_000; // ms
 const STOP_ANALYSIS_TIMEOUT = 20_000; // ms
 const STOP_GENERATION_TIMEOUT = 60_000; // ms
+const ALT_TEXT_RESULT_TIMEOUT = 60_000; // ms
 
 let pingInterval: number;
 let pongTimeout: number;
 let reconnectTimeout: number;
 let stopTimeout: number;
+let altTextResultTimeout: number;
 
 function connect(): void {
   const { state, connection } = $websocket.get();
@@ -211,6 +215,8 @@ function scheduleReconnect(): void {
   const { lifecycle, reconnectAttempts } = $websocket.get();
   if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
     console.warn(`Max reconnect attempts reached: ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}`);
+    // ! A held temporary connection keeps the lifecycle mounted but dead, blocking the next reconnect
+    abortAltTextRequests();
     return;
   }
 
@@ -262,6 +268,7 @@ function handleMessage(event: MessageEvent<string>): void {
   switch (message.type) {
     case MessageType.CONNECTED:
       $websocket.setKey('state', 'connected');
+      flushPendingAltText();
       break;
 
     case MessageType.LICENSE_UPDATED:
@@ -282,6 +289,10 @@ function handleMessage(event: MessageEvent<string>): void {
       handleFailedMessage(message.payload);
       break;
     }
+
+    case MessageType.ALT_TEXT_GENERATED:
+      handleAltTextGeneratedMessage(message.payload);
+      break;
 
     case MessageType.DISCONNECTED:
       handleDisconnected();
@@ -362,6 +373,91 @@ export function sendStop(role: Exclude<MessageRole, 'model'>): void {
 
   clearTimeout(stopTimeout);
   $buffer.set({});
+}
+
+export function sendGenerateAltText(contentId: string, project: string): void {
+  if (!$isConnected.get()) {
+    return;
+  }
+
+  sendMessage({
+    type: MessageType.GENERATE_ALT_TEXT,
+    metadata: createMetadata(),
+    payload: { contentId, project },
+  });
+}
+
+// Alt text requests may arrive while the dialog (which owns the socket
+// lifecycle) is closed. Queue them, hold a temporary connection open until
+// the server returns the results, then release it.
+type AltTextRequest = { contentId: string; project: string };
+
+let pendingAltTextRequests: AltTextRequest[] = [];
+let inFlightAltTextIds: string[] = [];
+let releaseAltTextConnection: Optional<() => void>;
+
+export function requestAltTextGeneration(contentId: string, project: string): void {
+  if ($isConnected.get()) {
+    sendAltTextRequest({ contentId, project });
+    return;
+  }
+
+  if (!pendingAltTextRequests.some((request) => request.contentId === contentId)) {
+    pendingAltTextRequests.push({ contentId, project });
+  }
+
+  const { lifecycle } = $websocket.get();
+  if (releaseAltTextConnection == null && (lifecycle === 'unmounted' || lifecycle === 'unmounting')) {
+    releaseAltTextConnection = mountWebSocket();
+  }
+}
+
+function sendAltTextRequest({ contentId, project }: AltTextRequest): void {
+  if (!inFlightAltTextIds.includes(contentId)) {
+    inFlightAltTextIds.push(contentId);
+  }
+  sendGenerateAltText(contentId, project);
+
+  // A lost result must not hold the temporary connection open forever.
+  clearTimeout(altTextResultTimeout);
+  altTextResultTimeout = window.setTimeout(() => {
+    inFlightAltTextIds = [];
+    releaseAltTextConnectionIfIdle();
+  }, ALT_TEXT_RESULT_TIMEOUT);
+}
+
+function flushPendingAltText(): void {
+  const requests = pendingAltTextRequests;
+  pendingAltTextRequests = [];
+  requests.forEach((request) => sendAltTextRequest(request));
+}
+
+function handleAltTextGeneratedMessage(payload: AltTextGeneratedMessagePayload): void {
+  inFlightAltTextIds = inFlightAltTextIds.filter((id) => id !== payload.contentId);
+  if (inFlightAltTextIds.length === 0) {
+    clearTimeout(altTextResultTimeout);
+    releaseAltTextConnectionIfIdle();
+  }
+}
+
+function abortAltTextRequests(): void {
+  pendingAltTextRequests = [];
+  inFlightAltTextIds = [];
+  clearTimeout(altTextResultTimeout);
+  releaseAltTextConnectionIfIdle();
+}
+
+function releaseAltTextConnectionIfIdle(): void {
+  if (pendingAltTextRequests.length > 0 || inFlightAltTextIds.length > 0) {
+    return;
+  }
+
+  const release = releaseAltTextConnection;
+  releaseAltTextConnection = null;
+  // If the dialog opened meanwhile, its effect owns the lifecycle now.
+  if (release != null && $dialog.get().hidden) {
+    release();
+  }
 }
 
 export function sendPrompt(nodes: Descendant[]): void {

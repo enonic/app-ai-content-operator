@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import type { FinishReason } from '../../shared/model';
+import type { Schema } from '../google/types';
 import type { ModelProxyConfig } from './model';
 
 import { HarmBlockThreshold, HarmCategory } from '../../shared/enums';
@@ -97,5 +98,49 @@ describe('GeminiProxy', () => {
 
     expect(result).toBeNull();
     expect(err).toEqual(ERRORS.REST_REQUEST_FAILED);
+  });
+
+  it('appends inline image data to the message parts', () => {
+    vi.mocked(GenerateApi.generateCandidate).mockImplementationOnce(() => [
+      { content: '{"altText":"A red fox"}', finishReason: 'STOP' },
+      null,
+    ]);
+
+    const [, err] = new GeminiProxy({
+      ...config,
+      messages: [
+        {
+          role: 'user',
+          text: 'Write the alt text for the attached image.',
+          media: { mimeType: 'image/jpeg', data: 'QkFTRTY0' },
+        },
+      ],
+    }).generate();
+
+    expect(err).toBeNull();
+    const [, request] = vi.mocked(GenerateApi.generateCandidate).mock.lastCall!;
+    expect(request.contents).toEqual([
+      {
+        role: 'user',
+        parts: [
+          { text: 'Write the alt text for the attached image.' },
+          { inlineData: { mimeType: 'image/jpeg', data: 'QkFTRTY0' } },
+        ],
+      },
+    ]);
+  });
+
+  it('forwards the response schema to the generation config', () => {
+    vi.mocked(GenerateApi.generateCandidate).mockImplementationOnce(() => [
+      { content: '{"altText":"A red fox"}', finishReason: 'STOP' },
+      null,
+    ]);
+
+    const schema: Schema = { type: 'OBJECT', properties: {}, required: ['altText'] };
+
+    new GeminiProxy({ ...config, schema }).generate();
+
+    const [, request] = vi.mocked(GenerateApi.generateCandidate).mock.lastCall!;
+    expect(request.generationConfig?.responseSchema).toEqual(schema);
   });
 });

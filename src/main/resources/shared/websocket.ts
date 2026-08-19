@@ -42,6 +42,12 @@ export enum MessageType {
   ANALYZED = 'analyzed',
   GENERATED = 'generated',
   FAILED = 'failed',
+
+  // Alt text flow (client → server)
+  GENERATE_ALT_TEXT = 'generate_alt_text',
+
+  // Alt text flow (server → client)
+  ALT_TEXT_GENERATED = 'alt_text_generated',
 }
 
 // Client requests generate
@@ -68,6 +74,22 @@ export type GenerateMessagePayload = GenerateMessage['payload'];
 export type StopMessage = MessageWithPayload<MessageType.STOP, { generationId: string }>;
 
 export type StopMessagePayload = StopMessage['payload'];
+
+// Client requests alt text generation for a content item
+export type GenerateAltTextMessage = MessageWithPayload<
+  MessageType.GENERATE_ALT_TEXT,
+  { contentId: string; project: string }
+>;
+
+export type GenerateAltTextMessagePayload = GenerateAltTextMessage['payload'];
+
+// Server returns the alt text result; null when generation failed or was skipped
+export type AltTextGeneratedMessage = MessageWithPayload<
+  MessageType.ALT_TEXT_GENERATED,
+  { contentId: string; altText: string | null }
+>;
+
+export type AltTextGeneratedMessagePayload = AltTextGeneratedMessage['payload'];
 
 // Server returns license state on connect
 export type LicenseUpdatedStatePayload = { licenseState: LicenseState };
@@ -133,7 +155,8 @@ export type ClientMessage =
   | DisconnectMessage
   | PingMessage
   | GenerateMessage
-  | StopMessage;
+  | StopMessage
+  | GenerateAltTextMessage;
 
 export type ServerMessage =
   | ConnectedMessage
@@ -142,4 +165,5 @@ export type ServerMessage =
   | PongMessage
   | AnalyzedMessage
   | GeneratedMessage
-  | FailedMessage;
+  | FailedMessage
+  | AltTextGeneratedMessage;

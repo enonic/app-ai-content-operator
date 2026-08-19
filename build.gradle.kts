@@ -13,9 +13,14 @@ val xpVersion: String by project
 
 dependencies {
     include(libs.google.auth.oauth2)
+    include(libs.jsvg)
     include(xplibs.auth)
     include(xplibs.websocket)
     include(xplibs.task)
+    include(xplibs.event)
+    include(xplibs.context)
+    include(xplibs.content)
+    include(xplibs.project)
     include(libs.lib.cron)
     include(libs.lib.http.client)
     include(libs.lib.license)
