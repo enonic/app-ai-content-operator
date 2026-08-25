@@ -60,7 +60,7 @@
     "@enonic-types/lib-project": "^8",
     "@enonic-types/lib-task": "^8",
     "@enonic-types/lib-websocket": "^8",
-    "@enonic/ui": "^1.0.5",
+    "@enonic/ui": "^1.1.1",
     "@google/genai": "~2.18.0",
     "@preact/preset-vite": "~2.10.6",
     "@storybook/addon-docs": "~10.5.8",
