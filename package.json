@@ -42,7 +42,7 @@
     "lodash.merge": "~4.6.2",
     "lucide-react": "~1.30.0",
     "nanoid": "~6.0.1",
-    "nanostores": "~1.4.2",
+    "nanostores": "~1.5.2",
     "preact": "~10.29.8",
     "react-i18next": "~17.0.11",
     "slate": "~0.126.2",

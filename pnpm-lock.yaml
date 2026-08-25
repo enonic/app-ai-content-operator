@@ -20,7 +20,7 @@ importers:
     dependencies:
       '@nanostores/react':
         specifier: ~1.1.0
-        version: 1.1.0(nanostores@1.4.2)(react@19.2.8)
+        version: 1.1.0(nanostores@1.5.2)(react@19.2.8)
       i18next:
         specifier: ~26.3.6
         version: 26.3.6(typescript@7.0.2)
@@ -43,8 +43,8 @@ importers:
         specifier: ~6.0.1
         version: 6.0.1
       nanostores:
-        specifier: ~1.4.2
-        version: 1.4.2
+        specifier: ~1.5.2
+        version: 1.5.2
       preact:
         specifier: ~10.29.8
         version: 10.29.8
@@ -2474,6 +2474,10 @@ packages:
     resolution: {integrity: sha512-VRSzKkbMm5jMDoKLbltAkFQ5Qr7VDiTFGXxYFXXowVj387GeGNOCsOH6Msy00SGZ3Fp84b1Naa1psqgcCIEP5Q==}
     engines: {node: '>=0.10.0'}
 
+  is-plain-object@5.1.0:
+    resolution: {integrity: sha512-bUi/yjmtKYcRVUtWRGr0UA6xEFh2I6zWUwMrUXB3s7bmYCaZ8a+0ZsTRkrawh/mzlSD1Y0Ph8bp/U+TvBpWDNw==}
+    engines: {node: '>=0.10.0'}
+
   is-potential-custom-element-name@1.0.1:
     resolution: {integrity: sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ==}
 
@@ -2732,8 +2736,8 @@ packages:
     engines: {node: ^22 || ^24 || >=26}
     hasBin: true
 
-  nanostores@1.4.2:
-    resolution: {integrity: sha512-Wxv8Roefr2nqtiRG0bnaFlpYqpIVtOEeJZHaH+4nGgOK1/7n6OHOuHCb/bhqrNQgZM8fyd0s1PqhdrJc9Ib44g==}
+  nanostores@1.5.2:
+    resolution: {integrity: sha512-B0UbxzK1s0CN8Xht6r+7iT5+xV8PTaRERR1nATeplRv1Rw5YLWfVAid0hkqY3EceqpG4RjTk8GAwIxQY39Rnwg==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   node-domexception@1.0.0:
@@ -3617,9 +3621,9 @@ snapshots:
       '@types/react': 19.2.18
       react: 19.2.8
 
-  '@nanostores/react@1.1.0(nanostores@1.4.2)(react@19.2.8)':
+  '@nanostores/react@1.1.0(nanostores@1.5.2)(react@19.2.8)':
     dependencies:
-      nanostores: 1.4.2
+      nanostores: 1.5.2
       react: 19.2.8
 
   '@napi-rs/wasm-runtime@1.2.3(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)':
@@ -4945,6 +4949,8 @@ snapshots:
 
   is-plain-object@5.0.0: {}
 
+  is-plain-object@5.1.0: {}
+
   is-potential-custom-element-name@1.0.1: {}
 
   is-wsl@3.1.1:
@@ -5142,7 +5148,7 @@ snapshots:
 
   nanoid@6.0.1: {}
 
-  nanostores@1.4.2: {}
+  nanostores@1.5.2: {}
 
   node-domexception@1.0.0: {}
 
@@ -5407,7 +5413,7 @@ snapshots:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
       is-hotkey: 0.2.0
-      is-plain-object: 5.0.0
+      is-plain-object: 5.1.0
       lodash: 4.18.1
       scroll-into-view-if-needed: 3.1.0
       slate: 0.126.2
