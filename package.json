@@ -79,7 +79,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "esbuild": "~0.28.2",
     "jsdom": "~30.0.1",
-    "storybook": "~10.5.8",
+    "storybook": "~10.5.10",
     "tailwindcss": "~4.3.3",
     "typescript": "^7.0.2",
     "vite": "catalog:",
