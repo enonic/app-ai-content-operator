@@ -95,8 +95,8 @@ importers:
         specifier: ^1.0.5
         version: 1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.18)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.37.0(react@19.2.8))(preact@10.29.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)
       '@google/genai':
-        specifier: ~2.19.0
-        version: 2.19.0
+        specifier: ~2.21.0
+        version: 2.21.0
       '@preact/preset-vite':
         specifier: ~2.10.6
         version: 2.10.6(@babel/core@7.29.7)(@voidzero-dev/vite-plus-core@0.2.8(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(typescript@7.0.2))(preact@10.29.8)
@@ -561,8 +561,8 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@google/genai@2.19.0':
-    resolution: {integrity: sha512-IM3u1FjpOLyOPsPh0smGA6Ntj2olUWCPbTs/WQj7cA/2AKCGw/652W7IaySx0XtwuscFnMYBoraebQusSZ0zSQ==}
+  '@google/genai@2.21.0':
+    resolution: {integrity: sha512-+PDtco2/Z0ONdzCGekCoCT+O1VJS9xJQNN4XzQpXG/t3El/SWWMkCWlFRO1KmivOHPa4Q0VjUYu1HBKCZ/v33Q==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@modelcontextprotocol/sdk': ^1.25.2
@@ -3593,7 +3593,7 @@ snapshots:
 
   '@exodus/bytes@1.15.1': {}
 
-  '@google/genai@2.19.0':
+  '@google/genai@2.21.0':
     dependencies:
       google-auth-library: 10.9.1
       p-retry: 4.6.2
