@@ -34,7 +34,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@nanostores/react": "~1.1.0",
+    "@nanostores/react": "~2.0.1",
     "i18next": "~26.4.0",
     "i18next-http-backend": "~4.0.2",
     "lodash.clonedeep": "~4.5.0",
