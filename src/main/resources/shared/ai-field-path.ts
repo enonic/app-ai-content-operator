@@ -13,3 +13,15 @@ export function pathStringToAiFieldPath(path: string): AiFieldPath {
 
   return { kind: 'data', field: normalized.split('/').join('.') };
 }
+
+// The reverse for the kinds the operator handles; null for the rest (page and
+// mixin paths have no operator representation).
+export function aiFieldPathToPathString(path: AiFieldPath): string | null {
+  if (path.kind === 'topic') {
+    return '/__topic__';
+  }
+  if (path.kind === 'data') {
+    return `/${path.field.split('.').join('/')}`;
+  }
+  return null;
+}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { pathStringToAiFieldPath } from './ai-field-path';
+import { aiFieldPathToPathString, pathStringToAiFieldPath } from './ai-field-path';
 
 describe('pathStringToAiFieldPath', () => {
   it('should convert a plain nested path to a dotted data field', () => {
@@ -23,5 +23,18 @@ describe('pathStringToAiFieldPath', () => {
 
   it('should handle a path with no leading slash', () => {
     expect(pathStringToAiFieldPath('title')).toEqual({ kind: 'data', field: 'title' });
+  });
+});
+
+describe('aiFieldPathToPathString', () => {
+  it('should convert data and topic paths back to operator paths', () => {
+    expect(aiFieldPathToPathString({ kind: 'data', field: 'items.item[2].title' })).toBe(
+      '/items/item[2]/title',
+    );
+    expect(aiFieldPathToPathString({ kind: 'topic' })).toBe('/__topic__');
+  });
+
+  it('should return null for kinds the operator cannot address', () => {
+    expect(aiFieldPathToPathString({ kind: 'pageConfig', field: 'x' })).toBeNull();
   });
 });

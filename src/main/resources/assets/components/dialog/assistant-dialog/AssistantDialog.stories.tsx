@@ -31,6 +31,7 @@ const noopApi: AiPluginApi = {
   setDialogState: () => undefined,
   requestSave: () => undefined,
   notify: () => undefined,
+  reportResult: () => undefined,
 };
 
 const mockPluginContext: AiPluginContext = {

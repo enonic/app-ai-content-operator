@@ -16,7 +16,7 @@ import {
   clearPluginContext,
   setPluginContext,
 } from '@/store/host';
-import { requestAltTextGeneration } from '@/store/websocket';
+import { requestAltTextGeneration, requestFieldsGeneration } from '@/store/websocket';
 
 import type { AiPlugin, AiPluginContext, AiPluginInstance } from '@shared/ai-protocol';
 
@@ -74,6 +74,7 @@ function mount(container: HTMLElement, context: AiPluginContext): AiPluginInstan
     context.api.on('image:uploaded', ({ contentId, project }) =>
       requestAltTextGeneration(contentId, project),
     ),
+    context.api.on('generate:fields', requestFieldsGeneration),
   ];
 
   return {
@@ -89,7 +90,7 @@ function mount(container: HTMLElement, context: AiPluginContext): AiPluginInstan
 const plugin: AiPlugin = {
   id: 'ai.contentOperator',
   version: VERSION,
-  commands: ['dialog:open', 'dialog:close', 'context:set', 'image:uploaded'],
+  commands: ['dialog:open', 'dialog:close', 'context:set', 'image:uploaded', 'generate:fields'],
   mount,
 };
 

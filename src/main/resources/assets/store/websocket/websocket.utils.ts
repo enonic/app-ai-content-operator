@@ -1,3 +1,4 @@
+import { aiFieldPathToPathString } from '@shared/ai-field-path';
 import { WS_PROTOCOL } from '@shared/constants';
 import { MessageType } from '@shared/websocket';
 import { t } from 'i18next';
@@ -16,7 +17,6 @@ import {
   updateUserMessage,
 } from '@/store/chat';
 import { $config } from '@/store/config';
-import { $dialog } from '@/store/dialog/dialog.store';
 import {
   $contentPath,
   $fieldDescriptors,
@@ -27,8 +27,11 @@ import {
   pathToString,
 } from '@/store/content';
 import { $context } from '@/store/context';
+import { $dialog } from '@/store/dialog/dialog.store';
+import { applyResults, getHostApi } from '@/store/host';
 import { $licenseState } from '@/store/license';
 
+import type { AiFieldPath, AiFieldsRequest, AiFieldsResult } from '@shared/ai-protocol';
 import type {
   AltTextGeneratedMessagePayload,
   AnalyzedMessagePayload,
@@ -45,6 +48,7 @@ import type { Descendant } from 'slate';
 
 import {
   $buffer,
+  $isBusy,
   $isConnected,
   $lastPayload,
   $needsUnmount,
@@ -121,6 +125,7 @@ const PONG_TIMEOUT = 15_000; // ms
 const STOP_ANALYSIS_TIMEOUT = 20_000; // ms
 const STOP_GENERATION_TIMEOUT = 60_000; // ms
 const ALT_TEXT_RESULT_TIMEOUT = 60_000; // ms
+const FIELDS_RESULT_TIMEOUT = 60_000; // ms
 
 let pingInterval: number;
 let pongTimeout: number;
@@ -369,10 +374,176 @@ export function sendStop(role: Exclude<MessageRole, 'model'>): void {
   }
 
   sendMessage({ type: MessageType.STOP, metadata: createMetadata(), payload: { generationId } });
-  addStoppedMessage(role, modelMessageId);
+  if (activeFieldsRequest == null) {
+    addStoppedMessage(role, modelMessageId);
+  }
 
   clearTimeout(stopTimeout);
   $buffer.set({});
+  finishFieldsRequest(() => 'stopped');
+}
+
+//
+//* Flow: headless field generation (voice)
+//
+// CS asks for values for given fields without the dialog: the request becomes a
+// prompt with one mention per field and goes through the server's generation
+// pipeline, but stays out of the chat history; the results are applied as soon
+// as they arrive. A temporary connection is held while the dialog is closed.
+
+type FieldsRequest = AiFieldsRequest & { pathStrings: string[]; unsupported: AiFieldPath[] };
+
+let pendingFieldsRequest: Optional<FieldsRequest>;
+let activeFieldsRequest: Optional<FieldsRequest>;
+let releaseFieldsConnection: Optional<() => void>;
+let fieldsResultTimeout: number;
+
+export function requestFieldsGeneration(request: AiFieldsRequest): void {
+  const api = getHostApi();
+  if (activeFieldsRequest != null || pendingFieldsRequest != null || $isBusy.get()) {
+    api.reportResult({
+      requestId: request.requestId,
+      applied: [],
+      failed: request.paths.map((path) => ({ path, message: 'busy' })),
+    });
+    return;
+  }
+
+  const unsupported = request.paths.filter((path) => aiFieldPathToPathString(path) == null);
+  const pathStrings = request.paths
+    .map(aiFieldPathToPathString)
+    .filter((path): path is string => path != null);
+  const fieldsRequest: FieldsRequest = { ...request, pathStrings, unsupported };
+  console.info('[ai.contentOperator] voice request', request.requestId, pathStrings.join(', '));
+
+  if (pathStrings.length === 0) {
+    reportFieldsResult(fieldsRequest, {});
+    return;
+  }
+
+  request.paths.forEach((path) => {
+    if (!unsupported.includes(path)) api.setFieldState(path, 'processing');
+  });
+
+  clearTimeout(fieldsResultTimeout);
+  fieldsResultTimeout = window.setTimeout(() => {
+    finishFieldsRequest(() => 'timeout');
+  }, FIELDS_RESULT_TIMEOUT);
+
+  if ($isConnected.get()) {
+    activeFieldsRequest = fieldsRequest;
+    sendFieldsRequest(fieldsRequest);
+    return;
+  }
+
+  pendingFieldsRequest = fieldsRequest;
+  console.info('[ai.contentOperator] voice request waits for a connection');
+  const { lifecycle } = $websocket.get();
+  if (
+    releaseFieldsConnection == null &&
+    (lifecycle === 'unmounted' || lifecycle === 'unmounting')
+  ) {
+    releaseFieldsConnection = mountWebSocket();
+  }
+}
+
+function flushPendingFieldsRequest(): void {
+  const request = pendingFieldsRequest;
+  if (request == null) {
+    return;
+  }
+  pendingFieldsRequest = null;
+  activeFieldsRequest = request;
+  sendFieldsRequest(request);
+}
+
+function buildFieldsPrompt({ pathStrings, instructions }: FieldsRequest): string {
+  const mentions = pathStrings.map((path) => `{{${path}}}`);
+  const list =
+    mentions.length > 1
+      ? `${mentions.slice(0, -1).join(', ')} and ${mentions[mentions.length - 1]}`
+      : mentions[0];
+  const prompt = `Generate a suggestion for ${list}.`;
+  return instructions ? `${prompt} ${instructions}` : prompt;
+}
+
+function sendFieldsRequest(request: FieldsRequest): void {
+  const prompt = buildFieldsPrompt(request);
+  sendGenerateMessage(createGenerateMessagePayload(prompt));
+  console.info('[ai.contentOperator] voice prompt sent', JSON.stringify(prompt));
+}
+
+function pickFirst(entry: string | string[] | undefined): string | undefined {
+  return Array.isArray(entry) ? entry[0] : entry;
+}
+
+// Applies what the model produced for the requested fields and reports back.
+function reportFieldsResult(
+  request: FieldsRequest,
+  result: Record<string, string | string[]>,
+): void {
+  const api = getHostApi();
+  const applied: AiFieldPath[] = [];
+  const failed: AiFieldsResult['failed'] = request.unsupported.map((path) => ({
+    path,
+    message: 'unsupported field',
+  }));
+
+  request.paths.forEach((path) => {
+    const pathString = aiFieldPathToPathString(path);
+    if (pathString == null) {
+      return;
+    }
+    const text = pickFirst(result[pathString] ?? result[pathString.slice(1)]);
+    if (text == null || text.length === 0) {
+      api.setFieldState(path, 'failed');
+      failed.push({ path, message: 'no suggestion' });
+      return;
+    }
+    applyResults([{ path: pathString, text }]);
+    api.setFieldState(path, 'completed');
+    applied.push(path);
+  });
+
+  console.info(
+    '[ai.contentOperator] voice result',
+    applied.length,
+    'applied,',
+    failed.length,
+    'failed',
+  );
+  api.reportResult({ requestId: request.requestId, applied, failed });
+}
+
+// Ends the active or pending request as failed with the given message.
+function finishFieldsRequest(message: () => string): void {
+  const request = activeFieldsRequest ?? pendingFieldsRequest;
+  activeFieldsRequest = null;
+  pendingFieldsRequest = null;
+  clearTimeout(fieldsResultTimeout);
+  if (request == null) {
+    return;
+  }
+  console.info('[ai.contentOperator] voice request failed:', message());
+  const api = getHostApi();
+  request.paths.forEach((path) => api.setFieldState(path, 'failed', { message: message() }));
+  api.reportResult({
+    requestId: request.requestId,
+    applied: [],
+    failed: request.paths.map((path) => ({ path, message: message() })),
+  });
+  releaseFieldsConnectionIfIdle();
+}
+
+function releaseFieldsConnectionIfIdle(): void {
+  if (activeFieldsRequest != null || pendingFieldsRequest != null) {
+    return;
+  }
+  const release = releaseFieldsConnection;
+  releaseFieldsConnection = null;
+  if (release != null && $dialog.get().hidden) {
+    release();
+  }
 }
 
 export function sendGenerateAltText(contentId: string, project: string): void {
@@ -407,7 +578,10 @@ export function requestAltTextGeneration(contentId: string, project: string): vo
   }
 
   const { lifecycle } = $websocket.get();
-  if (releaseAltTextConnection == null && (lifecycle === 'unmounted' || lifecycle === 'unmounting')) {
+  if (
+    releaseAltTextConnection == null &&
+    (lifecycle === 'unmounted' || lifecycle === 'unmounting')
+  ) {
     releaseAltTextConnection = mountWebSocket();
   }
 }
@@ -520,9 +694,29 @@ function handleLicenseUpdatedMessage(payload: LicenseUpdatedPayload): void {
   // in case when attempt to analyze/generate was made and license was missing
   clearTimeout(stopTimeout);
   $buffer.set({});
+
+  // The server sends the license right after CONNECTED and this wipes the
+  // buffer, so a request queued for a fresh connection is only sent from here.
+  if (pendingFieldsRequest != null) {
+    if ($licenseState.get() === 'OK') {
+      flushPendingFieldsRequest();
+    } else {
+      finishFieldsRequest(() => 'license');
+    }
+  } else if (activeFieldsRequest != null && $licenseState.get() !== 'OK') {
+    finishFieldsRequest(() => 'license');
+  }
 }
 
 function handleAnalyzedMessage({ request, result }: AnalyzedMessagePayload): void {
+  if (activeFieldsRequest != null) {
+    clearTimeout(stopTimeout);
+    stopTimeout = window.setTimeout(() => {
+      sendStop(MessageRole.SYSTEM);
+    }, STOP_GENERATION_TIMEOUT);
+    return;
+  }
+
   const { userMessageId } = $buffer.get();
   if (!userMessageId) {
     return;
@@ -547,6 +741,17 @@ function handleAnalyzedMessage({ request, result }: AnalyzedMessagePayload): voi
 }
 
 function handleGeneratedMessage({ request, result }: GeneratedMessagePayload): void {
+  const fieldsRequest = activeFieldsRequest;
+  if (fieldsRequest != null) {
+    activeFieldsRequest = null;
+    clearTimeout(stopTimeout);
+    clearTimeout(fieldsResultTimeout);
+    $buffer.set({});
+    reportFieldsResult(fieldsRequest, result);
+    releaseFieldsConnectionIfIdle();
+    return;
+  }
+
   const { userMessageId, modelMessageId } = $buffer.get();
   if (!userMessageId || !modelMessageId) {
     return;
@@ -560,6 +765,13 @@ function handleGeneratedMessage({ request, result }: GeneratedMessagePayload): v
 }
 
 function handleFailedMessage(payload: FailedMessagePayload): void {
+  if (activeFieldsRequest != null) {
+    clearTimeout(stopTimeout);
+    $buffer.set({});
+    finishFieldsRequest(() => payload.message);
+    return;
+  }
+
   addErrorMessage(payload, $buffer.get().modelMessageId);
 
   clearTimeout(stopTimeout);

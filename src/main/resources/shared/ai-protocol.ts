@@ -1,10 +1,10 @@
 // ai-protocol.ts — the CS <-> AI-plugin contract. Pure types, zero dependencies.
 //
-// Source of truth: app-contentstudio (v6/features/store/ai/ai-protocol.ts).
+// Source of truth: app-contentstudio (v6/shared/ai/ai-protocol.ts).
 // Mirror copies in app-ai-translator and app-ai-content-operator must stay
-// byte-identical. Do not edit a mirror copy.
+// in sync (each repo applies its own formatting). Do not edit a mirror copy.
 
-export const AI_PROTOCOL_VERSION = 2;
+export const AI_PROTOCOL_VERSION = 3;
 
 // ---- Identity ---------------------------------------------------------------
 
@@ -94,6 +94,33 @@ export type AiCommands = {
   'dialog:close': void;
   'context:set': string | null;
   'image:uploaded': { contentId: string; project: string };
+  // Headless generation (voice): produce values for the given fields and
+  // apply them without opening the dialog; answer with reportResult.
+  'generate:fields': AiFieldsRequest;
+  // Headless translation (voice): translate the persisted content into the
+  // language, apply the given fields (all translatable fields when omitted)
+  // without opening the dialog; answer with reportResult.
+  'translate:fields': AiTranslateRequest;
+};
+
+// ---- Field requests and results (headless commands) -------------------------
+
+export type AiFieldsRequest = {
+  requestId: string;
+  paths: AiFieldPath[];
+  instructions?: string;
+};
+
+export type AiTranslateRequest = {
+  requestId: string;
+  language: AiLanguageSnapshot;
+  paths?: AiFieldPath[];
+};
+
+export type AiFieldsResult = {
+  requestId: string;
+  applied: AiFieldPath[];
+  failed: { path?: AiFieldPath; message: string }[];
 };
 
 // ---- Host API (plugin -> CS) ------------------------------------------------
@@ -111,6 +138,8 @@ export type AiPluginApi = {
   setDialogState(open: boolean): void;
   requestSave(): void;
   notify(level: AiNotifyLevel, message: string): void;
+  // Completes a headless field command (see AiCommands).
+  reportResult(result: AiFieldsResult): void;
 };
 
 // ---- Plugin manifest and lifecycle ------------------------------------------
