@@ -7,7 +7,7 @@ allowBuilds:
 catalog:
   vite: npm:@voidzero-dev/vite-plus-core@^0.2.8
   vite-plus: ^0.2.9
-  vitest: ^5.0.0
+  vitest: ^5.0.1
 
 ignoredBuiltDependencies:
   - esbuild
