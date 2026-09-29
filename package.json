@@ -64,7 +64,7 @@
     "@google/genai": "~2.24.0",
     "@preact/preset-vite": "~2.10.6",
     "@storybook/addon-docs": "~10.6.0",
-    "@storybook/addon-themes": "~10.5.10",
+    "@storybook/addon-themes": "~10.6.0",
     "@storybook/preact-vite": "~10.6.0",
     "@swc/core": "^1.16.2",
     "@tailwindcss/typography": "~0.5.20",
