@@ -1,6 +1,5 @@
-ignoredBuiltDependencies:
-  - esbuild
-  - protobufjs
-
-onlyBuiltDependencies:
-  - '@swc/core'
+allowBuilds:
+  '@swc/core': true
+  esbuild: false
+  protobufjs: false
+  unrs-resolver: false
