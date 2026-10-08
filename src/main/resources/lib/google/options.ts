@@ -29,12 +29,12 @@ type ModelDefaults = {
 // Pro favours precise, intent-aware output (more thinking); flash favours faster, lighter analysis.
 const MODEL_DEFAULTS: Record<Model, ModelDefaults> = {
   flash: {
-    modelName: 'gemini-3.1-flash-lite',
+    modelName: 'gemini-3.5-flash-lite',
     thinkingLevel: 'minimal',
     urlOverride: GOOGLE_GEMINI_FLASH_URL,
   },
   pro: {
-    modelName: 'gemini-3.7-flash',
+    modelName: 'gemini-3.8-flash',
     thinkingLevel: 'low',
     urlOverride: GOOGLE_GEMINI_PRO_URL,
   },
