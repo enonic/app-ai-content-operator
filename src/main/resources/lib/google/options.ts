@@ -58,19 +58,19 @@ function createModelGenerateUrl(model: Model, projectId: string): string {
 }
 
 function createModelBaseUrl(model: Model, projectId: string): string {
-    // Regional endpoint with EU data residency (europe-west1). Preview models may not be available.
+    // EU multi-region endpoint (eu) with EU data residency. Required for models not available in single regions.
     // Global endpoint routes to any available region (no data residency guarantee):
     // https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/google/models/<model>
     switch (model) {
         case 'flash':
             return (
                 GOOGLE_GEMINI_FLASH_URL ||
-                `https://europe-west1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/europe-west1/publishers/google/models/gemini-2.5-flash`
+                `https://aiplatform.eu.rep.googleapis.com/v1/projects/${projectId}/locations/eu/publishers/google/models/gemini-3.5-flash-lite`
             );
         case 'pro':
             return (
                 GOOGLE_GEMINI_PRO_URL ||
-                `https://europe-west1-aiplatform.googleapis.com/v1/projects/${projectId}/locations/europe-west1/publishers/google/models/gemini-2.5-pro`
+                `https://aiplatform.eu.rep.googleapis.com/v1/projects/${projectId}/locations/eu/publishers/google/models/gemini-3.8-flash`
             );
     }
 }
