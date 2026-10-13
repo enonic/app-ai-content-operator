@@ -49,34 +49,29 @@ function seedMockStores(): () => void {
 
   setSchema({
     name: 'mockSchema',
-    form: {
-      formItems: [
-        {
-          Input: {
-            name: 'intro',
-            label: 'Introduction',
-            inputType: 'TextArea',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-        {
-          Input: {
-            name: 'displayName',
-            label: 'Display Name',
-            inputType: 'TextLine',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-        {
-          Input: {
-            name: 'description',
-            label: 'Description',
-            inputType: 'TextArea',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-      ],
-    },
+    form: [
+      {
+        formItemType: 'Input',
+        name: 'intro',
+        label: 'Introduction',
+        inputType: 'TextArea',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+      {
+        formItemType: 'Input',
+        name: 'displayName',
+        label: 'Display Name',
+        inputType: 'TextLine',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+      {
+        formItemType: 'Input',
+        name: 'description',
+        label: 'Description',
+        inputType: 'TextArea',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+    ],
   });
   setPersistedData({
     contentId: 'mock-id',

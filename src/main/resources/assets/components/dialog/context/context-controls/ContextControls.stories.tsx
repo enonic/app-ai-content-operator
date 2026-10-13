@@ -26,18 +26,15 @@ const wrapperClasses =
 function seedSingleEntry(): () => void {
   setSchema({
     name: 'mockSchema',
-    form: {
-      formItems: [
-        {
-          Input: {
-            name: 'displayName',
-            label: 'Display Name',
-            inputType: 'TextLine',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-      ],
-    },
+    form: [
+      {
+        formItemType: 'Input',
+        name: 'displayName',
+        label: 'Display Name',
+        inputType: 'TextLine',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+    ],
   });
   setPersistedData({
     contentId: 'mock-id',
@@ -52,36 +49,31 @@ function seedSingleEntry(): () => void {
 function seedMultipleEntries(): () => void {
   setSchema({
     name: 'mockSchema',
-    form: {
-      formItems: [
-        {
-          FormItemSet: {
-            name: 'article',
-            label: 'Article',
+    form: [
+      {
+        formItemType: 'ItemSet',
+        name: 'article',
+        label: 'Article',
+        occurrences: { minimum: 0, maximum: 1 },
+        items: [
+          {
+            formItemType: 'ItemSet',
+            name: 'intro',
+            label: 'Intro',
             occurrences: { minimum: 0, maximum: 1 },
             items: [
               {
-                FormItemSet: {
-                  name: 'intro',
-                  label: 'Intro',
-                  occurrences: { minimum: 0, maximum: 1 },
-                  items: [
-                    {
-                      Input: {
-                        name: 'title',
-                        label: 'Title',
-                        inputType: 'TextLine',
-                        occurrences: { minimum: 0, maximum: 1 },
-                      },
-                    },
-                  ],
-                },
+                formItemType: 'Input',
+                name: 'title',
+                label: 'Title',
+                inputType: 'TextLine',
+                occurrences: { minimum: 0, maximum: 1 },
               },
             ],
           },
-        },
-      ],
-    },
+        ],
+      },
+    ],
   });
   setPersistedData({
     contentId: 'mock-id',
@@ -116,36 +108,31 @@ function seedMultipleEntries(): () => void {
 function seedLongLabels(): () => void {
   setSchema({
     name: 'mockSchema',
-    form: {
-      formItems: [
-        {
-          FormItemSet: {
-            name: 'outerSection',
+    form: [
+      {
+        formItemType: 'ItemSet',
+        name: 'outerSection',
+        label: longLabel,
+        occurrences: { minimum: 0, maximum: 1 },
+        items: [
+          {
+            formItemType: 'ItemSet',
+            name: 'innerSection',
             label: longLabel,
             occurrences: { minimum: 0, maximum: 1 },
             items: [
               {
-                FormItemSet: {
-                  name: 'innerSection',
-                  label: longLabel,
-                  occurrences: { minimum: 0, maximum: 1 },
-                  items: [
-                    {
-                      Input: {
-                        name: 'title',
-                        label: 'Title',
-                        inputType: 'TextLine',
-                        occurrences: { minimum: 0, maximum: 1 },
-                      },
-                    },
-                  ],
-                },
+                formItemType: 'Input',
+                name: 'title',
+                label: 'Title',
+                inputType: 'TextLine',
+                occurrences: { minimum: 0, maximum: 1 },
               },
             ],
           },
-        },
-      ],
-    },
+        ],
+      },
+    ],
   });
   setPersistedData({
     contentId: 'mock-id',

@@ -1,60 +1,26 @@
+import type {
+  FormItemJson,
+  FormJson,
+  InputJson,
+  ItemSetJson,
+  LayoutJson,
+  OptionSetJson,
+  OptionSetOptionJson,
+} from '@enonic/ui-types';
+
 export type Schema = {
   name: string;
-  form: {
-    formItems: FormItem[];
-  };
+  form: FormJson;
 };
 
-export type FormItem = FieldSet | FormItemSet | FormOptionSet | Input | FormOptionSetOption;
+export type FormItem = FormItemJson | OptionSetOption;
 
-export type Input = {
-  Input: InputData;
-};
+export type Input = InputJson;
 
-export type FieldSet = {
-  FieldSet: FieldSetData;
-};
+export type Layout = LayoutJson;
 
-export type FormItemSet = {
-  FormItemSet: FormItemSetData;
-};
+export type ItemSet = ItemSetJson;
 
-export type FormOptionSet = {
-  FormOptionSet: FormOptionSetData;
-};
+export type OptionSet = OptionSetJson;
 
-export type FormOptionSetOption = FormItemNameAndLabel & FormItemHelpText & FormItems;
-
-export type FormItemNameAndLabel = {
-  name: string;
-  label: string;
-};
-
-export type FormItems = {
-  items: FormItem[];
-};
-
-export type FormItemOccurrences = {
-  occurrences: {
-    minimum: number;
-    maximum: number;
-  };
-};
-
-export type FieldSetData = FormItemNameAndLabel & FormItems;
-
-export type FormSetData = FormItemNameAndLabel & FormItemHelpText & FormItemOccurrences;
-
-export type FormItemSetData = FormSetData & FormItems;
-
-export type InputData = FormSetData & {
-  inputType: string;
-};
-
-export type FormItemHelpText = {
-  helpText?: string;
-};
-
-export type FormOptionSetData = FormSetData & {
-  options: FormOptionSetOption[];
-};
+export type OptionSetOption = OptionSetOptionJson;

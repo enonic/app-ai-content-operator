@@ -68,34 +68,29 @@ const longLabelMessage: ModelChatMessage = {
 function seedLongLabelStores(): () => void {
   setSchema({
     name: 'mockSchema',
-    form: {
-      formItems: [
-        {
-          Input: {
-            name: 'displayName',
-            label: 'Display Name',
-            inputType: 'TextLine',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-        {
-          Input: {
-            name: 'veryLongLabel',
-            label: longLabel,
-            inputType: 'TextLine',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-        {
-          Input: {
-            name: 'description',
-            label: 'Description',
-            inputType: 'TextArea',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-      ],
-    },
+    form: [
+      {
+        formItemType: 'Input',
+        name: 'displayName',
+        label: 'Display Name',
+        inputType: 'TextLine',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+      {
+        formItemType: 'Input',
+        name: 'veryLongLabel',
+        label: longLabel,
+        inputType: 'TextLine',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+      {
+        formItemType: 'Input',
+        name: 'description',
+        label: 'Description',
+        inputType: 'TextArea',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+    ],
   });
   setPersistedData({
     contentId: 'mock-id',
