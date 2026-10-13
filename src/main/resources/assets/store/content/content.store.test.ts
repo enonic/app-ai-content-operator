@@ -130,26 +130,22 @@ describe('isResolvableContext', () => {
 
 function getResolvableSchema(): Schema {
   return {
-    form: {
-      formItems: [
-        {
-          Input: {
-            name: 'description',
-            label: 'Description',
-            occurrences: { maximum: 1, minimum: 0 },
-            inputType: 'TextLine',
-          },
-        },
-        {
-          Input: {
-            name: 'baseUrl',
-            label: 'Base URL',
-            occurrences: { maximum: 1, minimum: 0 },
-            inputType: 'TextLine',
-          },
-        },
-      ],
-    },
+    form: [
+      {
+        formItemType: 'Input',
+        name: 'description',
+        label: 'Description',
+        occurrences: { maximum: 1, minimum: 0 },
+        inputType: 'TextLine',
+      },
+      {
+        formItemType: 'Input',
+        name: 'baseUrl',
+        label: 'Base URL',
+        occurrences: { maximum: 1, minimum: 0 },
+        inputType: 'TextLine',
+      },
+    ],
     name: 'Test',
   };
 }

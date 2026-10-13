@@ -57,7 +57,7 @@ export const $contentPath = computed($content, ({ persisted }) => persisted?.con
 export const $topic = computed($content, (data) => data.persisted?.topic ?? '');
 
 export const $allFormItemsWithPaths = computed($content, ({ schema, persisted }) => {
-  const schemaPaths = schema ? getFormItemsWithPaths(schema.form.formItems) : [];
+  const schemaPaths = schema ? getFormItemsWithPaths(schema.form) : [];
   const result = persisted ? getDataPathsToEditableItems(schemaPaths, persisted) : [];
 
   return [createDisplayNameInput(), ...result];
@@ -153,9 +153,9 @@ export function createFields(): Record<string, DataEntry> {
     result[pathToString(inputWithPath)] = {
       value: findValueByPath(inputWithPath)?.v ?? '',
       type: getInputType(inputWithPath),
-      schemaType: inputWithPath.Input.inputType,
-      schemaLabel: inputWithPath.Input.label,
-      schemaHelpText: inputWithPath.Input.helpText,
+      schemaType: inputWithPath.inputType,
+      schemaLabel: inputWithPath.label,
+      schemaHelpText: inputWithPath.helpText,
       parentHelpTexts: getParentHelpTexts(inputWithPath, $helpTextMap.get()),
     };
   });

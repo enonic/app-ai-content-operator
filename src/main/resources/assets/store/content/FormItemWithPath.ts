@@ -1,12 +1,12 @@
 import type { Path } from './Path';
-import type { FormItem, FormItemSet, FormOptionSet, FormOptionSetOption, Input } from './Schema';
+import type { FormItem, Input, ItemSet, OptionSet, OptionSetOption } from './Schema';
 
 export type FormItemWithPath = FormItem & Path;
 
 export type InputWithPath = Input & Path;
 
-export type FormItemSetWithPath = FormItemSet & Path;
+export type ItemSetWithPath = ItemSet & Path;
 
-export type FormOptionSetWithPath = FormOptionSet & Path;
+export type OptionSetWithPath = OptionSet & Path;
 
-export type FormOptionSetOptionWithPath = FormOptionSetOption & Path;
+export type OptionSetOptionWithPath = OptionSetOption & Path;

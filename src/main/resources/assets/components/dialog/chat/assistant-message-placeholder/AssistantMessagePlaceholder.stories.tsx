@@ -49,34 +49,29 @@ const multipleFieldsContent: PlaceholderContent = {
 function seedStores(): void {
   setSchema({
     name: 'mockSchema',
-    form: {
-      formItems: [
-        {
-          Input: {
-            name: 'displayName',
-            label: 'Display Name',
-            inputType: 'TextLine',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-        {
-          Input: {
-            name: 'description',
-            label: 'Description',
-            inputType: 'TextArea',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-        {
-          Input: {
-            name: 'tagline',
-            label: 'Tagline',
-            inputType: 'TextLine',
-            occurrences: { minimum: 0, maximum: 1 },
-          },
-        },
-      ],
-    },
+    form: [
+      {
+        formItemType: 'Input',
+        name: 'displayName',
+        label: 'Display Name',
+        inputType: 'TextLine',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+      {
+        formItemType: 'Input',
+        name: 'description',
+        label: 'Description',
+        inputType: 'TextArea',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+      {
+        formItemType: 'Input',
+        name: 'tagline',
+        label: 'Tagline',
+        inputType: 'TextLine',
+        occurrences: { minimum: 0, maximum: 1 },
+      },
+    ],
   });
   setPersistedData({
     contentId: 'mock-id',

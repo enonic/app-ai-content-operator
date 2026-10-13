@@ -2,23 +2,10 @@ import { SPECIAL_NAMES } from '@shared/enums';
 import { t } from 'i18next';
 
 import type { ContentData, PropertyArray, PropertyValue } from './ContentData';
-import type {
-  FormItemSetWithPath,
-  FormItemWithPath,
-  FormOptionSetOptionWithPath,
-  FormOptionSetWithPath,
-  InputWithPath,
-} from './FormItemWithPath';
+import type { FormItemWithPath, InputWithPath } from './FormItemWithPath';
 import type { Mention } from './Mention';
 import type { Path, PathElement } from './Path';
-import type {
-  FieldSet,
-  FormItem,
-  FormItemSet,
-  FormOptionSet,
-  FormOptionSetOption,
-  Input,
-} from './Schema';
+import type { FormItem, Input, ItemSet, Layout, OptionSet, OptionSetOption } from './Schema';
 import type { DataEntryType } from '@shared/data/DataEntry';
 
 //
@@ -26,7 +13,7 @@ import type { DataEntryType } from '@shared/data/DataEntry';
 //
 
 export function getInputType(inputWithPath: Optional<InputWithPath>): DataEntryType {
-  return inputWithPath?.Input.inputType === 'HtmlArea' ? 'html' : 'text';
+  return inputWithPath?.inputType === 'HtmlArea' ? 'html' : 'text';
 }
 
 //
@@ -155,41 +142,29 @@ export function getAllPathsFromString(pathAsString: string): Path[] {
 
 export const isPath = (item: Path): item is Path => 'elements' in item;
 
-export const isInput = (item: FormItem): item is Input => 'Input' in item;
+export const isInput = (item: FormItem): item is Input =>
+  'formItemType' in item && item.formItemType === 'Input';
 
-const isFieldSet = (item: FormItem): item is FieldSet => 'FieldSet' in item;
+const isLayout = (item: FormItem): item is Layout =>
+  'formItemType' in item && item.formItemType === 'Layout';
 
-export const isFormItemSet = (item: FormItem): item is FormItemSet => 'FormItemSet' in item;
+export const isItemSet = (item: FormItem): item is ItemSet =>
+  'formItemType' in item && item.formItemType === 'ItemSet';
 
-export const isFormOptionSet = (item: FormItem): item is FormOptionSet => 'FormOptionSet' in item;
+export const isOptionSet = (item: FormItem): item is OptionSet =>
+  'formItemType' in item && item.formItemType === 'OptionSet';
 
-export const isFormOptionSetOption = (item: FormItem): item is FormOptionSetOption =>
-  'name' in item &&
-  'label' in item &&
-  'items' in item &&
-  !isInput(item) &&
-  !isFieldSet(item) &&
-  !isFormItemSet(item) &&
-  !isFormOptionSet(item);
+export const isOptionSetOption = (item: FormItem): item is OptionSetOption =>
+  !('formItemType' in item);
 
-export const isInputWithPath = (item: FormItemWithPath): item is InputWithPath =>
-  isInput(item) && isPath(item);
-
-export const isFormItemSetWithPath = (item: FormItemWithPath): item is FormItemSetWithPath =>
-  isFormItemSet(item) && isPath(item);
-
-export const isFormOptionSetWithPath = (item: FormItemWithPath): item is FormOptionSetWithPath =>
-  isFormOptionSet(item) && isPath(item);
-
-export const isFormOptionSetOptionWithPath = (
-  item: FormItemWithPath,
-): item is FormOptionSetOptionWithPath => isFormOptionSetOption(item) && isPath(item);
-
-export function getFormItemsWithPaths(formItems: FormItem[]): FormItemWithPath[] {
+export function getFormItemsWithPaths(formItems: readonly FormItem[]): FormItemWithPath[] {
   return getPathsOfMentionableItems(formItems, { elements: [] });
 }
 
-function getPathsOfMentionableItems(formItems: FormItem[], path: Path): FormItemWithPath[] {
+function getPathsOfMentionableItems(
+  formItems: readonly FormItem[],
+  path: Path,
+): FormItemWithPath[] {
   return formItems.flatMap((item) => fetchFormItemPath(item, path));
 }
 
@@ -198,84 +173,61 @@ function fetchFormItemPath(item: FormItem, path: Path): FormItemWithPath[] {
     return isInputToEdit(item) ? [getInputPathEntry(item, path)] : [];
   }
 
-  if (isFieldSet(item)) {
-    return getPathsOfMentionableItems(item.FieldSet.items, { elements: path.elements.slice() });
+  if (isLayout(item)) {
+    return getPathsOfMentionableItems(item.items, { elements: path.elements.slice() });
   }
 
-  if (isFormItemSet(item)) {
-    return getFormItemSetPathEntries(item, path);
+  if (isItemSet(item)) {
+    return getItemSetPathEntries(item, path);
   }
 
-  if (isFormOptionSet(item)) {
-    return getFormOptionSetPathEntries(item, path);
+  if (isOptionSet(item)) {
+    return getOptionSetPathEntries(item, path);
   }
 
   return [];
 }
 
 function isInputToEdit(item: Input): boolean {
-  const inputType = item.Input.inputType;
+  const inputType = item.inputType;
   return inputType === 'TextArea' || inputType === 'TextLine' || inputType === 'HtmlArea';
 }
 
 function getInputPathEntry(item: Input, path: Path): InputWithPath {
   const pathElements = path.elements.slice();
-  pathElements.push({ name: item.Input.name, label: item.Input.label });
-  return { elements: pathElements, Input: item.Input };
+  pathElements.push({ name: item.name, label: item.label });
+  return { ...item, elements: pathElements };
 }
 
-function getFormItemSetPathEntries(item: FormItemSet, path: Path): FormItemWithPath[] {
+function getItemSetPathEntries(item: ItemSet, path: Path): FormItemWithPath[] {
   const pathElements = path.elements.slice();
-  pathElements.push({ name: item.FormItemSet.name, label: item.FormItemSet.label });
+  pathElements.push({ name: item.name, label: item.label });
 
-  const formItemSetItemWithPath = {
-    elements: pathElements.slice(),
-    FormItemSet: item.FormItemSet,
-  };
   return [
-    formItemSetItemWithPath,
-    ...getPathsOfMentionableItems(item.FormItemSet.items, { elements: pathElements }),
+    { ...item, elements: pathElements.slice() },
+    ...getPathsOfMentionableItems(item.items, { elements: pathElements }),
   ];
 }
 
-function getFormOptionSetPathEntries(item: FormOptionSet, path: Path): FormItemWithPath[] {
+function getOptionSetPathEntries(item: OptionSet, path: Path): FormItemWithPath[] {
   const pathElements = path.elements.slice();
+  pathElements.push({ name: item.name, label: item.label });
 
-  pathElements.push({ name: item.FormOptionSet.name, label: item.FormOptionSet.label });
-
-  const result: FormItemWithPath[] = [];
-
-  const formOptionSetWithPath: FormOptionSetWithPath = {
-    elements: pathElements.slice(),
-    FormOptionSet: item.FormOptionSet,
-  };
-
-  result.push(formOptionSetWithPath);
-
-  item.FormOptionSet.options.forEach((option) => {
-    result.push(...getFormOptionSetOptionPathEntries(option, { elements: pathElements }));
-  });
-
-  return result;
+  return [
+    { ...item, elements: pathElements.slice() },
+    ...item.options.flatMap((option) =>
+      getOptionSetOptionPathEntries(option, { elements: pathElements }),
+    ),
+  ];
 }
 
-function getFormOptionSetOptionPathEntries(
-  option: FormOptionSetOption,
-  path: Path,
-): FormItemWithPath[] {
+function getOptionSetOptionPathEntries(option: OptionSetOption, path: Path): FormItemWithPath[] {
   const pathElements = path.elements.slice();
   pathElements.push({ name: option.name, label: option.label });
 
-  const optionFormItemWithPath: FormOptionSetOptionWithPath = {
-    elements: pathElements.slice(),
-    items: option.items,
-    name: option.name,
-    label: option.label,
-  };
-
   return [
-    optionFormItemWithPath,
-    ...getPathsOfMentionableItems(option.items, { elements: pathElements }),
+    { ...option, elements: pathElements.slice() },
+    ...getPathsOfMentionableItems(option.items ?? [], { elements: pathElements }),
   ];
 }
 
@@ -288,22 +240,16 @@ export function isOrContainsEditableInput(formItem: FormItem): boolean {
     return isInputToEdit(formItem);
   }
 
-  if (isFieldSet(formItem)) {
-    return formItem.FieldSet.items.some(isOrContainsEditableInput);
-  }
-
-  if (isFormItemSet(formItem)) {
-    return formItem.FormItemSet.items.some(isOrContainsEditableInput);
-  }
-
-  if (isFormOptionSet(formItem)) {
-    return formItem.FormOptionSet.options.some((option) =>
-      option.items.some(isOrContainsEditableInput),
-    );
-  }
-
-  if (isFormOptionSetOption(formItem)) {
+  if (isLayout(formItem) || isItemSet(formItem)) {
     return formItem.items.some(isOrContainsEditableInput);
+  }
+
+  if (isOptionSet(formItem)) {
+    return formItem.options.some((option) => (option.items ?? []).some(isOrContainsEditableInput));
+  }
+
+  if (isOptionSetOption(formItem)) {
+    return (formItem.items ?? []).some(isOrContainsEditableInput);
   }
 
   return false;
@@ -414,46 +360,19 @@ export function getDataPathsToEditableItems(
       isInput(schemaPath),
     ).filter((dataPath) => dataPath.elements.length === schemaPath.elements.length);
 
-    return dataPaths.map((dataPath) => {
-      if (isInput(schemaPath)) {
-        return {
-          ...dataPath,
-          Input: schemaPath.Input,
-        } satisfies InputWithPath;
-      }
-
-      if (isFormItemSet(schemaPath)) {
-        return {
-          ...dataPath,
-          FormItemSet: schemaPath.FormItemSet,
-        } satisfies FormItemSetWithPath;
-      }
-
-      if (isFormOptionSet(schemaPath)) {
-        return {
-          ...dataPath,
-          FormOptionSet: schemaPath.FormOptionSet,
-        } satisfies FormOptionSetWithPath;
-      }
-
-      return {
-        ...schemaPath,
-        ...dataPath,
-      };
-    });
+    return dataPaths.map((dataPath) => ({ ...schemaPath, ...dataPath }));
   });
 }
 
 export function createDisplayNameInput(): InputWithPath {
   return {
-    Input: {
-      inputType: 'TextLine',
-      label: t('field.mentions.topic.label'),
-      name: SPECIAL_NAMES.topic,
-      occurrences: {
-        maximum: 1,
-        minimum: 0,
-      },
+    formItemType: 'Input',
+    inputType: 'TextLine',
+    label: t('field.mentions.topic.label'),
+    name: SPECIAL_NAMES.topic,
+    occurrences: {
+      maximum: 1,
+      minimum: 0,
     },
     elements: [{ name: SPECIAL_NAMES.topic, label: t('field.mentions.topic.label') }],
   };
@@ -464,12 +383,8 @@ export function isTopicPath(path: Path): boolean {
 }
 
 export function getHelpText(item: FormItem): Optional<string> {
-  if (isInput(item)) {
-    return item.Input.helpText;
-  } else if (isFormItemSet(item)) {
-    return item.FormItemSet.helpText;
-  } else if (isFormOptionSet(item)) {
-    return item.FormOptionSet.helpText;
+  if (isInput(item) || isItemSet(item) || isOptionSet(item)) {
+    return item.helpText;
   }
 
   return undefined;
