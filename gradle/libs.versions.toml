@@ -2,7 +2,7 @@
 google-auth-oauth2 = "1.54.0"
 jsvg = "2.2.0"
 lib-cron = "2.0.0"
-lib-http-client = "4.0.0"
+lib-http-client = "4.0.1"
 lib-license = "4.0.0"
 enonicDefaults = "2.1.7"
 nodeGradle = "7.1.0"
