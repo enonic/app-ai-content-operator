@@ -8,8 +8,8 @@ plugins {
     alias(libs.plugins.node.gradle)
 }
 
-val appName: String by project
-val xpVersion: String by project
+val appName: String = providers.gradleProperty("appName").get()
+val xpVersion: String = providers.gradleProperty("xpVersion").get()
 
 dependencies {
     include(libs.google.auth.oauth2)
