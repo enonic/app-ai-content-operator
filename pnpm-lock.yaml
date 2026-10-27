@@ -84,7 +84,7 @@ importers:
         version: 8.0.4
       '@enonic-types/lib-event':
         specifier: ^8
-        version: 8.0.4
+        version: 8.1.1
       '@enonic-types/lib-project':
         specifier: ^8
         version: 8.0.4
@@ -366,8 +366,8 @@ packages:
   '@enonic-types/lib-context@8.0.4':
     resolution: {integrity: sha512-5E6x4Ow4O9lE1UCYXgwcHytC6GsRbtzdXp7rxSufQxrsJLKvF4+XyQqA2Hws4cGl8RbZhm2gboSB/NfC5TugCw==}
 
-  '@enonic-types/lib-event@8.0.4':
-    resolution: {integrity: sha512-RBmAE/n3EOvrnru/RTvvYFWk0hjahO5rJBD8LycQkBO/Zg8Q5fKFh7dKZpPb9LwbXWPJfJSa6uJZFPsONb606Q==}
+  '@enonic-types/lib-event@8.1.1':
+    resolution: {integrity: sha512-6F1K/8EUNow+zJd/gCe27xVlLU/bBW6gJqUUBnKst1RgK1o9aJh2tCZ6Rkaip4puQn7Eiy7BYDzZdT0EX8ZOug==}
 
   '@enonic-types/lib-project@8.0.4':
     resolution: {integrity: sha512-8k8/7cJEJiyHz18TqYu9jvldHRVvXDmxtmBM7yhykXJdlzRO+kfKT1Dl/a4T10PjkG/SccDthWmTTSOK/ZlOQw==}
@@ -3497,7 +3497,7 @@ snapshots:
     dependencies:
       '@enonic-types/core': 8.0.4
 
-  '@enonic-types/lib-event@8.0.4': {}
+  '@enonic-types/lib-event@8.1.1': {}
 
   '@enonic-types/lib-project@8.0.4':
     dependencies:
