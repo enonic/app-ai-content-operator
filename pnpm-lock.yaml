@@ -90,7 +90,7 @@ importers:
         version: 8.0.4
       '@enonic-types/lib-task':
         specifier: ^8
-        version: 8.0.4
+        version: 8.1.1
       '@enonic-types/lib-websocket':
         specifier: ^8
         version: 8.0.4
@@ -348,6 +348,9 @@ packages:
   '@enonic-types/core@8.0.4':
     resolution: {integrity: sha512-8ZNsk4Yb0MZwq2DW9T6XUxKWCIedt0CUR2bCOriUge3LrY0diwJX2QwaZYrQQ7A4bF8g3dTczO3DDnDRQuPhFg==}
 
+  '@enonic-types/core@8.1.1':
+    resolution: {integrity: sha512-doqfZ7GSm5Q0IIZYED+J/b6KalGAYIcCkTjE6wCzFIVJivlUiJIQMg6hw18G280Vx7ovtVj5oOZgPjPou8SCNw==}
+
   '@enonic-types/global@8.0.4':
     resolution: {integrity: sha512-K32di6aJFFyGQMBwCPC+1Vo/zRFlhwC4iCBKOlQL8FGeFwrc8E+88ZfNhyPO7NVVI0E6TcCpovBmhfQMw7rj8A==}
 
@@ -366,8 +369,8 @@ packages:
   '@enonic-types/lib-project@8.0.4':
     resolution: {integrity: sha512-8k8/7cJEJiyHz18TqYu9jvldHRVvXDmxtmBM7yhykXJdlzRO+kfKT1Dl/a4T10PjkG/SccDthWmTTSOK/ZlOQw==}
 
-  '@enonic-types/lib-task@8.0.4':
-    resolution: {integrity: sha512-FmoM0Jow4tRDcSRXi8GUAbDUY1RA7kIQEo0opzR9O2Nzfpd0xcX4d+vFbl8R11Lp+nMgMmqzdSs2bYVTzv1vbg==}
+  '@enonic-types/lib-task@8.1.1':
+    resolution: {integrity: sha512-AFaMcCoZmz+aM5m4w69ntu7tKnxFmSuuRetGRku1jkIdew0SPBCwU1ab+Kai1jfYnVXpej8bPw3uZZgH70r2Qw==}
 
   '@enonic-types/lib-websocket@8.0.4':
     resolution: {integrity: sha512-FReHVSRPJFkTMLcHjaxL6rQXcWc4LrtqC9qHO+t935mAWKGDByoEVsZbVHMJqNu3WcnT/RpDhTCPgZoFdif1gA==}
@@ -3469,6 +3472,8 @@ snapshots:
 
   '@enonic-types/core@8.0.4': {}
 
+  '@enonic-types/core@8.1.1': {}
+
   '@enonic-types/global@8.0.4':
     dependencies:
       '@enonic-types/core': 8.0.4
@@ -3491,9 +3496,9 @@ snapshots:
     dependencies:
       '@enonic-types/core': 8.0.4
 
-  '@enonic-types/lib-task@8.0.4':
+  '@enonic-types/lib-task@8.1.1':
     dependencies:
-      '@enonic-types/core': 8.0.4
+      '@enonic-types/core': 8.1.1
 
   '@enonic-types/lib-websocket@8.0.4': {}
 
