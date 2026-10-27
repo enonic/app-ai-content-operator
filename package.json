@@ -47,7 +47,7 @@
     "preact": "~10.29.8",
     "react-i18next": "~17.1.8",
     "slate": "~0.126.2",
-    "slate-history": "~0.113.1",
+    "slate-history": "~0.144.0",
     "slate-react": "~0.127.1",
     "tw-animate-css": "^1.4.0"
   },
