@@ -341,6 +341,7 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
 }
 
 function stopGeneration(id: string): void {
+  activeOperations.remove(id);
   emitStopOperation(id);
 }
 

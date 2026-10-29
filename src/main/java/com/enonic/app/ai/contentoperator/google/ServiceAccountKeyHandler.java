@@ -36,9 +36,9 @@ public class ServiceAccountKeyHandler {
 
     public String getProjectId(String serviceAccountKeyPath)
             throws IOException {
-        updateCredentialsIfNeeded(serviceAccountKeyPath);
+        final GoogleCredentials current = updateCredentialsIfNeeded(serviceAccountKeyPath);
 
-        final String projectId = readProjectIdFromCredentials();
+        final String projectId = readProjectIdFromCredentials(current);
         if (projectId != null && !projectId.isBlank()) {
             return projectId;
         }
@@ -47,7 +47,7 @@ public class ServiceAccountKeyHandler {
     }
 
     // ? Only Service Account Key and Compute Engine credentials carry a project; the rest return null
-    private String readProjectIdFromCredentials() {
+    private static String readProjectIdFromCredentials(GoogleCredentials credentials) {
         try {
             return credentials.getProjectId();
         } catch (RuntimeException e) {
