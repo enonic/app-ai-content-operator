@@ -45,20 +45,18 @@ const downscalerBean = {
   getData: vi.fn(),
 };
 
-function createHashMapBean(): unknown {
-  const map = new Map<string, boolean>();
+function createRegistryBean(): unknown {
+  const operations = new Set<string>();
   return {
-    get: (key: string) => map.get(key) ?? null,
-    put: (key: string, value: boolean) => map.set(key, value),
-    putIfAbsent: (key: string, value: boolean) => {
-      const previous = map.get(key) ?? null;
-      if (previous == null) {
-        map.set(key, value);
+    isActive: (id: string) => operations.has(id),
+    add: (id: string) => {
+      if (operations.has(id)) {
+        return false;
       }
-      return previous;
+      operations.add(id);
+      return true;
     },
-    remove: (key: string) => map.delete(key),
-    forEach: () => undefined,
+    remove: (id: string) => operations.delete(id),
   };
 }
 
@@ -118,7 +116,7 @@ function lastProxyConfig(): ModelProxyConfig {
 beforeEach(() => {
   vi.clearAllMocks();
   (globalThis as unknown as { __: { newBean: (name: string) => unknown } }).__.newBean = (name) =>
-    name === 'java.util.concurrent.ConcurrentHashMap' ? createHashMapBean() : downscalerBean;
+    name.endsWith('OperationRegistry') ? createRegistryBean() : downscalerBean;
   downscalerBean.prepare.mockReturnValue(true);
   downscalerBean.getMimeType.mockReturnValue('image/jpeg');
   downscalerBean.getData.mockReturnValue('QkFTRTY0');

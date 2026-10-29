@@ -5,7 +5,7 @@ import type { ErrorResponse } from '../../shared/model';
 import type { HttpClientRequestOptions, HttpClientResponse } from '/lib/http-client';
 
 import { ERRORS, isNashornError } from '../../shared/errors';
-import { logError } from '../logger';
+import { logError, logWarn } from '../logger';
 import { calcBackoffDelay, shouldRetryRequest } from '../utils/http';
 import {
   calcDelayWithJitter,
@@ -43,7 +43,13 @@ export function request({ retries = 3, ...options }: RequestParams): Try<HttpCli
         sleep(calcDelayWithJitter(retryState));
       }
 
-      response = libHttpClient.request(createRequestOptions(options));
+      const start = Date.now();
+      try {
+        response = libHttpClient.request(createRequestOptions(options));
+      } catch (e) {
+        logError(`Request to ${options.url} failed after ${Date.now() - start} ms: ${describeError(e)}`);
+        throw e;
+      }
 
       const canRetry = shouldRetryRequest(response) && attempt < maxAttempts;
       if (!canRetry) {
@@ -52,6 +58,9 @@ export function request({ retries = 3, ...options }: RequestParams): Try<HttpCli
       }
 
       const delay = calcBackoffDelay(attempt, response.headers);
+      logWarn(
+        `Retrying request (attempt ${attempt} of ${maxAttempts}) after status ${response.status}, delay ${delay} ms.`,
+      );
       updateRetryStateIfNextAttempt(options.url, delay, attempt);
     }
 
@@ -86,6 +95,14 @@ function createRequestOptions({
     body: body != null ? JSON.stringify(body) : undefined,
     queryParams,
   };
+}
+
+function describeError(error: unknown): string {
+  const parts = [String(error), isNashornError(error) ? error.message : null];
+  if (isNashornError(error) && 'cause' in error) {
+    parts.push(String(error.cause));
+  }
+  return parts.filter((part) => part != null && part !== '').join(' | ');
 }
 
 function parseHttpLibError(error: unknown): AiError {

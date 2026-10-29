@@ -22,6 +22,8 @@
   "field.mentions.topic.prettified": "Nome visualizzato del contenuto di riferimento",
   "field.message.assistant.placeholder.common": "Pensando riguardo la tua richiesta...",
   "text.thinking": "Sto pensando...",
+  "text.thinking.still": "Sto ancora pensando...",
+  "text.thinking.almost": "Ci siamo quasi...",
   "field.message.assistant.placeholder.multiple": "Creazione di suggerimenti per {{name}} e {{count}} ulteriori...",
   "field.message.assistant.placeholder.single": "Creazione di suggerimenti per {{name}}...",
   "field.message.error": "Oops!",
