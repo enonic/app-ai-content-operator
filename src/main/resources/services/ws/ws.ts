@@ -1,3 +1,4 @@
+import { listener, send as sendEvent } from '/lib/xp/event';
 import { submitTask } from '/lib/xp/task';
 import { send } from '/lib/xp/websocket';
 
@@ -25,7 +26,7 @@ import { analyze } from '../../lib/flow/analyze';
 import { generate } from '../../lib/flow/generate';
 import { respondError } from '../../lib/http/requests';
 import { getLicenseState } from '../../lib/license/license-manager';
-import { logDebug, LogDebugGroups, logError } from '../../lib/logger';
+import { logDebug, LogDebugGroups, logError, logWarn } from '../../lib/logger';
 import { createOperationRegistry } from '../../lib/utils/operations';
 import { unsafeUUIDv4 } from '../../lib/utils/uuid';
 import { WS_PROTOCOL } from '../../shared/constants';
@@ -34,7 +35,30 @@ import { MessageType } from '../../shared/websocket';
 
 type WsData = Record<string, never>;
 
+type WsSendEventData = {
+  socketId: string;
+  message: string;
+};
+
+type WsStopEventData = {
+  generationId: string;
+};
+
+const WS_SEND_EVENT = `${app.name}.ws.send`;
+const WS_STOP_EVENT = `${app.name}.ws.stop`;
+
 const activeOperations = createOperationRegistry();
+
+// ! Tasks run on any cluster node, but only the node holding the socket can deliver to it
+listener<WsSendEventData>({
+  type: `custom.${WS_SEND_EVENT}`,
+  callback: ({ data }) => send(data.socketId, data.message),
+});
+
+listener<WsStopEventData>({
+  type: `custom.${WS_STOP_EVENT}`,
+  callback: ({ data }) => activeOperations.remove(data.generationId),
+});
 
 //
 //* WebSocket
@@ -145,7 +169,11 @@ function createMetadata(): MessageMetadata {
 }
 
 function sendMessage(socketId: string, message: Omit<ServerMessage, 'metadata'>): void {
-  send(socketId, JSON.stringify({ ...message, metadata: createMetadata() }));
+  sendEvent<WsSendEventData>({
+    type: WS_SEND_EVENT,
+    distributed: true,
+    data: { socketId, message: JSON.stringify({ ...message, metadata: createMetadata() }) },
+  });
 }
 
 function sendAnalyzedMessage(socketId: string, payload: AnalyzedMessagePayload): void {
@@ -299,10 +327,11 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
       );
     }
 
+    const analysisStart = Date.now();
     const [analysis, err1] = analyze(message.payload);
 
     if (!activeOperations.isActive(id)) {
-      return;
+      return logDroppedResult(id, 'Analysis', analysisStart);
     }
 
     if (err1) {
@@ -315,6 +344,7 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
 
     sendAnalyzedMessage(socketId, analysis);
 
+    const generationStart = Date.now();
     const [generation, err2] = generate({
       prompt: analysis.result,
       history: message.payload.history.generation,
@@ -322,7 +352,7 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
     });
 
     if (!activeOperations.isActive(id)) {
-      return;
+      return logDroppedResult(id, 'Generation', generationStart);
     }
 
     if (err2) {
@@ -339,5 +369,9 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
 }
 
 function stopGeneration(id: string): void {
-  activeOperations.remove(id);
+  sendEvent<WsStopEventData>({ type: WS_STOP_EVENT, distributed: true, data: { generationId: id } });
+}
+
+function logDroppedResult(id: string, step: string, start: number): void {
+  logWarn(`${step} result dropped: operation <${id}> was stopped. Took ${Date.now() - start} ms.`);
 }

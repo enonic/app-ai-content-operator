@@ -51,6 +51,8 @@
   "text.greeting.night.2_anon": "Up early? Ready when you are.",
   "text.input.placeholder": "Ask Juke anything, or @ to reference",
   "text.thinking": "Thinking...",
+  "text.thinking.still": "Still thinking...",
+  "text.thinking.almost": "Almost there...",
   "text.error.rest.unknown": "Something went wrong. Code: <{{code}}>.",
   "text.error.rest.timeout": "Request timed out. Please try again later.",
   "text.error.rest.maxRetriesReached": "AI service is currently experiencing issues. Please try again later.",
