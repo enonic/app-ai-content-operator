@@ -289,16 +289,16 @@ export function generateAltText(
 }
 
 export function analyzeAndGenerate(socketId: string, message: GenerateMessage): void {
+  const { id } = message.metadata;
+
+  if (!activeOperations.add(id)) {
+    return sendFailedErrorMessage(
+      socketId,
+      ERRORS.WS_OPERATION_ALREADY_RUNNING.withMsg(`Generation id: ${id}`),
+    );
+  }
+
   try {
-    const { id } = message.metadata;
-
-    if (!activeOperations.add(id)) {
-      return sendFailedErrorMessage(
-        socketId,
-        ERRORS.WS_OPERATION_ALREADY_RUNNING.withMsg(`Generation id: ${id}`),
-      );
-    }
-
     const analysisStart = Date.now();
     const [analysis, err1] = analyze(message.payload);
 
@@ -332,11 +332,11 @@ export function analyzeAndGenerate(socketId: string, message: GenerateMessage): 
     }
 
     sendGeneratedMessage(socketId, generation);
-
-    activeOperations.remove(id);
   } catch (e) {
     sendFailedErrorMessage(socketId, ERRORS.WS_UNKNOWN_ERROR.withMsg('See server logs.'));
     logError(e);
+  } finally {
+    activeOperations.remove(id);
   }
 }
 
