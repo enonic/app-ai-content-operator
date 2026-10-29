@@ -14,6 +14,8 @@
   "field.chat": "Чат",
   "text.input.placeholder": "Спытайце Juke пра што заўгодна або @ для спасылкі",
   "text.thinking": "Думаю...",
+  "text.thinking.still": "Усё яшчэ думаю...",
+  "text.thinking.almost": "Амаль гатова...",
   "text.greeting.morning.0": "Добрай раніцы, {{name}}. Чым я магу вам дапамагчы?",
   "text.greeting.morning.0_anon": "Добрай раніцы. Чым я магу вам дапамагчы?",
   "text.greeting.morning.1": "Добрай раніцы, {{name}}. Аб чым вы думаеце?",

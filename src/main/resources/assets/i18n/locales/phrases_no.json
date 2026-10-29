@@ -81,6 +81,8 @@
   "text.greeting.night.2_anon": "Tidlig oppe? Klar når du er.",
   "text.input.placeholder": "Spør Juke om hva som helst, eller @ for å referere",
   "text.thinking": "Tenker...",
+  "text.thinking.still": "Tenker fortsatt...",
+  "text.thinking.almost": "Nesten ferdig...",
   "text.mentions.notFound": "Fant ingen redigerbar input",
   "text.system.stopped.system": "Din forespørsel tok for lang tid, så jeg stoppet. La meg få vite om du vil fortsette.",
   "text.system.stopped.user": "Stoppet som forespurt. La meg vite hvordan jeg skal gå videre."

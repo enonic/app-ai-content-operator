@@ -18,25 +18,27 @@ public class ServiceAccountKeyHandler {
 
     private static final String PROJECT_ID_ENV = "GOOGLE_CLOUD_PROJECT";
 
-    private GoogleCredentials credentials;
+    // ! Static so the token outlives the per-request bean: each refresh is a round trip to Google
+    private static GoogleCredentials credentials;
 
-    private byte[] checksum;
+    private static byte[] checksum;
 
-    public synchronized String getAccessToken(String serviceAccountKeyPath)
+    public String getAccessToken(String serviceAccountKeyPath)
             throws IOException {
-        updateCredentialsIfNeeded(serviceAccountKeyPath);
+        final GoogleCredentials current = updateCredentialsIfNeeded(serviceAccountKeyPath);
         try {
-            return credentials.refreshAccessToken().getTokenValue();
+            current.refreshIfExpired();
+            return current.getAccessToken().getTokenValue();
         } catch (IOException e) {
             throw new IOException("Failed to refresh Access Token.", e);
         }
     }
 
-    public synchronized String getProjectId(String serviceAccountKeyPath)
+    public String getProjectId(String serviceAccountKeyPath)
             throws IOException {
-        updateCredentialsIfNeeded(serviceAccountKeyPath);
+        final GoogleCredentials current = updateCredentialsIfNeeded(serviceAccountKeyPath);
 
-        final String projectId = readProjectIdFromCredentials();
+        final String projectId = readProjectIdFromCredentials(current);
         if (projectId != null && !projectId.isBlank()) {
             return projectId;
         }
@@ -45,7 +47,7 @@ public class ServiceAccountKeyHandler {
     }
 
     // ? Only Service Account Key and Compute Engine credentials carry a project; the rest return null
-    private String readProjectIdFromCredentials() {
+    private static String readProjectIdFromCredentials(GoogleCredentials credentials) {
         try {
             return credentials.getProjectId();
         } catch (RuntimeException e) {
@@ -54,31 +56,32 @@ public class ServiceAccountKeyHandler {
         }
     }
 
-    private void updateCredentialsIfNeeded(String serviceAccountKeyPath)
+    private static synchronized GoogleCredentials updateCredentialsIfNeeded(String serviceAccountKeyPath)
             throws IOException {
         if (serviceAccountKeyPath == null || serviceAccountKeyPath.isBlank()) {
             // ? checksum is null only while credentials come from ADC, so a switch away from a key file reloads
             if (credentials == null || checksum != null) {
-                this.credentials = applyScope(loadApplicationDefaultCredentials());
-                this.checksum = null;
+                credentials = applyScope(loadApplicationDefaultCredentials());
+                checksum = null;
             }
-            return;
+            return credentials;
         }
 
         final byte[] currentChecksum = calculateChecksum(Paths.get(serviceAccountKeyPath));
 
         if (credentials == null || !MessageDigest.isEqual(checksum, currentChecksum)) {
-            this.credentials = applyScope(loadCredentialsFromFile(serviceAccountKeyPath));
-            this.checksum = currentChecksum;
+            credentials = applyScope(loadCredentialsFromFile(serviceAccountKeyPath));
+            checksum = currentChecksum;
         }
+        return credentials;
     }
 
     // ! User credentials carry their scopes in the refresh token and reject scoping
-    private GoogleCredentials applyScope(GoogleCredentials credentials) {
+    private static GoogleCredentials applyScope(GoogleCredentials credentials) {
         return credentials.createScopedRequired() ? credentials.createScoped(CLOUD_PLATFORM_SCOPE) : credentials;
     }
 
-    private GoogleCredentials loadApplicationDefaultCredentials()
+    private static GoogleCredentials loadApplicationDefaultCredentials()
             throws IOException {
         try {
             return GoogleCredentials.getApplicationDefault();
@@ -87,7 +90,7 @@ public class ServiceAccountKeyHandler {
         }
     }
 
-    private GoogleCredentials loadCredentialsFromFile(String serviceAccountKeyPath)
+    private static GoogleCredentials loadCredentialsFromFile(String serviceAccountKeyPath)
             throws IOException {
         try (FileInputStream fileInputStream = new FileInputStream(serviceAccountKeyPath)) {
             return GoogleCredentials.fromStream(fileInputStream);
@@ -96,7 +99,7 @@ public class ServiceAccountKeyHandler {
         }
     }
 
-    private byte[] calculateChecksum(Path filePath) {
+    private static byte[] calculateChecksum(Path filePath) {
         try (InputStream fileInputStream = Files.newInputStream(filePath); DigestInputStream digestInputStream = new DigestInputStream(
                 fileInputStream, MessageDigest.getInstance("SHA-256"))) {
             byte[] buffer = new byte[8192];

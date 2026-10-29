@@ -1,3 +1,5 @@
+import { APP_NAME } from '../constants';
+
 export type OperationRegistry = {
   isActive(id: string): boolean;
   add(id: string): boolean;
@@ -5,14 +7,11 @@ export type OperationRegistry = {
 };
 
 export function createOperationRegistry(): OperationRegistry {
-  const operations = __.newBean<Java.ConcurrentHashMap<string, boolean>>(
-    'java.util.concurrent.ConcurrentHashMap',
-  );
+  const operations = __.newBean(`${APP_NAME}.ws.OperationRegistry`);
 
   return {
-    isActive: (id) => operations.get(id) != null,
-    // ! Must stay atomic: a check-then-put lets two callers claim the same id
-    add: (id) => operations.putIfAbsent(id, true) == null,
+    isActive: (id) => operations.isActive(id),
+    add: (id) => operations.add(id),
     remove(id) {
       operations.remove(id);
     },

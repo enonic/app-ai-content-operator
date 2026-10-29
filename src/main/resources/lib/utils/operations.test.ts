@@ -5,19 +5,17 @@ import { createOperationRegistry } from './operations';
 const beanFactory = globalThis as unknown as { __: { newBean: (name: string) => unknown } };
 
 beforeEach(() => {
-  const map = new Map<string, boolean>();
+  const operations = new Set<string>();
   beanFactory.__.newBean = () => ({
-    get: (key: string) => map.get(key) ?? null,
-    put: (key: string, value: boolean) => map.set(key, value),
-    putIfAbsent: (key: string, value: boolean) => {
-      const previous = map.get(key) ?? null;
-      if (previous == null) {
-        map.set(key, value);
+    isActive: (id: string) => operations.has(id),
+    add: (id: string) => {
+      if (operations.has(id)) {
+        return false;
       }
-      return previous;
+      operations.add(id);
+      return true;
     },
-    remove: (key: string) => map.delete(key),
-    forEach: () => undefined,
+    remove: (id: string) => operations.delete(id),
   });
 });
 
