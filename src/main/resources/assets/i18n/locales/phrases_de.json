@@ -1,5 +1,7 @@
 {
   "action.settings": "Einstellungen",
   "field.mentions.topic.label": "Anzeigename",
-  "text.thinking": "Denke nach..."
+  "text.thinking": "Denke nach...",
+  "text.thinking.still": "Denke noch nach...",
+  "text.thinking.almost": "Fast fertig..."
 }

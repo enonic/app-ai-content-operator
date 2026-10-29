@@ -29,9 +29,15 @@ function parseMessage(message: unknown): string {
   }
 }
 
-export const logInfo = (message: unknown): void => log.info(parseMessage(message));
-export const logWarn = (message: unknown): void => log.warning(parseMessage(message));
-export const logError = (message: unknown): void => log.error(parseMessage(message));
+function describeMessage(message: unknown): string {
+  const text = parseMessage(message);
+  if (text !== '' || message == null) return text;
+  return `${Object.prototype.toString.call(message)} ${JSON.stringify(message)}`;
+}
+
+export const logInfo = (message: unknown): void => log.info(describeMessage(message));
+export const logWarn = (message: unknown): void => log.warning(describeMessage(message));
+export const logError = (message: unknown): void => log.error(describeMessage(message));
 export const logDebug = (
   group: Omit<LogDebugGroups, LogDebugGroups.ALL>,
   message: unknown,
