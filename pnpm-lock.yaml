@@ -28,8 +28,8 @@ importers:
         specifier: ~26.4.2
         version: 26.4.2(typescript@7.0.2)
       i18next-http-backend:
-        specifier: ~4.0.2
-        version: 4.0.2
+        specifier: ~4.0.7
+        version: 4.0.7
       lodash.clonedeep:
         specifier: ~4.5.0
         version: 4.5.0
@@ -2448,8 +2448,8 @@ packages:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
     engines: {node: '>= 14'}
 
-  i18next-http-backend@4.0.2:
-    resolution: {integrity: sha512-oay62dIB2kL7+WHzoUXBjWfL3+mwijD3pQkQkIEaRLhy6kjXxUhrRenV0gInwlCASAaJaDy94+XvYizK+cAGdA==}
+  i18next-http-backend@4.0.7:
+    resolution: {integrity: sha512-SQy3OPy66YzumNJ43boHDBtzzMISnoPhQ0Zqjetk+luW74Tok8Ez9ujJJbJHKSHkG5sjDGldHznjuPtSxBwvuw==}
     engines: {node: '>=18'}
 
   i18next@26.4.2:
@@ -2471,6 +2471,9 @@ packages:
 
   is-hotkey@0.2.0:
     resolution: {integrity: sha512-UknnZK4RakDmTgz4PI1wIph5yxSs/mvChWs9ifnlXsKuXgWmOkY/hAE0H/k2MIqH0RlRye0i1oC07MCRSD28Mw==}
+
+  is-hotkey@0.2.1:
+    resolution: {integrity: sha512-r/T66LS/FY5o4Duw1rre/wMTngTuuRjzIqKioM/sWaqXcIBnCS5FIpqsoKIYox4nuWUR/aQL/d2PCdW4PFtQzw==}
 
   is-inside-container@1.0.0:
     resolution: {integrity: sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA==}
@@ -4924,7 +4927,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  i18next-http-backend@4.0.2: {}
+  i18next-http-backend@4.0.7: {}
 
   i18next@26.4.2(typescript@7.0.2):
     optionalDependencies:
@@ -4935,6 +4938,8 @@ snapshots:
   is-docker@3.0.0: {}
 
   is-hotkey@0.2.0: {}
+
+  is-hotkey@0.2.1: {}
 
   is-inside-container@1.0.0:
     dependencies:
@@ -5406,7 +5411,7 @@ snapshots:
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
-      is-hotkey: 0.2.0
+      is-hotkey: 0.2.1
       is-plain-object: 5.1.0
       lodash: 4.18.1
       scroll-into-view-if-needed: 3.1.0
