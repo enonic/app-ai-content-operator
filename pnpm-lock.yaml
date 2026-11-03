@@ -90,7 +90,7 @@ importers:
         version: 8.1.2
       '@enonic-types/lib-task':
         specifier: ^8
-        version: 8.1.1
+        version: 8.1.2
       '@enonic-types/lib-websocket':
         specifier: ^8
         version: 8.1.1
@@ -368,8 +368,8 @@ packages:
   '@enonic-types/lib-project@8.1.2':
     resolution: {integrity: sha512-MfOnJd8AcsgJS/X4oZxqAR2X9q6ENeRaBOZqrbWgxZuCfD5LlOpsBxpXX60ytqCQmXaDQNpJw7p2eNB+nh4Omg==}
 
-  '@enonic-types/lib-task@8.1.1':
-    resolution: {integrity: sha512-AFaMcCoZmz+aM5m4w69ntu7tKnxFmSuuRetGRku1jkIdew0SPBCwU1ab+Kai1jfYnVXpej8bPw3uZZgH70r2Qw==}
+  '@enonic-types/lib-task@8.1.2':
+    resolution: {integrity: sha512-FurPeUOuB2hn8QhN87lPkPgKGowO2RhK+IPZD/IC6L60vzfFXkzgsXKL3Utu3ai9zQlscEOvZBRDrnASpSZntA==}
 
   '@enonic-types/lib-websocket@8.1.1':
     resolution: {integrity: sha512-k+68EVZhR5ExLDeEb4TbdmDxZWD3gBi/BP5lct44qKJNHaVD8qyZLXPiBoDgo2inM7BUzMvzsPjy5zfprA2cmA==}
@@ -3486,9 +3486,9 @@ snapshots:
     dependencies:
       '@enonic-types/core': 8.1.2
 
-  '@enonic-types/lib-task@8.1.1':
+  '@enonic-types/lib-task@8.1.2':
     dependencies:
-      '@enonic-types/core': 8.1.1
+      '@enonic-types/core': 8.1.2
 
   '@enonic-types/lib-websocket@8.1.1': {}
 
