@@ -87,7 +87,7 @@ importers:
         version: 8.1.1
       '@enonic-types/lib-project':
         specifier: ^8
-        version: 8.0.4
+        version: 8.1.2
       '@enonic-types/lib-task':
         specifier: ^8
         version: 8.1.1
@@ -350,6 +350,9 @@ packages:
   '@enonic-types/core@8.1.1':
     resolution: {integrity: sha512-doqfZ7GSm5Q0IIZYED+J/b6KalGAYIcCkTjE6wCzFIVJivlUiJIQMg6hw18G280Vx7ovtVj5oOZgPjPou8SCNw==}
 
+  '@enonic-types/core@8.1.2':
+    resolution: {integrity: sha512-iQ4y9u0ol3iu5Oby6SP5JSpTx5062Do4rtzDDKDVPi3pZgQTpb2fyjmrjaeMUcOKS5pYxuszL/QjRZZPmujjtA==}
+
   '@enonic-types/global@8.1.1':
     resolution: {integrity: sha512-Q8jNovJW9ylnPhyNcNbOOg9Z9LHj7tPLYzWYjNa6oZp3A7H8SyCvmmJrIoBAxr/yhjrjzIU07pv4kRKL/jCwuw==}
 
@@ -365,8 +368,8 @@ packages:
   '@enonic-types/lib-event@8.1.1':
     resolution: {integrity: sha512-6F1K/8EUNow+zJd/gCe27xVlLU/bBW6gJqUUBnKst1RgK1o9aJh2tCZ6Rkaip4puQn7Eiy7BYDzZdT0EX8ZOug==}
 
-  '@enonic-types/lib-project@8.0.4':
-    resolution: {integrity: sha512-8k8/7cJEJiyHz18TqYu9jvldHRVvXDmxtmBM7yhykXJdlzRO+kfKT1Dl/a4T10PjkG/SccDthWmTTSOK/ZlOQw==}
+  '@enonic-types/lib-project@8.1.2':
+    resolution: {integrity: sha512-MfOnJd8AcsgJS/X4oZxqAR2X9q6ENeRaBOZqrbWgxZuCfD5LlOpsBxpXX60ytqCQmXaDQNpJw7p2eNB+nh4Omg==}
 
   '@enonic-types/lib-task@8.1.1':
     resolution: {integrity: sha512-AFaMcCoZmz+aM5m4w69ntu7tKnxFmSuuRetGRku1jkIdew0SPBCwU1ab+Kai1jfYnVXpej8bPw3uZZgH70r2Qw==}
@@ -2472,6 +2475,9 @@ packages:
   is-hotkey@0.2.0:
     resolution: {integrity: sha512-UknnZK4RakDmTgz4PI1wIph5yxSs/mvChWs9ifnlXsKuXgWmOkY/hAE0H/k2MIqH0RlRye0i1oC07MCRSD28Mw==}
 
+  is-hotkey@0.2.1:
+    resolution: {integrity: sha512-r/T66LS/FY5o4Duw1rre/wMTngTuuRjzIqKioM/sWaqXcIBnCS5FIpqsoKIYox4nuWUR/aQL/d2PCdW4PFtQzw==}
+
   is-inside-container@1.0.0:
     resolution: {integrity: sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA==}
     engines: {node: '>=14.16'}
@@ -3466,6 +3472,8 @@ snapshots:
 
   '@enonic-types/core@8.1.1': {}
 
+  '@enonic-types/core@8.1.2': {}
+
   '@enonic-types/global@8.1.1':
     dependencies:
       '@enonic-types/core': 8.1.1
@@ -3484,9 +3492,9 @@ snapshots:
 
   '@enonic-types/lib-event@8.1.1': {}
 
-  '@enonic-types/lib-project@8.0.4':
+  '@enonic-types/lib-project@8.1.2':
     dependencies:
-      '@enonic-types/core': 8.0.4
+      '@enonic-types/core': 8.1.2
 
   '@enonic-types/lib-task@8.1.1':
     dependencies:
@@ -4936,6 +4944,8 @@ snapshots:
 
   is-hotkey@0.2.0: {}
 
+  is-hotkey@0.2.1: {}
+
   is-inside-container@1.0.0:
     dependencies:
       is-docker: 3.0.0
@@ -5406,7 +5416,7 @@ snapshots:
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
-      is-hotkey: 0.2.0
+      is-hotkey: 0.2.1
       is-plain-object: 5.1.0
       lodash: 4.18.1
       scroll-into-view-if-needed: 3.1.0
