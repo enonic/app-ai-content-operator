@@ -63,7 +63,7 @@
     "@enonic-types/lib-websocket": "^8",
     "@enonic/ui": "^1.5.0",
     "@enonic/ui-types": "^0.6.0",
-    "@google/genai": "~2.31.0",
+    "@google/genai": "~3.0.0",
     "@preact/preset-vite": "~2.10.6",
     "@storybook/addon-docs": "~10.6.3",
     "@storybook/addon-themes": "~10.6.3",
