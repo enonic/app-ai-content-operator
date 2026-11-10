@@ -82,7 +82,7 @@
     "esbuild": "~0.28.2",
     "jsdom": "~31.0.0",
     "storybook": "~10.6.5",
-    "tailwindcss": "~4.3.3",
+    "tailwindcss": "~4.3.5",
     "typescript": "^7.0.2",
     "vite": "catalog:",
     "vite-plus": "catalog:",
