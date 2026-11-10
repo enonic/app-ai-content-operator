@@ -36,7 +36,7 @@
   "dependencies": {
     "@nanostores/react": "~2.0.1",
     "focus-trap-react": "~12.0.3",
-    "i18next": "~26.5.12",
+    "i18next": "~27.0.1",
     "i18next-http-backend": "~4.0.7",
     "lodash.clonedeep": "~4.5.0",
     "lodash.isequal": "~4.5.0",
