@@ -1,6 +1,4 @@
 {
-  "oxc.path.oxlint": "./node_modules/vite-plus/bin/oxlint",
-  "oxc.path.oxfmt": "./node_modules/vite-plus/bin/oxfmt",
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit"
   },
