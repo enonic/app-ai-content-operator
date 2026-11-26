@@ -1,5 +1,5 @@
 import { createResponse } from '/tests/testUtils/testHelpers';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 
 import type { ModelResponseGenerateData } from '../../../shared/model';
 import type { GenerateContentRequest } from '../types';

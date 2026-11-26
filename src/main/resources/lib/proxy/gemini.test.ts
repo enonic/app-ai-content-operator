@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 
 import type { FinishReason } from '../../shared/model';
 import type { Schema } from '../google/types';
