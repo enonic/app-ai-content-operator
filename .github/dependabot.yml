@@ -13,11 +13,75 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    # Keep in sync with minimumReleaseAge/minimumReleaseAgeExclude in pnpm-workspace.yaml:
+    # Dependabot must not propose versions pnpm would reject.
+    cooldown:
+      default-days: 1
+      exclude:
+        - '@enonic/ui'
+        - '@enonic-types/*'
+        - '@typescript/native-preview*'
     open-pull-requests-limit: 10
     assignees:
       - 'edloidas'
     reviewers:
       - 'edloidas'
+    groups:
+      enonic:
+        patterns:
+          - '@enonic/*'
+          - '@enonic-types/*'
+      vite:
+        patterns:
+          - 'vite'
+          - 'vite-plus'
+          - 'vitest'
+          - '@vitest/*'
+          # Dependabot bumps `vite-plus` but not the `npm:@voidzero-dev/vite-plus-core@…` alias of
+          # `vite` in the pnpm catalog. On a mismatch the build fails with "Expected
+          # @voidzero-dev/vite-plus-core@<version>": set the alias and the `vitest` pin to what
+          # `npm view vite-plus@<version> dependencies` lists, or run `vp migrate`.
+          - '@voidzero-dev/*'
+          - '@preact/preset-vite'
+      storybook:
+        patterns:
+          - 'storybook'
+          - '@storybook/*'
+      slate:
+        patterns:
+          - 'slate'
+          - 'slate-*'
+      tailwindcss:
+        patterns:
+          - 'tailwindcss'
+          - '@tailwindcss/*'
+          - 'tw-animate-css'
+      typescript:
+        patterns:
+          - 'typescript'
+          - '@typescript/*'
+      i18next:
+        patterns:
+          - 'i18next'
+          - 'i18next-*'
+          - 'react-i18next'
+      nanostores:
+        patterns:
+          - 'nanostores'
+          - '@nanostores/*'
+      lodash:
+        patterns:
+          - 'lodash.*'
+          - '@types/lodash.*'
+      types:
+        patterns:
+          - '@types/*'
+      dependencies:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
@@ -27,3 +91,11 @@ updates:
       - 'rymsha'
     reviewers:
       - 'rymsha'
+    groups:
+      actions:
+        patterns:
+          - '*'
+        update-types:
+          - 'major'
+          - 'minor'
+          - 'patch'
