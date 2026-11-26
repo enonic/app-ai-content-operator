@@ -12,7 +12,7 @@ ignoredBuiltDependencies:
   - esbuild
   - unrs-resolver
 
-minimumReleaseAge: 1440
+minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
   - '@enonic/ui'

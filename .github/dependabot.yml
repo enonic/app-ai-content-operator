@@ -3,20 +3,23 @@ updates:
   - package-ecosystem: 'gradle'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'
+    cooldown:
+      default-days: 3
     open-pull-requests-limit: 10
     assignees:
       - 'rymsha'
     reviewers:
       - 'rymsha'
+
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
-    # Keep in sync with minimumReleaseAge/minimumReleaseAgeExclude in pnpm-workspace.yaml:
-    # Dependabot must not propose versions pnpm would reject.
+    # Keep in sync with minimumReleaseAge and minimumReleaseAgeExclude in pnpm-workspace.yaml,
+    # so Dependabot never proposes a version pnpm refuses to install.
     cooldown:
-      default-days: 1
+      default-days: 3
       exclude:
         - '@enonic/ui'
         - '@enonic-types/*'
@@ -26,45 +29,48 @@ updates:
       - 'edloidas'
     reviewers:
       - 'edloidas'
+    # The first matching group wins, so the catch-all groups go last.
     groups:
       enonic:
         patterns:
           - '@enonic/*'
           - '@enonic-types/*'
-      vite:
+      # Dependabot does not bump the `vite` catalog alias (npm:@voidzero-dev/vite-plus-core@...),
+      # whose version differs from vite-plus. When vite-plus moves, set the alias to the
+      # vite-plus-core version `npm view vite-plus@<version> dependencies` lists, or run `vp migrate`.
+      vite-plus:
         patterns:
-          - 'vite'
           - 'vite-plus'
+          - 'vite'
+          - '@voidzero-dev/*'
           - 'vitest'
           - '@vitest/*'
-          # Dependabot bumps `vite-plus` but not the `npm:@voidzero-dev/vite-plus-core@…` alias of
-          # `vite` in the pnpm catalog. On a mismatch the build fails with "Expected
-          # @voidzero-dev/vite-plus-core@<version>": set the alias and the `vitest` pin to what
-          # `npm view vite-plus@<version> dependencies` lists, or run `vp migrate`.
-          - '@voidzero-dev/*'
-          - '@preact/preset-vite'
       storybook:
         patterns:
           - 'storybook'
           - '@storybook/*'
-      slate:
-        patterns:
-          - 'slate'
-          - 'slate-*'
-      tailwindcss:
-        patterns:
-          - 'tailwindcss'
-          - '@tailwindcss/*'
-          - 'tw-animate-css'
-      typescript:
-        patterns:
-          - 'typescript'
-          - '@typescript/*'
       i18next:
         patterns:
           - 'i18next'
           - 'i18next-*'
           - 'react-i18next'
+      tailwindcss:
+        patterns:
+          - 'tailwindcss'
+          - '@tailwindcss/*'
+          - 'tw-animate-css'
+      preact:
+        patterns:
+          - 'preact'
+          - '@preact/*'
+      react-types:
+        patterns:
+          - '@types/react'
+          - '@types/react-dom'
+      typescript:
+        patterns:
+          - 'typescript'
+          - '@typescript/*'
       nanostores:
         patterns:
           - 'nanostores'
@@ -73,19 +79,28 @@ updates:
         patterns:
           - 'lodash.*'
           - '@types/lodash.*'
-      types:
+      slate:
         patterns:
-          - '@types/*'
+          - 'slate'
+          - 'slate-*'
       dependencies:
         patterns:
           - '*'
         update-types:
           - 'minor'
           - 'patch'
+      majors:
+        patterns:
+          - '*'
+        update-types:
+          - 'major'
+
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'monthly'
+    cooldown:
+      default-days: 3
     open-pull-requests-limit: 10
     assignees:
       - 'rymsha'
