@@ -67,8 +67,8 @@ importers:
         specifier: ~0.144.0
         version: 0.144.0(slate@0.147.4)
       slate-react:
-        specifier: ~0.127.1
-        version: 0.127.1(@types/lodash@4.17.27)(@types/react@19.3.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(slate-dom@0.147.3(slate@0.147.4))(slate@0.147.4)
+        specifier: ~0.147.6
+        version: 0.147.6(@types/lodash@4.17.27)(@types/react@19.3.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(slate-dom@0.147.3(slate@0.147.4))(slate@0.147.4)
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -2683,15 +2683,15 @@ packages:
     peerDependencies:
       slate: '>=0.114.3'
 
-  slate-react@0.127.1:
-    resolution: {integrity: sha512-ZiLJEEfKeAuRCOK7M7NAEA/lwhoCecikDWMQj6zbOJCKmZtIv4+7wdwmB2w3gZfrjVNmZWKbaP4zHORILVvc5g==}
+  slate-react@0.147.6:
+    resolution: {integrity: sha512-Di3QMTMf4TRpLaU9mCIvGzs6gmUnROAaBteg+VWLDgOg6bH7FP38qr+ibL4P3VN2t2jqAX+y5jahVR8Rvh8Eyw==}
     peerDependencies:
       '@types/lodash': ^4.14.0
       '@types/react': '>=18.0.0'
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
       slate: '>=0.121.0'
-      slate-dom: '>=0.119.1'
+      slate-dom: '>=0.141.0'
     peerDependenciesMeta:
       '@types/lodash':
         optional: true
@@ -4977,7 +4977,7 @@ snapshots:
     dependencies:
       slate: 0.147.4
 
-  slate-react@0.127.1(@types/lodash@4.17.27)(@types/react@19.3.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(slate-dom@0.147.3(slate@0.147.4))(slate@0.147.4):
+  slate-react@0.147.6(@types/lodash@4.17.27)(@types/react@19.3.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(slate-dom@0.147.3(slate@0.147.4))(slate@0.147.4):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
