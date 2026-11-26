@@ -19,7 +19,7 @@ function buildUser(overrides?: Partial<User>): User {
 ## Reset mocks between tests
 
 ```ts
-import { beforeEach, vi } from 'vitest';
+import { beforeEach, vi } from 'vite-plus/test';
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -29,7 +29,7 @@ beforeEach(() => {
 ## R3F components — mock the canvas
 
 ```ts
-import {vi} from 'vitest';
+import {vi} from 'vite-plus/test';
 
 vi.mock('@react-three/fiber', () => ({
   Canvas: ({children}: {children: React.ReactNode}) => <div>{children}</div>,

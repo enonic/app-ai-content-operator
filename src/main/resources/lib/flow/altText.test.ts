@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 
 import type { Content } from '/lib/xp/content';
 import type { ModelProxyConfig } from '../proxy/model';

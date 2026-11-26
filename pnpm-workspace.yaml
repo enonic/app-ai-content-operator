@@ -7,7 +7,6 @@ allowBuilds:
 catalog:
   vite: npm:@voidzero-dev/vite-plus-core@8.3.8001
   vite-plus: 1.8.0
-  vitest: 5.1.2
 
 ignoredBuiltDependencies:
   - esbuild
@@ -22,10 +21,3 @@ minimumReleaseAgeExclude:
 
 overrides:
   vite@*: 'catalog:'
-  vitest@*: 'catalog:'
-
-peerDependencyRules:
-  allowAny:
-    - vitest
-  allowedVersions:
-    vitest: '*'
