@@ -46,8 +46,8 @@ importers:
         specifier: ~4.6.2
         version: 4.6.2
       lucide-react:
-        specifier: ~1.70.0
-        version: 1.70.0(@types/react@19.3.2)(react@19.3.1)
+        specifier: ~1.80.0
+        version: 1.80.0(@types/react@19.3.2)(react@19.3.1)
       nanoid:
         specifier: ~6.0.2
         version: 6.0.2
@@ -107,8 +107,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0
       '@google/genai':
-        specifier: ~3.0.0
-        version: 3.0.0
+        specifier: ~3.6.1
+        version: 3.6.1
       '@preact/preset-vite':
         specifier: ~2.10.6
         version: 2.10.6(@babel/core@7.29.13)(@voidzero-dev/vite-plus-core@8.3.8001(@types/node@26.6.10)(@typescript/native-preview@7.0.0-dev.20260707.2)(esbuild@0.28.2)(jiti@2.7.0)(typescript@7.0.2))(preact@10.29.8)
@@ -514,8 +514,8 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@google/genai@3.0.0':
-    resolution: {integrity: sha512-0o2uBXPWBNUu0jWg2Id5iBtCnsd7lnxKPQfnijKvNublG/zj40CToERvz/eyfNjzzXt2kwuvxpouLUrRCZ2WUQ==}
+  '@google/genai@3.6.1':
+    resolution: {integrity: sha512-DQIkZkl+VoZc+RUSaJ41vRuywjQDpP0t/oUf5/ddQhNW6JsPjVULW2EgHmuJ1mrr6ACtrmUdPlqtNXF1yfKySg==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       '@modelcontextprotocol/sdk': ^1.25.2
@@ -2410,15 +2410,6 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@1.70.0:
-    resolution: {integrity: sha512-gCTPPN1MlQUBtUgdsUv+0CAUj+X8hifRUiRBw4E5v7lvDIOIpx0EZezdGQMSimS8pKA6esvullJub4GYr0mCHA==}
-    peerDependencies:
-      '@types/react': '*'
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-
   lucide-react@1.80.0:
     resolution: {integrity: sha512-f9cQkUMFp2ZrOek9FucpRqQVI67gT09clXcHs3yCvdhJnsK4RW4og/rqoC0YAHd6FV/GPkeiIR3Rdxr2pPRwHA==}
     peerDependencies:
@@ -3262,7 +3253,7 @@ snapshots:
 
   '@exodus/bytes@1.16.0': {}
 
-  '@google/genai@3.0.0':
+  '@google/genai@3.6.1':
     dependencies:
       google-auth-library: 10.9.1
       p-retry: 4.6.2
@@ -4656,12 +4647,6 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
-
-  lucide-react@1.70.0(@types/react@19.3.2)(react@19.3.1):
-    dependencies:
-      react: 19.3.1
-    optionalDependencies:
-      '@types/react': 19.3.2
 
   lucide-react@1.80.0(@types/react@19.3.2)(react@19.3.1):
     dependencies:
